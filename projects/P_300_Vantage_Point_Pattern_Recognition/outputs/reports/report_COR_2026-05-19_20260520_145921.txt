@@ -1,0 +1,55 @@
+============================================================================
+P_300 SIGNAL REPORT
+============================================================================
+Ticker:           COR
+Anchor date:      2026-05-19
+Signal:           PASS at horizon 5
+Generated:        2026-05-20 14:59 ET
+
+PER-HORIZON STATS
+----------------------------------------------------------------------------
+    h    n  win_rate  mean_ret  std_ret  z_score  class
+    5   20     0.600     -0.15    10.82   +0.000   PASS
+    7   20     0.550     +0.69    10.15   -0.456   PASS
+   10   20     0.550     -0.87    10.63   -0.456   PASS
+   15   20     0.550     +0.15    10.62   -0.090   PASS
+   20   20     0.550     +0.71    12.46   -0.456   PASS
+
+TOP 20 MATCHES (by composite distance, ascending)
+----------------------------------------------------------------------------
+   #  ticker      anchor  compdist     +5d     +7d    +10d    +15d    +20d
+   1    META  2025-11-05     8.855   -4.24   -4.17   -7.18   -0.37   +4.02
+   2    PLTR  2025-10-23    12.302   +7.80  +14.79   -3.01   -4.62  -13.71
+   3     CAT  2025-06-25    13.195   +7.23   +5.36   +9.89  +12.51  +15.59
+   4     XOM  2026-01-15    14.844   +4.52   +5.96   +9.50  +15.43  +14.96
+   5    AAPL  2026-01-27    15.769   +4.34   +6.83   +5.97   +2.35   +6.18
+   6    NVDA  2025-10-24    15.888   +8.71   +6.67   +1.01   +2.10   -3.96
+   7     DIS  2025-10-15    15.936   +1.23   -0.03   -1.32   -0.31   +4.42
+   8     TTD  2025-08-07    16.060  -42.53  -37.79  -40.79  -37.33  -41.05
+   9     CVX  2026-02-10    16.426   +0.88   +0.92   +1.08   +2.07   +5.23
+  10    AVGO  2025-06-13    16.439   +2.04   +6.41  +10.84   +9.29  +12.96
+  11     GEV  2025-09-25    16.631   -0.21   -0.71   +4.40   -0.91   -2.04
+  12      DE  2025-11-20    16.732   -2.49   -1.51   -0.26   +1.78   -1.21
+  13     NVO  2025-09-11    16.827  +13.90  +11.80   +3.20   +8.18   +8.07
+  14     AMD  2025-08-18    17.496   -7.26   -5.12   -7.85  -11.54   -8.90
+  15     NKE  2025-09-15    17.866   -2.40   -2.48   -4.77   -2.55   -7.74
+  16      GS  2026-01-22    18.515   -1.52   -0.87   -6.73   -5.25   -3.39
+  17     SPY  2025-06-20    19.323   +3.47   +3.93   +4.44   +5.14   +5.80
+  18     QQQ  2026-04-14    19.795   +2.50   +3.63   +4.61   +8.43  +12.51
+  19     WMT  2026-02-25    20.062   +1.64   -1.55   -1.80   -3.00   -2.14
+  20   GOOGL  2025-12-12    20.375   -0.69   +1.64   +1.38   +1.63   +8.63
+
+NARRATIVE
+----------------------------------------------------------------------------
+  The P_300 signal report for COR on anchor date 2026-05-19 generates a
+  final PASS classification with a horizon of 5. The per-horizon
+  statistics show mixed performance across different timeframes: h=5 has a
+  60% win rate but a slightly negative mean return of -0.15%, while other
+  horizons (h=7 to h=20) maintain lower win rates (~55%) and modest mean
+  returns, with elevated standard deviations (8-13%). The dispersion of
+  outcomes across top historical analogs highlights variability, as the
+  closest five stocks (META, PLTR, CAT, XOM, AAPL) show divergent 5-day
+  and 20-day returns, ranging from -4.24% to +15.59%. This suggests a
+  neutral outlook for COR near-term, with no strong directional signal.
+
+============================================================================

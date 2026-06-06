@@ -1,0 +1,13 @@
+This image is a guide detailing how to set up and use Claude Cowork, an AI collaboration tool for non-technical tasks. [1]  
+
+• Setup Requirements: Requires a Claude Pro account ($20/month) and the use of the Opus 4.7 model. [2, 3]  
+• Folder Structure: Organize work into designated folders, including specific subfolders for "About Me," "Outputs," and "Templates". [1]  
+• Context & Rules: Use "About Me" files to define your personal identity, thinking style, and writing preferences for the AI. [1]  
+• Best Practices: Maintain files regularly, save quality outputs as templates, and use "Extended Thinking" for complex tasks. [1]  
+
+AI responses may include mistakes.
+
+[1] https://www.anthropic.com/product/claude-cowork
+[2] https://www.news.aakashg.com/p/you-should-be-using-claude-cowork
+[3] https://www.youtube.com/watch?v=_42sUaf037k
+

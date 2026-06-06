@@ -1,0 +1,185 @@
+{
+  "general_settings": {
+    "betaFeatures": false,
+    "legacyMode": false,
+    "openBehavior": "popup",
+    "saveBehavior": "addToObsidian",
+    "showMoreActionsButton": false,
+    "silentOpen": false
+  },
+  "highlighter_settings": {
+    "alwaysShowHighlights": true,
+    "highlightBehavior": "highlight-inline",
+    "highlighterEnabled": true
+  },
+  "interpreter_settings": {
+    "defaultPromptContext": "",
+    "interpreterAutoRun": false,
+    "interpreterEnabled": false,
+    "interpreterModel": "",
+    "models": [],
+    "providers": []
+  },
+  "migrationVersion": 1,
+  "property_types": [
+    {
+      "defaultValue": "{{title}}",
+      "name": "title",
+      "type": "text"
+    },
+    {
+      "defaultValue": "{{url}}",
+      "name": "source",
+      "type": "text"
+    },
+    {
+      "defaultValue": "{{author|split:\", \"|wikilink|join}}",
+      "name": "author",
+      "type": "multitext"
+    },
+    {
+      "name": "published",
+      "type": "date"
+    },
+    {
+      "defaultValue": "{{date}}",
+      "name": "created",
+      "type": "date"
+    },
+    {
+      "defaultValue": "{{description}}",
+      "name": "description",
+      "type": "text"
+    },
+    {
+      "name": "tags",
+      "type": "multitext"
+    },
+    {
+      "name": "clipper_date",
+      "type": "text"
+    },
+    {
+      "name": "ticker_relevance",
+      "type": "multitext"
+    },
+    {
+      "name": "date",
+      "type": "text"
+    },
+    {
+      "name": "kb_type",
+      "type": "text"
+    },
+    {
+      "name": "sector",
+      "type": "text"
+    },
+    {
+      "name": "origin",
+      "type": "text"
+    }
+  ],
+  "reader_settings": {
+    "appearance": "auto",
+    "autoScroll": true,
+    "blendImages": true,
+    "colorLinks": false,
+    "customCss": "",
+    "darkTheme": "same",
+    "defaultFont": "",
+    "followLinks": true,
+    "fontSize": 16,
+    "fonts": [],
+    "highlightActiveLine": true,
+    "lightTheme": "default",
+    "lineHeight": 1.6,
+    "maxWidth": 38,
+    "pinPlayer": true
+  },
+  "stats": {
+    "addToObsidian": 1,
+    "copyToClipboard": 0,
+    "saveFile": 0,
+    "share": 0
+  },
+  "template_1779636702367u3je7tg8d": {
+    "id": "1779636702367u3je7tg8d",
+    "name": "Default",
+    "behavior": "create",
+    "noteNameFormat": "{{date|date:\"YYYY-MM-DD\"}}_{{title|safe_name}}",
+    "path": "KnowledgeBase",
+    "noteContentFormat": "{{content}}",
+    "context": "",
+    "properties": [
+      {
+        "id": "1779636702367d7zg5c2je",
+        "name": "title",
+        "value": "{{title}}",
+        "type": "text"
+      },
+      {
+        "id": "1779636702367wr9dms2bq",
+        "name": "source",
+        "value": "{{url}}",
+        "type": "text"
+      },
+      {
+        "id": "1779636702367viwzlwvgg",
+        "name": "author",
+        "value": "{{author|split:\\\", \\\"|wikilink|join}}",
+        "type": "multitext"
+      },
+      {
+        "id": "1779636702367ph4y9ckgu",
+        "name": "date",
+        "value": "{{date|date:\\\"YYYY-MM-DD\\\"}}",
+        "type": "text"
+      },
+      {
+        "id": "1779638351286ikir6sk1o",
+        "name": "published",
+        "value": "{{published|date:\\\"YYYY-MM-DD\\\"}}",
+        "type": "date"
+      },
+      {
+        "id": "1779638416607fs60gwrx1",
+        "name": "tags",
+        "value": "kb",
+        "type": "multitext"
+      },
+      {
+        "id": "17796411791557qi9vsng0",
+        "name": "kb_type",
+        "value": "article",
+        "type": "text"
+      },
+      {
+        "id": "1779641358753g4834qwjr",
+        "name": "ticker_relevance",
+        "value": "{{meta:property:og:site_name}}",
+        "type": "multitext"
+      },
+      {
+        "id": "1779641399906a1g2wdmf4",
+        "name": "sector",
+        "value": "",
+        "type": "text"
+      },
+      {
+        "id": "17796420600167lcns9d69",
+        "name": "origin",
+        "value": "{{schema:@publisher}}",
+        "type": "text"
+      }
+    ],
+    "triggers": [],
+    "vault": "trading_journal"
+  },
+  "template_list": [
+    "1779636702367u3je7tg8d"
+  ],
+  "vaults": [
+    "trading_journal"
+  ]
+}

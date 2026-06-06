@@ -1,0 +1,56 @@
+============================================================================
+P_300 SIGNAL REPORT  AME BUY
+============================================================================
+Ticker:           AME
+Anchor date:      2026-06-02
+Signal:           BUY at horizon 5
+Generated:        2026-06-03 08:35 ET
+
+PER-HORIZON STATS
+----------------------------------------------------------------------------
+    h    n  win_rate  mean_ret  std_ret  z_score  class
+    5   20     0.750     +3.56     7.42   +1.347    BUY
+    7   20     0.700     +4.08     8.65   +0.946    BUY
+   10   20     0.600     +3.97     9.44   +0.035  WATCH
+   15   20     0.600     +5.53    11.84   -0.082   PASS
+   20   20     0.600     +5.87    12.13   -0.082   PASS
+
+TOP 20 MATCHES (by composite distance, ascending)
+----------------------------------------------------------------------------
+   #  ticker      anchor  compdist     +5d     +7d    +10d    +15d    +20d
+   1      TM  2025-12-10     0.837   +6.70   +9.26   +7.94   +8.51  +10.33
+   2     BAC  2026-01-29     0.888   +3.50   +6.27   -1.06   -0.04   -6.12
+   3    FOXA  2026-02-03     0.983   -9.82  -19.70  -18.64  -22.98  -16.86
+   4     DIS  2025-10-15     1.015   +1.23   -0.03   -1.32   -0.31   +4.42
+   5    AAPL  2026-01-27     1.059   +4.34   +6.83   +5.97   +2.35   +6.18
+   6     TPR  2026-02-04     1.063  +19.05  +18.38  +17.23  +23.53  +15.15
+   7      UL  2026-01-12     1.090   +0.75   +1.72   +4.87   +7.34  +11.72
+   8     FHN  2026-01-30     1.124   +7.10   +4.70   +0.29   -1.59   -1.35
+   9     NKE  2025-09-15     1.139   -2.40   -2.48   -4.77   -2.55   -7.74
+  10      DE  2025-11-20     1.187   -2.49   -1.51   -0.26   +1.78   -1.21
+  11      DX  2026-03-03     1.231   -1.31   -3.27   -4.06   -9.58   -7.40
+  12   CFPZF  2025-12-26     1.277  +11.82   +8.72  +16.83  +26.27  +33.21
+  13    ARLP  2026-02-10     1.308   +5.42   +6.88   +7.82   +9.77  +11.97
+  14     AJG  2026-02-05     1.314  -15.64  -11.84  -10.81   -5.99   -6.02
+  15    CCEP  2026-01-29     1.352   +5.15   +5.95   +8.58  +15.87  +21.06
+  16    DNOW  2026-01-13     1.370   +7.30   +8.79  +10.80  +19.51  +23.38
+  17    PCAR  2026-03-30     1.371   +5.09  +12.96  +11.52  +12.19   +6.35
+  18     CFG  2026-01-20     1.374   +6.04   +6.15  +10.30  +12.94   +8.74
+  19    ALLE  2026-02-02     1.378   +7.50   +8.38   -1.72   -4.02   -4.33
+  20      TT  2026-01-28     1.379  +11.92  +15.36  +19.87  +17.63  +15.97
+
+NARRATIVE
+----------------------------------------------------------------------------
+  The P_300 Pipeline B signal report for AME indicates a BUY
+  recommendation with a horizon of 5 days, generated on 2026-06-03. The
+  per-horizon statistics show a win rate of 75% at h=5, with a mean return
+  of +3.56% and a standard deviation of 7.42%, suggesting moderate
+  confidence in the short-term outlook. As the horizon extends to 20 days,
+  the win rate remains stable at 60%, but returns increase slightly,
+  though statistical significance diminishes (z-scores range from +1.347
+  to -0.082). The top historical analogs (TM, BAC, FOXA, DIS, AAPL)
+  exhibit varied outcomes, with TM showing strong positive performance and
+  FOXA experiencing significant losses, indicating some dispersion in
+  potential future returns.
+
+============================================================================

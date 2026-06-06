@@ -1,0 +1,41 @@
+PRAGMA foreign_keys=OFF;
+BEGIN TRANSACTION;
+CREATE TABLE featuresets(featuresetid INTEGER PRIMARY KEY, featureversion TEXT NOT NULL);
+INSERT INTO featuresets VALUES(1,'baseline5barv1');
+CREATE TABLE forwardlabels(forwardlabelid INTEGER PRIMARY KEY, patterninstanceid INTEGER NOT NULL, holddays INTEGER NOT NULL, absolutereturn REAL, percentreturn REAL, direction TEXT, profitable INTEGER, FOREIGN KEY(patterninstanceid) REFERENCES patterninstances(patterninstanceid));
+CREATE TABLE patternfeatures(patternfeatureid INTEGER PRIMARY KEY, patterninstanceid INTEGER NOT NULL, featurename TEXT NOT NULL, featurevalue REAL, FOREIGN KEY(patterninstanceid) REFERENCES patterninstances(patterninstanceid));
+INSERT INTO patternfeatures VALUES(1,1,'close',520.1699999999999591);
+INSERT INTO patternfeatures VALUES(2,1,'range',3.502399999999965985);
+INSERT INTO patternfeatures VALUES(3,1,'volume',43643600);
+INSERT INTO patternfeatures VALUES(4,1,'close',517.1900000000000546);
+INSERT INTO patternfeatures VALUES(5,1,'range',2.600000000000022737);
+INSERT INTO patternfeatures VALUES(6,1,'volume',42047200.0);
+INSERT INTO patternfeatures VALUES(7,1,'close',517.1399999999999864);
+INSERT INTO patternfeatures VALUES(8,1,'range',2.120000000000004548);
+INSERT INTO patternfeatures VALUES(9,1,'volume',52561300.0);
+INSERT INTO patternfeatures VALUES(10,1,'close',516.57000000000005);
+INSERT INTO patternfeatures VALUES(11,1,'range',3.310000000000059117);
+INSERT INTO patternfeatures VALUES(12,1,'volume',47264700.0);
+INSERT INTO patternfeatures VALUES(13,1,'close',511.2900000000000204);
+INSERT INTO patternfeatures VALUES(14,1,'range',3.989999999999952252);
+INSERT INTO patternfeatures VALUES(15,1,'volume',72756704.0);
+-- (This is a snippet of the total insert statements needed to restore the 255 records)
+CREATE TABLE patterninstances(patterninstanceid INTEGER PRIMARY KEY, symbolid INTEGER NOT NULL, sourcefileid INTEGER NOT NULL, anchordate TEXT NOT NULL, featuresetid INTEGER NOT NULL, FOREIGN KEY(symbolid) REFERENCES symbols(symbolid), FOREIGN KEY(sourcefileid) REFERENCES sourcefiles(sourcefileid), FOREIGN KEY(featuresetid) REFERENCES featuresets(featuresetid));
+INSERT INTO patterninstances VALUES(1,1,1,'2024-05-09',1);
+INSERT INTO patterninstances VALUES(2,1,1,'2024-05-10',1);
+-- (Additional inserts for patterninstances)
+CREATE TABLE pricebars(pricebarid INTEGER PRIMARY KEY, symbolid INTEGER NOT NULL, bardate TEXT NOT NULL, open REAL, high REAL, low REAL, close REAL, volume REAL, FOREIGN KEY(symbolid) REFERENCES symbols(symbolid));
+INSERT INTO pricebars VALUES(1,1,'2024-05-13',522.5599999999999454,522.6699999999999591,519.740000000000009,520.9099999999999682,36716300.0);
+-- (Additional inserts for pricebars)
+CREATE TABLE sourcefiles(sourcefileid INTEGER PRIMARY KEY, filename TEXT UNIQUE NOT NULL, symbol TEXT NOT NULL, holddays INTEGER NOT NULL, importedat TEXT NOT NULL);
+INSERT INTO sourcefiles VALUES(1,'HistoryGrid050324051324SPY5day.csv','SPY',5,'2026-04-27T202043.142670');
+CREATE TABLE symbols(symbolid INTEGER PRIMARY KEY, symbol TEXT UNIQUE NOT NULL);
+INSERT INTO symbols VALUES(1,'SPY');
+INSERT INTO symbols VALUES(2,'AAPL');
+INSERT INTO symbols VALUES(3,'MSFT');
+INSERT INTO symbols VALUES(4,'QQQ');
+INSERT INTO symbols VALUES(5,'VOD');
+CREATE INDEX idxpricebarssymbolate ON pricebars(symbolid, bardate);
+CREATE INDEX idxpatterninstancessymbolanchor ON patterninstances(symbolid, anchordate);
+CREATE INDEX idxforwardlabelsholddays ON forwardlabels(holddays);
+COMMIT;

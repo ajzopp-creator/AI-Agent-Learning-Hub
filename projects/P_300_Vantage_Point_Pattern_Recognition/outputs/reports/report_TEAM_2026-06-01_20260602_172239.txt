@@ -1,0 +1,57 @@
+============================================================================
+P_300 SIGNAL REPORT  TEAM BUY
+============================================================================
+Ticker:           TEAM
+Anchor date:      2026-06-01
+Signal:           BUY at horizon 15
+Generated:        2026-06-02 17:22 ET
+
+PER-HORIZON STATS
+----------------------------------------------------------------------------
+    h    n  win_rate  mean_ret  std_ret  z_score  class
+    5   20     0.650     +8.27    18.51   +0.540  WATCH
+    7   20     0.650     +9.38    19.55   +0.600  WATCH
+   10   20     0.650     +9.71    24.61   +0.600  WATCH
+   15   20     0.700    +13.28    26.68   +0.936    BUY
+   20   20     0.700     +9.34    23.31   +0.936    BUY
+
+TOP 20 MATCHES (by composite distance, ascending)
+----------------------------------------------------------------------------
+   #  ticker      anchor  compdist     +5d     +7d    +10d    +15d    +20d
+   1      MU  2025-09-12     5.101   +3.50   +5.84   +0.03  +19.46  +15.50
+   2     TPL  2026-02-06     5.956  +18.11  +20.40  +37.38  +45.09  +47.47
+   3     CLF  2025-12-24     6.615   -1.09   -3.49   -7.20   +1.82   +1.96
+   4     WBD  2025-07-28     6.675   -6.57   -6.64  -21.31  -13.72  -12.12
+   5     OII  2026-02-18     6.758  +14.60   +7.28   +6.20   +6.80   +2.36
+   6    SBSW  2026-01-09     6.789   +7.16  +11.05  +23.77   +7.80   +8.63
+   7     HTZ  2026-03-26     6.885   +7.13  +23.27  +32.49  +55.77  +19.71
+   8     TTD  2025-08-07     6.918  -42.53  -37.79  -40.79  -37.33  -41.05
+   9    MPWR  2026-02-24     7.275  -11.48  -11.14  -13.01  -12.11   -9.23
+  10     SQM  2026-04-09     7.386  +15.99   +7.61   +3.99  +12.17  +11.48
+  11     AMD  2025-08-18     7.403   -7.26   -5.12   -7.85  -11.54   -8.90
+  12    INTC  2025-05-14     7.761   -3.86   -6.83   -5.90   -7.11   -3.49
+  13    KTOS  2026-01-02     7.762  +43.40  +50.99  +64.86  +40.40  +21.28
+  14    APLD  2026-01-02     7.795  +34.04  +30.59  +33.05  +28.71  +23.80
+  15    INSG  2026-02-19     7.882  +17.42  +17.42   +7.01  +10.80  +14.39
+  16    ETSY  2026-01-16     7.980   -2.72   -7.41  -13.21  -10.80  -28.19
+  17    LULU  2025-12-11     8.085  +15.03  +13.56  +11.74  +13.58  +11.78
+  18    MSTR  2026-04-13     8.107  +29.05  +35.51  +27.83  +38.86  +48.04
+  19     AEM  2026-01-12     8.141   +7.60   +9.96  +11.23   +1.55   +9.04
+  20    UUUU  2025-12-31     8.162  +27.85  +32.46  +43.88  +75.38  +54.33
+
+VOLATILITY DIVERGENCE: MILD (ratio 1.84x)
+----------------------------------------------------------------------------
+  Candidate range_pct median: 0.0679    Top-K median: 0.0369
+  Modest volatility-regime mismatch between candidate and top-K analogs.
+
+NARRATIVE
+----------------------------------------------------------------------------
+  The P_300 signal report for TEAM on June 2, 2026, indicates a BUY
+  recommendation at horizon 15. The per-horizon statistics show improving
+  win rates and mean returns up to h=15, where the win rate is 70% with a
+  mean return of +13.28%. Beyond h=15, the mean return decreases slightly
+  but remains positive. Historical analogs reveal varied outcomes: while
+  some (e.g., TPL) show strong gains, others (e.g., WBD) experience
+  losses, highlighting potential dispersion in future performance.
+
+============================================================================

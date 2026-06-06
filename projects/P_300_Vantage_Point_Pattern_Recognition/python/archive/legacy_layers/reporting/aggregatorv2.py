@@ -1,0 +1,79 @@
+"""
+FILE: aggregator.py
+VERSION: 2.1
+DATE: 2026-05-06
+DESCRIPTION: Runs the Confidence Report using the dynamic DB catalog.
+CHANGELOG:
+    - v2.1: Added version header and changelog. Enforced absolute sys.path injection.
+    - v2.0: Switched to db_utils for dynamic pathing; corrected SQL Join to use 'forward_labels'.
+"""
+import sys
+import os
+import pandas as pd
+import sqlite3
+from pathlib import Path
+
+# Force absolute path injection so 'matching' package is found regardless of cwd
+PROJECT_PYTHON_DIR = r"C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\python"
+sys.path.insert(0, PROJECT_PYTHON_DIR)
+
+from matching.intelliscan import get_intelliscan_results
+from utilities.db_utils import get_latest_catalog
+
+def get_daily_target_ids(conn):
+    cursor = conn.cursor()
+    cursor.execute("SELECT pattern_instance_id FROM pattern_instances WHERE anchor_date = (SELECT MAX(anchor_date) FROM pattern_instances)")
+    return [row[0] for row in cursor.fetchall()]
+
+def run_aggregator(anchor_id):
+    db_path = get_latest_catalog()
+    conn = sqlite3.connect(db_path)
+    
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT s.ticker, p.anchor_date 
+        FROM pattern_instances p
+        JOIN symbols s ON p.symbol_id = s.symbol_id
+        WHERE p.pattern_instance_id = ?
+    """, (anchor_id,))
+    anchor_row = cursor.fetchone()
+    
+    if not anchor_row:
+        conn.close()
+        return
+
+    target_symbol, target_date = anchor_row
+    print(f"\n--- Running Report for {target_symbol} ({target_date}) ---")
+    
+    df_matches = get_intelliscan_results(anchor_id)
+    if df_matches.empty:
+        print(f"[!] No matches found.")
+        conn.close()
+        return
+
+    df_matches['confidence_score'] = 1 / (df_matches['distance'] + 0.01)
+    df_results = df_matches.sort_values('confidence_score', ascending=False).head(10)
+    
+    ids_list = df_results['instance_id'].tolist()
+    ids_tuple = tuple(ids_list) if len(ids_list) > 1 else f"({ids_list[0]})"
+    
+    query = f"""
+        SELECT p.pattern_instance_id as instance_id, s.ticker as symbol, f.is_profitable as outcome
+        FROM pattern_instances p
+        JOIN symbols s ON p.symbol_id = s.symbol_id
+        LEFT JOIN forward_labels f ON p.pattern_instance_id = f.pattern_instance_id AND f.horizon_days = 5
+        WHERE p.pattern_instance_id IN {ids_tuple}
+    """
+    df_final = pd.read_sql(query, conn)
+    df_merged = pd.merge(df_results, df_final, on='instance_id')
+    
+    print(df_merged[['symbol', 'outcome']].to_string(index=False))
+    conn.close()
+
+if __name__ == "__main__":
+    db_path = get_latest_catalog()
+    conn = sqlite3.connect(db_path)
+    target_ids = get_daily_target_ids(conn)
+    conn.close()
+    for anchor_id in target_ids:
+        run_aggregator(anchor_id)

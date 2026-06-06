@@ -1,0 +1,28 @@
+view: table
+filter:
+  conditions:
+    - field: file.folder
+      operator: contains
+      value: KnowledgeBase
+  conjunction: and
+sort:
+  - field: date
+    direction: desc
+columns:
+  - id: date
+    field: date
+  - id: title
+    field: title
+  - id: kb_type
+    field: kb_type
+  - id: origin
+    field: origin
+  - id: tags
+    field: tags
+  - id: ticker_relevance
+    field: ticker_relevance
+  - id: sector
+    field: sector
+views:
+  - type: table
+    name: Table

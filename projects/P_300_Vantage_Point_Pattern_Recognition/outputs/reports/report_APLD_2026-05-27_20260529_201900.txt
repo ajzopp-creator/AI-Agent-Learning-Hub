@@ -1,0 +1,63 @@
+============================================================================
+P_300 SIGNAL REPORT
+============================================================================
+Ticker:           APLD
+Anchor date:      2026-05-27
+Signal:           WATCH at horizon 20
+Generated:        2026-05-29 20:19 ET
+
+PER-HORIZON STATS
+----------------------------------------------------------------------------
+    h    n  win_rate  mean_ret  std_ret  z_score  class
+    5   20     0.500     +1.74    19.06   -0.707   PASS
+    7   20     0.500     +2.19    19.89   -0.635   PASS
+   10   20     0.500     +2.91    24.84   -0.563   PASS
+   15   20     0.550     +6.23    25.77   -0.255   PASS
+   20   20     0.600     +3.28    22.69   +0.198  WATCH
+
+TOP 20 MATCHES (by composite distance, ascending)
+----------------------------------------------------------------------------
+   #  ticker      anchor  compdist     +5d     +7d    +10d    +15d    +20d
+   1     TPL  2026-02-06     5.488  +18.11  +20.40  +37.38  +45.09  +47.47
+   2    SBSW  2026-01-09     5.641   +7.16  +11.05  +23.77   +7.80   +8.63
+   3     OII  2026-02-18     5.794  +14.60   +7.28   +6.20   +6.80   +2.36
+   4    MPWR  2026-02-24     6.337  -11.48  -11.14  -13.01  -12.11   -9.23
+   5     CLF  2025-12-24     6.435   -1.09   -3.49   -7.20   +1.82   +1.96
+   6     TTD  2025-08-07     6.508  -42.53  -37.79  -40.79  -37.33  -41.05
+   7     AMD  2025-08-18     6.665   -7.26   -5.12   -7.85  -11.54   -8.90
+   8    APLD  2026-02-12     6.765  -19.71  -15.23  -24.61  -30.49  -25.21
+   9     WBD  2025-07-28     6.812   -6.57   -6.64  -21.31  -13.72  -12.12
+  10     SQM  2026-04-09     6.856  +15.99   +7.61   +3.99  +12.17  +11.48
+  11      MU  2025-09-12     6.885   +3.50   +5.84   +0.03  +19.46  +15.50
+  12      OI  2025-11-24     6.929   +5.30   +9.81  +12.03  +19.86  +17.80
+  13    INTC  2025-05-14     7.004   -3.86   -6.83   -5.90   -7.11   -3.49
+  14     NET  2026-03-03     7.057  +15.97  +18.56  +18.23  +19.14  +15.33
+  15    UUUU  2025-12-31     7.062  +27.85  +32.46  +43.88  +75.38  +54.33
+  16    ETSY  2026-01-16     7.069   -2.72   -7.41  -13.21  -10.80  -28.19
+  17    LULU  2025-12-11     7.084  +15.03  +13.56  +11.74  +13.58  +11.78
+  18    MVIS  2026-03-04     7.097  -27.53  -31.75  -21.25  -12.85  -16.29
+  19    KTOS  2026-01-02     7.293  +43.40  +50.99  +64.86  +40.40  +21.28
+  20     DVN  2026-04-07     7.386   -9.41   -8.35   -8.71   -0.94   +2.08
+
+VOLATILITY DIVERGENCE: STRONG (ratio 2.36x)
+----------------------------------------------------------------------------
+  Candidate range_pct median:   0.0869
+  Top-K range_pct median:       0.0369
+  n_topk_matches:               20
+  Top-K analogs trade with materially different volatility regime
+  than the candidate. Statistics are apples-to-oranges; size
+  with extra caution.
+
+NARRATIVE
+----------------------------------------------------------------------------
+  The APLD signal report indicates a WATCH classification at horizon 20
+  with an anchor date of 2026-05-27. The per-horizon statistics show
+  neutral win rates (around 50%) and positive mean returns (+1.74% to
+  +6.23%) across horizons h=5 to h=15, with increasing mean return at
+  longer horizons. At h=20, the win rate improves to 60%, with a mean
+  return of +3.28% and a slightly positive z-score (+0.198). The top
+  historical analogs (TPL, SBSW, OII, MPWR, CLF) show varied outcomes,
+  including both strong gains and losses over the same periods, suggesting
+  mixed precedent for this signal.
+
+============================================================================

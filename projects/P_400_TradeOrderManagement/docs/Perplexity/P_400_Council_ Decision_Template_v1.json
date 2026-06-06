@@ -1,0 +1,312 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/council-trade-decision.schema.json",
+  "title": "CouncilTradeDecision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["trade_setup", "council_review", "calculated_inputs", "broker_order_block"],
+  "properties": {
+    "trade_setup": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "asset_type",
+        "symbol",
+        "current_price",
+        "entry_trigger",
+        "entry_price",
+        "stop_level",
+        "primary_target",
+        "position_quantity_requested",
+        "risk_mode",
+        "framework_mode",
+        "strategy_id"
+      ],
+      "properties": {
+        "asset_type": {
+          "type": "string",
+          "enum": ["stock", "option"]
+        },
+        "symbol": {
+          "type": "string",
+          "minLength": 1
+        },
+        "option_symbol": {
+          "type": ["string", "null"]
+        },
+        "strike": {
+          "type": ["number", "null"]
+        },
+        "expiration": {
+          "type": ["string", "null"],
+          "format": "date"
+        },
+        "call_put": {
+          "type": ["string", "null"],
+          "enum": ["CALL", "PUT", null]
+        },
+        "current_price": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "entry_trigger": {
+          "type": "number"
+        },
+        "entry_price": {
+          "type": "number"
+        },
+        "stop_level": {
+          "type": "number"
+        },
+        "primary_target": {
+          "type": "number"
+        },
+        "secondary_target": {
+          "type": ["number", "null"]
+        },
+        "position_quantity_requested": {
+          "type": "number"
+        },
+        "risk_mode": {
+          "type": "string",
+          "enum": ["OFF", "HALF", "FULL", "HOT"]
+        },
+        "framework_mode": {
+          "type": "string",
+          "enum": ["Normal", "Risk-Off", "Custom"]
+        },
+        "strategy_id": {
+          "type": "string",
+          "enum": ["P115", "P116", "P117", "P118", "Other"]
+        },
+        "special_rules": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        }
+      }
+    },
+    "council_review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["validation", "role_statuses", "derived_verdict", "blocking_roles", "audit"],
+      "properties": {
+        "validation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["p010_constraints_passed", "notes"],
+          "properties": {
+            "p010_constraints_passed": {
+              "type": "boolean"
+            },
+            "notes": {
+              "type": "string"
+            }
+          }
+        },
+        "role_statuses": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["role", "status", "severity", "reason_code", "reason"],
+            "properties": {
+              "role": {
+                "type": "string",
+                "enum": [
+                  "Quant Strategist",
+                  "Macro Economist",
+                  "Momentum & Tape Reader",
+                  "Risk Manager",
+                  "Behavioral Judge"
+                ]
+              },
+              "status": {
+                "type": "string",
+                "enum": ["Approve", "Approve with Caution", "Block"]
+              },
+              "severity": {
+                "type": "string",
+                "enum": ["INFO", "SOFT_FLAG", "HARD_BLOCK"]
+              },
+              "reason_code": {
+                "type": "string",
+                "minLength": 1
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "derived_verdict": {
+          "type": "string",
+          "enum": ["Approve", "Approve with Caution", "Block"]
+        },
+        "blocking_roles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "audit": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["timestamp", "simulation_notes"],
+          "properties": {
+            "timestamp": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "simulation_notes": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "calculated_inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "gate1_risk_shares",
+        "gate2_cash_shares",
+        "gate3_concentration_shares",
+        "final_shares",
+        "binding_gate",
+        "stock_stop_trigger",
+        "t1",
+        "rr_to_t1"
+      ],
+      "properties": {
+        "gate1_risk_shares": {
+          "type": ["number", "null"]
+        },
+        "gate2_cash_shares": {
+          "type": ["number", "null"]
+        },
+        "gate3_concentration_shares": {
+          "type": ["number", "null"]
+        },
+        "final_shares": {
+          "type": ["number", "null"]
+        },
+        "binding_gate": {
+          "type": ["string", "null"],
+          "enum": ["Gate1", "Gate2", "Gate3", null]
+        },
+        "stock_stop_trigger": {
+          "type": "number"
+        },
+        "stock_stop_limit": {
+          "type": ["number", "null"]
+        },
+        "stock_limit_price": {
+          "type": ["number", "null"]
+        },
+        "option_entry_price": {
+          "type": ["number", "null"]
+        },
+        "option_exit_stop": {
+          "type": ["number", "null"]
+        },
+        "option_floor": {
+          "type": ["number", "null"]
+        },
+        "t1": {
+          "type": "number"
+        },
+        "t2": {
+          "type": ["number", "null"]
+        },
+        "rr_to_t1": {
+          "type": ["number", "null"]
+        }
+      }
+    },
+    "broker_order_block": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stock_order", "option_order"],
+      "properties": {
+        "stock_order": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["asset", "action", "quantity", "entry_trigger", "stop", "target", "order_notes"],
+          "properties": {
+            "asset": {
+              "type": "string",
+              "minLength": 1
+            },
+            "action": {
+              "type": "string",
+              "enum": ["BUY", "SELL"]
+            },
+            "quantity": {
+              "type": "number"
+            },
+            "entry_trigger": {
+              "type": "number"
+            },
+            "stop": {
+              "type": "number"
+            },
+            "target": {
+              "type": "number"
+            },
+            "order_notes": {
+              "type": "string"
+            }
+          }
+        },
+        "option_order": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "asset",
+            "action",
+            "option_symbol",
+            "quantity",
+            "entry",
+            "management_trigger",
+            "exit_stop",
+            "order_notes"
+          ],
+          "properties": {
+            "asset": {
+              "type": ["string", "null"]
+            },
+            "action": {
+              "type": "string",
+              "enum": ["BUY", "SELL"]
+            },
+            "option_symbol": {
+              "type": ["string", "null"]
+            },
+            "quantity": {
+              "type": ["number", "null"]
+            },
+            "entry": {
+              "type": ["number", "null"]
+            },
+            "management_trigger": {
+              "type": ["number", "null"]
+            },
+            "exit_stop": {
+              "type": ["number", "null"]
+            },
+            "order_notes": {
+              "type": ["string", "null"]
+            }
+          }
+        }
+      }
+    }
+  }
+}

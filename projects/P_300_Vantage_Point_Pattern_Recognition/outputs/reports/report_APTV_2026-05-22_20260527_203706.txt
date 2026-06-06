@@ -1,0 +1,55 @@
+============================================================================
+P_300 SIGNAL REPORT
+============================================================================
+Ticker:           APTV
+Anchor date:      2026-05-22
+Signal:           PASS at horizon 20
+Generated:        2026-05-27 20:37 ET
+
+PER-HORIZON STATS
+----------------------------------------------------------------------------
+    h    n  win_rate  mean_ret  std_ret  z_score  class
+    5   20     0.550     +1.08     9.33   -0.332   PASS
+    7   20     0.500     +1.26    10.60   -0.696   PASS
+   10   20     0.450     +0.51    10.92   -1.149   PASS
+   15   20     0.450     +1.61    12.13   -1.240   PASS
+   20   20     0.550     +0.65    14.11   -0.244   PASS
+
+TOP 20 MATCHES (by composite distance, ascending)
+----------------------------------------------------------------------------
+   #  ticker      anchor  compdist     +5d     +7d    +10d    +15d    +20d
+   1    BURL  2025-12-16     8.870   +8.84  +11.28  +10.71  +17.90  +17.39
+   2    PLTR  2025-10-23     9.319   +7.80  +14.79   -3.01   -4.62  -13.71
+   3    PLTR  2025-10-23     9.319   +7.80  +14.79   -3.01   -4.62  -13.71
+   4   CFPZF  2025-12-26     9.363  +11.82   +8.72  +16.83  +26.27  +33.21
+   5     VNO  2026-03-05     9.542   -8.02  -10.28   -6.46   -9.33  -10.46
+   6     HAL  2025-10-09    11.107   -6.75   -3.33  +16.32  +15.21  +16.79
+   7     BAC  2026-01-29    11.955   +3.50   +6.27   -1.06   -0.04   -6.12
+   8     RPM  2026-04-07    12.122  +12.37   +9.24  +10.94   +7.23   +2.79
+   9    BCPC  2026-01-08    12.445   +3.36   +1.87   +4.31   +5.95   +7.81
+  10     DIS  2025-10-15    12.464   +1.23   -0.03   -1.32   -0.31   +4.42
+  11     CLF  2026-03-02    12.671  -16.23  -18.60  -24.47  -29.56  -28.86
+  12     VST  2026-02-10    12.886   +6.87   +7.39   +9.87   +2.36   -0.28
+  13    META  2025-11-05    13.082   -4.24   -4.17   -7.18   -0.37   +4.02
+  14     DVN  2026-04-07    13.156   -9.41   -8.35   -8.71   -0.94   +2.08
+  15     GEV  2025-09-25    13.283   -0.21   -0.71   +4.40   -0.91   -2.04
+  16     NVO  2025-09-11    13.462  +13.90  +11.80   +3.20   +8.18   +8.07
+  17     BXP  2026-02-26    14.165   -9.32  -14.21  -13.80  -12.69  -13.09
+  18     MOS  2026-03-17    14.197  -12.59  -13.28  -11.55   -7.67  -17.69
+  19     NET  2026-03-03    14.321  +15.97  +18.56  +18.23  +19.14  +15.33
+  20    PTON  2025-12-12    14.378   -5.20   -6.57   -4.13   +0.92   +7.03
+
+NARRATIVE
+----------------------------------------------------------------------------
+  The P_300 signal report for APTV on 2026-05-27 indicates a PASS
+  classification at horizon 20. Per-horizon statistics show win rates
+  between 45% and 55% across horizons, with mean returns ranging from
+  +0.51% to +1.61%, though high standard deviations (up to 14.11%) and
+  mostly negative z-scores suggest underperformance relative to a
+  benchmark. Top historical analogs include BURL, PLTR, CFPZF, and VNO,
+  with varying outcomes: BURL shows strong short-term gains (+8.84% at
+  +5d) but declines long-term (-10.46% at +20d), while others like CFPZF
+  demonstrate significant growth (+33.21% at +20d). The dispersion of
+  analog outcomes highlights uncertainty in APTV's near-term performance.
+
+============================================================================

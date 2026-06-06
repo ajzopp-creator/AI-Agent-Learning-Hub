@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.1",
+  "generated_at": "2026-06-01T07:13:46.229404",
+  "as_of_date": "2026-05-20",
+  "spy": {
+    "ticker": "SPY",
+    "last_date": "2026-05-20",
+    "last_close": 741.25,
+    "dist_count": 0,
+    "dist_dates": [],
+    "rally_state": "FTD_CONFIRMED",
+    "rally_low": 629.280029296875,
+    "rally_low_date": "2026-03-30",
+    "rally_attempt_day": 6,
+    "follow_through_day": "2026-04-08",
+    "ftd_age_days": 42
+  },
+  "qqq": {
+    "ticker": "QQQ",
+    "last_date": "2026-05-20",
+    "last_close": 713.150024414063,
+    "dist_count": 0,
+    "dist_dates": [],
+    "rally_state": "FTD_CONFIRMED",
+    "rally_low": 555.599975585938,
+    "rally_low_date": "2026-03-30",
+    "rally_attempt_day": 6,
+    "follow_through_day": "2026-04-08",
+    "ftd_age_days": 42
+  },
+  "max_dist_count": 0,
+  "market_phase": "NEUTRAL",
+  "phase_reason": "no FTD, dist_count=0",
+  "source": "VP_Grid_XLSX"
+}

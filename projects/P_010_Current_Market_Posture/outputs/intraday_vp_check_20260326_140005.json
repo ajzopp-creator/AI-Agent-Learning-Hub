@@ -1,0 +1,32 @@
+{
+  "timestamp": "2026-03-26T14:00:05.771353",
+  "snapshot_timestamp": "2026-03-26T12:55:38.173640",
+  "spy_validation": {
+    "grid_close": 656.820007324219,
+    "current": 646.719970703125,
+    "price_change": -10.100036621093977,
+    "price_move_pct": -1.54,
+    "pred_high": 659.241455078125,
+    "pred_low": 652.908874511719,
+    "band_status": "below_band",
+    "deviation_pct": 0.95,
+    "deviation_from": "pred_low",
+    "symbol": "SPY"
+  },
+  "qqq_validation": {
+    "grid_close": 587.820007324219,
+    "current": 575.6500244140625,
+    "price_change": -12.169982910156477,
+    "price_move_pct": -2.07,
+    "pred_high": 590.69873046875,
+    "pred_low": 584.533447265625,
+    "band_status": "below_band",
+    "deviation_pct": 1.52,
+    "deviation_from": "pred_low",
+    "symbol": "QQQ"
+  },
+  "morning_baseline": "OFF",
+  "intraday_signal": "DOWNGRADE",
+  "intraday_final_mode": "OFF",
+  "reason": "Intraday confirm: Market weakness confirmed (prices below PRANGE)"
+}

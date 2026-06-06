@@ -1,0 +1,7 @@
+# P_020 Database Layer — Python Dependencies
+# Install with: pip install -r requirements.txt --break-system-packages
+
+pydantic>=2.0
+pandas>=2.0
+openpyxl>=3.1
+schwab-py>=1.0

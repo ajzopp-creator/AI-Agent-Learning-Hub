@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>P_020 — Phase 3D: Power Query Setup Guide</title>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #1a1a1a;
+    color: #e0e0e0;
+    margin: 0;
+    padding: 24px 32px;
+    max-width: 860px;
+  }
+  h1  { font-size: 22px; font-weight: 500; color: #fff; margin: 0 0 4px; }
+  h2  { font-size: 17px; font-weight: 500; color: #fff; margin: 36px 0 14px; border-bottom: 1px solid #333; padding-bottom: 8px; }
+  h3  { font-size: 14px; font-weight: 500; color: #BA7517; margin: 20px 0 8px; }
+  .subtitle { font-size: 13px; color: #666; margin: 0 0 32px; }
+  p   { font-size: 14px; line-height: 1.7; color: #ccc; margin: 0 0 12px; }
+
+  .step {
+    display: flex;
+    gap: 14px;
+    margin: 10px 0;
+    align-items: flex-start;
+  }
+  .num {
+    flex-shrink: 0;
+    width: 26px; height: 26px;
+    background: #2a2a2a;
+    border: 1px solid #BA7517;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 500; color: #BA7517;
+    margin-top: 2px;
+  }
+  .step-body { flex: 1; font-size: 14px; color: #ccc; line-height: 1.7; }
+  .step-body b { color: #fff; font-weight: 500; }
+
+  code {
+    font-family: "Cascadia Code", "Consolas", monospace;
+    font-size: 12px;
+    background: #2a2a2a;
+    border: 1px solid #333;
+    border-radius: 4px;
+    padding: 2px 7px;
+    color: #7dd3a8;
+  }
+  pre {
+    background: #1e1e1e;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-family: "Cascadia Code", "Consolas", monospace;
+    font-size: 12px;
+    color: #7dd3a8;
+    margin: 10px 0 16px;
+    line-height: 1.7;
+    overflow-x: auto;
+  }
+  .path {
+    display: block;
+    background: #1e1e1e;
+    border: 1px solid #333;
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-family: "Cascadia Code", "Consolas", monospace;
+    font-size: 12px;
+    color: #7dd3a8;
+    margin: 8px 0 12px;
+    word-break: break-all;
+  }
+  .note {
+    background: #1a2e0a;
+    border-left: 3px solid #639922;
+    border-radius: 0 6px 6px 0;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: #aaa;
+    margin: 14px 0;
+    line-height: 1.6;
+  }
+  .warn {
+    background: #2a1e0a;
+    border-left: 3px solid #BA7517;
+    border-radius: 0 6px 6px 0;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: #aaa;
+    margin: 14px 0;
+    line-height: 1.6;
+  }
+  .card {
+    background: #242424;
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin: 14px 0;
+  }
+  .card-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: #BA7517;
+    margin: 0 0 10px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin: 10px 0 16px;
+  }
+  th {
+    text-align: left;
+    padding: 8px 12px;
+    background: #2a2a2a;
+    color: #888;
+    font-weight: 500;
+    border-bottom: 1px solid #333;
+  }
+  td {
+    padding: 8px 12px;
+    color: #ccc;
+    border-bottom: 1px solid #242424;
+    vertical-align: top;
+  }
+  .divider {
+    border: none;
+    border-top: 1px solid #2a2a2a;
+    margin: 28px 0;
+  }
+</style>
+</head>
+<body>
+
+<h1>P_020 — Phase 3D: Power Query Setup</h1>
+<p class="subtitle">Connect master Excel files to Python CSV exports — replace manual paste forever | Updated: 2026-03-14</p>
+
+<div class="note">
+  <b>Before you start:</b> Phase 3C must be complete and you must have run
+  <code>python cli.py export</code> at least once so the CSV files exist.
+  Check that these two files are present before opening Excel:
+  <span class="path">...\P_020_AJZStrategies_PerformanceAnalysisSystem\data\exports\P_020_options_export.csv</span>
+  <span class="path">...\P_020_AJZStrategies_PerformanceAnalysisSystem\data\exports\P_020_stocks_export.csv</span>
+</div>
+
+<h2>What Power Query does</h2>
+<p>
+  Power Query connects your Excel master file directly to a CSV file on disk.
+  When you click <b>Refresh All</b>, Excel reads the latest CSV and updates
+  the Trade Log sheet automatically — no copy, no paste, no formula overwrites.
+  Your Dashboard formulas keep working because they still point to the same
+  Trade Log sheet, just now populated by Power Query instead of by hand.
+</p>
+
+<div class="card">
+  <div class="card-title">Data flow after Phase 3D</div>
+  <pre>Python cli.py export
+    ↓
+P_020_options_export.csv   P_020_stocks_export.csv
+    ↓                              ↓
+Options master file          Stocks master file
+(Power Query refresh)        (Power Query refresh)
+    ↓                              ↓
+Trade Log 2026 sheet         Trade Log sheet
+    ↓                              ↓
+Dashboard formulas           Dashboard formulas
+(unchanged)                  (unchanged)</pre>
+</div>
+
+<hr class="divider">
+
+<h2>Part 1 — Options master file</h2>
+<h3>File to open</h3>
+<span class="path">...\P_020_AJZStrategies_PerformanceAnalysisSystem\data\exports\P_020_Master_Query_2026_AJZ_Strategies_Options_Analytics_V1.xlsx</span>
+
+<h3>Step 1 — Open the file and go to Trade Log 2026 sheet</h3>
+<div class="step"><div class="num">1</div><div class="step-body">Open the Options master file in Excel.</div></div>
+<div class="step"><div class="num">2</div><div class="step-body">Click the <b>Trade Log 2026</b> tab at the bottom.</div></div>
+<div class="step"><div class="num">3</div><div class="step-body">Click on cell <b>A1</b> to make sure you're at the top of the sheet.</div></div>
+
+<h3>Step 2 — Create the Power Query connection</h3>
+<div class="step"><div class="num">4</div><div class="step-body">Click the <b>Data</b> tab in the Excel ribbon.</div></div>
+<div class="step"><div class="num">5</div><div class="step-body">Click <b>Get Data</b> → <b>From File</b> → <b>From Text/CSV</b>.</div></div>
+<div class="step"><div class="num">6</div><div class="step-body">
+  Navigate to the exports folder and select:
+  <span class="path">...\data\exports\P_020_options_export.csv</span>
+</div></div>
+<div class="step"><div class="num">7</div><div class="step-body">Excel opens a preview window. Verify the columns look correct — Symbol, System, asset_type, open_date, etc. Then click <b>Transform Data</b> (not Load).</div></div>
+
+<h3>Step 3 — Configure in Power Query Editor</h3>
+<div class="step"><div class="num">8</div><div class="step-body">The Power Query Editor opens. In the top-left, rename the query from <b>P_020_options_export</b> to <b>OptionsData</b> by clicking the name and typing the new one.</div></div>
+<div class="step"><div class="num">9</div><div class="step-body">Check the column headers in row 1 are being used as headers. If not: click <b>Home</b> → <b>Use First Row as Headers</b>.</div></div>
+<div class="step"><div class="num">10</div><div class="step-body">Click <b>Close &amp; Load To…</b> (the dropdown arrow next to Close &amp; Load).</div></div>
+
+<h3>Step 4 — Load to existing sheet</h3>
+<div class="step"><div class="num">11</div><div class="step-body">In the <b>Import Data</b> dialog that appears:
+  <br>• Select <b>Table</b>
+  <br>• Select <b>Existing worksheet</b>
+  <br>• Click the small grid icon and select cell <b>A1</b> on the <b>Trade Log 2026</b> sheet
+  <br>• Click <b>OK</b>
+</div></div>
+<div class="step"><div class="num">12</div><div class="step-body">Excel loads the CSV data into the Trade Log 2026 sheet starting at A1. Your header row and trade data will appear.</div></div>
+
+<div class="warn">
+  <b>Important:</b> Power Query will overwrite rows starting at A1 on each refresh.
+  This is correct — the CSV is the source of truth. Do NOT manually type trade data
+  into the Trade Log 2026 sheet anymore. All data now comes from SQLite via the CSV export.
+</div>
+
+<h3>Step 5 — Test the refresh</h3>
+<div class="step"><div class="num">13</div><div class="step-body">Click the <b>Data</b> tab → <b>Refresh All</b>. The trade data refreshes from the CSV in seconds.</div></div>
+<div class="step"><div class="num">14</div><div class="step-body">Click the <b>Dashboard</b> tab and confirm the formulas are calculating correctly with the loaded data.</div></div>
+<div class="step"><div class="num">15</div><div class="step-body">Save the file — <b>Ctrl+S</b>. Save as <b>.xlsx</b> (not .csv).</div></div>
+
+<hr class="divider">
+
+<h2>Part 2 — Stocks master file</h2>
+<h3>File to open</h3>
+<span class="path">...\P_020_AJZStrategies_PerformanceAnalysisSystem\data\exports\P_020_Master_Query_2026_AJZ_Strategies_Stock_Analytics_V1.xlsx</span>
+
+<p>Repeat the exact same steps as Part 1 with these differences:</p>
+
+<table>
+  <tr><th>Setting</th><th>Options file</th><th>Stocks file</th></tr>
+  <tr><td>CSV source file</td><td>P_020_options_export.csv</td><td>P_020_stocks_export.csv</td></tr>
+  <tr><td>Query name</td><td>OptionsData</td><td>StocksData</td></tr>
+  <tr><td>Target sheet</td><td>Trade Log 2026</td><td>Trade Log</td></tr>
+  <tr><td>Load to cell</td><td>A1 on Trade Log 2026</td><td>A1 on Trade Log</td></tr>
+</table>
+
+<hr class="divider">
+
+<h2>Part 3 — Weekly refresh (Monday morning)</h2>
+<p>Once Power Query is connected, your Monday morning workflow is:</p>
+
+<div class="step"><div class="num">1</div><div class="step-body">Run <code>P_020_Weekly_Update.bat</code> — pulls from Schwab API, writes to SQLite, exports CSVs.</div></div>
+<div class="step"><div class="num">2</div><div class="step-body">Open the Options master file → <b>Data</b> → <b>Refresh All</b>. Done in 3 seconds.</div></div>
+<div class="step"><div class="num">3</div><div class="step-body">Open the Stocks master file → <b>Data</b> → <b>Refresh All</b>. Done in 3 seconds.</div></div>
+<div class="step"><div class="num">4</div><div class="step-body">Review the audit log in <code>audit_logs\</code> for any flagged orphans or unmatched trades.</div></div>
+
+<div class="note">
+  <b>No more manual paste. No more formula overwrites. No more 30-minute Monday morning task.</b>
+</div>
+
+<hr class="divider">
+
+<h2>Troubleshooting</h2>
+
+<table>
+  <tr><th>Problem</th><th>Fix</th></tr>
+  <tr>
+    <td>Power Query says "file not found" on refresh</td>
+    <td>Run <code>python cli.py export</code> first to generate the CSV. Then refresh.</td>
+  </tr>
+  <tr>
+    <td>Dashboard shows #REF! or zeros after refresh</td>
+    <td>The Power Query table may have loaded to a different cell. Check that data starts at A1 on the Trade Log sheet. Edit query → Close &amp; Load To → re-specify A1.</td>
+  </tr>
+  <tr>
+    <td>Column headers changed after refresh</td>
+    <td>The CSV column names changed. Check <code>csv_exporter.py</code> — column names in the export must match what the Dashboard formulas reference.</td>
+  </tr>
+  <tr>
+    <td>Old trade data still showing after refresh</td>
+    <td>Click Data → Refresh All again. If still stale, check that <code>cli.py export</code> ran successfully and the CSV timestamp updated.</td>
+  </tr>
+  <tr>
+    <td>Power Query connection lost after moving files</td>
+    <td>Open Power Query Editor → Data Source Settings → change the CSV path to the new location.</td>
+  </tr>
+</table>
+
+<hr class="divider">
+
+<h2>File locations — quick reference</h2>
+
+<table>
+  <tr><th>File</th><th>Path</th></tr>
+  <tr>
+    <td>Options master</td>
+    <td><code>data\exports\P_020_Master_Query_2026_AJZ_Strategies_Options_Analytics_V1.xlsx</code></td>
+  </tr>
+  <tr>
+    <td>Stocks master</td>
+    <td><code>data\exports\P_020_Master_Query_2026_AJZ_Strategies_Stock_Analytics_V1.xlsx</code></td>
+  </tr>
+  <tr>
+    <td>Options CSV source</td>
+    <td><code>data\exports\P_020_options_export.csv</code></td>
+  </tr>
+  <tr>
+    <td>Stocks CSV source</td>
+    <td><code>data\exports\P_020_stocks_export.csv</code></td>
+  </tr>
+  <tr>
+    <td>AI review CSVs</td>
+    <td><code>data\exports\ai_review\</code></td>
+  </tr>
+  <tr>
+    <td>Audit logs</td>
+    <td><code>audit_logs\P_020_Weekly_Audit_YYYYMMDD.txt</code></td>
+  </tr>
+</table>
+
+<p style="margin-top:32px;font-size:12px;color:#555;">
+  P_020 Phase 3D — Power Query Setup Guide | Version 1.0 | 2026-03-14
+</p>
+
+</body>
+</html>

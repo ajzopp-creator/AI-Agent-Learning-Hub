@@ -1,0 +1,19 @@
+{
+    "config_metadata": {
+        "version": "1.1.0",
+        "last_updated": "2026-05-07",
+        "project": "P_300_VantagePoint_Pattern_Recognition"
+    },
+    "matching_parameters": {
+        "distance_threshold": 75.0,
+        "min_similarity_score": 0.85,
+        "max_neighbor_count": 50,
+        "metric": "euclidean_normalized"
+    },
+    "significance_thresholds": {
+        "min_sample_size": 5,
+        "z_score_confidence": 1.64,
+        "min_win_rate_alpha": 0.05
+    },
+    "horizons": [5, 7, 10]
+}

@@ -1,0 +1,1 @@
+"""Domain layer — pure construction logic for P_115 signal emission."""

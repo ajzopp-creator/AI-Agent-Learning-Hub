@@ -1,0 +1,29 @@
+{
+  "timestamp": "2026-06-06T07:02:41.827912",
+  "spy": {
+    "date": "06/04/2026",
+    "close": 757.090026855469,
+    "pred_high": 759.373657226563,
+    "pred_low": 753.3974609375,
+    "pred_range": 5.9761962890625,
+    "posture": 5.077392578125
+  },
+  "qqq": {
+    "date": "06/04/2026",
+    "close": 740.609985351563,
+    "pred_high": 743.850280761719,
+    "pred_low": 735.677795410156,
+    "pred_range": 8.1724853515625,
+    "posture": 10.538543701171875
+  },
+  "vxx": {
+    "date": "06/04/2026",
+    "close": 23.5,
+    "pred_high": 23.4728126525879,
+    "pred_low": 23.0728130340576,
+    "pred_range": 0.399999618530273,
+    "posture": -1.3696422576904301,
+    "signal": "BULLISH_CONFIRM",
+    "note": "VP predicts VXX falling -- fear contracting, bullish equity confirmation"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "timestamp": "2026-04-09T14:13:51.324103",
+  "snapshot_timestamp": "2026-04-09T08:14:05.374495",
+  "spy_validation": {
+    "grid_close": 676.010009765625,
+    "current": 679.2000122070312,
+    "price_change": 3.19000244140625,
+    "price_move_pct": 0.47,
+    "pred_high": 678.149963378906,
+    "pred_low": 674.179382324219,
+    "band_status": "above_band",
+    "deviation_pct": 0.15,
+    "deviation_from": "pred_high",
+    "symbol": "SPY"
+  },
+  "qqq_validation": {
+    "grid_close": 606.090026855469,
+    "current": 608.1400146484375,
+    "price_change": 2.0499877929685226,
+    "price_move_pct": 0.34,
+    "pred_high": 609.036804199219,
+    "pred_low": 604.196960449219,
+    "band_status": "in_band",
+    "deviation_pct": 0.0,
+    "deviation_from": null,
+    "symbol": "QQQ"
+  },
+  "morning_baseline": "FULL",
+  "intraday_signal": "CONFIRM",
+  "intraday_final_mode": "FULL",
+  "reason": "Intraday confirm: Prices within predicted range (PRANGE)"
+}

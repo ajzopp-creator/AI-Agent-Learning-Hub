@@ -1,0 +1,8 @@
+{
+  "timestamp": "2026-01-29T21:05:23.159702",
+  "spy_posture": 1.0529724282083723,
+  "qqq_posture": 1.0605411477097695,
+  "avg_posture": 1.056756787959071,
+  "risk_mode": "FULL",
+  "prompt_ready": "Assume current posture mode is FULL_RISK"
+}

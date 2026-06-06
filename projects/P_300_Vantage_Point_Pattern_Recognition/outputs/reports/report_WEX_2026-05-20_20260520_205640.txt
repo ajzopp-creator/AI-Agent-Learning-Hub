@@ -1,0 +1,60 @@
+============================================================================
+P_300 SIGNAL REPORT
+============================================================================
+Ticker:           WEX
+Anchor date:      2026-05-20
+Signal:           WATCH at horizon 5
+Generated:        2026-05-20 20:56 ET
+
+PER-HORIZON STATS
+----------------------------------------------------------------------------
+    h    n  win_rate  mean_ret  std_ret  z_score  class
+    5   20     0.650     +0.63    11.25   +0.456  WATCH
+    7   20     0.650     +1.32    10.21   +0.456  WATCH
+   10   20     0.600     -0.12    10.62   +0.000   PASS
+   15   20     0.600     +0.42    11.02   +0.360  WATCH
+   20   20     0.600     +1.59    12.39   +0.000   PASS
+
+TOP 20 MATCHES (by composite distance, ascending)
+----------------------------------------------------------------------------
+   #  ticker      anchor  compdist     +5d     +7d    +10d    +15d    +20d
+   1     DIS  2025-10-15    13.718   +1.23   -0.03   -1.32   -0.31   +4.42
+   2    NVDA  2025-10-24    18.115   +8.71   +6.67   +1.01   +2.10   -3.96
+   3    PLTR  2025-10-23    18.534   +7.80  +14.79   -3.01   -4.62  -13.71
+   4     NVO  2025-09-11    19.038  +13.90  +11.80   +3.20   +8.18   +8.07
+   5    META  2025-11-05    19.401   -4.24   -4.17   -7.18   -0.37   +4.02
+   6   GOOGL  2025-12-12    19.719   -0.69   +1.64   +1.38   +1.63   +8.63
+   7     CAT  2025-06-25    19.855   +7.23   +5.36   +9.89  +12.51  +15.59
+   8      DE  2025-11-20    20.101   -2.49   -1.51   -0.26   +1.78   -1.21
+   9     TTD  2025-08-07    20.308  -42.53  -37.79  -40.79  -37.33  -41.05
+  10     GLP  2026-03-10    20.929   -0.31   +1.83   -3.04  -11.59   -0.38
+  11    AVGO  2025-06-13    21.160   +2.04   +6.41  +10.84   +9.29  +12.96
+  12     XOM  2026-01-15    21.301   +4.52   +5.96   +9.50  +15.43  +14.96
+  13     GEV  2025-09-25    21.335   -0.21   -0.71   +4.40   -0.91   -2.04
+  14     QQQ  2026-04-14    21.855   +2.50   +3.63   +4.61   +8.43  +12.51
+  15    AAPL  2026-01-27    21.949   +4.34   +6.83   +5.97   +2.35   +6.18
+  16     LMT  2025-09-02    22.148   +1.01   +4.03   +4.82   +7.55  +10.32
+  17     CVX  2026-02-10    22.239   +0.88   +0.92   +1.08   +2.07   +5.23
+  18     OII  2026-02-18    22.850  +14.60   +7.28   +6.20   +6.80   +2.36
+  19     WMT  2026-02-25    23.448   +1.64   -1.55   -1.80   -3.00   -2.14
+  20     AMD  2025-08-18    23.575   -7.26   -5.12   -7.85  -11.54   -8.90
+
+VOLATILITY DIVERGENCE: MILD (ratio 1.59x)
+----------------------------------------------------------------------------
+  Candidate range_pct median: 0.0354    Top-K median: 0.0223
+  Modest volatility-regime mismatch between candidate and top-K analogs.
+
+NARRATIVE
+----------------------------------------------------------------------------
+  The P_300 Signal Report for WEX indicates a WATCH signal with a horizon
+  of 5. The per-horizon statistics show varying performance across
+  different horizons, with win rates around 60-65% and mean returns
+  ranging from -0.12% to +1.59%, accompanied by relatively high standard
+  deviations (10.21% to 12.39%). Historical analogs include stocks like
+  DIS, NVDA, PLTR, NVO, and META, with outcomes showing significant
+  dispersion—ranging from a +13.90% gain for NVO within 5 days to a
+  -13.71% decline for PLTR over 20 days. This suggests that while WEX may
+  experience short-term gains or losses, the signal highlights potential
+  volatility and mixed historical precedents, warranting monitoring.
+
+============================================================================

@@ -1,0 +1,58 @@
+============================================================================
+P_300 SIGNAL REPORT  NXT WATCH
+============================================================================
+Ticker:           NXT
+Anchor date:      2026-05-29
+Signal:           WATCH at horizon 10
+Generated:        2026-05-30 15:34 ET
+
+PER-HORIZON STATS
+----------------------------------------------------------------------------
+    h    n  win_rate  mean_ret  std_ret  z_score  class
+    5   20     0.500     +1.67    16.72   -0.750   PASS
+    7   20     0.550     +1.96    17.09   -0.231   PASS
+   10   20     0.600     +3.02    21.48   +0.286  WATCH
+   15   20     0.500     +3.68    18.73   -0.750   PASS
+   20   20     0.650     +3.16    18.88   +0.610  WATCH
+
+TOP 20 MATCHES (by composite distance, ascending)
+----------------------------------------------------------------------------
+   #  ticker      anchor  compdist     +5d     +7d    +10d    +15d    +20d
+   1      MU  2025-09-12     3.970   +3.50   +5.84   +0.03  +19.46  +15.50
+   2    SBSW  2026-01-09     4.361   +7.16  +11.05  +23.77   +7.80   +8.63
+   3     OII  2026-02-18     4.393  +14.60   +7.28   +6.20   +6.80   +2.36
+   4     TPL  2026-02-06     4.449  +18.11  +20.40  +37.38  +45.09  +47.47
+   5     SQM  2026-04-09     4.510  +15.99   +7.61   +3.99  +12.17  +11.48
+   6     WBD  2025-07-28     4.527   -6.57   -6.64  -21.31  -13.72  -12.12
+   7     TTD  2025-08-07     4.548  -42.53  -37.79  -40.79  -37.33  -41.05
+   8     AMD  2025-08-18     4.722   -7.26   -5.12   -7.85  -11.54   -8.90
+   9    LULU  2025-12-11     4.801  +15.03  +13.56  +11.74  +13.58  +11.78
+  10    ETSY  2026-01-16     4.837   -2.72   -7.41  -13.21  -10.80  -28.19
+  11     DVN  2026-04-07     4.898   -9.41   -8.35   -8.71   -0.94   +2.08
+  12      OI  2025-11-24     4.956   +5.30   +9.81  +12.03  +19.86  +17.80
+  13    MPWR  2026-02-24     5.075  -11.48  -11.14  -13.01  -12.11   -9.23
+  14    FBIN  2026-01-08     5.089  +11.44   +7.24   +6.11   -1.64  +12.45
+  15     JKS  2026-02-25     5.134  -11.30  -14.13   -4.78  -10.89   -2.54
+  16    KTOS  2026-01-02     5.169  +43.40  +50.99  +64.86  +40.40  +21.28
+  17   GOOGL  2025-12-12     5.249   -0.69   +1.64   +1.38   +1.63   +8.63
+  18     MOS  2026-03-17     5.256  -12.59  -13.28  -11.55   -7.67  -17.69
+  19    FIVE  2025-12-03     5.265   +8.59  +12.42   +9.43  +15.64  +18.57
+  20    SHOP  2025-09-22     5.283   -5.17   -4.81   +4.70   -2.20   +4.83
+
+VOLATILITY DIVERGENCE: MILD (ratio 1.97x)
+----------------------------------------------------------------------------
+  Candidate range_pct median: 0.0713    Top-K median: 0.0363
+  Modest volatility-regime mismatch between candidate and top-K analogs.
+
+NARRATIVE
+----------------------------------------------------------------------------
+  The P_300 signal report for NXT on 2026-05-29 indicates a WATCH
+  classification at horizon 10. The per-horizon statistics show improving
+  win rates and mean returns with longer horizons, though standard
+  deviations remain elevated. At h=10, the win rate is 60% with a mean
+  return of +3.02%, while z-scores fluctuate around neutral levels. The
+  top five historical analogs (MU, SBSW, OII, TPL, SQM) exhibit varied
+  outcomes, with returns ranging from -47.47% to +86.14% at 20 days post-
+  anchor, suggesting dispersion in potential outcomes.
+
+============================================================================

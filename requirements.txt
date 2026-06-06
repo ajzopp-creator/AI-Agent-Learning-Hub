@@ -1,0 +1,103 @@
+# Core Python Dependencies for AI Agent Learning Hub
+# Install with: pip install -r requirements.txt
+
+# ============================================
+# LLM & AI Frameworks
+# ============================================
+langchain>=0.1.0
+langchain-community>=0.0.13
+langchain-openai>=0.0.5
+openai>=1.12.0
+anthropic>=0.18.0
+
+# ============================================
+# Local LLM Integration
+# ============================================
+# For LM Studio connection
+requests>=2.31.0
+httpx>=0.26.0
+
+# ============================================
+# API Integration
+# ============================================
+# General API tools
+python-dotenv>=1.0.0  # For managing API keys safely
+aiohttp>=3.9.0  # Async API calls
+
+# Email processing
+# imaplib3>=0.3.0  # Built into Python as 'imaplib'
+email-validator>=2.1.0
+beautifulsoup4>=4.12.0  # For parsing HTML emails
+lxml>=4.9.0  # Required by beautifulsoup4
+
+# Schwab API (when available - placeholder)
+# schwab-api>=0.1.0  # Uncomment when you're ready
+
+# ============================================
+# Data Processing & Analysis
+# ============================================
+pandas>=2.1.0
+numpy>=1.24.0
+python-dateutil>=2.8.2
+
+# ============================================
+# Utilities
+# ============================================
+pydantic>=2.0.0  # Data validation
+loguru>=0.7.0  # Better logging
+rich>=13.7.0  # Beautiful terminal output
+click>=8.1.0  # CLI building
+python-json-logger>=2.0.7
+
+# ============================================
+# Development & Testing
+# ============================================
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+black>=23.0.0  # Code formatting
+pylint>=3.0.0  # Code linting
+jupyter>=1.0.0  # For interactive learning
+ipykernel>=6.25.0
+
+# ============================================
+# Database (for storing agent data)
+# ============================================
+sqlalchemy>=2.0.0
+# sqlite3  # Built into Python, no need to install
+
+# ============================================
+# Optional Advanced Features
+# ============================================
+# Uncomment as you progress:
+# chromadb>=0.4.0  # Vector database for RAG
+# faiss-cpu>=1.7.4  # Fast similarity search
+# transformers>=4.35.0  # For loading your own models
+# sentence-transformers>=2.2.0  # For embeddings
+# playwright>=1.40.0  # Web automation for agents
+# schedule>=1.2.0  # Task scheduling
+
+# ============================================
+# Security (when handling real data)
+# ============================================
+cryptography>=41.0.0
+keyring>=24.0.0
+
+# ============================================
+# Notes for Beginners
+# ============================================
+# 
+# Installation Order:
+# 1. Basic install: pip install -r requirements.txt
+# 2. Start with core packages
+# 3. Uncomment optional packages as needed
+# 
+# If you get errors:
+# - Try: pip install --upgrade pip
+# - Install one package at a time to identify issues
+# - Check Python version (need 3.9+)
+# 
+# Virtual Environment:
+# ALWAYS install in a virtual environment:
+# python -m venv venv
+# venv\Scripts\activate  (Windows)
+# pip install -r requirements.txt

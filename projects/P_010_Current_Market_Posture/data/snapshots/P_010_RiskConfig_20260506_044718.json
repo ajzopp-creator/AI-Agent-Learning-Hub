@@ -1,0 +1,20 @@
+{
+  "timestamp": "2026-05-05T08:57:35.203435",
+  "spy_posture": 5.328217,
+  "qqq_posture": 0.147942,
+  "avg_posture": 2.738079,
+  "risk_mode": "FULL",
+  "source": "Grid_XLSX",
+  "spy_grid_date": "05/04/2026",
+  "qqq_grid_date": "05/04/2026",
+  "vxx_posture": -0.67869,
+  "vxx_signal": "NEUTRAL",
+  "vxx_note": "VP sees stable/flat volatility -- no directional signal from VXX",
+  "vxx_close": 28.6700000762939,
+  "vxx_pred_high": 30.7838497161865,
+  "vxx_pred_low": 27.9514579772949,
+  "vxx_grid_date": "05/04/2026",
+  "morning_risk_mode": "FULL",
+  "intraday_signal": "UPGRADE",
+  "intraday_reason": "Intraday confirm: Market strength confirmed (prices above PRANGE)"
+}

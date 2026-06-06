@@ -1,0 +1,60 @@
+============================================================================
+P_300 SIGNAL REPORT
+============================================================================
+Ticker:           GMED
+Anchor date:      2026-05-20
+Signal:           PASS at horizon 5
+Generated:        2026-05-20 22:20 ET
+
+PER-HORIZON STATS
+----------------------------------------------------------------------------
+    h    n  win_rate  mean_ret  std_ret  z_score  class
+    5   20     0.550     -0.54    10.86   -0.456   PASS
+    7   20     0.500     +0.36    10.24   -0.913   PASS
+   10   20     0.550     -1.08    10.56   -0.456   PASS
+   15   20     0.500     +0.34    11.27   -0.541   PASS
+   20   20     0.550     +0.81    12.60   -0.456   PASS
+
+TOP 20 MATCHES (by composite distance, ascending)
+----------------------------------------------------------------------------
+   #  ticker      anchor  compdist     +5d     +7d    +10d    +15d    +20d
+   1    META  2025-11-05     8.749   -4.24   -4.17   -7.18   -0.37   +4.02
+   2    AAPL  2026-01-27    12.139   +4.34   +6.83   +5.97   +2.35   +6.18
+   3     TTD  2025-08-07    13.726  -42.53  -37.79  -40.79  -37.33  -41.05
+   4    PLTR  2025-10-23    13.869   +7.80  +14.79   -3.01   -4.62  -13.71
+   5    AVGO  2025-06-13    14.629   +2.04   +6.41  +10.84   +9.29  +12.96
+   6      GS  2026-01-22    14.801   -1.52   -0.87   -6.73   -5.25   -3.39
+   7     CVX  2026-02-10    16.246   +0.88   +0.92   +1.08   +2.07   +5.23
+   8     AMD  2025-08-18    16.251   -7.26   -5.12   -7.85  -11.54   -8.90
+   9     NVO  2025-09-11    17.077  +13.90  +11.80   +3.20   +8.18   +8.07
+  10     XOM  2026-01-15    17.089   +4.52   +5.96   +9.50  +15.43  +14.96
+  11      DE  2025-11-20    17.521   -2.49   -1.51   -0.26   +1.78   -1.21
+  12     NKE  2025-09-15    17.997   -2.40   -2.48   -4.77   -2.55   -7.74
+  13   GOOGL  2025-12-12    18.121   -0.69   +1.64   +1.38   +1.63   +8.63
+  14     WMT  2026-02-25    18.139   +1.64   -1.55   -1.80   -3.00   -2.14
+  15     GEV  2025-09-25    18.185   -0.21   -0.71   +4.40   -0.91   -2.04
+  16      MU  2025-09-12    18.231   +3.50   +5.84   +0.03  +19.46  +15.50
+  17     CAT  2025-06-25    18.250   +7.23   +5.36   +9.89  +12.51  +15.59
+  18    NVDA  2025-10-24    18.564   +8.71   +6.67   +1.01   +2.10   -3.96
+  19     DIS  2025-10-15    18.925   +1.23   -0.03   -1.32   -0.31   +4.42
+  20    SHOP  2025-09-22    19.148   -5.17   -4.81   +4.70   -2.20   +4.83
+
+VOLATILITY DIVERGENCE: MILD (ratio 1.52x)
+----------------------------------------------------------------------------
+  Candidate range_pct median: 0.0339    Top-K median: 0.0223
+  Modest volatility-regime mismatch between candidate and top-K analogs.
+
+NARRATIVE
+----------------------------------------------------------------------------
+  The P_300 Signal Report for GMED on 2026-05-20 indicates a PASS signal
+  at horizon 5. The per-horizon statistics show mixed performance across
+  different horizons, with win rates hovering around 50-55% and mean
+  returns ranging from negative to slightly positive, accompanied by
+  moderate standard deviation and z-scores near zero. Historical analogs
+  include META (dist=8.749, +5d=-4.24%, +20d=+4.02%), AAPL (dist=12.139,
+  +5d=+4.34%, +20d=+6.18%), TTD (dist=13.726, +5d=-42.53%, +20d=-41.05%),
+  PLTR (dist=13.869, +5d=+7.80%, +20d=-13.71%), and AVGO (dist=14.629,
+  +5d=+2.04%, +20d=+12.96%). The dispersion in historical outcomes
+  suggests variable performance for GMED across its anchor date.
+
+============================================================================

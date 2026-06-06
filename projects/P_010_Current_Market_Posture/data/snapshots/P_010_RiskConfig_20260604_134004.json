@@ -1,0 +1,20 @@
+{
+  "timestamp": "2026-06-03T07:56:17.872395",
+  "spy_posture": 8.110504,
+  "qqq_posture": 14.734283,
+  "avg_posture": 11.422394,
+  "risk_mode": "HALF",
+  "source": "Grid_XLSX",
+  "spy_grid_date": "06/02/2026",
+  "qqq_grid_date": "06/02/2026",
+  "vxx_posture": -1.604494,
+  "vxx_signal": "BULLISH_CONFIRM",
+  "vxx_note": "VP predicts VXX falling -- fear contracting, bullish equity confirmation",
+  "vxx_close": 24.3700008392334,
+  "vxx_pred_high": 25.1960411071777,
+  "vxx_pred_low": 24.7960395812988,
+  "vxx_grid_date": "06/02/2026",
+  "morning_risk_mode": "FULL",
+  "intraday_signal": "DOWNGRADE",
+  "intraday_reason": "Intraday downgrade: Market weaker than predicted (prices below PRANGE)"
+}

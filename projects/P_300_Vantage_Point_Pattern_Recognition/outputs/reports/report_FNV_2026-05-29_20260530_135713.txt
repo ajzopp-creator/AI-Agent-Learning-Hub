@@ -1,0 +1,55 @@
+============================================================================
+P_300 SIGNAL REPORT  FNV BUY
+============================================================================
+Ticker:           FNV
+Anchor date:      2026-05-29
+Signal:           BUY at horizon 5
+Generated:        2026-05-30 13:57 ET
+
+PER-HORIZON STATS
+----------------------------------------------------------------------------
+    h    n  win_rate  mean_ret  std_ret  z_score  class
+    5   20     0.850     +7.09     8.97   +2.424    BUY
+    7   20     0.850     +6.95     9.03   +2.483    BUY
+   10   20     0.700     +5.75     9.77   +1.189    BUY
+   15   20     0.650     +7.65    14.15   +0.610  WATCH
+   20   20     0.650     +6.71    12.87   +0.610  WATCH
+
+TOP 20 MATCHES (by composite distance, ascending)
+----------------------------------------------------------------------------
+   #  ticker      anchor  compdist     +5d     +7d    +10d    +15d    +20d
+   1    BCPC  2026-01-08     1.541   +3.36   +1.87   +4.31   +5.95   +7.81
+   2     VMC  2026-02-27     1.579  -11.29  -12.26  -14.38  -16.65  -15.66
+   3    NVDA  2025-10-24     1.579   +8.71   +6.67   +1.01   +2.10   -3.96
+   4     DIS  2025-10-15     1.619   +1.23   -0.03   -1.32   -0.31   +4.42
+   5     RPM  2026-04-07     1.672  +12.37   +9.24  +10.94   +7.23   +2.79
+   6    HUBB  2026-03-31     1.701   +7.43   +9.22   +7.38  +12.02  +11.25
+   7     FNV  2026-01-02     1.702   +9.68  +13.93  +16.86  +24.32  +11.70
+   8     TPR  2026-02-04     1.713  +19.05  +18.38  +17.23  +23.53  +15.15
+   9     FHN  2026-01-30     1.745   +7.10   +4.70   +0.29   -1.59   -1.35
+  10    GMED  2025-11-06     1.767  +36.10  +35.54  +33.33  +47.53  +47.63
+  11    ARLP  2026-02-10     1.797   +5.42   +6.88   +7.82   +9.77  +11.97
+  12    PINS  2026-04-14     1.826  +10.27   +5.83   +6.31  +19.14   +9.95
+  13     ITW  2026-01-29     1.827   +9.67  +10.55  +13.56  +12.22  +10.56
+  14     LNC  2025-12-03     1.832   +7.40   +7.49   +7.99   +9.76   +7.37
+  15      UL  2026-01-12     1.837   +0.75   +1.72   +4.87   +7.34  +11.72
+  16      DX  2026-03-03     1.847   -1.31   -3.27   -4.06   -9.58   -7.40
+  17     BAC  2026-01-29     1.875   +3.50   +6.27   -1.06   -0.04   -6.12
+  18    ALLE  2026-02-02     1.884   +7.50   +8.38   -1.72   -4.02   -4.33
+  19     GLP  2026-03-10     1.911   -0.31   +1.83   -3.04  -11.59   -0.38
+  20    CCEP  2026-01-29     1.920   +5.15   +5.95   +8.58  +15.87  +21.06
+
+NARRATIVE
+----------------------------------------------------------------------------
+  The P_300 Pipeline B signal report for FNV indicates a BUY signal with
+  an anchor date of 2026-05-29 and a horizon of 5 days. The per-horizon
+  statistics show strong performance at shorter horizons, with h=5 and h=7
+  demonstrating high win rates (85%) and positive mean returns (+7.09% and
+  +6.95%, respectively), though return variability increases slightly at
+  longer horizons. Win rates and z-scores decline at longer horizons,
+  particularly beyond h=10. The top historical analogs include mixed
+  outcomes: BCPC shows strong early gains, VMC experiences significant
+  losses, NVDA also sees a dip over 20 days despite a positive short-term
+  return, while DIS and RPM show more moderate gains.
+
+============================================================================

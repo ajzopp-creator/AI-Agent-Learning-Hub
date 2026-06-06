@@ -1,0 +1,17 @@
+{
+  "timestamp": "2026-05-30T09:53:41.800896",
+  "spy_posture": 7.381836,
+  "qqq_posture": 12.726654,
+  "avg_posture": 10.054245,
+  "risk_mode": "FULL",
+  "source": "Grid_XLSX",
+  "spy_grid_date": "05/29/2026",
+  "qqq_grid_date": "05/29/2026",
+  "vxx_posture": -2.114989,
+  "vxx_signal": "BULLISH_CONFIRM",
+  "vxx_note": "VP predicts VXX falling -- fear contracting, bullish equity confirmation",
+  "vxx_close": 24.1399993896484,
+  "vxx_pred_high": 24.6102123260498,
+  "vxx_pred_low": 23.7530784606934,
+  "vxx_grid_date": "05/29/2026"
+}

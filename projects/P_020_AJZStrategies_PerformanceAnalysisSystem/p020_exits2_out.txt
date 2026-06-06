@@ -1,0 +1,26 @@
+Sample TOS_Import closed with exits:
+  id=3021 sym=GOOGL open=2026-05-27 exit=2026-05-29 pnl=-448.0 tags=None
+  id=3022 sym=SBUX open=2026-05-26 exit=2026-05-29 pnl=-372.0 tags=None
+  id=3023 sym=XYZ open=2026-05-26 exit=2026-05-27 pnl=261.0 tags=None
+  id=3025 sym=AMZN open=2026-05-21 exit=2026-05-26 pnl=-116.0 tags=None
+  id=3026 sym=C open=2026-05-18 exit=2026-05-22 pnl=11.0 tags=None
+  id=3027 sym=SU open=2026-05-14 exit=2026-05-19 pnl=366.0 tags=None
+  id=3028 sym=EWZ open=2026-05-08 exit=2026-05-13 pnl=-504.0 tags=None
+  id=3030 sym=AEO open=2026-04-21 exit=2026-04-23 pnl=-408.0 tags=None
+  id=3031 sym=VOD open=2026-04-21 exit=2026-04-24 pnl=5.25 tags=None
+  id=3032 sym=AA open=2026-04-20 exit=2026-04-22 pnl=199.0 tags=None
+  id=3034 sym=DOW open=2026-04-15 exit=2026-04-17 pnl=-588.0 tags=None
+  id=3035 sym=DOW open=2026-04-13 exit=2026-04-14 pnl=-252.0 tags=None
+  id=2955 sym=CRUS open=2026-04-09 exit=2026-04-10 pnl=-0.72 tags=None
+  id=2905 sym=DIS open=2026-04-07 exit=2026-04-09 pnl=-396.0 tags=None
+  id=2912 sym=HON open=2026-04-07 exit=2026-04-08 pnl=-230.0 tags=None
+  id=2919 sym=LULU open=2026-04-07 exit=2026-04-08 pnl=-335.0 tags=None
+  id=2954 sym=CRUS open=2026-03-26 exit=2026-04-10 pnl=-49.08 tags=None
+  id=2892 sym=ADM open=2026-03-23 exit=2026-03-26 pnl=614.0 tags=None
+  id=2892 sym=ADM open=2026-03-23 exit=2026-03-27 pnl=564.0 tags=None
+  id=2920 sym=MS open=2026-03-20 exit=2026-03-20 pnl=70.0 tags=None
+
+TOS_Import closed with exit records: 385
+
+TOS_Import tags breakdown:
+  tags='None': 385

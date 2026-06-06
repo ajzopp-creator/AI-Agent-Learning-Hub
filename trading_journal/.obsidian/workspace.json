@@ -1,0 +1,224 @@
+{
+  "main": {
+    "id": "124250322ced2d27",
+    "type": "split",
+    "children": [
+      {
+        "id": "331f7ee2c8d343db",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "93960eebb654b8d4",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "TradeManagement/P115/2026-06-03_JCI.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "2026-06-03_JCI"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "0c57628789655085",
+    "type": "split",
+    "children": [
+      {
+        "id": "7ca53f3f18461e7b",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "5d7b9b74b1dee0ca",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "7fff51442434d3e0",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "ROST",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "8b396360dc1a3db5",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "243143675774371c",
+    "type": "split",
+    "children": [
+      {
+        "id": "4a345cfe6b7a6b4a",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "38c99eee9c871dcd",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks"
+            }
+          },
+          {
+            "id": "cb4ab8d2ec5fe0ef",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links"
+            }
+          },
+          {
+            "id": "b764c962e2026173",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "a43556237bf51030",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "ba84c45e9f3533c6",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Untitled.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of Untitled"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false,
+      "templater-obsidian:Templater": false
+    }
+  },
+  "active": "93960eebb654b8d4",
+  "lastOpenFiles": [
+    "KnowledgeBase/2026-06-04_10 AI Tools.md",
+    "Dashboard.md",
+    "TradeOrderManagement/signals/2026-06-03_AMTM_signal.json",
+    "2026-05-26.md",
+    "TradeManagement/P300/2026-06-02_DE.md",
+    "TradeManagement/P300/2026-06-02_COHR.md",
+    "TradeManagement/P300/2026-06-02_AME.md",
+    "TradeManagement/P300/2026-06-02_CMI.md",
+    "TradeManagement/P300/2026-06-02_DNOW.md",
+    "TradeManagement/P300/2026-06-01_TDC.md",
+    "TradeManagement/P300/2026-06-02_PCAR.md",
+    "TradeManagement/P115/2024-12-18_AMTM.md",
+    "TradeManagement/P300/2026-06-01_FMCC.md",
+    "TradeManagement/P300/2026-06-01_INSG.md",
+    "TradeManagement/P300/2026-06-01_CGBD.md",
+    "TradeManagement/P300/2026-06-01_BKE.md",
+    "TradeManagement/P300/2026-06-01_BCO.md",
+    "TradeManagement/P300/2026-06-01_AJG.md",
+    "TradeManagement/P300/2026-06-01_ADBE.md",
+    "TradeManagement/P300/2026-06-01_MNST.md",
+    "TradeOrderManagement/signals/2026-06-02_TESTFILE_signal.json",
+    "TradeOrderManagement/signals",
+    "TradeOrderManagement",
+    "TradeManagement/signals/2026-06-02_TESTFILE_signal.json",
+    "TradeManagement/signals",
+    "TradeManagement/P300/2026-06-01_OI.md",
+    "TradeManagement/P300/2026-06-01_TEAM.md",
+    "KnowledgeBase/2026-05-25_-CREATE-YOUR-SECOND-BRAIN.md",
+    "TradeManagement/P300/2026-05-29_ROST.md",
+    "Bases/P300_Signals.base",
+    "Bases/P300_Signals.md",
+    "KnowledgeBase/Obsidian Trading System – Implementation Plan.md",
+    "KnowledgeBase/Untitled 1.md",
+    "Bases/KB_Articles.base",
+    "Bases/Open_Positions.base",
+    "Bases/P020_Performance.base"
+  ]
+}

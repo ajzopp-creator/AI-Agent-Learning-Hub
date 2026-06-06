@@ -1,0 +1,62 @@
+============================================================================
+P_300 SIGNAL REPORT
+============================================================================
+Ticker:           OLED
+Anchor date:      2026-05-20
+Signal:           PASS at horizon 5
+Generated:        2026-05-20 21:15 ET
+
+PER-HORIZON STATS
+----------------------------------------------------------------------------
+    h    n  win_rate  mean_ret  std_ret  z_score  class
+    5   20     0.550     +0.16    11.23   -0.456   PASS
+    7   20     0.550     +0.65    10.17   -0.456   PASS
+   10   20     0.500     -1.41    10.42   -0.913   PASS
+   15   20     0.500     -1.12    10.36   -0.541   PASS
+   20   20     0.500     -0.23    11.96   -0.913   PASS
+
+TOP 20 MATCHES (by composite distance, ascending)
+----------------------------------------------------------------------------
+   #  ticker      anchor  compdist     +5d     +7d    +10d    +15d    +20d
+   1   GOOGL  2025-12-12    12.225   -0.69   +1.64   +1.38   +1.63   +8.63
+   2    PLTR  2025-10-23    12.453   +7.80  +14.79   -3.01   -4.62  -13.71
+   3    AVGO  2025-06-13    12.783   +2.04   +6.41  +10.84   +9.29  +12.96
+   4     DIS  2025-10-15    12.899   +1.23   -0.03   -1.32   -0.31   +4.42
+   5     NVO  2025-09-11    13.530  +13.90  +11.80   +3.20   +8.18   +8.07
+   6     AMD  2025-08-18    14.213   -7.26   -5.12   -7.85  -11.54   -8.90
+   7    AAPL  2026-01-27    14.353   +4.34   +6.83   +5.97   +2.35   +6.18
+   8     GEV  2025-09-25    14.464   -0.21   -0.71   +4.40   -0.91   -2.04
+   9     TTD  2025-08-07    14.871  -42.53  -37.79  -40.79  -37.33  -41.05
+  10    NVDA  2025-10-24    15.294   +8.71   +6.67   +1.01   +2.10   -3.96
+  11     CVX  2026-02-10    15.331   +0.88   +0.92   +1.08   +2.07   +5.23
+  12     QQQ  2026-04-14    15.560   +2.50   +3.63   +4.61   +8.43  +12.51
+  13    META  2025-11-05    15.570   -4.24   -4.17   -7.18   -0.37   +4.02
+  14     CAT  2025-06-25    15.990   +7.23   +5.36   +9.89  +12.51  +15.59
+  15     WMT  2026-02-25    16.779   +1.64   -1.55   -1.80   -3.00   -2.14
+  16     GLP  2026-03-10    16.910   -0.31   +1.83   -3.04  -11.59   -0.38
+  17     NKE  2025-09-15    17.652   -2.40   -2.48   -4.77   -2.55   -7.74
+  18     OII  2026-02-18    18.001  +14.60   +7.28   +6.20   +6.80   +2.36
+  19      DE  2025-11-20    18.468   -2.49   -1.51   -0.26   +1.78   -1.21
+  20      GS  2026-01-22    18.793   -1.52   -0.87   -6.73   -5.25   -3.39
+
+VOLATILITY DIVERGENCE: MILD (ratio 1.94x)
+----------------------------------------------------------------------------
+  Candidate range_pct median: 0.0433    Top-K median: 0.0223
+  Modest volatility-regime mismatch between candidate and top-K analogs.
+
+NARRATIVE
+----------------------------------------------------------------------------
+  The P_300 Signal Report for OLED on 2026-05-20 generated a PASS
+  classification at horizon 5. The per-horizon statistics show mixed
+  performance across different timeframes: h=5 has a win rate of 55% with
+  a mean return of +0.16%, while h=7 also maintains a 55% win rate but
+  with a higher mean return of +0.65%. However, the win rates drop to 50%
+  for horizons 10, 15, and 20, accompanied by negative mean returns
+  ranging from -1.41% at h=10 to -0.23% at h=20. The dispersion in
+  outcomes is evident in the top five historical analogs: GOOGL shows a
+  slight decline at +5d but gains at +20d, while PLTR and AVGO demonstrate
+  varying volatility. Overall, the signal reflects neutral confidence
+  given the mixed performance across horizons and the variability of
+  similar past cases.
+
+============================================================================

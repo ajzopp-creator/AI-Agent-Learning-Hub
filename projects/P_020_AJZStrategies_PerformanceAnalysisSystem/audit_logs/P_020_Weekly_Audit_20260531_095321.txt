@@ -1,0 +1,26 @@
+P_020 Weekly Audit â€” 2026-05-31 09:53:21
+Account: AJZ6348
+Input records: 18
+==================================================
+Tracker Dashboard: loaded (223 entries)
+Consolidation: 18 entries â†’ 18 (merged 0 fills)
+OK: ADM 2026-05-27 system=TOS_Import exits=0 status=open
+OK: GOOGL 2026-05-27 system=TOS_Import exits=1 status=closed
+OK: SBUX 2026-05-26 system=TOS_Import exits=1 status=closed
+OK: XYZ 2026-05-26 system=TOS_Import exits=1 status=closed
+OK: IRDM 2026-05-22 system=P_118 exits=2 status=closed
+OK: AMZN 2026-05-21 system=TOS_Import exits=1 status=closed
+OK: C 2026-05-18 system=TOS_Import exits=1 status=closed
+OK: SU 2026-05-14 system=TOS_Import exits=1 status=closed
+OK: EWZ 2026-05-08 system=TOS_Import exits=1 status=closed
+OK: BAC 2026-04-27 system=P_116 exits=1 status=closed
+OK: AEO 2026-04-21 system=TOS_Import exits=1 status=closed
+OK: VOD 2026-04-21 system=TOS_Import exits=1 status=closed
+OK: AA 2026-04-20 system=TOS_Import exits=1 status=closed
+OK: NVDA 2026-04-17 system=P_118 exits=1 status=closed
+OK: DOW 2026-04-15 system=TOS_Import exits=1 status=closed
+OK: DOW 2026-04-13 system=TOS_Import exits=1 status=closed
+OK: QQQ 2026-03-27 system=TOS_Import exits=0 status=open
+OK: IAU 2026-03-24 system=TOS_Import exits=0 status=open
+==================================================
+Inserted: 18  Skipped: 0  Orphans: 0

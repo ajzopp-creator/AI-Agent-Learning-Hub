@@ -1,0 +1,17 @@
+{
+  "timestamp": "2026-05-06T04:47:18.066913",
+  "spy_posture": 5.642212,
+  "qqq_posture": 11.247559,
+  "avg_posture": 8.444885,
+  "risk_mode": "FULL",
+  "source": "Grid_XLSX",
+  "spy_grid_date": "05/05/2026",
+  "qqq_grid_date": "05/05/2026",
+  "vxx_posture": -0.595654,
+  "vxx_signal": "NEUTRAL",
+  "vxx_note": "VP sees stable/flat volatility -- no directional signal from VXX",
+  "vxx_close": 28.7099990844727,
+  "vxx_pred_high": 29.5158958435059,
+  "vxx_pred_low": 28.1761569976807,
+  "vxx_grid_date": "05/05/2026"
+}

@@ -1,0 +1,63 @@
+============================================================================
+P_300 SIGNAL REPORT
+============================================================================
+Ticker:           PLAY
+Anchor date:      2026-05-19
+Signal:           PASS at horizon 5
+Generated:        2026-05-20 15:02 ET
+
+PER-HORIZON STATS
+----------------------------------------------------------------------------
+    h    n  win_rate  mean_ret  std_ret  z_score  class
+    5   20     0.550     -0.48    10.83   -0.456   PASS
+    7   20     0.550     +0.42    10.19   -0.456   PASS
+   10   20     0.550     -0.99    10.65   -0.456   PASS
+   15   20     0.450     -0.88    10.84   -0.991   PASS
+   20   20     0.550     +0.70    12.44   -0.456   PASS
+
+TOP 20 MATCHES (by composite distance, ascending)
+----------------------------------------------------------------------------
+   #  ticker      anchor  compdist     +5d     +7d    +10d    +15d    +20d
+   1    PLTR  2025-10-23    19.610   +7.80  +14.79   -3.01   -4.62  -13.71
+   2    AAPL  2026-01-27    20.278   +4.34   +6.83   +5.97   +2.35   +6.18
+   3     WMT  2026-02-25    20.412   +1.64   -1.55   -1.80   -3.00   -2.14
+   4     DIS  2025-10-15    20.428   +1.23   -0.03   -1.32   -0.31   +4.42
+   5     AMD  2025-08-18    20.850   -7.26   -5.12   -7.85  -11.54   -8.90
+   6    META  2025-11-05    20.944   -4.24   -4.17   -7.18   -0.37   +4.02
+   7    AVGO  2025-06-13    21.383   +2.04   +6.41  +10.84   +9.29  +12.96
+   8     GEV  2025-09-25    21.930   -0.21   -0.71   +4.40   -0.91   -2.04
+   9     NVO  2025-09-11    22.143  +13.90  +11.80   +3.20   +8.18   +8.07
+  10     CAT  2025-06-25    22.410   +7.23   +5.36   +9.89  +12.51  +15.59
+  11     GLP  2026-03-10    22.442   -0.31   +1.83   -3.04  -11.59   -0.38
+  12    NVDA  2025-10-24    22.470   +8.71   +6.67   +1.01   +2.10   -3.96
+  13     QQQ  2026-04-14    22.527   +2.50   +3.63   +4.61   +8.43  +12.51
+  14     NKE  2025-09-15    22.536   -2.40   -2.48   -4.77   -2.55   -7.74
+  15     CVX  2026-02-10    22.716   +0.88   +0.92   +1.08   +2.07   +5.23
+  16   GOOGL  2025-12-12    23.336   -0.69   +1.64   +1.38   +1.63   +8.63
+  17      GS  2026-01-22    23.494   -1.52   -0.87   -6.73   -5.25   -3.39
+  18    SHOP  2025-09-22    23.648   -5.17   -4.81   +4.70   -2.20   +4.83
+  19     TTD  2025-08-07    23.975  -42.53  -37.79  -40.79  -37.33  -41.05
+  20     XOM  2026-01-15    24.355   +4.52   +5.96   +9.50  +15.43  +14.96
+
+VOLATILITY DIVERGENCE: STRONG (ratio 2.79x)
+----------------------------------------------------------------------------
+  Candidate range_pct median:   0.0623
+  Top-K range_pct median:       0.0223
+  n_topk_matches:               20
+  Top-K analogs trade with materially different volatility regime
+  than the candidate. Statistics are apples-to-oranges; size
+  with extra caution.
+
+NARRATIVE
+----------------------------------------------------------------------------
+  The P_300 Pipeline B signal for PLAY on 2026-05-19 is PASS at horizon 5.
+  The per-horizon statistics show consistent win rates of 55% across
+  horizons 5 to 10, with mean returns ranging from -0.48% to +0.70%, and
+  standard deviations between 10.19% and 12.44%. The z-scores for these
+  horizons are all close to -0.456, indicating similar statistical
+  significance. Historical analogs include PLTR, AAPL, WMT, DIS, and AMD,
+  with varied outcomes over 5-day (+7.80% to +4.34%) and 20-day (-13.71%
+  to +6.18%) periods. The mixed performance of top historical analogs and
+  consistent statistical properties support the PASS decision.
+
+============================================================================

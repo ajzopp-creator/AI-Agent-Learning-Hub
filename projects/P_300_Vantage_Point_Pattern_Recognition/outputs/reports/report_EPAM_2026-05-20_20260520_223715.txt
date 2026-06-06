@@ -1,0 +1,59 @@
+============================================================================
+P_300 SIGNAL REPORT
+============================================================================
+Ticker:           EPAM
+Anchor date:      2026-05-20
+Signal:           PASS at horizon 7
+Generated:        2026-05-20 22:37 ET
+
+PER-HORIZON STATS
+----------------------------------------------------------------------------
+    h    n  win_rate  mean_ret  std_ret  z_score  class
+    5   20     0.500     -1.18    10.36   -0.913   PASS
+    7   20     0.550     +0.04     9.94   -0.456   PASS
+   10   20     0.550     -1.10    10.61   -0.456   PASS
+   15   20     0.500     -0.21    11.58   -0.541   PASS
+   20   20     0.500     +0.80    12.74   -0.913   PASS
+
+TOP 20 MATCHES (by composite distance, ascending)
+----------------------------------------------------------------------------
+   #  ticker      anchor  compdist     +5d     +7d    +10d    +15d    +20d
+   1    AVGO  2025-06-13    15.987   +2.04   +6.41  +10.84   +9.29  +12.96
+   2    META  2025-11-05    16.325   -4.24   -4.17   -7.18   -0.37   +4.02
+   3    AAPL  2026-01-27    16.364   +4.34   +6.83   +5.97   +2.35   +6.18
+   4      GS  2026-01-22    17.073   -1.52   -0.87   -6.73   -5.25   -3.39
+   5     CVX  2026-02-10    17.128   +0.88   +0.92   +1.08   +2.07   +5.23
+   6    NVDA  2025-10-24    17.371   +8.71   +6.67   +1.01   +2.10   -3.96
+   7    SHOP  2025-09-22    17.792   -5.17   -4.81   +4.70   -2.20   +4.83
+   8     XOM  2026-01-15    17.863   +4.52   +5.96   +9.50  +15.43  +14.96
+   9    PLTR  2025-10-23    18.327   +7.80  +14.79   -3.01   -4.62  -13.71
+  10     QQQ  2026-04-14    18.526   +2.50   +3.63   +4.61   +8.43  +12.51
+  11     AMD  2025-08-18    18.709   -7.26   -5.12   -7.85  -11.54   -8.90
+  12     GEV  2025-09-25    18.791   -0.21   -0.71   +4.40   -0.91   -2.04
+  13     CAT  2025-06-25    19.020   +7.23   +5.36   +9.89  +12.51  +15.59
+  14      MU  2025-09-12    19.314   +3.50   +5.84   +0.03  +19.46  +15.50
+  15     NKE  2025-09-15    19.568   -2.40   -2.48   -4.77   -2.55   -7.74
+  16     GLP  2026-03-10    19.724   -0.31   +1.83   -3.04  -11.59   -0.38
+  17     WMT  2026-02-25    20.070   +1.64   -1.55   -1.80   -3.00   -2.14
+  18      DE  2025-11-20    20.531   -2.49   -1.51   -0.26   +1.78   -1.21
+  19     TTD  2025-08-07    20.649  -42.53  -37.79  -40.79  -37.33  -41.05
+  20   GOOGL  2025-12-12    20.859   -0.69   +1.64   +1.38   +1.63   +8.63
+
+VOLATILITY DIVERGENCE: MILD (ratio 1.91x)
+----------------------------------------------------------------------------
+  Candidate range_pct median: 0.0446    Top-K median: 0.0233
+  Modest volatility-regime mismatch between candidate and top-K analogs.
+
+NARRATIVE
+----------------------------------------------------------------------------
+  The P_300 Signal Report for EPAM as of 2026-05-20 indicates a final
+  classification of PASS at horizon 7. The per-horizon statistics show
+  inconsistent performance across different time frames, with win rates
+  around 50% and mean returns ranging from -1.18% to +0.80%, accompanied
+  by relatively high standard deviations (9.94% to 12.74%). The top five
+  historical analogs (AVGO, META, AAPL, GS, CVX) demonstrate varied
+  outcomes, with both positive and negative returns over the 5-day and
+  20-day periods following their respective anchor dates, suggesting a
+  mixed dispersion of potential future performance for EPAM.
+
+============================================================================

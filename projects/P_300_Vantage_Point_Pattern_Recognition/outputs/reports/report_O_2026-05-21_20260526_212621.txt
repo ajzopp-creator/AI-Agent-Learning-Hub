@@ -1,0 +1,59 @@
+============================================================================
+P_300 SIGNAL REPORT
+============================================================================
+Ticker:           O
+Anchor date:      2026-05-21
+Signal:           BUY at horizon 5
+Generated:        2026-05-26 21:26 ET
+
+PER-HORIZON STATS
+----------------------------------------------------------------------------
+    h    n  win_rate  mean_ret  std_ret  z_score  class
+    5   20     0.700     +0.66    11.88   +1.030    BUY
+    7   20     0.650     +1.81    11.82   +0.661  WATCH
+   10   20     0.550     +0.56    12.65   -0.244   PASS
+   15   20     0.450     +2.70    13.63   -1.240   PASS
+   20   20     0.650     +3.04    15.85   +0.661  WATCH
+
+TOP 20 MATCHES (by composite distance, ascending)
+----------------------------------------------------------------------------
+   #  ticker      anchor  compdist     +5d     +7d    +10d    +15d    +20d
+   1   CFPZF  2025-12-26     7.274  +11.82   +8.72  +16.83  +26.27  +33.21
+   2     BAC  2026-01-29     8.352   +3.50   +6.27   -1.06   -0.04   -6.12
+   3     HAL  2025-10-09     8.875   -6.75   -3.33  +16.32  +15.21  +16.79
+   4    PLTR  2025-10-23     9.546   +7.80  +14.79   -3.01   -4.62  -13.71
+   5    PLTR  2025-10-23     9.546   +7.80  +14.79   -3.01   -4.62  -13.71
+   6      TM  2025-12-10    10.300   +6.70   +9.26   +7.94   +8.51  +10.33
+   7     CAT  2025-06-25    10.549   +7.23   +5.36   +9.89  +12.51  +15.59
+   8     DIS  2025-10-15    10.848   +1.23   -0.03   -1.32   -0.31   +4.42
+   9     BXP  2026-02-26    10.996   -9.32  -14.21  -13.80  -12.69  -13.09
+  10    BCPC  2026-01-08    11.349   +3.36   +1.87   +4.31   +5.95   +7.81
+  11     DVN  2026-04-07    11.431   -9.41   -8.35   -8.71   -0.94   +2.08
+  12    BURL  2025-12-16    11.511   +8.84  +11.28  +10.71  +17.90  +17.39
+  13     MTB  2026-03-30    11.667   +5.46  +10.87   +9.64   +8.84   +8.15
+  14    INTC  2025-06-13    11.696   +5.21  +10.23  +11.22  +17.13  +13.80
+  15    META  2025-11-05    11.973   -4.24   -4.17   -7.18   -0.37   +4.02
+  16    CCEP  2026-01-29    12.365   +5.15   +5.95   +8.58  +15.87  +21.06
+  17     AMD  2025-08-18    12.739   -7.26   -5.12   -7.85  -11.54   -8.90
+  18     TTD  2025-08-07    13.003  -42.53  -37.79  -40.79  -37.33  -41.05
+  19     FHN  2026-01-30    13.326   +7.10   +4.70   +0.29   -1.59   -1.35
+  20     LEN  2026-01-08    13.355  +11.59   +5.12   +2.09   -0.18   +4.08
+
+VOLATILITY DIVERGENCE: MILD (ratio 1.91x)
+----------------------------------------------------------------------------
+  Candidate range_pct median: 0.0122    Top-K median: 0.0233
+  Modest volatility-regime mismatch between candidate and top-K analogs.
+
+NARRATIVE
+----------------------------------------------------------------------------
+  The P_300 signal report for O indicates a BUY recommendation at horizon
+  5, with per-horizon statistics showing the strongest win rate (70%) and
+  positive mean return (+0.66%) at h=5, though its z-score suggests
+  moderate statistical significance compared to other horizons. Longer
+  horizons (h=20) show higher mean returns (+3.04%), but lower win rates
+  and weaker z-scores. The top historical analogs include mixed outcomes:
+  CFPZF shows strong positive performance over both 5d and 20d, while BAC,
+  HAL, and PLTR exhibit varying degrees of underperformance or loss at
+  longer horizons, indicating potential dispersion in outcome.
+
+============================================================================

@@ -1,0 +1,55 @@
+============================================================================
+P_300 SIGNAL REPORT  SQM WATCH
+============================================================================
+Ticker:           SQM
+Anchor date:      2026-05-28
+Signal:           WATCH at horizon 5
+Generated:        2026-05-29 20:40 ET
+
+PER-HORIZON STATS
+----------------------------------------------------------------------------
+    h    n  win_rate  mean_ret  std_ret  z_score  class
+    5   20     0.600     +3.04     9.65   +0.198  WATCH
+    7   20     0.600     +3.77    11.17   +0.268  WATCH
+   10   20     0.550     +3.48    11.30   -0.113   PASS
+   15   20     0.600     +4.77    11.49   +0.198  WATCH
+   20   20     0.600     +4.63    11.94   +0.198  WATCH
+
+TOP 20 MATCHES (by composite distance, ascending)
+----------------------------------------------------------------------------
+   #  ticker      anchor  compdist     +5d     +7d    +10d    +15d    +20d
+   1     CRL  2026-02-04     2.032  -17.68  -19.97  -18.54  -12.97  -10.07
+   2    CHTR  2026-01-29     2.036  +16.71  +24.40  +24.31  +20.18  +22.51
+   3     LEN  2026-01-08     2.225  +11.59   +5.12   +2.09   -0.18   +4.08
+   4     VST  2026-02-10     2.290   +6.87   +7.39   +9.87   +2.36   -0.28
+   5     VMC  2026-03-27     2.299   +7.71  +11.90  +13.65  +12.74  +11.42
+   6    INMD  2026-01-23     2.390  +12.62  +13.98   +8.10   +2.51   +1.79
+   7    BURL  2025-12-16     2.391   +8.84  +11.28  +10.71  +17.90  +17.39
+   8     BAC  2026-01-29     2.415   +3.50   +6.27   -1.06   -0.04   -6.12
+   9     NKE  2025-09-15     2.443   -2.40   -2.48   -4.77   -2.55   -7.74
+  10     VNO  2026-03-05     2.447   -8.02  -10.28   -6.46   -9.33  -10.46
+  11    META  2025-11-05     2.459   -4.24   -4.17   -7.18   -0.37   +4.02
+  12    DECK  2026-01-29     2.485  +11.28  +14.61  +16.14  +18.81  +17.39
+  13   PRMRF  2026-01-02     2.546   -6.84   -3.89   -2.70   +3.09   +6.92
+  14     MLM  2026-03-05     2.553   -7.20   -7.52  -10.34   -8.35   -5.65
+  15     XLE  2026-04-10     2.681   -3.37   -1.88   -0.12   +3.35   -2.18
+  16    AAPL  2026-01-27     2.691   +4.34   +6.83   +5.97   +2.35   +6.18
+  17     MTB  2026-03-30     2.717   +5.46  +10.87   +9.64   +8.84   +8.15
+  18   CFPZF  2025-12-26     2.741  +11.82   +8.72  +16.83  +26.27  +33.21
+  19     BXP  2026-02-26     2.749   -9.32  -14.21  -13.80  -12.69  -13.09
+  20     TPR  2026-02-04     2.752  +19.05  +18.38  +17.23  +23.53  +15.15
+
+NARRATIVE
+----------------------------------------------------------------------------
+  The P_300 Signal Report for SQM indicates a WATCH classification at
+  horizon 5 with an anchor date of May 28, 2026. The per-horizon
+  statistics show consistent win rates around 60% across horizons 5 to 20
+  days, with mean returns ranging from +3.04% to +4.77%, though
+  accompanied by high standard deviations (up to 11.94%), suggesting
+  significant return variability. The z-scores are low and mostly positive
+  but not statistically significant, indicating the signal's moderate
+  strength. The top five historical analogs include both negative and
+  positive outcomes (+5d returns range from -17.68% to +16.71%),
+  reflecting mixed precedent performance for similar signals.
+
+============================================================================

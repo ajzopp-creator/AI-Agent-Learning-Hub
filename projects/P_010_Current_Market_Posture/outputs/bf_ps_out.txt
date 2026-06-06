@@ -1,0 +1,8 @@
+Loading VP...
+SPY=208 QQQ=208
+Dates: 76
+Traceback (most recent call last):
+  File "C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_010_Current_Market_Posture\python\backfill_snapshots.py", line 39, in <module>
+    snap = SNAPSHOT_DIR / f'{ds.replace(chr(45),chr(45))}'.replace('-','') + '.json'
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~
+TypeError: unsupported operand type(s) for +: 'WindowsPath' and 'str'

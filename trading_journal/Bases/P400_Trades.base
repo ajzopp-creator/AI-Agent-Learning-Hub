@@ -1,0 +1,28 @@
+view: table
+filter:
+  conditions:
+    - field: file.folder
+      operator: contains
+      value: TradeManagement/P400
+  conjunction: and
+sort:
+  - field: date
+    direction: desc
+columns:
+  - id: date
+    field: date
+  - id: ticker
+    field: ticker
+  - id: account_id
+    field: account_id
+  - id: council_verdict
+    field: council_verdict
+  - id: lifecycle_status
+    field: lifecycle_status
+  - id: realized_pnl
+    field: realized_pnl
+  - id: why_code
+    field: why_code
+views:
+  - type: table
+    name: Table

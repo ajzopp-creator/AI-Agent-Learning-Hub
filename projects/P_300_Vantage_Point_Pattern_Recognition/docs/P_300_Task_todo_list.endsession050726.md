@@ -1,0 +1,11 @@
+# P_300 TODO LIST
+- [x] Milestone 3: Data Integrity Audit (Complete)
+- [x] Milestone 4: IntelliScan Refinement / Parameter Optimization (Complete)
+    - [x] Create `parameters/optimization_config.json`
+    - [x] Implement in-memory percentage normalization to fix scaling failure
+    - [x] Run parameter sweep (distance vs. win-rate) -> Locked at 75.0
+    - [x] Update `aggregator.py` to output "Confidence Intervals" (Z-Score)
+- [ ] Milestone 5: Trade Management Module
+    - [ ] Ingest Aggregator output (Win-Rate, Horizon)
+    - [ ] Implement Position Sizing Logic (Risk Budget $525)
+    - [ ] Enforce 200MA Buy Rules & Drawdown Thresholds

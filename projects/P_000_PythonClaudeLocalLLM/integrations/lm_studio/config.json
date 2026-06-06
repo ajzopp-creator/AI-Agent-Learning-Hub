@@ -1,0 +1,14 @@
+{
+  "lm_studio_endpoint": "http://localhost:1234/v1",
+  "models": {
+    "primary": "deepseek-r1-distill-qwen-14b",
+    "batch": "qwen2.5-coder-32b-instruct",
+    "long_context": "lmstudio-community/Llama-4-Scout-17B-16E-Instruct"
+  },
+  "api_identifiers": {
+    "primary": "deepseek-r1-distill-qwen-14b",
+    "batch": "qwen2.5-coder-32b-instruct",
+    "long_context": "lmstudio-community/Llama-4-Scout-17B-16E-Instruct"
+  },
+  "notes": "Switch active model in LM Studio UI before running scripts. LM Studio serves whichever model is currently loaded. Primary identifier confirmed via Developer panel April 29, 2026."
+}

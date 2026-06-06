@@ -1,0 +1,16 @@
+{
+  "app_key": "18F3UYwX7YoyGBFsli6NpEVFt8biJPuLxGAx1ZKqoJrbOZzc",
+  "app_secret": "CZJXPT44lep6eGZHGVFMOskK5R8rY1OWwAmlW2JJeaMHxv5LoAwr2TAL2opjz9yt",
+  "accounts": {
+    "AJZ": {
+      "last4": "6348",
+      "label": "AJZ_Strategies",
+      "boa": "2024-08-21"
+    },
+    "IRA": {
+      "last4": "9885",
+      "label": "Inherited_Roth",
+      "boa": "2024-05-01"
+    }
+  }
+}

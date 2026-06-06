@@ -1,0 +1,23 @@
+{
+  "signal_id": "TEST-001",
+  "signal_timestamp": "2026-06-02T21:56:35.708089Z",
+  "signal_source": "P_115",
+  "strategy": "dip_buy",
+  "symbol": "TESTFILE",
+  "guideline_entry": 100.0,
+  "guideline_stop": 95.0,
+  "guideline_target": 110.0,
+  "signal_horizon": "3-5 days",
+  "confidence_level": "HIGH",
+  "context": {
+    "close_at_signal": 99.5,
+    "trailing_volume_30d": 1000000.0,
+    "signal_rationale": "Test signal",
+    "atm_at_signal": 1.5
+  },
+  "signal_metadata": {
+    "p115_session_date": "2026-06-02",
+    "p115_chart_timeframe": "1D",
+    "signal_source_link": "test/path"
+  }
+}

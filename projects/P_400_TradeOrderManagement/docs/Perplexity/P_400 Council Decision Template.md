@@ -1,0 +1,113 @@
+\# P_400 Council Decision Template
+
+\#\# Trade setup (input)
+
+\- \*\*Asset:\*\*
+
+\- \*\*Symbol / Option (strike, exp, call/put):\*\*
+
+\- \*\*Current price (stock mark):\*\*
+
+\- \*\*Intended trigger (stock management trigger):\*\*
+
+\- \*\*Entry price (desired):\*\*
+
+\- \*\*Stop level (price):\*\*
+
+\- \*\*Primary target (T1):\*\*
+
+\- \*\*Secondary target (T2, optional):\*\*
+
+\- \*\*Position quantity (shares / contracts):\*\*
+
+\- \*\*Risk mode (P010 riskmode):\*\*
+
+\- \*\*Strategy ID (P115 / P116 / etc.):\*\*
+
+\- \*\*Notes / special rules:\*\* manage option by underlying, wide-spread bid-aware pricing, etc.
+
+\#\# Council review (machine-readable + human summary)
+
+\- \*\*Validation:\*\* Passed / Failed (P010 constraints).
+
+\- \*\*Calculated sizing (Three-Gate outputs):\*\* Gate1_RiskShares, Gate2_CashShares, Gate3_ConcentrationShares, FinalShares (bind).
+
+\- \*\*Calculated stop/limit inputs:\*\* StopTriggerPrice, StopLimitPrice, LimitPrice (execution), OptionFloor (if option management).
+
+\#\#\# Role statuses
+
+Each role includes: \*\*status, reason code, severity\*\*
+
+\- \*\*Quant Strategist:\*\* Approve / Caution / Block — reason: \`\<code\>\` (e.g., ATR expansion, stop invalid)
+
+\- \*\*Macro Economist:\*\* Approve / Caution / Block — reason: \`\<code\>\` (e.g., liquidity, macro freeze)
+
+\- \*\*Momentum & Tape Reader:\*\* Approve / Caution / Block — reason: \`\<code\>\` (e.g., weak tape)
+
+\- \*\*Risk Manager:\*\* Approve / Caution / Block — reason: \`\<code\>\` (e.g., sizing breach, concentration)
+
+\- \*\*Behavioral Judge:\*\* Approve / Caution / Block — reason: \`\<code\>\` (e.g., override required, emotional trade)
+
+\- \*\*Council verdict (derived):\*\* Approve / Approve with Caution / Block If Block, list blocking role(s) and blocking reason(s).
+
+\- \*\*Severity tags:\*\* HARD_BLOCK (stop submission), SOFT_FLAG (requires override), INFO (notes)
+
+\- \*\*Audit fields:\*\* reviewer_id(s), timestamp, simulationNotes / calculation log (concise)
+
+\#\# Final broker order block (copy-ready)
+
+\#\#\# If Council verdict = Approve or Approve with Caution (and no HARD_BLOCK)
+
+\*\*Stock order (Thinkorswim style):\*\*
+
+\- \*\*Asset:\*\* \`\<SYMBOL\>\`
+
+\- \*\*Action:\*\* BUY / SELL
+
+\- \*\*Quantity:\*\* \`\<FinalShares\>\`
+
+\- \*\*Entry Trigger:\*\* \`\<EntryPrice\>\`
+
+\- \*\*Stop:\*\* \`\<StopTriggerPrice / StopLimit\>\`
+
+\- \*\*Target(s):\*\* T1=\`\<T1Price\>\`, T2=\`\<T2Price\>\`
+
+\- \*\*Order notes:\*\* \`\<limit/stop-limit, bid-aware price note\>\`
+
+\*\*Option order (if applicable):\*\*
+
+\- \*\*Asset:\*\* \`\<UNDERLYING\>\` Option
+
+\- \*\*Action:\*\* BUY / SELL
+
+\- \*\*Symbol:\*\* \`\<SYM STRIKE EXP\>\`
+
+\- \*\*Quantity:\*\* \`\<contracts\>\`
+
+\- \*\*Entry:\*\* \`\<option entry px\>\`
+
+\- \*\*Management trigger (stock):\*\* \`\<stock trigger\>\`
+
+\- \*\*Exit stop (option):\*\* \`\<option stop px\>\`
+
+\- \*\*Order notes:\*\* \`\<use bid-aware limit if wide spread; underlying as management trigger\>\`
+
+\- \*\*Execution instructions:\*\* STOPLIMIT with \`LimitPrice=\<limit\>\`, GTC/IOC, slippage cap, max fee tolerance, etc.
+
+\#\#\# If Council verdict = Block
+
+\- \*\*Block reason(s):\*\* \`\<role\>: \<reason\>\`
+
+\- \*\*Suggested remediation steps:\*\* widen stop, wait for regime confirmation, reduce size, postpone around macro event, etc.
+
+\#\# Usage notes (brief)
+
+\- Paste the \*\*Trade setup\*\* block to trigger automatic calculations.
+
+\- The engine responds with the \*\*Council review\*\* block and then the \*\*Final broker order\*\* block when permitted.
+
+\- This preserves veto power and ties sizing to the \*\*Three-Gate\*\* result.
+
+\- Keep role reason codes standardized (e.g., \`Q01_ATR_FAIL\`, \`M02_LIQUIDITY\`, \`T03_TAPE_WEAK\`, \`R04_SIZE_EXCEED\`) so automation can act on them.
+
+\- Store audit fields with every decision to maintain traceability and post-trade analysis.

@@ -1,0 +1,54 @@
+============================================================================
+P_300 SIGNAL REPORT
+============================================================================
+Ticker:           CCEP
+Anchor date:      2026-05-20
+Signal:           WATCH at horizon 5
+Generated:        2026-05-20 22:38 ET
+
+PER-HORIZON STATS
+----------------------------------------------------------------------------
+    h    n  win_rate  mean_ret  std_ret  z_score  class
+    5   20     0.650     +2.32     4.38   +0.456  WATCH
+    7   20     0.650     +3.09     4.75   +0.456  WATCH
+   10   20     0.650     +2.25     4.75   +0.456  WATCH
+   15   20     0.600     +2.30     6.41   +0.360  WATCH
+   20   20     0.600     +3.75     7.69   +0.000   PASS
+
+TOP 20 MATCHES (by composite distance, ascending)
+----------------------------------------------------------------------------
+   #  ticker      anchor  compdist     +5d     +7d    +10d    +15d    +20d
+   1     GLP  2026-03-10    12.209   -0.31   +1.83   -3.04  -11.59   -0.38
+   2     CAT  2025-06-25    12.882   +7.23   +5.36   +9.89  +12.51  +15.59
+   3     DIS  2025-10-15    12.946   +1.23   -0.03   -1.32   -0.31   +4.42
+   4    PLTR  2025-10-23    14.255   +7.80  +14.79   -3.01   -4.62  -13.71
+   5     NVO  2025-09-11    14.455  +13.90  +11.80   +3.20   +8.18   +8.07
+   6    NVDA  2025-10-24    14.529   +8.71   +6.67   +1.01   +2.10   -3.96
+   7    AVGO  2025-06-13    14.818   +2.04   +6.41  +10.84   +9.29  +12.96
+   8     XOM  2026-01-15    15.128   +4.52   +5.96   +9.50  +15.43  +14.96
+   9      DE  2025-11-20    15.217   -2.49   -1.51   -0.26   +1.78   -1.21
+  10     GEV  2025-09-25    15.505   -0.21   -0.71   +4.40   -0.91   -2.04
+  11     SPY  2025-06-20    15.864   +3.47   +3.93   +4.44   +5.14   +5.80
+  12     NKE  2025-09-15    16.018   -2.40   -2.48   -4.77   -2.55   -7.74
+  13     LMT  2025-09-02    16.162   +1.01   +4.03   +4.82   +7.55  +10.32
+  14     QQQ  2026-04-14    16.594   +2.50   +3.63   +4.61   +8.43  +12.51
+  15     WMT  2026-02-25    16.832   +1.64   -1.55   -1.80   -3.00   -2.14
+  16   GOOGL  2025-12-12    16.977   -0.69   +1.64   +1.38   +1.63   +8.63
+  17    AAPL  2026-01-27    17.532   +4.34   +6.83   +5.97   +2.35   +6.18
+  18     CVX  2026-02-10    17.722   +0.88   +0.92   +1.08   +2.07   +5.23
+  19    SHOP  2025-09-22    17.748   -5.17   -4.81   +4.70   -2.20   +4.83
+  20      GS  2026-01-22    17.857   -1.52   -0.87   -6.73   -5.25   -3.39
+
+NARRATIVE
+----------------------------------------------------------------------------
+  The P_300 Signal Report for CCEP on 2026-05-20 indicates a WATCH
+  classification at horizon 5. Across all horizons (h=5 to h=20), the
+  model maintains a consistent win rate of approximately 65%, with
+  positive mean returns ranging from +2.32% to +3.75%. However, the
+  statistical significance (z-scores) diminishes at longer horizons,
+  particularly at h=20 where the z-score is 0.000. The top historical
+  analogs show varied outcomes: GLP and DIS exhibit modest returns, while
+  CAT and NVO demonstrate stronger gains but also notable drawdowns,
+  suggesting mixed performance across different holding periods.
+
+============================================================================

@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.1",
+  "generated_at": "2026-06-01T13:36:40.101818",
+  "as_of_date": "2026-03-26",
+  "spy": {
+    "ticker": "SPY",
+    "last_date": "2026-03-26",
+    "last_close": 645.090026855469,
+    "dist_count": 4,
+    "dist_dates": [
+      "2026-03-12",
+      "2026-03-19",
+      "2026-03-20",
+      "2026-03-26"
+    ],
+    "rally_state": "RALLY_ATTEMPT",
+    "rally_low": 644.719970703125,
+    "rally_low_date": "2026-03-20",
+    "rally_attempt_day": 4,
+    "follow_through_day": null,
+    "ftd_age_days": null
+  },
+  "qqq": {
+    "ticker": "QQQ",
+    "last_date": "2026-03-26",
+    "last_close": 573.789978027344,
+    "dist_count": 5,
+    "dist_dates": [
+      "2026-03-12",
+      "2026-03-18",
+      "2026-03-19",
+      "2026-03-20",
+      "2026-03-26"
+    ],
+    "rally_state": "RALLY_LOW_SET",
+    "rally_low": 573.429992675781,
+    "rally_low_date": "2026-03-26",
+    "rally_attempt_day": null,
+    "follow_through_day": null,
+    "ftd_age_days": null
+  },
+  "max_dist_count": 5,
+  "market_phase": "CORRECTION",
+  "phase_reason": "max_dist_count=5 (>=5)",
+  "source": "VP_Grid_XLSX"
+}

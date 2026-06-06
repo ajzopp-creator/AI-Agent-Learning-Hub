@@ -1,0 +1,1 @@
+"""Infrastructure layer — file I/O for P_115 signal emission."""

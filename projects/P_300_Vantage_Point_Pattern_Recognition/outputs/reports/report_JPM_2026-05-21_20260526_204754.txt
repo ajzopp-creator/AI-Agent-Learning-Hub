@@ -1,0 +1,56 @@
+============================================================================
+P_300 SIGNAL REPORT
+============================================================================
+Ticker:           JPM
+Anchor date:      2026-05-21
+Signal:           WATCH at horizon 5
+Generated:        2026-05-26 20:47 ET
+
+PER-HORIZON STATS
+----------------------------------------------------------------------------
+    h    n  win_rate  mean_ret  std_ret  z_score  class
+    5   20     0.650     +4.71     9.33   +0.515  WATCH
+    7   20     0.650     +5.38     9.06   +0.515  WATCH
+   10   20     0.650     +4.85     8.98   +0.515  WATCH
+   15   20     0.550     +6.00    12.76   -0.497   PASS
+   20   20     0.600     +6.21    11.76   -0.040   PASS
+
+TOP 20 MATCHES (by composite distance, ascending)
+----------------------------------------------------------------------------
+   #  ticker      anchor  compdist     +5d     +7d    +10d    +15d    +20d
+   1     PNC  2026-01-15    12.238   +2.02   +4.03   +3.84  +12.76   +6.64
+   2     BAC  2026-01-29    12.604   +3.50   +6.27   -1.06   -0.04   -6.12
+   3     NKE  2025-09-15    13.536   -2.40   -2.48   -4.77   -2.55   -7.74
+   4      TM  2025-12-10    13.619   +6.70   +9.26   +7.94   +8.51  +10.33
+   5    SHOP  2025-09-22    13.874   -5.17   -4.81   +4.70   -2.20   +4.83
+   6      UL  2026-01-12    13.940   +0.75   +1.72   +4.87   +7.34  +11.72
+   7    GMED  2025-11-06    14.129  +36.10  +35.54  +33.33  +47.53  +47.63
+   8    DECK  2026-01-29    14.356  +11.28  +14.61  +16.14  +18.81  +17.39
+   9     FHN  2026-01-30    14.658   +7.10   +4.70   +0.29   -1.59   -1.35
+  10    AAPL  2026-01-27    14.692   +4.34   +6.83   +5.97   +2.35   +6.18
+  11    DLTR  2026-01-26    14.718   -6.52   -2.85   -1.78   +2.49   +5.03
+  12      GS  2026-01-22    14.737   -1.52   -0.87   -6.73   -5.25   -3.39
+  13     TPR  2026-02-04    15.134  +19.05  +18.38  +17.23  +23.53  +15.15
+  14    INTC  2025-06-13    15.149   +5.21  +10.23  +11.22  +17.13  +13.80
+  15     GLP  2026-03-10    15.409   -0.31   +1.83   -3.04  -11.59   -0.38
+  16      DE  2025-11-20    15.488   -2.49   -1.51   -0.26   +1.78   -1.21
+  17     WMT  2026-02-25    15.544   +1.64   -1.55   -1.80   -3.00   -2.14
+  18     LEN  2026-01-08    15.660  +11.59   +5.12   +2.09   -0.18   +4.08
+  19     SPY  2025-06-20    15.678   +3.47   +3.93   +4.44   +5.14   +5.80
+  20     GEV  2025-09-25    15.778   -0.21   -0.71   +4.40   -0.91   -2.04
+
+NARRATIVE
+----------------------------------------------------------------------------
+  The P_300 Signal Report for JPM indicates a WATCH signal at horizon 5,
+  generated on 2026-05-26. The per-horizon statistics show moderate
+  success across short to medium horizons (h=5 to h=10) with win rates
+  around 65% and mean returns ranging from +4.71% to +5.38%, though
+  accompanied by relatively high standard deviations (8.98-9.33%). Longer
+  horizons (h=15, h=20) exhibit lower win rates and increased return
+  variability, with z-scores declining or turning negative. The top five
+  historical analogs (PNC, BAC, NKE, TM, SHOP) demonstrate varied
+  outcomes, suggesting potential dispersion in future returns, with both
+  positive and negative performances observed across the 5-day to 20-day
+  windows.
+
+============================================================================

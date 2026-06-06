@@ -1,0 +1,164 @@
+
+
+My STORY: Last month I saved 63 articles across Obsidian, browser bookmarks, and random screenshots. Market research, pricing action strategies, Market Regime frameworks. Hours of reading.
+
+Then I opened Claude and asked about pricing psychology. Something I'd read about three times that week.
+
+It started from zero. No memory of anything I'd uploaded. No connections between the 63 sources. Just a blank slate asking me to explain what I already knew.
+
+That moment broke something for me. I was collecting knowledge like a dragon hoards gold. Piling it up. Never compounding it.
+
+So I need a system that flips this completely. Instead of the AI searching raw files every time, the AI reads your sources once and builds a structured wiki. Summaries, connections between ideas, contradictions flagged maintained in obsidian. All maintained by AI. All in simple text files. Every new source makes it smarter.
+
+Today's proposed system will show you:
+
+    The porposed folder structure and rules file that makes this work
+
+     7 copy-paste prompts for every step (ingest, query, maintenance, exploration).  If you can improve on this all the better 
+
+    The honest list of where this system breaks 
+
+Let's build your a win Rate that will provide profits!
+ 
+
+Porposal Please improve on for Stock Market Trading and Analysis
+ 
+🎯 How It Works (60-Second Version) 🎯
+
+The concept is simple. The results are not.
+
+You dump articles, notes, PDFs, and bookmarks into a "raw" folder.
+
+Don't organize. Just dump.
+
+Then you give AI a rules file that tells it how to organize your knowledge.
+
+The AI reads each source and builds a wikiin obsidian : summaries, cross-references, connections between ideas, contradictions flagged. When you ask a question, the AI reads the wiki it already built. Not your raw files. The connections are already there.
+
+Every new source makes the wiki richer. Every question you ask can get filed back in.
+
+Knowledge compounds instead of resetting.
+
+If you create content, this becomes your research engine. Dump competitor breakdowns, trending articles, audience insights. The wiki surfaces patterns and angles you'd never find manually. If you run a consultancy, this becomes your domain brain. By month 3, your AI knows your market better than most new hires.
+
+
+7 prompts. Each one handles a specific job. The first three do the heavy lifting. The rest compound the system over time.
+⚙️ PROMPT #1: INGEST ⚙️
+
+💡 What this does: Reads a single source, extracts key ideas, builds wiki pages, and connects everything to your existing knowledge base.
+
+Read the schema in CLAUDE.md. Then process [FILENAME] from raw/.
+
+Read it fully, discuss key takeaways with me, then: create a summary page in wiki/, update wiki/index.md, update all relevant concept and entity pages, add backlinks, flag any contradictions, and append to wiki/log.md.
+
+Start with one source at a time. Read the summaries. Guide the AI on what to emphasize. This produces dramatically better results than batch-processing.
+
+For more systems like this, the Complete AI Bundle has everything.
+⚙️ PROMPT #2: BATCH INGEST ⚙️
+
+💡 What this does: Processes multiple sources in sequence when you have a backlog. Less control per source, but faster for bulk loading.
+
+Read the schema in CLAUDE.md. List all unprocessed files in raw/.
+
+For each file: read it fully, create a summary page in wiki/, update wiki/index.md, update all relevant concept and entity pages, add backlinks, flag contradictions, and append to wiki/log.md. Process them one at a time. Pause after every 3 files and show me a progress summary with key themes emerging across sources.
+
+Use this after you've done 5-10 manual ingests and trust the schema. The AI knows your preferences by then.
+⚙️ PROMPT #3: QUERY ⚙️
+
+💡 What this does: Asks your knowledge base a question and cites which wiki pages informed the answer. New connections get filed back automatically.
+
+Read wiki/index.md. Based on what's in the knowledge base, answer: [YOUR QUESTION]. Cite which wiki pages informed your answer. If this reveals new connections worth preserving, create a new page in wiki/ and update the index.
+
+Try these to see the system's power:
+
+    "What are the three biggest gaps in this knowledge base?"
+
+    "Which sources disagree with each other, and on what?"
+
+    "Write a 500-word briefing on [topic] using only wiki content." 
+
+⚙️ PROMPT #4: LINT ⚙️
+
+💡 What this does: Runs a health check on your entire wiki. Catches errors before they compound. Suggests new sources to fill knowledge gaps.
+
+Run a full health check on wiki/ per the lint workflow in CLAUDE.md. Output to wiki/lint-report-[date].md with severity levels. Suggest 3 articles to fill the biggest knowledge gaps.
+
+The AI writes something slightly wrong. You save it back. The next answer builds on the wrong thing. Two months later, five pages reinforce the same mistake. One lint check per month. Ten minutes. Don't skip it.
+⚙️ PROMPT #5: EXPLORE ⚙️
+
+💡 What this does: Surfaces hidden patterns and unexpected connections across your wiki. The "what am I missing" prompt.
+
+Read wiki/index.md and scan all concept pages. Find the 3 most surprising connections between topics that aren't currently linked. For each connection: explain why it matters, which wiki pages are involved, and whether a new concept page should be created. Also identify 2 topics that appear in multiple sources but don't have their own dedicated page yet.
+
+This is where the system pays for itself. You'll find angles and patterns that would take weeks of manual reading to spot.
+⚙️ PROMPT #6: BRIEF ⚙️
+
+💡 What this does: Generates a polished research brief on any topic using only your wiki content. Ready to send to a client, team, or use in your own work.
+
+Read wiki/index.md. Write a [LENGTH]-word research brief on [TOPIC]. Use only information from the wiki. Structure it as:
+
+Executive Summary (3 sentences), Key Findings (numbered list), 
+
+Areas of Disagreement Between Sources, Gaps in Current Knowledge, 
+
+and Recommended Next Steps. Cite wiki page names inline. 
+
+If this brief surfaces new connections, create a wiki page for it.
+
+Replace [LENGTH] with 300, 500, or 1000 depending on your need. Replace [TOPIC] with whatever you're working on. The wiki does the research. You just ask.
+⚙️ PROMPT #7: SCHEMA (The Rules File) ⚙️
+
+💡 What this does: Generates the CLAUDE.md rules file that governs how your entire knowledge base operates. Run this first. Everything else depends on it.
+
+Create a CLAUDE.md file for a personal knowledge base system.
+
+The system uses a raw/ folder for unprocessed sources and a wiki/folder for structured knowledge. Define these workflows:
+
+1. INGEST: How to process a single source from raw/ into wiki/pages (summary page, concept pages, entity pages, index update, backlinks, contradiction flags, log entry).
+ 
+2. QUERY: How to answer questions using wiki/index.md as the entry point, cite sources, and optionally create new pages. 
+
+3. LINT: How to health-check all wiki pages for orphans, broken links, stale content, missing backlinks, and contradictions.
+
+4. Page format: Each wiki page needs title, source references, summary, key concepts, related pages (backlinks), and a last-updated timestamp.
+
+Keep the schema under 200 lines. Optimize for clarity over completeness. The AI should be able to follow it without asking questions.
+
+Run this once. Then run Ingest on your first source. You'll have a working knowledge base in under 30 minutes.
+⚠️ Some Notes ⚠️
+
+This works. And it has limits. Knowing them before you start saves you a weekend of frustration.
+
+    Error compounding. The AI writes a wiki page with a subtle mistake. You query against it. The mistake enters your answer. You file it back. Now two pages reinforce the same error. Monthly linting helps. Don't skip it.
+
+    Context window ceiling. The system works well at around 100 articles. At 400,000 words, even a 128K-token window only holds a fraction. The AI reads selectively through the index. Your query results will have blind spots.
+
+    Cost. Every ingest, query, and lint check costs tokens. A single source that touches 10-15 pages can run $2-5 with frontier models. 50 sources = $100-250 for ingestion. Cheaper than a research assistant. Not free. 
+
+📋 SUMMARY 📋
+
+    Build a wiki that grows with every source you add, not a bookmark graveyard
+
+    3 core prompts (Ingest, Query, Lint) handle 90% of the work
+
+    4 additional prompts (Batch Ingest, Explore, Brief, Schema) compound the system over time
+
+    Knowledge compounds instead of resetting. That's the whole point. 
+
+📚 FREE RESOURCES 📚
+📦 WRAP UP 📦
+
+What you learned today:
+
+    The AI Wiki System - How to turn scattered bookmarks into a compounding knowledge base that gets smarter with every source.
+
+    The 7-Prompt System - Ingest builds pages, Query extracts answers, Lint catches errors, Explore finds hidden patterns, Brief creates deliverables, and Schema sets the rules.
+
+    Where It Breaks - Error compounding, context limits, and token costs. Know them before you start. 
+
+Every question makes the next answer better. Every source makes the wiki richer.
+
+No more bookmarking 47 articles and finding 3.
+
+You now have a system that actually remembers what you've read.
+

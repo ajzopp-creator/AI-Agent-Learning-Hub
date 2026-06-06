@@ -1,0 +1,12 @@
+{
+  "timestamp": "2026-02-18T18:07:12.851154",
+  "spy_posture": -3.4825439453125,
+  "qqq_posture": -5.996307373046875,
+  "avg_posture": -4.7394256591796875,
+  "risk_mode": "HALF",
+  "source": "Grid_XLSX",
+  "spy_grid_date": "02/17/2026",
+  "qqq_grid_date": "02/17/2026",
+  "intraday_signal": "CONFIRM",
+  "intraday_reason": "Intraday confirm: Prices within predicted range (PRANGE)"
+}

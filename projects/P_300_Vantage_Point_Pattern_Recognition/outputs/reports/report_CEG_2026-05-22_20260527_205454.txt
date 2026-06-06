@@ -1,0 +1,54 @@
+============================================================================
+P_300 SIGNAL REPORT
+============================================================================
+Ticker:           CEG
+Anchor date:      2026-05-22
+Signal:           PASS at horizon 7
+Generated:        2026-05-27 20:54 ET
+
+PER-HORIZON STATS
+----------------------------------------------------------------------------
+    h    n  win_rate  mean_ret  std_ret  z_score  class
+    5   20     0.450     -3.29    12.53   -1.240   PASS
+    7   20     0.450     -3.09    12.41   -1.149   PASS
+   10   20     0.450     -2.59    14.47   -1.149   PASS
+   15   20     0.350     -1.29    15.66   -2.148   PASS
+   20   20     0.450     -1.32    17.08   -1.149   PASS
+
+TOP 20 MATCHES (by composite distance, ascending)
+----------------------------------------------------------------------------
+   #  ticker      anchor  compdist     +5d     +7d    +10d    +15d    +20d
+   1     HAL  2025-10-09    11.484   -6.75   -3.33  +16.32  +15.21  +16.79
+   2     VNO  2026-03-05    12.091   -8.02  -10.28   -6.46   -9.33  -10.46
+   3    BURL  2025-12-16    12.205   +8.84  +11.28  +10.71  +17.90  +17.39
+   4     CRS  2026-02-04    12.302  +10.63  +13.65  +14.90  +18.95  +18.20
+   5    INTC  2025-06-13    12.463   +5.21  +10.23  +11.22  +17.13  +13.80
+   6    MPWR  2026-02-24    12.468  -11.48  -11.14  -13.01  -12.11   -9.23
+   7    META  2025-11-05    12.706   -4.24   -4.17   -7.18   -0.37   +4.02
+   8     LEN  2026-01-08    12.969  +11.59   +5.12   +2.09   -0.18   +4.08
+   9     CLF  2026-03-02    12.992  -16.23  -18.60  -24.47  -29.56  -28.86
+  10    AVGO  2025-06-13    12.995   +2.04   +6.41  +10.84   +9.29  +12.96
+  11   CFPZF  2025-12-26    13.330  +11.82   +8.72  +16.83  +26.27  +33.21
+  12     BAC  2026-01-29    13.742   +3.50   +6.27   -1.06   -0.04   -6.12
+  13     MOS  2026-03-17    13.992  -12.59  -13.28  -11.55   -7.67  -17.69
+  14     TTD  2025-08-07    14.300  -42.53  -37.79  -40.79  -37.33  -41.05
+  15     BXP  2026-02-26    14.421   -9.32  -14.21  -13.80  -12.69  -13.09
+  16     FHN  2026-01-30    14.622   +7.10   +4.70   +0.29   -1.59   -1.35
+  17     AMD  2025-08-18    14.772   -7.26   -5.12   -7.85  -11.54   -8.90
+  18     VST  2026-02-10    14.872   +6.87   +7.39   +9.87   +2.36   -0.28
+  19     DVN  2026-04-07    15.065   -9.41   -8.35   -8.71   -0.94   +2.08
+  20     FLS  2026-03-03    15.144   -5.69   -9.32   -9.98   -9.67  -11.92
+
+NARRATIVE
+----------------------------------------------------------------------------
+  The P_300 Signal Report for CEG with an anchor date of 2026-05-22
+  generates a final signal of PASS at horizon 7. Per-horizon statistics
+  show consistent win rates of 45% across all horizons, but negative mean
+  returns ranging from -3.29% to -1.32%, with standard deviations
+  indicating moderate return dispersion. The top five historical analogs
+  exhibit varied outcomes, including both positive and negative short-term
+  (+5d) and long-term (+20d) returns, suggesting potential price
+  volatility. These factors contribute to the PASS classification,
+  reflecting cautious sentiment toward the stock's near-term performance.
+
+============================================================================

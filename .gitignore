@@ -1,0 +1,162 @@
+# AI Agent Learning Hub - .gitignore
+# This prevents sensitive files from being uploaded to GitHub
+
+# ============================================
+# CRITICAL: API Keys & Credentials
+# ============================================
+*.env
+.env
+.env.local
+.env.*.local
+04-Shared-Resources/api-credentials/*
+!04-Shared-Resources/api-credentials/.gitkeep
+secrets.json
+credentials.json
+**/api_keys.py
+**/config_private.py
+schwab_credentials.txt
+email_passwords.txt
+
+# ============================================
+# Python
+# ============================================
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.pytest_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb_checkpoints/
+
+# ============================================
+# IDEs & Editors
+# ============================================
+# VS Code
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json.example
+
+# PyCharm
+.idea/
+*.iml
+
+# ============================================
+# OS Files
+# ============================================
+# Windows
+Thumbs.db
+desktop.ini
+*.lnk
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# ============================================
+# Project Specific
+# ============================================
+# Logs
+*.log
+logs/
+*.log.*
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Downloaded models (can be large)
+03-Local-LLM/models/
+*.gguf
+*.bin
+*.safetensors
+
+# Temporary files
+temp/
+tmp/
+*.tmp
+scratch/
+
+# Trading data (sensitive)
+02-Production-Agents/Schwab-Trading-Agent/trade_history/
+02-Production-Agents/Schwab-Trading-Agent/account_data/
+*.csv
+!**/examples/*.csv
+
+# Email cache
+02-Production-Agents/Email-Agent/email_cache/
+02-Production-Agents/Email-Agent/attachments/
+
+# Experiments (keep only successful ones)
+06-Experiments/failed/
+06-Experiments/archive/
+
+# ============================================
+# Documentation builds
+# ============================================
+05-Documentation/build/
+05-Documentation/_build/
+docs/_build/
+site/
+
+# ============================================
+# Backup files
+# ============================================
+*.bak
+*.backup
+*.swp
+*~
+
+# ============================================
+# Notes for Beginners
+# ============================================
+# This file prevents you from accidentally uploading:
+# 1. Your API keys and passwords
+# 2. Your trading account information  
+# 3. Large model files
+# 4. Personal email data
+#
+# NEVER remove lines that protect credentials!
+# You can add more patterns as needed.

@@ -1,0 +1,59 @@
+============================================================================
+P_300 SIGNAL REPORT  HTZ WATCH
+============================================================================
+Ticker:           HTZ
+Anchor date:      2026-05-28
+Signal:           WATCH at horizon 5
+Generated:        2026-05-29 20:35 ET
+
+PER-HORIZON STATS
+----------------------------------------------------------------------------
+    h    n  win_rate  mean_ret  std_ret  z_score  class
+    5   20     0.600     +2.62    13.58   +0.198  WATCH
+    7   20     0.550     +3.59    17.03   -0.184   PASS
+   10   20     0.550     +4.04    19.24   -0.113   PASS
+   15   20     0.550     +4.73    24.31   -0.255   PASS
+   20   20     0.500     +2.54    20.93   -0.707   PASS
+
+TOP 20 MATCHES (by composite distance, ascending)
+----------------------------------------------------------------------------
+   #  ticker      anchor  compdist     +5d     +7d    +10d    +15d    +20d
+   1    SLDP  2026-01-02     3.121  +14.62  +20.43  +20.43   +9.46   -7.96
+   2    PTON  2026-02-04     3.965  -26.90  -28.09  -25.21  -30.96  -35.19
+   3    GRRR  2026-03-10     4.376   +0.26   -3.44   -7.40   -7.22   -2.82
+   4     LAC  2026-01-02     4.384  +13.00  +22.43  +24.95  +25.58   -0.21
+   5    PTON  2025-12-12     4.505   -5.20   -6.57   -4.13   +0.92   +7.03
+   6     CLF  2026-03-02     4.516  -16.23  -18.60  -24.47  -29.56  -28.86
+   7     NET  2026-03-03     4.627  +15.97  +18.56  +18.23  +19.14  +15.33
+   8    CARG  2026-02-24     4.714  +11.97  +18.01  +11.73  +15.32  +20.19
+   9    CHTR  2026-01-29     4.767  +16.71  +24.40  +24.31  +20.18  +22.51
+  10     VNO  2026-03-05     4.791   -8.02  -10.28   -6.46   -9.33  -10.46
+  11    SFIX  2025-11-24     4.833  +11.14  +18.73  +33.16  +35.19  +29.62
+  12     VST  2026-02-10     4.960   +6.87   +7.39   +9.87   +2.36   -0.28
+  13    UUUU  2025-12-31     4.988  +27.85  +32.46  +43.88  +75.38  +54.33
+  14     CEG  2026-01-16     5.000   -7.29   -6.42  -11.97  -11.56   -1.53
+  15      RH  2026-02-23     5.021  -16.92  -20.27  -25.36  -30.28  -31.27
+  16     CCJ  2026-03-11     5.308   -5.19  -11.99   -5.52   -3.69   +0.13
+  17     GAP  2025-10-17     5.462   +8.61  +12.87   +5.79   +8.61  +11.81
+  18     LEN  2026-01-08     5.643  +11.59   +5.12   +2.09   -0.18   +4.08
+  19    BURL  2025-12-16     5.692   +8.84  +11.28  +10.71  +17.90  +17.39
+  20     BXP  2026-02-26     5.781   -9.32  -14.21  -13.80  -12.69  -13.09
+
+VOLATILITY DIVERGENCE: MILD (ratio 1.73x)
+----------------------------------------------------------------------------
+  Candidate range_pct median: 0.0839    Top-K median: 0.0486
+  Modest volatility-regime mismatch between candidate and top-K analogs.
+
+NARRATIVE
+----------------------------------------------------------------------------
+  The P_300 signal report for HTZ indicates a WATCH classification at
+  horizon 5. Historical data shows a win rate of 60% with an average
+  return of +2.62% over the past 20 occurrences, though returns exhibit
+  significant variability (std_ret=13.58%). Longer horizons (7-20) show
+  similar or lower mean returns, increasing volatility, and negative
+  z-scores, suggesting diminishing performance. Top historical analogs
+  reveal mixed outcomes: SLDP shows strong positive returns, while PTON
+  instances yield negative results, indicating varied past signal
+  effectiveness.
+
+============================================================================

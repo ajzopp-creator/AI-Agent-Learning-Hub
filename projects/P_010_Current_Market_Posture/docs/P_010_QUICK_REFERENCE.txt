@@ -1,0 +1,42 @@
+================================================================================
+P_010 V3 QUICK REFERENCE
+================================================================================
+
+MORNING (9:30 AM):
+  .\P_010_daily_posture.bat
+  ? Creates: P_010_RiskConfig.json
+  ? Read: "risk_mode" (FULL/HALF/OFF)
+  ? Apply: Position sizing
+
+INTRADAY (2 PM+):
+  .\P_010_run_intraday_vp_check.bat
+  ? Creates: outputs/intraday_vp_check_*.json
+  ? Read: "intraday_adjustment" (NONE/HALF/REDUCED)
+  ? Apply: MIN(morning, intraday)
+
+POSITION SIZING:
+  FULL = 100%
+  HALF = 50%
+  OFF = 0%
+
+INTEGRATION:
+  P_115/P_118 reads:
+  1. P_010_RiskConfig.json (morning)
+  2. outputs/intraday_vp_check_*.json (afternoon, optional)
+
+FILES:
+  PRIMARY: P_010_RiskConfig.json
+  BACKUP: data/snapshots/P_010_RiskConfig_*.json
+  INTRADAY: outputs/intraday_vp_check_*.json
+  LOGS: logs/P_010_Daily_*.log
+
+SCRIPTS:
+  python/P_010_daily_posture_v3.py
+  python/P_010_intraday_vp_check_v3.py
+
+DATA SOURCE:
+  data/excel_exports/History Grid (SPY)_v3.xlsx
+  data/excel_exports/History Grid (QQQ)_v3.xlsx
+
+STATUS: V3 TESTED AND OPERATIONAL ?
+================================================================================

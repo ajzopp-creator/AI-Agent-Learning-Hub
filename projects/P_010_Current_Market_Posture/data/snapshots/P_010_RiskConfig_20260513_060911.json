@@ -1,0 +1,20 @@
+{
+  "timestamp": "2026-05-12T07:30:01.564847",
+  "spy_posture": 10.908417,
+  "qqq_posture": 21.921417,
+  "avg_posture": 16.414917,
+  "risk_mode": "HALF",
+  "source": "Grid_XLSX",
+  "spy_grid_date": "05/11/2026",
+  "qqq_grid_date": "05/11/2026",
+  "vxx_posture": -0.507885,
+  "vxx_signal": "NEUTRAL",
+  "vxx_note": "VP sees stable/flat volatility -- no directional signal from VXX",
+  "vxx_close": 28.4699993133545,
+  "vxx_pred_high": 29.0571746826172,
+  "vxx_pred_low": 28.2437610626221,
+  "vxx_grid_date": "05/11/2026",
+  "morning_risk_mode": "FULL",
+  "intraday_signal": "DOWNGRADE",
+  "intraday_reason": "Intraday downgrade: Market weaker than predicted (prices below PRANGE)"
+}

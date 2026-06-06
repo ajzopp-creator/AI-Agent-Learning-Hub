@@ -1,0 +1,62 @@
+============================================================================
+P_300 SIGNAL REPORT
+============================================================================
+Ticker:           WDAY
+Anchor date:      2026-05-19
+Signal:           PASS at horizon 7
+Generated:        2026-05-20 15:45 ET
+
+PER-HORIZON STATS
+----------------------------------------------------------------------------
+    h    n  win_rate  mean_ret  std_ret  z_score  class
+    5   20     0.550     +0.16    11.27   -0.456   PASS
+    7   20     0.600     +0.73    10.12   +0.000   PASS
+   10   20     0.600     -0.63    10.37   +0.000   PASS
+   15   20     0.550     -0.23    10.95   -0.090   PASS
+   20   20     0.550     +0.52    12.29   -0.456   PASS
+
+TOP 20 MATCHES (by composite distance, ascending)
+----------------------------------------------------------------------------
+   #  ticker      anchor  compdist     +5d     +7d    +10d    +15d    +20d
+   1     GEV  2025-09-25    11.226   -0.21   -0.71   +4.40   -0.91   -2.04
+   2    PLTR  2025-10-23    12.474   +7.80  +14.79   -3.01   -4.62  -13.71
+   3     GLP  2026-03-10    13.700   -0.31   +1.83   -3.04  -11.59   -0.38
+   4     DIS  2025-10-15    13.737   +1.23   -0.03   -1.32   -0.31   +4.42
+   5     NVO  2025-09-11    14.201  +13.90  +11.80   +3.20   +8.18   +8.07
+   6     XOM  2026-01-15    14.512   +4.52   +5.96   +9.50  +15.43  +14.96
+   7    NVDA  2025-10-24    15.859   +8.71   +6.67   +1.01   +2.10   -3.96
+   8     QQQ  2026-04-14    16.567   +2.50   +3.63   +4.61   +8.43  +12.51
+   9     TTD  2025-08-07    16.666  -42.53  -37.79  -40.79  -37.33  -41.05
+  10      DE  2025-11-20    16.881   -2.49   -1.51   -0.26   +1.78   -1.21
+  11     CAT  2025-06-25    16.909   +7.23   +5.36   +9.89  +12.51  +15.59
+  12     OII  2026-02-18    17.366  +14.60   +7.28   +6.20   +6.80   +2.36
+  13     NKE  2025-09-15    17.393   -2.40   -2.48   -4.77   -2.55   -7.74
+  14    SHOP  2025-09-22    17.545   -5.17   -4.81   +4.70   -2.20   +4.83
+  15     CVX  2026-02-10    17.734   +0.88   +0.92   +1.08   +2.07   +5.23
+  16     LMT  2025-09-02    17.880   +1.01   +4.03   +4.82   +7.55  +10.32
+  17     SPY  2025-06-20    18.179   +3.47   +3.93   +4.44   +5.14   +5.80
+  18     AMD  2025-08-18    18.427   -7.26   -5.12   -7.85  -11.54   -8.90
+  19   GOOGL  2025-12-12    18.873   -0.69   +1.64   +1.38   +1.63   +8.63
+  20      GS  2026-01-22    19.182   -1.52   -0.87   -6.73   -5.25   -3.39
+
+VOLATILITY DIVERGENCE: STRONG (ratio 2.14x)
+----------------------------------------------------------------------------
+  Candidate range_pct median:   0.0456
+  Top-K range_pct median:       0.0213
+  n_topk_matches:               20
+  Top-K analogs trade with materially different volatility regime
+  than the candidate. Statistics are apples-to-oranges; size
+  with extra caution.
+
+NARRATIVE
+----------------------------------------------------------------------------
+  The P_300 Signal Report for WDAY on 2026-05-19 yields a final signal of
+  PASS at horizon 7. The per-horizon statistics show varying performance:
+  h=5 has a 55% win rate with a mean return of +0.16%, while h=7 and h=10
+  both have 60% win rates but diverge in mean returns (+0.73% and -0.63%,
+  respectively). The z-scores across horizons remain unremarkable,
+  suggesting no significant edge. Top historical analogs (GEV, PLTR, GLP,
+  DIS, NVO) exhibit diverse outcomes, with some showing gains and others
+  losses over 5-20 days, indicating signal uncertainty.
+
+============================================================================

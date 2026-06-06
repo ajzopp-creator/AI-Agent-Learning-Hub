@@ -1,0 +1,12 @@
+{
+  "timestamp": "2026-02-06T21:12:25.093571",
+  "spy_posture": -3.944976806640625,
+  "qqq_posture": -9.7854919433594,
+  "avg_posture": -6.865234375000012,
+  "risk_mode": "OFF",
+  "source": "Grid_XLSX",
+  "spy_grid_date": "02/05/2026",
+  "qqq_grid_date": "02/05/2026",
+  "intraday_adjustment": "REDUCED",
+  "intraday_reason": "Both symbols outside PRANGE"
+}

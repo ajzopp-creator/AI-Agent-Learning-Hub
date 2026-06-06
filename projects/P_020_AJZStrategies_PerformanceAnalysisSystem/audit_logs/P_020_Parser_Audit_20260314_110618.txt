@@ -1,0 +1,30 @@
+P_020 Trade Parser Audit Log
+Run timestamp : 2026-03-14T11:06:18.894143
+Input file    : P_020_raw_AJZ_Strategies_2026-01-01_to_2026-03-14_20260314_110538.json
+Account       : AJZ_Strategies
+Date range    : 2026-01-01 to 2026-03-14
+
+--- PROCESSING SUMMARY ---
+Total transactions in file : 107
+Skipped (no orderId/item)  : 6
+Orders after fill aggregation: 79
+  Option orders            : 69
+  Stock orders             : 10
+
+--- CONSOLIDATION ---
+Option openings after 10-min consolidation: 31
+Stock openings after 10-min consolidation : 4
+
+--- MATCHING ---
+Option positions matched   : 31
+Stock positions matched    : 4
+
+--- ORPHANED EXITS (no matching entry in date range) ---
+Option orphans: 1
+  URBN on 1/2/26 -- check prior period
+Stock orphans : 1
+  TWLO on 1/5/26 -- check prior period
+
+--- OUTPUT FILES ---
+Options CSV : P_020_AJZ_Strategies_2026-01-01_to_2026-03-14_20260314_110618_OPTIONS_IMPORT.csv
+Stocks CSV  : P_020_AJZ_Strategies_2026-01-01_to_2026-03-14_20260314_110618_STOCKS_IMPORT.csv

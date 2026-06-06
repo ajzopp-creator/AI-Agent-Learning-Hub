@@ -1,0 +1,147 @@
+
+================================================================
+P_300 Catalog Summary
+================================================================
+Catalog:  C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\models\052726catalog.db
+Size:     811,008 bytes (792.0 KB)
+Modified: 2026-05-27 22:02:42
+----------------------------------------------------------------
+Row counts
+----------------------------------------------------------------
+  symbols               103
+  source_files          116
+  feature_sets            1  (baseline_v1)
+  pattern_instances     116
+  pattern_bars         2320
+  pattern_features        0  (deferred per D2 scope trim)
+  forward_labels        580
+----------------------------------------------------------------
+Symbol distribution
+----------------------------------------------------------------
+  ALLE        2 patterns
+  ANF         2 patterns
+  APLD        2 patterns
+  CLF         2 patterns
+  DLTR        2 patterns
+  DVN         2 patterns
+  ETSY        2 patterns
+  INTC        2 patterns
+  MT          2 patterns
+  PLTR        2 patterns
+  PRMRF       2 patterns
+  PTON        2 patterns
+  VMC         2 patterns
+  AAPL        1 pattern
+  AMD         1 pattern
+  AVGO        1 pattern
+  BAC         1 pattern
+  BCPC        1 pattern
+  BURL        1 pattern
+  BXP         1 pattern
+  CAT         1 pattern
+  CCEP        1 pattern
+  CEG         1 pattern
+  CFG         1 pattern
+  CFPZF       1 pattern
+  CHTR        1 pattern
+  CR          1 pattern
+  CRL         1 pattern
+  CRS         1 pattern
+  CSL         1 pattern
+  CVX         1 pattern
+  DE          1 pattern
+  DECK        1 pattern
+  DIS         1 pattern
+  DX          1 pattern
+  FBIN        1 pattern
+  FHN         1 pattern
+  FIVE        1 pattern
+  FLS         1 pattern
+  FOXA        1 pattern
+  GAP         1 pattern
+  GEV         1 pattern
+  GLP         1 pattern
+  GMED        1 pattern
+  GOOGL       1 pattern
+  GRAB        1 pattern
+  GRRR        1 pattern
+  GS          1 pattern
+  GT          1 pattern
+  HAL         1 pattern
+  HTH         1 pattern
+  HUBB        1 pattern
+  ITW         1 pattern
+  J           1 pattern
+  KTOS        1 pattern
+  LAC         1 pattern
+  LEN         1 pattern
+  LMT         1 pattern
+  LNC         1 pattern
+  LULU        1 pattern
+  MAN         1 pattern
+  META        1 pattern
+  MLM         1 pattern
+  MOS         1 pattern
+  MPWR        1 pattern
+  MSI         1 pattern
+  MTB         1 pattern
+  MU          1 pattern
+  MVIS        1 pattern
+  NET         1 pattern
+  NKE         1 pattern
+  NVDA        1 pattern
+  NVO         1 pattern
+  O           1 pattern
+  OI          1 pattern
+  OII         1 pattern
+  OXY         1 pattern
+  PINS        1 pattern
+  PNC         1 pattern
+  QCOM        1 pattern
+  QQQ         1 pattern
+  RH          1 pattern
+  RMBS        1 pattern
+  RPM         1 pattern
+  SFIX        1 pattern
+  SHAK        1 pattern
+  SHOP        1 pattern
+  SLDP        1 pattern
+  SPY         1 pattern
+  TM          1 pattern
+  TPL         1 pattern
+  TPR         1 pattern
+  TTD         1 pattern
+  UL          1 pattern
+  UUUU        1 pattern
+  VALE        1 pattern
+  VNO         1 pattern
+  VST         1 pattern
+  WBD         1 pattern
+  WFG         1 pattern
+  WMT         1 pattern
+  XLE         1 pattern
+  XOM         1 pattern
+----------------------------------------------------------------
+Ghost pattern check (hollow instances)
+----------------------------------------------------------------
+  0 hollow records  [OK]
+----------------------------------------------------------------
+Recent patterns (last 5)
+----------------------------------------------------------------
+  id=116  GRAB   anchor=2026-04-06  window=20  origin=PATTERN_IDENT  bars=20  labels=5
+  id=115  SHAK   anchor=2026-01-02  window=20  origin=PATTERN_IDENT  bars=20  labels=5
+  id=114  VMC    anchor=2026-02-27  window=20  origin=PATTERN_IDENT  bars=20  labels=5
+  id=113  VMC    anchor=2026-03-27  window=20  origin=PATTERN_IDENT  bars=20  labels=5
+  id=112  PINS   anchor=2026-04-14  window=20  origin=PATTERN_IDENT  bars=20  labels=5
+----------------------------------------------------------------
+Forward-label statistics (all symbols)
+----------------------------------------------------------------
+  + 5d  n=116   67/116 profitable ( 57.8%)  avg return +2.93%
+  + 7d  n=116   66/116 profitable ( 56.9%)  avg return +3.12%
+  +10d  n=116   65/116 profitable ( 56.0%)  avg return +3.26%
+  +15d  n=116   66/116 profitable ( 56.9%)  avg return +4.08%
+  +20d  n=116   65/116 profitable ( 56.0%)  avg return +3.45%
+================================================================
+OVERALL: HEALTHY
+================================================================
+

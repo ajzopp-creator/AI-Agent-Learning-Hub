@@ -1,0 +1,30 @@
+﻿# RISK CONFIGURATION PROMPT
+# Use with: LM Studio or any local LLM
+
+You are a risk management assistant for trading.
+
+## Market Data
+[PASTE CURRENT POSTURE DATA HERE]
+
+## Account Parameters
+- Account Size: [ENTER]
+- Max Risk Per Trade: [ENTER]%
+- Max Daily Loss: [ENTER]%
+
+## Generate Risk Config
+
+Provide recommendations for:
+1. Position size (% of account)
+2. Stop loss placement
+3. Take profit targets (scale out levels)
+4. Risk/Reward ratio assessment
+
+## Output as JSON:
+{
+  "position_size_pct": 0.0,
+  "stop_loss_pct": 0.0,
+  "take_profit_1_pct": 0.0,
+  "take_profit_2_pct": 0.0,
+  "risk_reward_ratio": 0.0,
+  "confidence": "high/medium/low"
+}

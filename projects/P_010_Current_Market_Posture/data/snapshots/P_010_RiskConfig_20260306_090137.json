@@ -1,0 +1,12 @@
+{
+  "timestamp": "2026-03-05T09:30:04.173436",
+  "spy_posture": -0.735626220703125,
+  "qqq_posture": 0.63446044921875,
+  "avg_posture": -0.0505828857421875,
+  "risk_mode": "OFF",
+  "source": "Grid_XLSX",
+  "spy_grid_date": "03/04/2026",
+  "qqq_grid_date": "03/04/2026",
+  "intraday_signal": "DOWNGRADE",
+  "intraday_reason": "Intraday confirm: Market weakness confirmed (prices below PRANGE)"
+}

@@ -1,0 +1,17 @@
+{
+  "timestamp": "2026-03-27T07:30:02.426341",
+  "spy_posture": -6.049164,
+  "qqq_posture": -6.413452,
+  "avg_posture": -6.231308,
+  "risk_mode": "OFF",
+  "source": "Grid_XLSX",
+  "spy_grid_date": "03/25/2026",
+  "qqq_grid_date": "03/25/2026",
+  "vxx_posture": null,
+  "vxx_signal": null,
+  "vxx_note": null,
+  "vxx_close": null,
+  "vxx_pred_high": null,
+  "vxx_pred_low": null,
+  "vxx_grid_date": null
+}

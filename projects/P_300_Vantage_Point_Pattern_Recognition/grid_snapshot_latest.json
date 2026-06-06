@@ -1,0 +1,27 @@
+﻿{
+    "note":  "Test snapshot - Use for 2 PM intraday VP band checks",
+    "snapshot_date":  "2026-01-29",
+    "qqq":  {
+                "williams_emai":  -9.1,
+                "half_width":  2.25,
+                "plow":  383,
+                "neural_xmax":  62.3,
+                "neural_index":  "up",
+                "midpoint":  385.25,
+                "phigh":  387.5,
+                "date":  "2026-01-28"
+            },
+    "valid_until":  "6:30 PM (when new Grid file is created)",
+    "grid_date":  "2026-01-28",
+    "snapshot_created":  "2026-01-29T12:44:08.360829",
+    "spy":  {
+                "williams_emai":  -8.2,
+                "half_width":  2,
+                "plow":  448,
+                "neural_xmax":  65.5,
+                "neural_index":  "up",
+                "midpoint":  450,
+                "phigh":  452,
+                "date":  "2026-01-28"
+            }
+}

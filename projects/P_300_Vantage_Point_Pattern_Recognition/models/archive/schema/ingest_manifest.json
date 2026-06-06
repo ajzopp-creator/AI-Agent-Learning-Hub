@@ -1,0 +1,20 @@
+{
+  "mapping": {
+    "date": "bar_date",
+    "openprice": "open",
+    "highprice": "high",
+    "lowprice": "low",
+    "closeprice": "close",
+    "volume": "volume_confirmation",
+    "shorttermdifference": "stdiff",
+    "mediumtermdifference": "mtdiff",
+    "longtermdifference": "ltdiff",
+    "predictedhighprice": "pred_high",
+    "predictedlowprice": "pred_low",
+    "predictedrange": "price_variance",
+    "williamsemai": "williams_emai",
+    "professionalsentiment": "psi",
+    "neuralindex": "neural_index",
+    "triplecross": "predicted_ma_crossover"
+  }
+}

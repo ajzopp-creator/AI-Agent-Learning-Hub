@@ -1,0 +1,12 @@
+Date range: ('2024-10-29', '2026-05-27')
+By system:
+  TOS_Import: 385
+  P_118: 32
+  P_116: 20
+  P_117: 14
+  P_115: 9
+  SNT: 8
+  P_910: 5
+  P_920: 4
+  P_300: 2
+Closed since Apr 23 (snapshot window): 9

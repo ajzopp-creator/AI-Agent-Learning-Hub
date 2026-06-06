@@ -1,0 +1,4977 @@
+{
+  "account_label": "AJZ_Strategies",
+  "start_date": "2026-03-23",
+  "end_date": "2026-05-31",
+  "pull_timestamp": "2026-05-31T09:53:21.195256",
+  "transaction_count": 52,
+  "transactions": [
+    {
+      "activityId": 120479070625,
+      "time": "2026-05-29T19:51:19+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-05-29T19:51:19+0000",
+      "orderId": 1006506058986,
+      "netAmount": 297.33,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 2.6,
+          "cost": -2.6,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.01,
+          "cost": -0.01,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.05,
+          "cost": -0.05,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.01,
+          "cost": -0.01,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "GOOGL 260618C00430000",
+            "description": "ALPHABET INC 06/18/2026 $430 Call",
+            "instrumentId": 242106240,
+            "closingPrice": 0.85,
+            "expirationDate": "2026-06-18T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "GOOGL",
+                "strikePercent": 100,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 430.0,
+            "type": "VANILLA",
+            "underlyingSymbol": "GOOGL"
+          },
+          "amount": -4.0,
+          "cost": 300.0,
+          "price": 0.75,
+          "positionEffect": "CLOSING"
+        }
+      ]
+    },
+    {
+      "activityId": 120446694943,
+      "time": "2026-05-29T17:18:05+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-05-29T17:18:05+0000",
+      "orderId": 1006536569299,
+      "netAmount": 519.33,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.65,
+          "cost": -0.65,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.01,
+          "cost": -0.01,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.01,
+          "cost": -0.01,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "SBUX  260618C00095000",
+            "description": "STARBUCKS CORP 06/18/2026 $95 Call",
+            "instrumentId": 216254225,
+            "closingPrice": 5.4009,
+            "expirationDate": "2026-06-18T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "SBUX",
+                "strikePercent": 100,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 95.0,
+            "type": "VANILLA",
+            "underlyingSymbol": "SBUX"
+          },
+          "amount": -1.0,
+          "cost": 520.0,
+          "price": 5.2,
+          "positionEffect": "CLOSING"
+        }
+      ]
+    },
+    {
+      "activityId": 120264647052,
+      "time": "2026-05-28T14:15:47+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-05-28T14:15:47+0000",
+      "orderId": 1006510777624,
+      "netAmount": 784.32,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.65,
+          "cost": -0.65,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.02,
+          "cost": -0.02,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.01,
+          "cost": -0.01,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "IRDM  260618C00045000",
+            "description": "IRIDIUM COMMUNICATIONS INC 06/18/2026 $45 Call",
+            "instrumentId": 250674515,
+            "closingPrice": 7.773,
+            "expirationDate": "2026-06-18T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "IRDM",
+                "strikePercent": 100,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 45.0,
+            "type": "VANILLA",
+            "underlyingSymbol": "IRDM"
+          },
+          "amount": -1.0,
+          "cost": 785.0,
+          "price": 7.85,
+          "positionEffect": "CLOSING"
+        }
+      ]
+    },
+    {
+      "activityId": 120211228900,
+      "time": "2026-05-27T19:06:23+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-05-27T19:06:23+0000",
+      "positionId": 3413181873,
+      "orderId": 1006505384079,
+      "netAmount": -805.99,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 1.95,
+          "cost": -1.95,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.04,
+          "cost": -0.04,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "ADM   260618C00080000",
+            "description": "ARCHER-DANIELS MIDLAND CO 06/18/2026 $80 Call",
+            "instrumentId": 236099623,
+            "closingPrice": 2.325,
+            "expirationDate": "2026-06-18T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "ADM",
+                "strikePercent": 100,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 80.0,
+            "type": "VANILLA",
+            "underlyingSymbol": "ADM"
+          },
+          "amount": 3.0,
+          "cost": -804.0,
+          "price": 2.68,
+          "positionEffect": "OPENING"
+        }
+      ]
+    },
+    {
+      "activityId": 120207013319,
+      "time": "2026-05-27T18:43:30+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-05-27T18:43:30+0000",
+      "orderId": 1006504512494,
+      "netAmount": -375.33,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 1.3,
+          "cost": -1.3,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.03,
+          "cost": -0.03,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "GOOGL 260618C00430000",
+            "description": "ALPHABET INC 06/18/2026 $430 Call",
+            "instrumentId": 242106240,
+            "closingPrice": 0.85,
+            "expirationDate": "2026-06-18T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "GOOGL",
+                "strikePercent": 100,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 430.0,
+            "type": "VANILLA",
+            "underlyingSymbol": "GOOGL"
+          },
+          "amount": 2.0,
+          "cost": -374.0,
+          "price": 1.87,
+          "positionEffect": "OPENING"
+        }
+      ]
+    },
+    {
+      "activityId": 120207013317,
+      "time": "2026-05-27T18:43:30+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-05-27T18:43:30+0000",
+      "orderId": 1006504512494,
+      "netAmount": -375.32,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 1.3,
+          "cost": -1.3,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.02,
+          "cost": -0.02,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "GOOGL 260618C00430000",
+            "description": "ALPHABET INC 06/18/2026 $430 Call",
+            "instrumentId": 242106240,
+            "closingPrice": 0.85,
+            "expirationDate": "2026-06-18T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "GOOGL",
+                "strikePercent": 100,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 430.0,
+            "type": "VANILLA",
+            "underlyingSymbol": "GOOGL"
+          },
+          "amount": 2.0,
+          "cost": -374.0,
+          "price": 1.87,
+          "positionEffect": "OPENING"
+        }
+      ]
+    },
+    {
+      "activityId": 120121156032,
+      "time": "2026-05-27T13:34:08+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-05-27T13:34:08+0000",
+      "orderId": 1006488604588,
+      "netAmount": 1114.32,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.65,
+          "cost": -0.65,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.02,
+          "cost": -0.02,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.01,
+          "cost": -0.01,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "XYZ   260618C00060000",
+            "description": "Block Inc 06/18/2026 $60 Call",
+            "instrumentId": 232252120,
+            "closingPrice": 15.9085,
+            "expirationDate": "2026-06-18T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "XYZ",
+                "strikePercent": 100,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 60.0,
+            "type": "VANILLA",
+            "underlyingSymbol": "XYZ"
+          },
+          "amount": -1.0,
+          "cost": 1115.0,
+          "price": 11.15,
+          "positionEffect": "CLOSING"
+        }
+      ]
+    },
+    {
+      "activityId": 120039268041,
+      "time": "2026-05-26T15:32:35+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-05-26T15:32:35+0000",
+      "orderId": 1006446087511,
+      "netAmount": 465.33,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 2.6,
+          "cost": -2.6,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.01,
+          "cost": -0.01,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.05,
+          "cost": -0.05,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.01,
+          "cost": -0.01,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "AMZN  260618C00290000",
+            "description": "Amazon.com Inc 06/18/2026 $290 Call",
+            "instrumentId": 221307475,
+            "closingPrice": 1.8519,
+            "expirationDate": "2026-06-18T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "AMZN",
+                "strikePercent": 100,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 290.0,
+            "type": "VANILLA",
+            "underlyingSymbol": "AMZN"
+          },
+          "amount": -4.0,
+          "cost": 468.0,
+          "price": 1.17,
+          "positionEffect": "CLOSING"
+        }
+      ]
+    },
+    {
+      "activityId": 120001535028,
+      "time": "2026-05-26T13:46:52+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-05-26T13:46:52+0000",
+      "orderId": 1006475522640,
+      "netAmount": -892.66,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.65,
+          "cost": -0.65,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.01,
+          "cost": -0.01,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "SBUX  260618C00095000",
+            "description": "STARBUCKS CORP 06/18/2026 $95 Call",
+            "instrumentId": 216254225,
+            "closingPrice": 5.4009,
+            "expirationDate": "2026-06-18T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "SBUX",
+                "strikePercent": 100,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 95.0,
+            "type": "VANILLA",
+            "underlyingSymbol": "SBUX"
+          },
+          "amount": 1.0,
+          "cost": -892.0,
+          "price": 8.92,
+          "positionEffect": "OPENING"
+        }
+      ]
+    },
+    {
+      "activityId": 120001533391,
+      "time": "2026-05-26T13:45:40+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-05-26T13:45:40+0000",
+      "orderId": 1006475522351,
+      "netAmount": -854.66,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.65,
+          "cost": -0.65,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.01,
+          "cost": -0.01,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "XYZ   260618C00060000",
+            "description": "Block Inc 06/18/2026 $60 Call",
+            "instrumentId": 232252120,
+            "closingPrice": 15.9085,
+            "expirationDate": "2026-06-18T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "XYZ",
+                "strikePercent": 100,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 60.0,
+            "type": "VANILLA",
+            "underlyingSymbol": "XYZ"
+          },
+          "amount": 1.0,
+          "cost": -854.0,
+          "price": 8.54,
+          "positionEffect": "OPENING"
+        }
+      ]
+    },
+    {
+      "activityId": 119993653887,
+      "time": "2026-05-26T13:30:04+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-05-26T13:30:04+0000",
+      "orderId": 1006468313859,
+      "netAmount": 759.32,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.65,
+          "cost": -0.65,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.02,
+          "cost": -0.02,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.01,
+          "cost": -0.01,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "IRDM  260618C00045000",
+            "description": "IRIDIUM COMMUNICATIONS INC 06/18/2026 $45 Call",
+            "instrumentId": 250674515,
+            "closingPrice": 7.773,
+            "expirationDate": "2026-06-18T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "IRDM",
+                "strikePercent": 100,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 45.0,
+            "type": "VANILLA",
+            "underlyingSymbol": "IRDM"
+          },
+          "amount": -1.0,
+          "cost": 760.0,
+          "price": 7.6,
+          "positionEffect": "CLOSING"
+        }
+      ]
+    },
+    {
+      "activityId": 119952006599,
+      "time": "2026-05-22T18:40:45+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-05-22T18:40:45+0000",
+      "positionId": 3399553194,
+      "orderId": 1006469235185,
+      "netAmount": 744.32,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.65,
+          "cost": -0.65,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.02,
+          "cost": -0.02,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.01,
+          "cost": -0.01,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "C     260618C00120000",
+            "description": "Citigroup Inc 06/18/2026 $120 Call",
+            "instrumentId": 230137516,
+            "closingPrice": 7.4927,
+            "expirationDate": "2026-06-18T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "C",
+                "strikePercent": 0,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0,
+                "deliverable": {
+                  "assetType": "EQUITY",
+                  "status": "ACTIVE",
+                  "symbol": "C",
+                  "instrumentId": 103718,
+                  "closingPrice": 125.9,
+                  "type": "COMMON_STOCK"
+                }
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 120.0,
+            "type": "VANILLA",
+            "underlyingSymbol": "C",
+            "underlyingCusip": "172967424"
+          },
+          "amount": -1.0,
+          "cost": 745.0,
+          "price": 7.45,
+          "positionEffect": "CLOSING"
+        }
+      ]
+    },
+    {
+      "activityId": 119945315331,
+      "time": "2026-05-22T18:09:02+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-05-22T18:09:02+0000",
+      "positionId": 3408761883,
+      "orderId": 1006468313857,
+      "netAmount": -1105.32,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 1.3,
+          "cost": -1.3,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.02,
+          "cost": -0.02,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "IRDM  260618C00045000",
+            "description": "IRIDIUM COMMUNICATIONS INC 06/18/2026 $45 Call",
+            "instrumentId": 250674515,
+            "closingPrice": 7.773,
+            "expirationDate": "2026-06-18T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "IRDM",
+                "strikePercent": 100,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0,
+                "deliverable": {
+                  "assetType": "EQUITY",
+                  "status": "ACTIVE",
+                  "symbol": "IRDM",
+                  "instrumentId": 4537671,
+                  "closingPrice": 51.78,
+                  "type": "COMMON_STOCK"
+                }
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 45.0,
+            "type": "VANILLA",
+            "underlyingSymbol": "IRDM",
+            "underlyingCusip": "46269C102"
+          },
+          "amount": 2.0,
+          "cost": -1104.0,
+          "price": 5.52,
+          "positionEffect": "OPENING"
+        }
+      ]
+    },
+    {
+      "activityId": 119785943406,
+      "time": "2026-05-21T15:26:52+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-05-21T15:26:52+0000",
+      "positionId": 3406672602,
+      "orderId": 1006446087508,
+      "netAmount": -586.65,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 2.6,
+          "cost": -2.6,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.05,
+          "cost": -0.05,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "AMZN  260618C00290000",
+            "description": "Amazon.com Inc 06/18/2026 $290 Call",
+            "instrumentId": 221307475,
+            "closingPrice": 1.8519,
+            "expirationDate": "2026-06-18T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "AMZN",
+                "strikePercent": 100,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0,
+                "deliverable": {
+                  "assetType": "EQUITY",
+                  "status": "ACTIVE",
+                  "symbol": "AMZN",
+                  "instrumentId": 1195188,
+                  "closingPrice": 270.64,
+                  "type": "COMMON_STOCK"
+                }
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 290.0,
+            "type": "VANILLA",
+            "underlyingSymbol": "AMZN",
+            "underlyingCusip": "023135106"
+          },
+          "amount": 4.0,
+          "cost": -584.0,
+          "price": 1.46,
+          "positionEffect": "OPENING"
+        }
+      ]
+    },
+    {
+      "activityId": 119537770198,
+      "time": "2026-05-19T14:53:35+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-05-19T14:53:35+0000",
+      "positionId": 3394571153,
+      "orderId": 1006407231069,
+      "netAmount": 1261.98,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.02,
+          "cost": -0.02,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 3.9,
+          "cost": -3.9,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.03,
+          "cost": -0.03,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.07,
+          "cost": -0.07,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "SU    260618C00070000",
+            "description": "SUNCOR ENERGY INC NEW 06/18/2026 $70 Call",
+            "instrumentId": 246034285,
+            "closingPrice": 0.2557,
+            "expirationDate": "2026-06-18T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "SU",
+                "strikePercent": 0,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0,
+                "deliverable": {
+                  "assetType": "EQUITY",
+                  "status": "ACTIVE",
+                  "symbol": "SU",
+                  "instrumentId": 5109824,
+                  "closingPrice": 62.36,
+                  "type": "COMMON_STOCK"
+                }
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 70.0,
+            "type": "VANILLA",
+            "underlyingSymbol": "SU",
+            "underlyingCusip": "867224107"
+          },
+          "amount": -6.0,
+          "cost": 1266.0,
+          "price": 2.11,
+          "positionEffect": "CLOSING"
+        }
+      ]
+    },
+    {
+      "activityId": 119398649749,
+      "time": "2026-05-18T14:00:29+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-05-18T14:00:29+0000",
+      "positionId": 3399553194,
+      "orderId": 1006393284642,
+      "netAmount": -734.66,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.65,
+          "cost": -0.65,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.01,
+          "cost": -0.01,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "C     260618C00120000",
+            "description": "Citigroup Inc 06/18/2026 $120 Call",
+            "instrumentId": 230137516,
+            "closingPrice": 7.4927,
+            "expirationDate": "2026-06-18T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "C",
+                "strikePercent": 0,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0,
+                "deliverable": {
+                  "assetType": "EQUITY",
+                  "status": "ACTIVE",
+                  "symbol": "C",
+                  "instrumentId": 103718,
+                  "closingPrice": 125.9,
+                  "type": "COMMON_STOCK"
+                }
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 120.0,
+            "type": "VANILLA",
+            "underlyingSymbol": "C",
+            "underlyingCusip": "172967424"
+          },
+          "amount": 1.0,
+          "cost": -734.0,
+          "price": 7.34,
+          "positionEffect": "OPENING"
+        }
+      ]
+    },
+    {
+      "activityId": 119360526035,
+      "time": "2026-05-15T23:28:50+0000",
+      "description": "SCHWAB GOVERNMENT MONEY INV",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-05-15T04:00:00+0000",
+      "settlementDate": "2026-05-15T04:00:00+0000",
+      "positionId": 2926586327,
+      "netAmount": -11.63,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "MUTUAL_FUND",
+            "status": "ACTIVE",
+            "symbol": "SNVXX",
+            "description": "Schwab Government Money Inv",
+            "instrumentId": 143333557,
+            "closingPrice": 1.0,
+            "fundFamilySymbol": "SCBCNL",
+            "fundGroup": "SCB",
+            "type": "NO_LOAD_TAXABLE"
+          },
+          "amount": 11.63,
+          "cost": -11.63,
+          "price": 1.0,
+          "positionEffect": "OPENING"
+        }
+      ]
+    },
+    {
+      "activityId": 119127914785,
+      "time": "2026-05-14T13:36:19+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-05-14T13:36:19+0000",
+      "positionId": 3394571153,
+      "orderId": 1006355459311,
+      "netAmount": -602.65,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 2.6,
+          "cost": -2.6,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.05,
+          "cost": -0.05,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "SU    260618C00070000",
+            "description": "SUNCOR ENERGY INC NEW 06/18/2026 $70 Call",
+            "instrumentId": 246034285,
+            "closingPrice": 0.2557,
+            "expirationDate": "2026-06-18T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "SU",
+                "strikePercent": 0,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0,
+                "deliverable": {
+                  "assetType": "EQUITY",
+                  "status": "ACTIVE",
+                  "symbol": "SU",
+                  "instrumentId": 5109824,
+                  "closingPrice": 62.36,
+                  "type": "COMMON_STOCK"
+                }
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 70.0,
+            "type": "VANILLA",
+            "underlyingSymbol": "SU",
+            "underlyingCusip": "867224107"
+          },
+          "amount": 4.0,
+          "cost": -600.0,
+          "price": 1.5,
+          "positionEffect": "OPENING"
+        }
+      ]
+    },
+    {
+      "activityId": 119127914783,
+      "time": "2026-05-14T13:36:19+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-05-14T13:36:19+0000",
+      "positionId": 3394571153,
+      "orderId": 1006355459311,
+      "netAmount": -301.32,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 1.3,
+          "cost": -1.3,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.02,
+          "cost": -0.02,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "SU    260618C00070000",
+            "description": "SUNCOR ENERGY INC NEW 06/18/2026 $70 Call",
+            "instrumentId": 246034285,
+            "closingPrice": 0.2557,
+            "expirationDate": "2026-06-18T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "SU",
+                "strikePercent": 0,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0,
+                "deliverable": {
+                  "assetType": "EQUITY",
+                  "status": "ACTIVE",
+                  "symbol": "SU",
+                  "instrumentId": 5109824,
+                  "closingPrice": 62.36,
+                  "type": "COMMON_STOCK"
+                }
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 70.0,
+            "type": "VANILLA",
+            "underlyingSymbol": "SU",
+            "underlyingCusip": "867224107"
+          },
+          "amount": 2.0,
+          "cost": -300.0,
+          "price": 1.5,
+          "positionEffect": "OPENING"
+        }
+      ]
+    },
+    {
+      "activityId": 119074324296,
+      "time": "2026-05-13T17:44:21+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-05-13T17:44:21+0000",
+      "positionId": 3385656750,
+      "orderId": 1006350226466,
+      "netAmount": 108.66,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.01,
+          "cost": -0.01,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 1.3,
+          "cost": -1.3,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.03,
+          "cost": -0.03,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "EWZ   260618C00040000",
+            "description": "ISHR BRAZIL CAPPED 06/18/2026 $40 Call",
+            "instrumentId": 234816013,
+            "closingPrice": 0.0578,
+            "expirationDate": "2026-06-18T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "EWZ",
+                "strikePercent": 100,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0,
+                "deliverable": {
+                  "assetType": "COLLECTIVE_INVESTMENT",
+                  "status": "ACTIVE",
+                  "symbol": "EWZ",
+                  "description": "iShares MSCI Brazil ETF",
+                  "instrumentId": 4184895,
+                  "closingPrice": 35.91,
+                  "type": "EXCHANGE_TRADED_FUND"
+                }
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 40.0,
+            "type": "VANILLA",
+            "underlyingSymbol": "EWZ",
+            "underlyingCusip": "464286400"
+          },
+          "amount": -2.0,
+          "cost": 110.0,
+          "price": 0.55,
+          "positionEffect": "CLOSING"
+        }
+      ]
+    },
+    {
+      "activityId": 119074324294,
+      "time": "2026-05-13T17:44:21+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-05-13T17:44:21+0000",
+      "positionId": 3385656750,
+      "orderId": 1006350226466,
+      "netAmount": 163.0,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 1.95,
+          "cost": -1.95,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.01,
+          "cost": -0.01,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.03,
+          "cost": -0.03,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.01,
+          "cost": -0.01,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "EWZ   260618C00040000",
+            "description": "ISHR BRAZIL CAPPED 06/18/2026 $40 Call",
+            "instrumentId": 234816013,
+            "closingPrice": 0.0578,
+            "expirationDate": "2026-06-18T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "EWZ",
+                "strikePercent": 100,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0,
+                "deliverable": {
+                  "assetType": "COLLECTIVE_INVESTMENT",
+                  "status": "ACTIVE",
+                  "symbol": "EWZ",
+                  "description": "iShares MSCI Brazil ETF",
+                  "instrumentId": 4184895,
+                  "closingPrice": 35.91,
+                  "type": "EXCHANGE_TRADED_FUND"
+                }
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 40.0,
+            "type": "VANILLA",
+            "underlyingSymbol": "EWZ",
+            "underlyingCusip": "464286400"
+          },
+          "amount": -3.0,
+          "cost": 165.0,
+          "price": 0.55,
+          "positionEffect": "CLOSING"
+        }
+      ]
+    },
+    {
+      "activityId": 119074324292,
+      "time": "2026-05-13T17:44:21+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-05-13T17:44:21+0000",
+      "positionId": 3385656750,
+      "orderId": 1006350226466,
+      "netAmount": 163.0,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.01,
+          "cost": -0.01,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 1.95,
+          "cost": -1.95,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.04,
+          "cost": -0.04,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "EWZ   260618C00040000",
+            "description": "ISHR BRAZIL CAPPED 06/18/2026 $40 Call",
+            "instrumentId": 234816013,
+            "closingPrice": 0.0578,
+            "expirationDate": "2026-06-18T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "EWZ",
+                "strikePercent": 100,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0,
+                "deliverable": {
+                  "assetType": "COLLECTIVE_INVESTMENT",
+                  "status": "ACTIVE",
+                  "symbol": "EWZ",
+                  "description": "iShares MSCI Brazil ETF",
+                  "instrumentId": 4184895,
+                  "closingPrice": 35.91,
+                  "type": "EXCHANGE_TRADED_FUND"
+                }
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 40.0,
+            "type": "VANILLA",
+            "underlyingSymbol": "EWZ",
+            "underlyingCusip": "464286400"
+          },
+          "amount": -3.0,
+          "cost": 165.0,
+          "price": 0.55,
+          "positionEffect": "CLOSING"
+        }
+      ]
+    },
+    {
+      "activityId": 118696975153,
+      "time": "2026-05-08T19:06:10+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-05-08T19:06:10+0000",
+      "positionId": 3364917249,
+      "orderId": 1006295891847,
+      "netAmount": 946.65,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.03,
+          "cost": -0.03,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 5.2,
+          "cost": -5.2,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.02,
+          "cost": -0.02,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.1,
+          "cost": -0.1,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "BAC   260618C00052500",
+            "description": "BANK OF AMERICA CORP 06/18/2026 $52.5 Call",
+            "instrumentId": 227219520,
+            "closingPrice": 0.7851,
+            "expirationDate": "2026-06-18T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "BAC",
+                "strikePercent": 100,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0,
+                "deliverable": {
+                  "assetType": "EQUITY",
+                  "status": "ACTIVE",
+                  "symbol": "BAC",
+                  "instrumentId": 2576349,
+                  "closingPrice": 51.6,
+                  "type": "COMMON_STOCK"
+                }
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 52.5,
+            "type": "VANILLA",
+            "underlyingSymbol": "BAC",
+            "underlyingCusip": "060505104"
+          },
+          "amount": -8.0,
+          "cost": 952.0,
+          "price": 1.19,
+          "positionEffect": "CLOSING"
+        }
+      ]
+    },
+    {
+      "activityId": 118689475106,
+      "time": "2026-05-08T18:28:33+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-05-08T18:28:33+0000",
+      "positionId": 3385656750,
+      "orderId": 1006296666134,
+      "netAmount": -949.3,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 5.2,
+          "cost": -5.2,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.1,
+          "cost": -0.1,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "EWZ   260618C00040000",
+            "description": "ISHR BRAZIL CAPPED 06/18/2026 $40 Call",
+            "instrumentId": 234816013,
+            "closingPrice": 0.0578,
+            "expirationDate": "2026-06-18T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "EWZ",
+                "strikePercent": 100,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0,
+                "deliverable": {
+                  "assetType": "COLLECTIVE_INVESTMENT",
+                  "status": "ACTIVE",
+                  "symbol": "EWZ",
+                  "description": "iShares MSCI Brazil ETF",
+                  "instrumentId": 4184895,
+                  "closingPrice": 35.91,
+                  "type": "EXCHANGE_TRADED_FUND"
+                }
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 40.0,
+            "type": "VANILLA",
+            "underlyingSymbol": "EWZ",
+            "underlyingCusip": "464286400"
+          },
+          "amount": 8.0,
+          "cost": -944.0,
+          "price": 1.18,
+          "positionEffect": "OPENING"
+        }
+      ]
+    },
+    {
+      "activityId": 117589716306,
+      "time": "2026-04-27T16:33:37+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-04-27T16:33:37+0000",
+      "positionId": 3352454591,
+      "orderId": 1006071529075,
+      "netAmount": 1561.31,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.65,
+          "cost": -0.65,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.03,
+          "cost": -0.03,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.01,
+          "cost": -0.01,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "NVDA  260515C00200000",
+            "description": "NVIDIA CORP 05/15/2026 $200 Call",
+            "instrumentId": 236389520,
+            "closingPrice": 25.32,
+            "expirationDate": "2026-05-15T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "NVDA",
+                "strikePercent": 100,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0,
+                "deliverable": {
+                  "assetType": "EQUITY",
+                  "status": "ACTIVE",
+                  "symbol": "NVDA",
+                  "instrumentId": 1648296,
+                  "closingPrice": 211.14,
+                  "type": "COMMON_STOCK"
+                }
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 200.0,
+            "type": "VANILLA",
+            "underlyingSymbol": "NVDA",
+            "underlyingCusip": "67066G104"
+          },
+          "amount": -1.0,
+          "cost": 1562.0,
+          "price": 15.62,
+          "positionEffect": "CLOSING"
+        }
+      ]
+    },
+    {
+      "activityId": 117566287121,
+      "time": "2026-04-27T14:55:31+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-04-27T14:55:31+0000",
+      "positionId": 3364917249,
+      "orderId": 1006142400348,
+      "netAmount": -637.99,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 1.95,
+          "cost": -1.95,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.04,
+          "cost": -0.04,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "BAC   260618C00052500",
+            "description": "BANK OF AMERICA CORP 06/18/2026 $52.5 Call",
+            "instrumentId": 227219520,
+            "closingPrice": 0.7851,
+            "expirationDate": "2026-06-18T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "BAC",
+                "strikePercent": 100,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0,
+                "deliverable": {
+                  "assetType": "EQUITY",
+                  "status": "ACTIVE",
+                  "symbol": "BAC",
+                  "instrumentId": 2576349,
+                  "closingPrice": 51.6,
+                  "type": "COMMON_STOCK"
+                }
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 52.5,
+            "type": "VANILLA",
+            "underlyingSymbol": "BAC",
+            "underlyingCusip": "060505104"
+          },
+          "amount": 3.0,
+          "cost": -636.0,
+          "price": 2.12,
+          "positionEffect": "OPENING"
+        }
+      ]
+    },
+    {
+      "activityId": 117566287119,
+      "time": "2026-04-27T14:55:31+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-04-27T14:55:31+0000",
+      "positionId": 3364917249,
+      "orderId": 1006142400348,
+      "netAmount": -637.99,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 1.95,
+          "cost": -1.95,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.04,
+          "cost": -0.04,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "BAC   260618C00052500",
+            "description": "BANK OF AMERICA CORP 06/18/2026 $52.5 Call",
+            "instrumentId": 227219520,
+            "closingPrice": 0.7851,
+            "expirationDate": "2026-06-18T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "BAC",
+                "strikePercent": 100,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0,
+                "deliverable": {
+                  "assetType": "EQUITY",
+                  "status": "ACTIVE",
+                  "symbol": "BAC",
+                  "instrumentId": 2576349,
+                  "closingPrice": 51.6,
+                  "type": "COMMON_STOCK"
+                }
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 52.5,
+            "type": "VANILLA",
+            "underlyingSymbol": "BAC",
+            "underlyingCusip": "060505104"
+          },
+          "amount": 3.0,
+          "cost": -636.0,
+          "price": 2.12,
+          "positionEffect": "OPENING"
+        }
+      ]
+    },
+    {
+      "activityId": 117566287117,
+      "time": "2026-04-27T14:55:31+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-04-27T14:55:31+0000",
+      "positionId": 3364917249,
+      "orderId": 1006142400348,
+      "netAmount": -425.32,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 1.3,
+          "cost": -1.3,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.02,
+          "cost": -0.02,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "BAC   260618C00052500",
+            "description": "BANK OF AMERICA CORP 06/18/2026 $52.5 Call",
+            "instrumentId": 227219520,
+            "closingPrice": 0.7851,
+            "expirationDate": "2026-06-18T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "BAC",
+                "strikePercent": 100,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0,
+                "deliverable": {
+                  "assetType": "EQUITY",
+                  "status": "ACTIVE",
+                  "symbol": "BAC",
+                  "instrumentId": 2576349,
+                  "closingPrice": 51.6,
+                  "type": "COMMON_STOCK"
+                }
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 52.5,
+            "type": "VANILLA",
+            "underlyingSymbol": "BAC",
+            "underlyingCusip": "060505104"
+          },
+          "amount": 2.0,
+          "cost": -424.0,
+          "price": 2.12,
+          "positionEffect": "OPENING"
+        }
+      ]
+    },
+    {
+      "activityId": 117488759714,
+      "time": "2026-04-24T17:58:07+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-04-24T17:58:07+0000",
+      "positionId": 3355783024,
+      "orderId": 1006129231313,
+      "netAmount": 1013.97,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.02,
+          "cost": -0.02,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.01,
+          "cost": -0.01,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "EQUITY",
+            "status": "ACTIVE",
+            "symbol": "VOD",
+            "instrumentId": 10964167,
+            "closingPrice": 14.96,
+            "type": "DEPOSITORY_RECEIPT"
+          },
+          "amount": -65.0,
+          "cost": 1014.0,
+          "price": 15.6,
+          "positionEffect": "CLOSING"
+        }
+      ]
+    },
+    {
+      "activityId": 117488759708,
+      "time": "2026-04-24T17:58:07+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-04-24T17:58:07+0000",
+      "positionId": 3355783024,
+      "orderId": 1006129231313,
+      "netAmount": 156.0,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "EQUITY",
+            "status": "ACTIVE",
+            "symbol": "VOD",
+            "instrumentId": 10964167,
+            "closingPrice": 14.96,
+            "type": "DEPOSITORY_RECEIPT"
+          },
+          "amount": -10.0,
+          "cost": 156.0,
+          "price": 15.6,
+          "positionEffect": "CLOSING"
+        }
+      ]
+    },
+    {
+      "activityId": 117346967294,
+      "time": "2026-04-23T15:54:00+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-04-23T15:54:00+0000",
+      "positionId": 3356622464,
+      "orderId": 1006082808445,
+      "netAmount": 309.33,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.01,
+          "cost": -0.01,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 2.6,
+          "cost": -2.6,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.01,
+          "cost": -0.01,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.05,
+          "cost": -0.05,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "AEO   260515C00019000",
+            "description": "AMERICAN EAGLE OUTFITTERS INC NEW 05/15/2026 $19 Call",
+            "instrumentId": 239187367,
+            "closingPrice": 0.0001,
+            "expirationDate": "2026-05-15T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "AEO",
+                "strikePercent": 100,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0,
+                "deliverable": {
+                  "assetType": "EQUITY",
+                  "status": "ACTIVE",
+                  "symbol": "AEO",
+                  "instrumentId": 1198699,
+                  "closingPrice": 15.8,
+                  "type": "COMMON_STOCK"
+                }
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 19.0,
+            "type": "VANILLA",
+            "underlyingSymbol": "AEO",
+            "underlyingCusip": "02553E106"
+          },
+          "amount": -4.0,
+          "cost": 312.0,
+          "price": 0.78,
+          "positionEffect": "CLOSING"
+        }
+      ]
+    },
+    {
+      "activityId": 117191127796,
+      "time": "2026-04-22T13:31:00+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-04-22T13:31:00+0000",
+      "positionId": 3354234031,
+      "orderId": 1006062190481,
+      "netAmount": 1019.32,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.65,
+          "cost": -0.65,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.02,
+          "cost": -0.02,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.01,
+          "cost": -0.01,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "AA    260515C00060000",
+            "description": "ALCOA CORP 05/15/2026 $60 Call",
+            "instrumentId": 249041830,
+            "closingPrice": 2.53,
+            "expirationDate": "2026-05-15T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "AA",
+                "strikePercent": 100,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0,
+                "deliverable": {
+                  "assetType": "EQUITY",
+                  "status": "ACTIVE",
+                  "symbol": "AA",
+                  "instrumentId": 37250079,
+                  "closingPrice": 77.64,
+                  "type": "COMMON_STOCK"
+                }
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 60.0,
+            "type": "VANILLA",
+            "underlyingSymbol": "AA",
+            "underlyingCusip": "013872106"
+          },
+          "amount": -1.0,
+          "cost": 1020.0,
+          "price": 10.2,
+          "positionEffect": "CLOSING"
+        }
+      ]
+    },
+    {
+      "activityId": 117129474958,
+      "time": "2026-04-21T16:35:03+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-04-21T16:35:03+0000",
+      "positionId": 3356622464,
+      "orderId": 1006082808442,
+      "netAmount": -722.65,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 2.6,
+          "cost": -2.6,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.05,
+          "cost": -0.05,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "AEO   260515C00019000",
+            "description": "AMERICAN EAGLE OUTFITTERS INC NEW 05/15/2026 $19 Call",
+            "instrumentId": 239187367,
+            "closingPrice": 0.0001,
+            "expirationDate": "2026-05-15T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "AEO",
+                "strikePercent": 100,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0,
+                "deliverable": {
+                  "assetType": "EQUITY",
+                  "status": "ACTIVE",
+                  "symbol": "AEO",
+                  "instrumentId": 1198699,
+                  "closingPrice": 15.8,
+                  "type": "COMMON_STOCK"
+                }
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 19.0,
+            "type": "VANILLA",
+            "underlyingSymbol": "AEO",
+            "underlyingCusip": "02553E106"
+          },
+          "amount": 4.0,
+          "cost": -720.0,
+          "price": 1.8,
+          "positionEffect": "OPENING"
+        }
+      ]
+    },
+    {
+      "activityId": 117076938188,
+      "time": "2026-04-21T13:30:00+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-04-21T13:30:00+0000",
+      "positionId": 3355783024,
+      "orderId": 1006073748524,
+      "netAmount": -1164.75,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "EQUITY",
+            "status": "ACTIVE",
+            "symbol": "VOD",
+            "instrumentId": 10964167,
+            "closingPrice": 14.96,
+            "type": "DEPOSITORY_RECEIPT"
+          },
+          "amount": 75.0,
+          "cost": -1164.75,
+          "price": 15.53,
+          "positionEffect": "OPENING"
+        }
+      ]
+    },
+    {
+      "activityId": 116984432017,
+      "time": "2026-04-20T14:16:45+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-04-20T14:16:45+0000",
+      "positionId": 3354234031,
+      "orderId": 1006062190479,
+      "netAmount": -821.66,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.65,
+          "cost": -0.65,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.01,
+          "cost": -0.01,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "AA    260515C00060000",
+            "description": "ALCOA CORP 05/15/2026 $60 Call",
+            "instrumentId": 249041830,
+            "closingPrice": 2.53,
+            "expirationDate": "2026-05-15T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "AA",
+                "strikePercent": 100,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0,
+                "deliverable": {
+                  "assetType": "EQUITY",
+                  "status": "ACTIVE",
+                  "symbol": "AA",
+                  "instrumentId": 37250079,
+                  "closingPrice": 77.64,
+                  "type": "COMMON_STOCK"
+                }
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 60.0,
+            "type": "VANILLA",
+            "underlyingSymbol": "AA",
+            "underlyingCusip": "013872106"
+          },
+          "amount": 1.0,
+          "cost": -821.0,
+          "price": 8.21,
+          "positionEffect": "OPENING"
+        }
+      ]
+    },
+    {
+      "activityId": 116942786401,
+      "time": "2026-04-17T19:58:57+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-04-17T19:58:57+0000",
+      "positionId": 3352454591,
+      "orderId": 1006048827908,
+      "netAmount": -845.66,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.65,
+          "cost": -0.65,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.01,
+          "cost": -0.01,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "NVDA  260515C00200000",
+            "description": "NVIDIA CORP 05/15/2026 $200 Call",
+            "instrumentId": 236389520,
+            "closingPrice": 25.32,
+            "expirationDate": "2026-05-15T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "NVDA",
+                "strikePercent": 100,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0,
+                "deliverable": {
+                  "assetType": "EQUITY",
+                  "status": "ACTIVE",
+                  "symbol": "NVDA",
+                  "instrumentId": 1648296,
+                  "closingPrice": 211.14,
+                  "type": "COMMON_STOCK"
+                }
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 200.0,
+            "type": "VANILLA",
+            "underlyingSymbol": "NVDA",
+            "underlyingCusip": "67066G104"
+          },
+          "amount": 1.0,
+          "cost": -845.0,
+          "price": 8.45,
+          "positionEffect": "OPENING"
+        }
+      ]
+    },
+    {
+      "activityId": 116842075784,
+      "time": "2026-04-17T13:30:10+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-04-17T13:30:10+0000",
+      "positionId": 3347406358,
+      "orderId": 1006010008556,
+      "netAmount": 241.33,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.01,
+          "cost": -0.01,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 2.6,
+          "cost": -2.6,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.01,
+          "cost": -0.01,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.05,
+          "cost": -0.05,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "DOW   260515C00040000",
+            "description": "DOW INC 05/15/2026 $40 Call",
+            "instrumentId": 247559312,
+            "closingPrice": 0.0001,
+            "expirationDate": "2026-05-15T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "DOW",
+                "strikePercent": 100,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0,
+                "deliverable": {
+                  "assetType": "EQUITY",
+                  "status": "ACTIVE",
+                  "symbol": "DOW",
+                  "instrumentId": 83557177,
+                  "closingPrice": 33.75,
+                  "type": "COMMON_STOCK"
+                }
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 40.0,
+            "type": "VANILLA",
+            "underlyingSymbol": "DOW",
+            "underlyingCusip": "260557103"
+          },
+          "amount": -4.0,
+          "cost": 244.0,
+          "price": 0.61,
+          "positionEffect": "CLOSING"
+        }
+      ]
+    },
+    {
+      "activityId": 116708628044,
+      "time": "2026-04-15T23:27:15+0000",
+      "description": "SCHWAB GOVERNMENT MONEY INV",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-04-15T04:00:00+0000",
+      "settlementDate": "2026-04-15T04:00:00+0000",
+      "positionId": 2926586327,
+      "netAmount": -10.86,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "MUTUAL_FUND",
+            "status": "ACTIVE",
+            "symbol": "SNVXX",
+            "description": "Schwab Government Money Inv",
+            "instrumentId": 143333557,
+            "closingPrice": 1.0,
+            "fundFamilySymbol": "SCBCNL",
+            "fundGroup": "SCB",
+            "type": "NO_LOAD_TAXABLE"
+          },
+          "amount": 10.86,
+          "cost": -10.86,
+          "price": 1.0,
+          "positionEffect": "OPENING"
+        }
+      ]
+    },
+    {
+      "activityId": 116608152431,
+      "time": "2026-04-15T13:30:05+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-04-15T13:30:05+0000",
+      "positionId": 3347406358,
+      "orderId": 1006010008554,
+      "netAmount": -417.33,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 1.3,
+          "cost": -1.3,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.03,
+          "cost": -0.03,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "DOW   260515C00040000",
+            "description": "DOW INC 05/15/2026 $40 Call",
+            "instrumentId": 247559312,
+            "closingPrice": 0.0001,
+            "expirationDate": "2026-05-15T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "DOW",
+                "strikePercent": 100,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0,
+                "deliverable": {
+                  "assetType": "EQUITY",
+                  "status": "ACTIVE",
+                  "symbol": "DOW",
+                  "instrumentId": 83557177,
+                  "closingPrice": 33.75,
+                  "type": "COMMON_STOCK"
+                }
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 40.0,
+            "type": "VANILLA",
+            "underlyingSymbol": "DOW",
+            "underlyingCusip": "260557103"
+          },
+          "amount": 2.0,
+          "cost": -416.0,
+          "price": 2.08,
+          "positionEffect": "OPENING"
+        }
+      ]
+    },
+    {
+      "activityId": 116608152427,
+      "time": "2026-04-15T13:30:05+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-04-15T13:30:05+0000",
+      "positionId": 3347406358,
+      "orderId": 1006010008554,
+      "netAmount": -417.32,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 1.3,
+          "cost": -1.3,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.02,
+          "cost": -0.02,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "DOW   260515C00040000",
+            "description": "DOW INC 05/15/2026 $40 Call",
+            "instrumentId": 247559312,
+            "closingPrice": 0.0001,
+            "expirationDate": "2026-05-15T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "DOW",
+                "strikePercent": 100,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0,
+                "deliverable": {
+                  "assetType": "EQUITY",
+                  "status": "ACTIVE",
+                  "symbol": "DOW",
+                  "instrumentId": 83557177,
+                  "closingPrice": 33.75,
+                  "type": "COMMON_STOCK"
+                }
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 40.0,
+            "type": "VANILLA",
+            "underlyingSymbol": "DOW",
+            "underlyingCusip": "260557103"
+          },
+          "amount": 2.0,
+          "cost": -416.0,
+          "price": 2.08,
+          "positionEffect": "OPENING"
+        }
+      ]
+    },
+    {
+      "activityId": 116489499841,
+      "time": "2026-04-14T13:30:56+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-04-14T13:30:56+0000",
+      "positionId": 3343190620,
+      "orderId": 1005979271264,
+      "netAmount": 113.34,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.65,
+          "cost": -0.65,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.01,
+          "cost": -0.01,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "DOW   260515C00042500",
+            "description": "DOW INC 05/15/2026 $42.5 Call",
+            "instrumentId": 247495269,
+            "closingPrice": 0.0001,
+            "expirationDate": "2026-05-15T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "DOW",
+                "strikePercent": 100,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0,
+                "deliverable": {
+                  "assetType": "EQUITY",
+                  "status": "ACTIVE",
+                  "symbol": "DOW",
+                  "instrumentId": 83557177,
+                  "closingPrice": 33.75,
+                  "type": "COMMON_STOCK"
+                }
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 42.5,
+            "type": "VANILLA",
+            "underlyingSymbol": "DOW",
+            "underlyingCusip": "260557103"
+          },
+          "amount": -1.0,
+          "cost": 114.0,
+          "price": 1.14,
+          "positionEffect": "CLOSING"
+        }
+      ]
+    },
+    {
+      "activityId": 116489499839,
+      "time": "2026-04-14T13:30:56+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-04-14T13:30:56+0000",
+      "positionId": 3343190620,
+      "orderId": 1005979271264,
+      "netAmount": 113.33,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.01,
+          "cost": -0.01,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.65,
+          "cost": -0.65,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.01,
+          "cost": -0.01,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "DOW   260515C00042500",
+            "description": "DOW INC 05/15/2026 $42.5 Call",
+            "instrumentId": 247495269,
+            "closingPrice": 0.0001,
+            "expirationDate": "2026-05-15T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "DOW",
+                "strikePercent": 100,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0,
+                "deliverable": {
+                  "assetType": "EQUITY",
+                  "status": "ACTIVE",
+                  "symbol": "DOW",
+                  "instrumentId": 83557177,
+                  "closingPrice": 33.75,
+                  "type": "COMMON_STOCK"
+                }
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 42.5,
+            "type": "VANILLA",
+            "underlyingSymbol": "DOW",
+            "underlyingCusip": "260557103"
+          },
+          "amount": -1.0,
+          "cost": 114.0,
+          "price": 1.14,
+          "positionEffect": "CLOSING"
+        }
+      ]
+    },
+    {
+      "activityId": 116489499836,
+      "time": "2026-04-14T13:30:56+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-04-14T13:30:56+0000",
+      "positionId": 3343190620,
+      "orderId": 1005979271264,
+      "netAmount": 113.34,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.65,
+          "cost": -0.65,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.01,
+          "cost": -0.01,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "DOW   260515C00042500",
+            "description": "DOW INC 05/15/2026 $42.5 Call",
+            "instrumentId": 247495269,
+            "closingPrice": 0.0001,
+            "expirationDate": "2026-05-15T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "DOW",
+                "strikePercent": 100,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0,
+                "deliverable": {
+                  "assetType": "EQUITY",
+                  "status": "ACTIVE",
+                  "symbol": "DOW",
+                  "instrumentId": 83557177,
+                  "closingPrice": 33.75,
+                  "type": "COMMON_STOCK"
+                }
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 42.5,
+            "type": "VANILLA",
+            "underlyingSymbol": "DOW",
+            "underlyingCusip": "260557103"
+          },
+          "amount": -1.0,
+          "cost": 114.0,
+          "price": 1.14,
+          "positionEffect": "CLOSING"
+        }
+      ]
+    },
+    {
+      "activityId": 116489499834,
+      "time": "2026-04-14T13:30:56+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-04-14T13:30:56+0000",
+      "positionId": 3343190620,
+      "orderId": 1005979271264,
+      "netAmount": 113.32,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.65,
+          "cost": -0.65,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.01,
+          "cost": -0.01,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.02,
+          "cost": -0.02,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "DOW   260515C00042500",
+            "description": "DOW INC 05/15/2026 $42.5 Call",
+            "instrumentId": 247495269,
+            "closingPrice": 0.0001,
+            "expirationDate": "2026-05-15T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "DOW",
+                "strikePercent": 100,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0,
+                "deliverable": {
+                  "assetType": "EQUITY",
+                  "status": "ACTIVE",
+                  "symbol": "DOW",
+                  "instrumentId": 83557177,
+                  "closingPrice": 33.75,
+                  "type": "COMMON_STOCK"
+                }
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 42.5,
+            "type": "VANILLA",
+            "underlyingSymbol": "DOW",
+            "underlyingCusip": "260557103"
+          },
+          "amount": -1.0,
+          "cost": 114.0,
+          "price": 1.14,
+          "positionEffect": "CLOSING"
+        }
+      ]
+    },
+    {
+      "activityId": 116489499827,
+      "time": "2026-04-14T13:30:56+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-04-14T13:30:56+0000",
+      "positionId": 3343190620,
+      "orderId": 1005979271264,
+      "netAmount": 226.67,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.01,
+          "cost": -0.01,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 1.3,
+          "cost": -1.3,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.02,
+          "cost": -0.02,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "DOW   260515C00042500",
+            "description": "DOW INC 05/15/2026 $42.5 Call",
+            "instrumentId": 247495269,
+            "closingPrice": 0.0001,
+            "expirationDate": "2026-05-15T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "DOW",
+                "strikePercent": 100,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0,
+                "deliverable": {
+                  "assetType": "EQUITY",
+                  "status": "ACTIVE",
+                  "symbol": "DOW",
+                  "instrumentId": 83557177,
+                  "closingPrice": 33.75,
+                  "type": "COMMON_STOCK"
+                }
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 42.5,
+            "type": "VANILLA",
+            "underlyingSymbol": "DOW",
+            "underlyingCusip": "260557103"
+          },
+          "amount": -2.0,
+          "cost": 228.0,
+          "price": 1.14,
+          "positionEffect": "CLOSING"
+        }
+      ]
+    },
+    {
+      "activityId": 116385689633,
+      "time": "2026-04-13T14:01:00+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-04-13T14:01:00+0000",
+      "positionId": 3343190620,
+      "orderId": 1005979271261,
+      "netAmount": -469.98,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 1.95,
+          "cost": -1.95,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.03,
+          "cost": -0.03,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "DOW   260515C00042500",
+            "description": "DOW INC 05/15/2026 $42.5 Call",
+            "instrumentId": 247495269,
+            "closingPrice": 0.0001,
+            "expirationDate": "2026-05-15T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "DOW",
+                "strikePercent": 100,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0,
+                "deliverable": {
+                  "assetType": "EQUITY",
+                  "status": "ACTIVE",
+                  "symbol": "DOW",
+                  "instrumentId": 83557177,
+                  "closingPrice": 33.75,
+                  "type": "COMMON_STOCK"
+                }
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 42.5,
+            "type": "VANILLA",
+            "underlyingSymbol": "DOW",
+            "underlyingCusip": "260557103"
+          },
+          "amount": 3.0,
+          "cost": -468.0,
+          "price": 1.56,
+          "positionEffect": "OPENING"
+        }
+      ]
+    },
+    {
+      "activityId": 116385689631,
+      "time": "2026-04-13T14:01:00+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-04-13T14:01:00+0000",
+      "positionId": 3343190620,
+      "orderId": 1005979271261,
+      "netAmount": -469.99,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 1.95,
+          "cost": -1.95,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.04,
+          "cost": -0.04,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "DOW   260515C00042500",
+            "description": "DOW INC 05/15/2026 $42.5 Call",
+            "instrumentId": 247495269,
+            "closingPrice": 0.0001,
+            "expirationDate": "2026-05-15T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "DOW",
+                "strikePercent": 100,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0,
+                "deliverable": {
+                  "assetType": "EQUITY",
+                  "status": "ACTIVE",
+                  "symbol": "DOW",
+                  "instrumentId": 83557177,
+                  "closingPrice": 33.75,
+                  "type": "COMMON_STOCK"
+                }
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 42.5,
+            "type": "VANILLA",
+            "underlyingSymbol": "DOW",
+            "underlyingCusip": "260557103"
+          },
+          "amount": 3.0,
+          "cost": -468.0,
+          "price": 1.56,
+          "positionEffect": "OPENING"
+        }
+      ]
+    },
+    {
+      "activityId": 115368208218,
+      "time": "2026-03-27T16:36:01+0000",
+      "description": "INVESCO QQQ TR",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-03-27T04:00:00+0000",
+      "settlementDate": "2026-03-27T04:00:00+0000",
+      "positionId": 3031396732,
+      "netAmount": -3.67,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "COLLECTIVE_INVESTMENT",
+            "status": "ACTIVE",
+            "symbol": "QQQ",
+            "description": "INVESCO QQQ TR",
+            "instrumentId": 69233491,
+            "closingPrice": 738.31,
+            "type": "EXCHANGE_TRADED_FUND"
+          },
+          "amount": 0.0065,
+          "cost": -3.67,
+          "price": 566.7997,
+          "positionEffect": "OPENING"
+        }
+      ]
+    },
+    {
+      "activityId": 115213522076,
+      "time": "2026-03-26T13:33:24+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-03-26T13:33:24+0000",
+      "positionId": 3307284924,
+      "orderId": 1005731993836,
+      "netAmount": 81.34,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.65,
+          "cost": -0.65,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.01,
+          "cost": -0.01,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "PLTR  260417C00175000",
+            "description": "PALANTIR TECHNOLOGIES INC 04/17/2026 $175 Call",
+            "instrumentId": 239396308,
+            "closingPrice": 0.0001,
+            "expirationDate": "2026-04-17T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "PLTR",
+                "strikePercent": 100,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0,
+                "deliverable": {
+                  "assetType": "EQUITY",
+                  "status": "ACTIVE",
+                  "symbol": "PLTR",
+                  "instrumentId": 141652501,
+                  "closingPrice": 156.54,
+                  "type": "COMMON_STOCK"
+                }
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 175.0,
+            "type": "VANILLA",
+            "underlyingSymbol": "PLTR",
+            "underlyingCusip": "69608A108"
+          },
+          "amount": -1.0,
+          "cost": 82.0,
+          "price": 0.82,
+          "positionEffect": "CLOSING"
+        }
+      ]
+    },
+    {
+      "activityId": 115213522072,
+      "time": "2026-03-26T13:33:24+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-03-26T13:33:24+0000",
+      "positionId": 3307284924,
+      "orderId": 1005731993836,
+      "netAmount": 81.33,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.65,
+          "cost": -0.65,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.02,
+          "cost": -0.02,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "PLTR  260417C00175000",
+            "description": "PALANTIR TECHNOLOGIES INC 04/17/2026 $175 Call",
+            "instrumentId": 239396308,
+            "closingPrice": 0.0001,
+            "expirationDate": "2026-04-17T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "PLTR",
+                "strikePercent": 100,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0,
+                "deliverable": {
+                  "assetType": "EQUITY",
+                  "status": "ACTIVE",
+                  "symbol": "PLTR",
+                  "instrumentId": 141652501,
+                  "closingPrice": 156.54,
+                  "type": "COMMON_STOCK"
+                }
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 175.0,
+            "type": "VANILLA",
+            "underlyingSymbol": "PLTR",
+            "underlyingCusip": "69608A108"
+          },
+          "amount": -1.0,
+          "cost": 82.0,
+          "price": 0.82,
+          "positionEffect": "CLOSING"
+        }
+      ]
+    },
+    {
+      "activityId": 115213522066,
+      "time": "2026-03-26T13:33:24+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-03-26T13:33:24+0000",
+      "positionId": 3307284924,
+      "orderId": 1005731993836,
+      "netAmount": 162.67,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 1.3,
+          "cost": -1.3,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.02,
+          "cost": -0.02,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.01,
+          "cost": -0.01,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "PLTR  260417C00175000",
+            "description": "PALANTIR TECHNOLOGIES INC 04/17/2026 $175 Call",
+            "instrumentId": 239396308,
+            "closingPrice": 0.0001,
+            "expirationDate": "2026-04-17T04:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "PLTR",
+                "strikePercent": 100,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0,
+                "deliverable": {
+                  "assetType": "EQUITY",
+                  "status": "ACTIVE",
+                  "symbol": "PLTR",
+                  "instrumentId": 141652501,
+                  "closingPrice": 156.54,
+                  "type": "COMMON_STOCK"
+                }
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 175.0,
+            "type": "VANILLA",
+            "underlyingSymbol": "PLTR",
+            "underlyingCusip": "69608A108"
+          },
+          "amount": -2.0,
+          "cost": 164.0,
+          "price": 0.82,
+          "positionEffect": "CLOSING"
+        }
+      ]
+    },
+    {
+      "activityId": 115002200492,
+      "time": "2026-03-24T13:30:00+0000",
+      "accountNumber": "10606348",
+      "type": "TRADE",
+      "status": "VALID",
+      "subAccount": "MARGIN",
+      "tradeDate": "2026-03-24T13:30:00+0000",
+      "positionId": 3316318626,
+      "orderId": 1005790310006,
+      "netAmount": -2041.32,
+      "transferItems": [
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 1.3,
+          "cost": -1.3,
+          "feeType": "COMMISSION"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "SEC_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.02,
+          "cost": -0.02,
+          "feeType": "OPT_REG_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "CURRENCY",
+            "status": "ACTIVE",
+            "symbol": "CURRENCY_USD",
+            "description": "USD currency",
+            "instrumentId": 1,
+            "closingPrice": 0.0
+          },
+          "amount": 0.0,
+          "cost": 0.0,
+          "feeType": "TAF_FEE"
+        },
+        {
+          "instrument": {
+            "assetType": "OPTION",
+            "status": "ACTIVE",
+            "symbol": "IAU   270115C00082000",
+            "description": "ISHARES GOLD TR 01/15/2027 $82 Call",
+            "instrumentId": 233328630,
+            "closingPrice": 9.755,
+            "expirationDate": "2027-01-15T05:00:00+0000",
+            "optionDeliverables": [
+              {
+                "rootSymbol": "IAU",
+                "strikePercent": 100,
+                "deliverableNumber": 1,
+                "deliverableUnits": 100.0,
+                "deliverable": {
+                  "assetType": "COLLECTIVE_INVESTMENT",
+                  "status": "ACTIVE",
+                  "symbol": "IAU",
+                  "description": "iShares Gold Trust",
+                  "instrumentId": 147494273,
+                  "closingPrice": 85.49,
+                  "type": "EXCHANGE_TRADED_FUND"
+                }
+              }
+            ],
+            "optionPremiumMultiplier": 100,
+            "putCall": "CALL",
+            "strikePrice": 82.0,
+            "type": "VANILLA",
+            "underlyingSymbol": "IAU",
+            "underlyingCusip": "464285204"
+          },
+          "amount": 2.0,
+          "cost": -2040.0,
+          "price": 10.2,
+          "positionEffect": "OPENING"
+        }
+      ]
+    }
+  ]
+}

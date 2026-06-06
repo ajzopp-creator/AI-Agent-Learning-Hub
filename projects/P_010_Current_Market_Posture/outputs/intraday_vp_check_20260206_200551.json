@@ -1,0 +1,30 @@
+{
+  "timestamp": "2026-02-06T20:05:51.796560",
+  "snapshot_timestamp": "2026-02-06T20:04:22.843566",
+  "spy_validation": {
+    "grid_close": 677.619995117188,
+    "current": 690.5999755859375,
+    "price_change": 12.979980468749545,
+    "price_move_pct": 1.92,
+    "pred_high": 682.854187011719,
+    "pred_low": 675.994750976563,
+    "band_status": "above_band",
+    "deviation_pct": 1.13,
+    "deviation_from": "pred_high",
+    "symbol": "SPY"
+  },
+  "qqq_validation": {
+    "grid_close": 597.030029296875,
+    "current": 609.6300048828125,
+    "price_change": 12.5999755859375,
+    "price_move_pct": 2.11,
+    "pred_high": 604.717834472656,
+    "pred_low": 592.703735351563,
+    "band_status": "above_band",
+    "deviation_pct": 0.81,
+    "deviation_from": "pred_high",
+    "symbol": "QQQ"
+  },
+  "intraday_adjustment": "REDUCED",
+  "reason": "Both symbols outside PRANGE"
+}

@@ -1,0 +1,58 @@
+============================================================================
+P_300 SIGNAL REPORT
+============================================================================
+Ticker:           MAN
+Anchor date:      2026-05-21
+Signal:           WATCH at horizon 5
+Generated:        2026-05-26 21:09 ET
+
+PER-HORIZON STATS
+----------------------------------------------------------------------------
+    h    n  win_rate  mean_ret  std_ret  z_score  class
+    5   20     0.650     +2.29     8.49   +0.515  WATCH
+    7   20     0.650     +2.71     9.80   +0.515  WATCH
+   10   20     0.600     +2.45    10.41   +0.060  WATCH
+   15   20     0.600     +3.74    12.45   -0.040   PASS
+   20   20     0.550     +3.08    15.01   -0.497   PASS
+
+TOP 20 MATCHES (by composite distance, ascending)
+----------------------------------------------------------------------------
+   #  ticker      anchor  compdist     +5d     +7d    +10d    +15d    +20d
+   1   CFPZF  2025-12-26    12.797  +11.82   +8.72  +16.83  +26.27  +33.21
+   2     VNO  2026-03-05    13.952   -8.02  -10.28   -6.46   -9.33  -10.46
+   3     VST  2026-02-10    14.427   +6.87   +7.39   +9.87   +2.36   -0.28
+   4    PLTR  2025-10-23    14.462   +7.80  +14.79   -3.01   -4.62  -13.71
+   5    PLTR  2025-10-23    14.462   +7.80  +14.79   -3.01   -4.62  -13.71
+   6     OXY  2026-04-09    14.477   -2.84   -6.92   -1.20   +3.50   -7.84
+   7     CLF  2026-03-02    14.745  -16.23  -18.60  -24.47  -29.56  -28.86
+   8     BXP  2026-02-26    14.821   -9.32  -14.21  -13.80  -12.69  -13.09
+   9     BAC  2026-01-29    14.922   +3.50   +6.27   -1.06   -0.04   -6.12
+  10     CAT  2025-06-25    15.057   +7.23   +5.36   +9.89  +12.51  +15.59
+  11    BURL  2025-12-16    15.099   +8.84  +11.28  +10.71  +17.90  +17.39
+  12    NVDA  2025-10-24    15.112   +8.71   +6.67   +1.01   +2.10   -3.96
+  13     NET  2026-03-03    15.132  +15.97  +18.56  +18.23  +19.14  +15.33
+  14       O  2026-02-03    15.156   +3.97   +5.40   +5.87   +7.37   +7.39
+  15    META  2025-11-05    15.339   -4.24   -4.17   -7.18   -0.37   +4.02
+  16     HAL  2025-10-09    15.510   -6.75   -3.33  +16.32  +15.21  +16.79
+  17    BCPC  2026-01-08    15.553   +3.36   +1.87   +4.31   +5.95   +7.81
+  18     LEN  2026-01-08    15.578  +11.59   +5.12   +2.09   -0.18   +4.08
+  19    INTC  2025-06-13    15.768   +5.21  +10.23  +11.22  +17.13  +13.80
+  20    ETSY  2026-03-23    16.183   -9.51   -4.80   +2.76   +6.67  +24.20
+
+VOLATILITY DIVERGENCE: MILD (ratio 1.56x)
+----------------------------------------------------------------------------
+  Candidate range_pct median: 0.0445    Top-K median: 0.0285
+  Modest volatility-regime mismatch between candidate and top-K analogs.
+
+NARRATIVE
+----------------------------------------------------------------------------
+  The P_300 Signal Report for MAN on 2026-05-21 indicates a WATCH signal
+  at horizon 5. The per-horizon statistics show moderate success, with win
+  rates between 55% to 65%, mean returns ranging from +2.29% to +3.74%,
+  and increasing standard deviation as the horizon extends beyond 10 days.
+  The top five historical analogs (CFPZF, VNO, VST, PLTR) demonstrate
+  varying outcomes, with price changes of up to +33.21% or down to -13.71%
+  at 20 days post-anchor date, suggesting significant dispersion in
+  potential future performance.
+
+============================================================================

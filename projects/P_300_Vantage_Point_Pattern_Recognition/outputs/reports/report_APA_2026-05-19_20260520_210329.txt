@@ -1,0 +1,55 @@
+============================================================================
+P_300 SIGNAL REPORT
+============================================================================
+Ticker:           APA
+Anchor date:      2026-05-19
+Signal:           PASS at horizon 10
+Generated:        2026-05-20 21:03 ET
+
+PER-HORIZON STATS
+----------------------------------------------------------------------------
+    h    n  win_rate  mean_ret  std_ret  z_score  class
+    5   20     0.550     +0.08    11.33   -0.456   PASS
+    7   20     0.550     +0.62    10.30   -0.456   PASS
+   10   20     0.600     -0.48    10.75   +0.000   PASS
+   15   20     0.550     +0.14    10.68   -0.090   PASS
+   20   20     0.550     +0.56    12.42   -0.456   PASS
+
+TOP 20 MATCHES (by composite distance, ascending)
+----------------------------------------------------------------------------
+   #  ticker      anchor  compdist     +5d     +7d    +10d    +15d    +20d
+   1    AAPL  2026-01-27    10.998   +4.34   +6.83   +5.97   +2.35   +6.18
+   2     AMD  2025-08-18    11.970   -7.26   -5.12   -7.85  -11.54   -8.90
+   3   GOOGL  2025-12-12    12.795   -0.69   +1.64   +1.38   +1.63   +8.63
+   4    AVGO  2025-06-13    13.856   +2.04   +6.41  +10.84   +9.29  +12.96
+   5      GS  2026-01-22    13.889   -1.52   -0.87   -6.73   -5.25   -3.39
+   6     NVO  2025-09-11    13.915  +13.90  +11.80   +3.20   +8.18   +8.07
+   7     TTD  2025-08-07    14.215  -42.53  -37.79  -40.79  -37.33  -41.05
+   8     WMT  2026-02-25    14.263   +1.64   -1.55   -1.80   -3.00   -2.14
+   9    SHOP  2025-09-22    14.485   -5.17   -4.81   +4.70   -2.20   +4.83
+  10     OII  2026-02-18    14.969  +14.60   +7.28   +6.20   +6.80   +2.36
+  11    PLTR  2025-10-23    15.203   +7.80  +14.79   -3.01   -4.62  -13.71
+  12     CAT  2025-06-25    15.863   +7.23   +5.36   +9.89  +12.51  +15.59
+  13    META  2025-11-05    16.037   -4.24   -4.17   -7.18   -0.37   +4.02
+  14     CVX  2026-02-10    16.157   +0.88   +0.92   +1.08   +2.07   +5.23
+  15     NKE  2025-09-15    16.703   -2.40   -2.48   -4.77   -2.55   -7.74
+  16      DE  2025-11-20    16.846   -2.49   -1.51   -0.26   +1.78   -1.21
+  17     QQQ  2026-04-14    17.030   +2.50   +3.63   +4.61   +8.43  +12.51
+  18     XOM  2026-01-15    17.238   +4.52   +5.96   +9.50  +15.43  +14.96
+  19     GEV  2025-09-25    17.622   -0.21   -0.71   +4.40   -0.91   -2.04
+  20    NVDA  2025-10-24    17.798   +8.71   +6.67   +1.01   +2.10   -3.96
+
+NARRATIVE
+----------------------------------------------------------------------------
+  The P_300 signal for APA as of 2026-05-19 has a final classification of
+  PASS at horizon 10. The per-horizon statistics show varying performance
+  across different timeframes: h=5 and h=7 have win rates of 55% with
+  positive mean returns but low z-scores, indicating weak statistical
+  significance; h=10 also has a 60% win rate but a negative mean return at
+  -0.48%, with a neutral z-score of +0.000. The top five historical
+  analogs include mixed outcomes, with some showing strong positive
+  returns (e.g., AAPL and AVGO) while others exhibit negative performance
+  (e.g., AMD and GS), suggesting dispersion in potential future price
+  movements.
+
+============================================================================

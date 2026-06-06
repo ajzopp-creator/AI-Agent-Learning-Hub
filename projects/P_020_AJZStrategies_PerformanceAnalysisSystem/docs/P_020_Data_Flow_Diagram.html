@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>P_020 — v4 Data Flow Diagram</title>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #1a1a1a;
+    color: #e0e0e0;
+    margin: 0;
+    padding: 24px;
+  }
+  h1 { font-size: 20px; font-weight: 500; color: #ffffff; margin: 0 0 4px; }
+  .subtitle { font-size: 13px; color: #888; margin: 0 0 24px; }
+  .card {
+    background: #242424;
+    border: 1px solid #333;
+    border-radius: 12px;
+    padding: 24px;
+    max-width: 760px;
+  }
+  svg text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+  .th { font-size: 14px; font-weight: 500; fill: #ffffff; }
+  .ts { font-size: 12px; font-weight: 400; fill: #aaaaaa; }
+  .arr { stroke: #555; stroke-width: 1.5; fill: none; }
+  .c-blue rect   { fill: #1a3a5c; stroke: #378ADD; }
+  .c-teal rect   { fill: #0a3028; stroke: #1D9E75; }
+  .c-gray rect   { fill: #2a2a2a; stroke: #888780; }
+  .c-purple rect { fill: #1e1a3a; stroke: #7F77DD; }
+  .c-amber rect  { fill: #3a2800; stroke: #BA7517; }
+  .c-coral rect  { fill: #3a1400; stroke: #993C1D; }
+  .c-green rect  { fill: #1a2e0a; stroke: #639922; }
+</style>
+</head>
+<body>
+<h1>P_020 AJZ Strategies — v4 Data Flow</h1>
+<p class="subtitle">Schwab API → SQLite (single source of truth) → Excel Power Query view | Updated: 2026-03-14</p>
+<div class="card">
+<svg width="100%" viewBox="0 0 680 580" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M2 1L8 5L2 9" fill="none" stroke="#555" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+</defs>
+
+<!-- LAYER LABELS -->
+<text class="ts" x="40" y="38" style="font-style:italic;fill:#666">Inputs</text>
+<line x1="40" y1="44" x2="220" y2="44" stroke="#333" stroke-width="0.5"/>
+<text class="ts" x="246" y="38" style="font-style:italic;fill:#666">Processing</text>
+<line x1="246" y1="44" x2="434" y2="44" stroke="#333" stroke-width="0.5"/>
+<text class="ts" x="460" y="38" style="font-style:italic;fill:#666">Outputs</text>
+<line x1="460" y1="44" x2="650" y2="44" stroke="#333" stroke-width="0.5"/>
+
+<!-- INPUT: Schwab API -->
+<g class="c-blue">
+  <rect x="30" y="54" width="160" height="52" rx="8" stroke-width="0.5"/>
+  <text class="th" x="110" y="74" text-anchor="middle" dominant-baseline="central">Schwab API</text>
+  <text class="ts" x="110" y="92" text-anchor="middle" dominant-baseline="central">Trade transactions</text>
+</g>
+
+<!-- INPUT: Tracker Dashboard -->
+<g class="c-teal">
+  <rect x="30" y="128" width="160" height="52" rx="8" stroke-width="0.5"/>
+  <text class="th" x="110" y="148" text-anchor="middle" dominant-baseline="central">Tracker Dashboard</text>
+  <text class="ts" x="110" y="166" text-anchor="middle" dominant-baseline="central">System name lookup</text>
+</g>
+
+<!-- INPUT: Params -->
+<g class="c-gray">
+  <rect x="30" y="202" width="160" height="52" rx="8" stroke-width="0.5"/>
+  <text class="th" x="110" y="222" text-anchor="middle" dominant-baseline="central">Account Params</text>
+  <text class="ts" x="110" y="240" text-anchor="middle" dominant-baseline="central">Risk %, multiplier</text>
+</g>
+
+<!-- PIPELINE CONTAINER -->
+<rect x="246" y="54" width="188" height="310" rx="12" fill="none" stroke="#333" stroke-width="0.5" stroke-dasharray="5 4"/>
+
+<!-- Pipeline steps -->
+<g class="c-purple">
+  <rect x="258" y="70" width="164" height="44" rx="6" stroke-width="0.5"/>
+  <text class="th" x="340" y="87" text-anchor="middle" dominant-baseline="central">TRD filter</text>
+  <text class="ts" x="340" y="103" text-anchor="middle" dominant-baseline="central">Trades only, no fees</text>
+</g>
+<line x1="340" y1="114" x2="340" y2="132" stroke="#555" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+
+<g class="c-purple">
+  <rect x="258" y="132" width="164" height="44" rx="6" stroke-width="0.5"/>
+  <text class="th" x="340" y="149" text-anchor="middle" dominant-baseline="central">10-min consolidation</text>
+  <text class="ts" x="340" y="165" text-anchor="middle" dominant-baseline="central">Merge same-symbol buys</text>
+</g>
+<line x1="340" y1="176" x2="340" y2="194" stroke="#555" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+
+<g class="c-purple">
+  <rect x="258" y="194" width="164" height="44" rx="6" stroke-width="0.5"/>
+  <text class="th" x="340" y="211" text-anchor="middle" dominant-baseline="central">Orphan detection</text>
+  <text class="ts" x="340" y="227" text-anchor="middle" dominant-baseline="central">Flag unmatched exits</text>
+</g>
+<line x1="340" y1="238" x2="340" y2="256" stroke="#555" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+
+<g class="c-teal">
+  <rect x="258" y="256" width="164" height="44" rx="6" stroke-width="0.5"/>
+  <text class="th" x="340" y="273" text-anchor="middle" dominant-baseline="central">Auto-match system</text>
+  <text class="ts" x="340" y="289" text-anchor="middle" dominant-baseline="central">P_115→P_300 or default</text>
+</g>
+<line x1="340" y1="300" x2="340" y2="318" stroke="#555" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+
+<g class="c-gray">
+  <rect x="258" y="318" width="164" height="44" rx="6" stroke-width="0.5"/>
+  <text class="th" x="340" y="335" text-anchor="middle" dominant-baseline="central">Dedup check</text>
+  <text class="ts" x="340" y="351" text-anchor="middle" dominant-baseline="central">Skip if txn_id exists</text>
+</g>
+<text class="ts" x="340" y="382" text-anchor="middle" style="fill:#555">ingest_pipeline.py</text>
+
+<!-- Arrows from inputs to pipeline -->
+<line x1="190" y1="80" x2="244" y2="120" stroke="#555" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+<line x1="190" y1="154" x2="244" y2="268" stroke="#555" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+<line x1="190" y1="228" x2="244" y2="330" stroke="#555" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+
+<!-- OUTPUT: SQLite -->
+<g class="c-amber">
+  <rect x="460" y="80" width="190" height="52" rx="8" stroke-width="0.5"/>
+  <text class="th" x="555" y="100" text-anchor="middle" dominant-baseline="central">SQLite Database</text>
+  <text class="ts" x="555" y="118" text-anchor="middle" dominant-baseline="central">P_020_trades.db</text>
+</g>
+<line x1="434" y1="220" x2="458" y2="106" stroke="#555" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+
+<!-- OUTPUT: Audit Log -->
+<g class="c-coral">
+  <rect x="460" y="156" width="190" height="52" rx="8" stroke-width="0.5"/>
+  <text class="th" x="555" y="176" text-anchor="middle" dominant-baseline="central">Audit log</text>
+  <text class="ts" x="555" y="194" text-anchor="middle" dominant-baseline="central">Weekly_Audit_YYYYMMDD</text>
+</g>
+<line x1="434" y1="290" x2="458" y2="182" stroke="#555" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+
+<!-- VIEW LAYER LABEL -->
+<text class="ts" x="460" y="240" style="font-style:italic;fill:#666">View layer</text>
+<line x1="460" y1="246" x2="650" y2="246" stroke="#333" stroke-width="0.5"/>
+
+<!-- OUTPUT: CSV Export -->
+<g class="c-green">
+  <rect x="460" y="256" width="190" height="52" rx="8" stroke-width="0.5"/>
+  <text class="th" x="555" y="276" text-anchor="middle" dominant-baseline="central">CSV exports</text>
+  <text class="ts" x="555" y="294" text-anchor="middle" dominant-baseline="central">Options + Stocks + AI</text>
+</g>
+<line x1="555" y1="132" x2="555" y2="254" stroke="#555" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+
+<!-- OUTPUT: Excel -->
+<g class="c-green">
+  <rect x="460" y="330" width="190" height="52" rx="8" stroke-width="0.5"/>
+  <text class="th" x="555" y="350" text-anchor="middle" dominant-baseline="central">Excel (Power Query)</text>
+  <text class="ts" x="555" y="368" text-anchor="middle" dominant-baseline="central">View only — refresh</text>
+</g>
+<line x1="555" y1="308" x2="555" y2="328" stroke="#555" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+
+<!-- OUTPUT: AI CSVs -->
+<g class="c-green">
+  <rect x="460" y="404" width="190" height="52" rx="8" stroke-width="0.5"/>
+  <text class="th" x="555" y="424" text-anchor="middle" dominant-baseline="central">AI review CSVs</text>
+  <text class="ts" x="555" y="442" text-anchor="middle" dominant-baseline="central">Equity, R-dist, drawdown</text>
+</g>
+<line x1="555" y1="308" x2="555" y2="402" stroke="#555" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+
+<!-- Batch Runner -->
+<rect x="246" y="492" width="188" height="40" rx="8" fill="none" stroke="#444" stroke-width="0.5" stroke-dasharray="4 3"/>
+<text class="ts" x="340" y="508" text-anchor="middle" style="fill:#777">P_020_Weekly_Update.bat</text>
+<text class="ts" x="340" y="524" text-anchor="middle" style="fill:#555">one-click Monday runner</text>
+</svg>
+</div>
+</body>
+</html>

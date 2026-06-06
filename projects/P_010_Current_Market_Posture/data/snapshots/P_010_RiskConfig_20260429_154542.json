@@ -1,0 +1,20 @@
+{
+  "timestamp": "2026-04-29T09:28:46.315925",
+  "spy_posture": 7.154694,
+  "qqq_posture": 11.766876,
+  "avg_posture": 9.460785,
+  "risk_mode": "FULL",
+  "source": "Grid_XLSX",
+  "spy_grid_date": "04/28/2026",
+  "qqq_grid_date": "04/28/2026",
+  "vxx_posture": -0.750582,
+  "vxx_signal": "NEUTRAL",
+  "vxx_note": "VP sees stable/flat volatility -- no directional signal from VXX",
+  "vxx_close": 28.3299999237061,
+  "vxx_pred_high": 28.9086303710938,
+  "vxx_pred_low": 28.288631439209,
+  "vxx_grid_date": "04/28/2026",
+  "morning_risk_mode": "FULL",
+  "intraday_signal": "CONFIRM",
+  "intraday_reason": "Intraday confirm: Prices within predicted range (PRANGE)"
+}

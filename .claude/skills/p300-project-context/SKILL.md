@@ -1,0 +1,274 @@
+---
+name: p300-project-context
+description: >
+  P_300 VantagePoint Pattern Recognition System — project-specific operating rules,
+  critical paths, schema shorthand, and anti-patterns. Load at the start of ANY session
+  involving P_300 work. Triggers on any reference to P_300, VantagePoint, pattern catalog,
+  mmddyycatalog.db, IntelliScan, Pipeline A, Pipeline B, BUY/WATCH/PASS, AddPattern,
+  DailyWorkflow, or VP pattern matching. Always read BEFORE writing any code or file path.
+---
+
+# P_300 Project Context
+
+## Purpose & Pairs With
+
+Auto-loading protection layer. Contains concise rules, critical paths, schema shorthand, and anti-patterns. Full architecture lives in the architecture doc and is loaded on demand.
+
+| File | Role |
+| :---- | :---- |
+| `docs/P_300_System_Architecture_v2.7.md` | Full spec — on demand |
+| `docs/prompts/P_300_System_Initialization_Prompt_v2.md` (v3.0) | INIT sequence |
+| `docs/processes/evaluate_trade.md` + `add_pattern.md` | Operator runbooks |
+| `python-project-architecture` SKILL (Hub) | Process Boundary Standard — Layer → Process → Module → Functions |
+| `tasks/lessons.md` | Live working lessons — loaded by SIP |
+| `tasks/todo.md` | Active task queue — loaded by SIP |
+| **THIS FILE** | Always-active protection rules |
+
+---
+
+## Critical Paths
+
+| Path | Resolution |
+| :---- | :---- |
+| Hub root | `C:\Users\Trader\AI-Agent-Learning-Hub\` |
+| Project root | `<Hub>\projects\P_300_Vantage_Point_Pattern_Recognition\` |
+| Python | `C:\Users\Trader\.conda\envs\p140\python.exe` (never suggest new venv) |
+| Active catalog DB | `db_utils.get_latest_catalog()` — glob `*catalog.db`, digit-first, newest |
+| Working temp DB | `<project>\models\temp_working.db` (transient write target) |
+| OneDrive paths | `Path(os.environ["OneDrive"])` — never hardcode drive letter |
+| Python interpreter (M-016) | ISE profile must prepend p140. Verify: `(Get-Command python).Source` → p140 python.exe. Fix profile first — never alias `$py`. |
+| Catalog ground truth (M-017) | DB is authoritative. INIT Step 5b reconciles via `catalog-summary`. Conflict → catalog wins, INIT halts. |
+| PowerShell subprocess timeout | ~4-min client limit. Fallback: drop script via FileSystem, operator runs in ISE, pastes output. |
+
+**Catalog naming:** `<mmddyy>catalog.db` — e.g., `051426catalog.db`.
+
+### Workstation Resolution (M-016)
+
+Active host is PowerShell ISE — `$PROFILE` resolves differently than the regular console. Live ISE profile: `D:\OneDrive\Documents\WindowsPowerShell\Microsoft.PowerShellISE_profile.ps1` (Documents is OneDrive-redirected to D:\). Four python.exe installs exist in PATH; without profile prepend, Python 3.14 wins.
+
+**Mandatory diagnostic on any Python failure:**
+```
+$PROFILE                        # expect: D:\OneDrive\...\Microsoft.PowerShellISE_profile.ps1
+(Get-Command python).Source     # expect: C:\Users\Trader\.conda\envs\p140\python.exe
+($env:Path -split ';')[0..2]    # expect: p140 paths at positions 0-1
+```
+Fix the profile. Never use `$py = "..."` aliases — they mask the root cause.
+
+---
+
+## Schema Shorthand (7 Tables)
+
+Full DDL in architecture §9.2.
+
+```
+symbols          (symbol_id PK, ticker UNIQUE NOT NULL)
+source_files     (source_file_id PK, filename UNIQUE, symbol_id FK, imported_at, row_count)
+feature_sets     (feature_set_id PK, feature_version, description, created_at)
+pattern_instances (pattern_instance_id PK, symbol_id FK, source_file_id FK NOT NULL,
+                   feature_set_id FK NOT NULL, anchor_date, window_length, data_origin_type)
+pattern_bars     (pattern_bar_id PK, pattern_instance_id FK, bar_offset, bar_date,
+                   <17 raw VP fields>, <10 normalized fields>)
+pattern_features (pattern_feature_id PK, pattern_instance_id FK, feature_name, feature_value)
+                   — DERIVED features only, not raw VP data
+forward_labels   (forward_label_id PK, pattern_instance_id FK, horizon_days, future_date,
+                   return_pct, is_profitable)
+                   — return_pct is DECIMAL FRACTION (0.0672 = 6.72%); × 100 at display (M-020)
+```
+
+`data_origin_type`: `PATTERN_IDENT` (permanent) or `EVAL_SET` (reserved — Pipeline B does NOT insert per Decision E). Forward label horizons: 5, 7, 10, 15, 20 days. Pattern window: 5–20 bars; `window_length` is data, not schema.
+
+**Similarity features (Pipeline B, Decision B):** 10 normalized columns on `pattern_bars` — `close_pct_from_anchor`, `range_pct`, `body_pct`, `volume_zscore`, `stdiff_pct`, `mtdiff_pct`, `ltdiff_pct`, `pred_high_pct`, `pred_low_pct`, `pred_range_pct` — equal-weight DTW summed to composite distance.
+
+---
+
+## Anti-Patterns (Forbidden by Construction)
+
+EC-001 through EC-070. Never propose; flag immediately if seen in operator code.
+
+1. **`df.tail(N)` / `df.head(N)` in ingest layer** — locks window, silently drops bars. EC-060.
+2. **TEXT into INTEGER FK** — `symbol_id` is INTEGER; SQLite accepts corruption silently. EC-061.
+3. **Raw dollar values in similarity matching** — use normalized `pattern_bars` columns only. EC-046/048/022.
+4. **Mock data in production decision engines** — Pipeline B must query the catalog. EC-064.
+5. **Hardcoded DB paths outside `config.py`** — use `db_utils.get_latest_catalog()`. EC-049/058.
+6. **Mixed layers** — `domain/` no I/O; `infrastructure/` no business logic. EC-027.
+7. **Merged Pipeline A + B** — different design properties; merging corrupts both. EC-067.
+8. **LLM output in BUY/WATCH/PASS path** — deterministic Python only. EC-022, ID-005.
+9. **Direct write to master DB** — Lock + Temp-DB + Atomic Move only.
+10. **Skipping Check-Out / Check-In** — every DB op is bracketed.
+11. **Module name colliding with Python stdlib** (`signal`, `csv`, `json`, `time`, `math`, etc.) — `sys.path[0]` prepend causes circular imports. Use descriptive suffixes. EC-068, M-018.
+12. **Unicode through Python stdout to PowerShell** — cp1252 default crashes on non-ASCII. ASCII-only on stdout; Unicode safe in file writes with `encoding="utf-8"`. EC-069, M-019.
+13. **`return_pct` treated as percentage** — decimal fraction storage (0.0672 = 6.72%); multiply by 100 at display boundary only. EC-070, M-020.
+14. **4 x `.parent` from `python/application/` to reach Hub root** — requires 5 x `.parent` (file → application/ → python/ → project root → projects/ → Hub root). M-036.
+
+---
+
+## Layer Architecture (Hub Standard)
+
+```
+python/
+├── config.py              ← All constants and paths
+├── schemas.py             ← Pydantic models — Pipeline A persistent I/O
+├── schemas_pipeline_b.py  ← Pydantic models — Pipeline B in-memory
+├── domain/                ← Business logic ONLY (no I/O, no print, no DB)
+├── infrastructure/        ← All I/O ONLY (files, DB, APIs, network)
+├── application/           ← Orchestration ONLY (calls domain + infrastructure)
+├── cli.py                 ← Entry points
+├── launcher.bat
+├── requirements.txt
+└── migrations/            ← One-shot migration scripts
+```
+
+**Hard rules:** `domain/` cannot import `sqlite3`, `requests`, or `infrastructure/`. `infrastructure/` has no business logic. `application/` has no raw logic, no direct I/O, no external-service checks, no output suppression. `config.py` is the single source of truth. `schemas_pipeline_b.py` split from `schemas.py` at Stage 6 for §8.4.2 size limit; NormalizedBar/PatternBarRecord are Backlog shared-base refactor candidates.
+
+**Process Boundary Standard** (Hub-level rule — `python-project-architecture` SKILL): one reason to change per module; ~5 public functions soft limit; `application/` orchestrates only; infrastructure change must never require application change. Violation example: `_check_lm_studio()` in `daily_evaluate_pipeline.py` — LMS status is infrastructure, not orchestration.
+
+---
+
+## Pipeline Contracts
+
+### Pipeline A — Add Pattern (Write-side)
+- **Source:** `data/historical_patterns/Pattern_<startdate>_<enddate>_<symbol>.xlsx`
+- **Safety:** Lock + Temp-DB + Atomic Move; Catalog Check-Out → op → Check-In
+- **Health check:** `infrastructure/verify_ingestion.py` (Ghost-vs-Valid)
+- **Output:** Permanent rows in `pattern_instances`, `pattern_bars`, `forward_labels`
+
+### Pipeline B — Daily Evaluate (Read-side)
+- **Source:** `data/live/History Grid (<symbol>).xlsx`
+- **Direction:** READ-only; live candidate normalized in-memory only — NO EVAL_SET inserts (Decision E)
+- **Output:** BUY/WATCH/PASS signal + Z-score stats; optional `outputs/reports/<date>_<symbol>.txt`
+- **Failure mode:** Fail to PASS — never silently produce a BUY
+- **Decisions locked (Stage 6):** A–F. BUY: n≥5 + wr≥0.70 + z>0.0 / WATCH: n≥3 + wr≥0.60 + z>0.0
+
+**The two pipelines NEVER merge.**
+
+### Pipeline B Layer Flow
+```
+vp_xlsx_reader.parse_live_file (I/O) → normalization (logic) → _build_live_candidate (orchestration)
+  → catalog_reader.get_* (I/O × N) → similarity.composite_distance + rank_by_distance (logic, top-K)
+  → aggregator.aggregate_top_k (logic) → signal_classifier.classify_signal (logic)
+  → report_writer.write_report (I/O) → terminal + outputs/reports/
+```
+
+---
+
+## Local LLM Boundary
+
+Two roles, hard boundary:
+1. **Dev Assistant** — writes Python, reviews architecture
+2. **Post-Decision Narrator** — summary AFTER deterministic Pipeline B signal (Stage 8, SEALED 2026-05-19)
+
+**Never in the BUY/WATCH/PASS path.** NFR-1 verified 2026-05-18: two `daily-evaluate` runs on same SPY XLSX → identical output to 3 decimals.
+
+---
+
+## AI Behavioral Rules
+
+**Must:**
+1. Verify catalog state before any DB-touching operation (Check-Out)
+2. Apply Lock + Temp-DB + Atomic Move for all canonical-DB writes
+3. Validate catalog state after any DB-touching operation (Check-In)
+4. Output entire script if change spans 2+ lines or multiple functions
+5. Include versioned header on every Python file (§8.4.1)
+6. Plan all files with line counts BEFORE writing code
+7. Wait for operator approval if plan involves 3+ files or structural decisions
+8. Write directly to Hub via `windows-mcp:FileSystem` when available (M-007)
+9. Dual delivery (disk + artifact) for standalone reference docs (M-004)
+10. One file per response when multiple files queued (M-002)
+11. Call `tool_search` at session start to discover filesystem MCP capability
+12. Perform file modifications directly via MCP when available — never ask operator to paste 2+ lines
+13. Refuse new ingest/catalog work until Step 5b reconciliation is clean (M-017)
+14. **Complete the full INIT sequence (Steps 0–7) before writing any file, logging any lesson, or taking any action. Steps 4 through 5c are an uninterruptible block.**
+
+**Must Not:**
+1. Invent project status not in `tasks/todo.md` or architecture doc
+2. Change schema or folder conventions without documenting
+3. Treat thread memory as authoritative when docs say otherwise
+4. Introduce new parsers/schemas/workflows when task is to clone an approved pattern
+5. Skip Check-Out / Check-In bracketing
+6. Write directly to master DB without temp-DB pattern
+7. Mix layers
+8. Insert LLM output into BUY/WATCH/PASS decision logic
+9. Use mock data in production decision engines
+10. Hardcode paths outside `config.py`
+11. Conclude environment is ephemeral without calling `tool_search`
+12. Identify client environment in session output — report tool capability instead
+13. Trust tracking docs over live catalog DB on conflict (M-017 — catalog wins)
+14. **Write files, log lessons, or take any action between INIT Steps 4 and 6. The sequence is atomic.**
+
+---
+
+## Naming Conventions
+
+| Element | Convention |
+| :---- | :---- |
+| Catalog DB | `<mmddyy>catalog.db` |
+| Pattern XLSX | `Pattern_<startdate>_<enddate>_<symbol>.xlsx` |
+| Live XLSX | `History Grid (<symbol>).xlsx` |
+| Python file header | FILE / VERSION / DATE / AUTHOR / LAYER / DESCRIPTION / CHANGELOG |
+| Migration scripts | `stage_<N><letter>_<purpose>.py` |
+| Module names | No stdlib collision — use descriptive suffixes (M-018) |
+
+---
+
+## Session-Start Checklist
+
+- [ ] Call `tool_search` first — never assume ephemeral
+- [ ] Acknowledge SKILL loaded by citing one rule
+- [ ] If INIT not yet run, prompt: "Type `INIT` to load working state"
+- [ ] Never propose work, write code, or take action before INIT Step 7 completes
+- [ ] If operator skips INIT and requests ingest/catalog work, prompt for INIT first (Must #13)
+- [ ] On `catalog-summary` timeout: mtime older → tracking authoritative; mtime newer/unavailable → HALT
+
+---
+
+## When to Consult the Full Architecture Doc
+
+Load `docs/P_300_System_Architecture_v2.7.md` for:
+- SQL DDL, indexes, normalization formulas (§9.2–9.3)
+- Full EC log with historical context (§6) — includes EC-068/069/070
+- Pipeline A/B detailed workflows and Layer Flow diagram (§8.2–8.3)
+- Stage 3–9 roadmap + deliverables (§7) — all SEALED; Stage 9-followup COMPLETE 2026-05-20
+- Stage 6 decisions A-F; Decision B parameter sweep (§7, §5 v2.5–v2.6)
+- Stage 7 closeout: 20-symbol roster, target=anchor, M-022–026 (§7, §5 v2.6)
+- Stage 8 closeout: LM Studio narrator, NFR-1, --no-narrator (§7, §5 v2.6)
+- Stage 9 closeout: sweep + ablation + LOO utilities (§7, §5 v2.6)
+- Stage 9-followup: volatility-divergence flag, severity thresholds, §8.4.2 split-vs-slim (§7, §5 v2.7)
+- ID-007 RESOLVED 2026-05-19 (§10.3)
+
+Do NOT load reflexively — the SKILL covers most operations.
+
+---
+
+## Maintenance
+
+- **Owner:** Anthony Zoppi (review), Claude (drafting)
+- **Update trigger:** New EC log entry requiring structural protection, or layer/pipeline contract change
+- **Aligned with:** P_300_System_Architecture v2.7 / SIP v3.0 (2026-05-29)
+
+## Changelog
+
+### 2026-05-30
+- **Process Boundary Standard referenced** from Hub-level `python-project-architecture` SKILL. Pairs With table updated. Layer Architecture section gains pointer and application-purity rule. P_300 refactor plan: S1 = `infrastructure/lm_studio_status.py` (pending); S2–S5 backlogged.
+
+### 2026-05-29 (aligned with SIP v3.0)
+- **Anti-pattern #14 added (M-036):** 4 x `.parent` from `python/application/` reaches `projects/` not Hub root — requires 5 x `.parent`.
+- **Must rule #14 + Must Not rule #14 added:** INIT sequence is atomic; no files, lessons, or actions between Steps 4 and 6.
+- **Session-Start Checklist:** "before INIT Step 7 completes" replaces "before INIT completes" for precision.
+- **Token reduction (~5%):** Changelog entries prior to 2026-05-18 removed (stable); verbose prose trimmed in Workstation Resolution, Layer Architecture, Pipeline Contracts, Local LLM Boundary, and When to Consult sections. All structural content preserved.
+- **SIP reference** bumped to v3.0.
+
+### 2026-05-20 (aligned with architecture v2.7 / SIP v2.7)
+- `docs/processes/` row added to Pairs With table. Schema shorthand: 16 → 17 raw VP fields. Architecture doc pointer updated to v2.7.
+
+### 2026-05-19 (aligned with architecture v2.6 / SIP v2.6)
+- Local LLM Boundary: narrator retagged Stage 8 SEALED. Architecture pointer updated to v2.6.
+
+### 2026-05-18 (aligned with architecture v2.5 / SIP v2.5)
+- Anti-patterns #11–13 added (M-018/019/020). Pipeline Contracts updated for XLSX + Decision E. Pipeline B Layer Flow added. Schema shorthand gained return_pct annotation + EVAL_SET clarification + similarity features. Layer Architecture gained schemas_pipeline_b.py. Local LLM NFR-1 marker added. Critical Paths timeout row added. Naming Conventions module row added. Session-Start Checklist timeout fallback added.
+
+### 2026-05-16 (aligned with architecture v2.4 / SIP v2.4)
+- Critical Paths: M-016 + M-017 rows added. Workstation Resolution subsection added. Must/Must-Not #13 added (M-017). Session-Start Checklist: Step 5b reminder added.
+
+---
+
+**End of P_300 Project Context SKILL**

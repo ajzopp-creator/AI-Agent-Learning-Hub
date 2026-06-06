@@ -1,0 +1,26 @@
+﻿# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# pytest
+.pytest_cache/
+.coverage
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+logs/
+*.log
+
+# Backups
+*_BACKUP_*.py
+_archive/
+
+# Environment
+.env
+venv/
+ENV/

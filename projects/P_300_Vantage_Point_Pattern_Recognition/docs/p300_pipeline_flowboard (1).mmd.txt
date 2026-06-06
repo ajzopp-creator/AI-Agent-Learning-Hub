@@ -1,0 +1,25 @@
+flowchart LR
+    subgraph S1[1. Source Data]
+        A[📄 VantagePoint Grids]
+        B[📁 Raw CSV Files]
+    end
+
+    subgraph S2[2. Build Catalog]
+        C[📦 5-Bar Pattern Windows]
+        D[🗄️ SQLite Catalog]
+        E[🏷️ Forward Labels]
+    end
+
+    subgraph S3[3. Review & Trade]
+        F[🕡 6:30 PM Scan Shortlist]
+        G[🔎 Historical Match Review]
+        H[✅ Paper Trade Decision]
+    end
+
+    A --> C
+    B --> C
+    C --> D
+    D --> E
+    E --> G
+    F --> G
+    G --> H

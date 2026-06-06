@@ -1,0 +1,12 @@
+{
+  "timestamp": "2026-02-20T10:33:28.413510",
+  "spy_posture": -1.694580078125,
+  "qqq_posture": -3.700347900390625,
+  "avg_posture": -2.6974639892578125,
+  "risk_mode": "HALF",
+  "source": "Grid_XLSX",
+  "spy_grid_date": "02/19/2026",
+  "qqq_grid_date": "02/19/2026",
+  "intraday_signal": "UPGRADE",
+  "intraday_reason": "Intraday upgrade: Market stronger than predicted (prices above PRANGE)"
+}

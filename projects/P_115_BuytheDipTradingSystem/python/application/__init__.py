@@ -1,0 +1,1 @@
+"""Application layer — orchestration for P_115 signal emission."""

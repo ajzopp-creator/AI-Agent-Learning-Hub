@@ -1,0 +1,33 @@
+X-DONE  History Grid 011725_012525 (SPY).csv
+X-DONE  History Grid 013026_020626_AAPL_5day.csv
+X-DONE DUP  History Grid 040626_042106 (SPY).csv
+X-DONE DUP  History Grid 04072026_042126_QQQ_10day.csv
+X-DONE  History Grid 041326_042126_MSFT_7day.csv
+X DONE  History Grid 050324_051324 (SPY).csv
+X-DONE  History Grid 050324_051324_SPY_5day.csv-
+X-DONE  History Grid 061224_062624_MSFT_10day.csv
+X-DONE  History Grid 080525_081825_AAPL_10day.csv
+X-DONE  History Grid 102125_102925_MSFT_5day.csv
+X-DONE  History Grid 102225_102925 (SPY).csv
+X-DONE  History Grid 102325_103025_QQQ_5day.csv
+X-DONE  History Grid 103023_112223 (SPY).csv
+DONE DUP  History Grid 103023_112223_SPY_7day.csv
+X-DONE  History Grid 110625_111225 (VOD).csv
+X- DONE  History Grid 112125_120225_AAPL_7day.csv-
+X- DONE  History Grid 112625_120525_QQQ_7day.csv
+DONE DUP  History Grid 123025_012326_ATGE.csv 
+X- DONE DUP  History Grid_040626_042126_SPY_10day.csv
+
+| Symbol | Span                          | Source file                                                                           |
+| ------ | ----------------------------- | ------------------------------------------------------------------------------------- |
+| ATGE   | 123025-012326                 | History-Grid-123025_012326_ATGE.csv Memory                                            |
+| CTRA   | 103125-111125                 | History-Grid-102325_042326_CTRA.csv History-Grid-102325_042326_CTRA.csv               |
+| CTRA   | 101626-020926                 | History-Grid-102325_042326_CTRA.csv History-Grid-102325_042326_CTRA.csv               |
+| CTRA   | 031126-033126                 | History-Grid-102325_042326_CTRA.csv History-Grid-102325_042326_CTRA.csv               |
+| CTRA   | latest add from same file set | History-Grid-102325_042326_CTRA.csv History-Grid-102325_042326_CTRA.csv               |
+| SPY    | 011725-012525                 | History-Grid-011725_012525-SPY.csv History-Grid-011725_012525-SPY.csv                 |
+| AAPL   | 013026-020626                 | History-Grid-013026_020626_AAPL_5day.csv History-Grid-013026_020626_AAPL_5day.csv     |
+| SPY    | 040626-042126                 | History-Grid_040626_042126_SPY_10day.csv History-Grid_040626_042126_SPY_10day.csv     |
+| QQQ    | 040726-042126                 | History-Grid-04072026_042126_QQQ_10day.csv History-Grid-04072026_042126_QQQ_10day.csv |
+| MSFT   | 041326-042126                 | History-Grid-041326_042126_MSFT_7day.csv History-Grid-041326_042126_MSFT_7day.csv     |
+| SPY    | 050324-051324                 | History-Grid-050324_051324-SPY.csv History-Grid-050324_051324-SPY.csv                 |

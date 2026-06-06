@@ -1,0 +1,12 @@
+{
+  "version": "1.0.0",
+  "strategy_id": "matching_strategy_v1",
+  "last_updated": "2026-05-03",
+  "weights": {
+    "neural_index": 0.45,
+    "predicted_ma_crossover": 0.30,
+    "price_variance": 0.15,
+    "volume_confirmation": 0.10
+  },
+  "description": "Weighted similarity engine. Heavily biased toward predictive indicators (Neural Index) over raw price variance to reduce noise in pattern matches."
+}

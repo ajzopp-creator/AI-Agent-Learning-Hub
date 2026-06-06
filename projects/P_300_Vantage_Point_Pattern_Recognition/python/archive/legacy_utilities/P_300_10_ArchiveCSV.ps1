@@ -1,0 +1,1 @@
+﻿Move-Item -Path "C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\data\live\*.csv" -Destination "C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\data\processed\" -Force

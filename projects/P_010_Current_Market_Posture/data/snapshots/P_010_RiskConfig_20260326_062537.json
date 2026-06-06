@@ -1,0 +1,19 @@
+{
+  "timestamp": "2026-03-25T08:00:24.904566",
+  "spy_posture": -8.809326,
+  "qqq_posture": -7.367462,
+  "avg_posture": -8.088394,
+  "risk_mode": "OFF",
+  "source": "Grid_XLSX",
+  "spy_grid_date": "03/23/2026",
+  "qqq_grid_date": "03/23/2026",
+  "vxx_posture": 0.57375,
+  "vxx_signal": "CAUTION",
+  "vxx_note": "VP predicts modest VXX rise -- watch for increased volatility",
+  "vxx_close": 34.3300018310547,
+  "vxx_pred_high": 34.6392974853516,
+  "vxx_pred_low": 33.0974044799805,
+  "vxx_grid_date": "03/23/2026",
+  "intraday_signal": "CONFIRM",
+  "intraday_reason": "Intraday confirm: Prices within predicted range (PRANGE)"
+}

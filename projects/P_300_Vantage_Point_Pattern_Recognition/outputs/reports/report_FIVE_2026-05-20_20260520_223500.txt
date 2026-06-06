@@ -1,0 +1,60 @@
+============================================================================
+P_300 SIGNAL REPORT
+============================================================================
+Ticker:           FIVE
+Anchor date:      2026-05-20
+Signal:           PASS at horizon 5
+Generated:        2026-05-20 22:35 ET
+
+PER-HORIZON STATS
+----------------------------------------------------------------------------
+    h    n  win_rate  mean_ret  std_ret  z_score  class
+    5   20     0.550     -0.55    10.85   -0.456   PASS
+    7   20     0.550     +0.55    10.22   -0.456   PASS
+   10   20     0.550     -0.75    10.70   -0.456   PASS
+   15   20     0.500     -0.51    10.87   -0.541   PASS
+   20   20     0.550     +0.50    12.26   -0.456   PASS
+
+TOP 20 MATCHES (by composite distance, ascending)
+----------------------------------------------------------------------------
+   #  ticker      anchor  compdist     +5d     +7d    +10d    +15d    +20d
+   1      DE  2025-11-20    14.061   -2.49   -1.51   -0.26   +1.78   -1.21
+   2     NKE  2025-09-15    14.332   -2.40   -2.48   -4.77   -2.55   -7.74
+   3     GLP  2026-03-10    14.578   -0.31   +1.83   -3.04  -11.59   -0.38
+   4    SHOP  2025-09-22    14.592   -5.17   -4.81   +4.70   -2.20   +4.83
+   5     AMD  2025-08-18    14.770   -7.26   -5.12   -7.85  -11.54   -8.90
+   6     CVX  2026-02-10    14.806   +0.88   +0.92   +1.08   +2.07   +5.23
+   7    NVDA  2025-10-24    15.020   +8.71   +6.67   +1.01   +2.10   -3.96
+   8    AAPL  2026-01-27    15.101   +4.34   +6.83   +5.97   +2.35   +6.18
+   9    META  2025-11-05    15.570   -4.24   -4.17   -7.18   -0.37   +4.02
+  10      GS  2026-01-22    15.850   -1.52   -0.87   -6.73   -5.25   -3.39
+  11     LMT  2025-09-02    15.946   +1.01   +4.03   +4.82   +7.55  +10.32
+  12     SPY  2025-06-20    15.946   +3.47   +3.93   +4.44   +5.14   +5.80
+  13     XOM  2026-01-15    16.152   +4.52   +5.96   +9.50  +15.43  +14.96
+  14     GEV  2025-09-25    16.383   -0.21   -0.71   +4.40   -0.91   -2.04
+  15     NVO  2025-09-11    16.495  +13.90  +11.80   +3.20   +8.18   +8.07
+  16     CAT  2025-06-25    16.512   +7.23   +5.36   +9.89  +12.51  +15.59
+  17     TTD  2025-08-07    16.831  -42.53  -37.79  -40.79  -37.33  -41.05
+  18     DIS  2025-10-15    17.042   +1.23   -0.03   -1.32   -0.31   +4.42
+  19    AVGO  2025-06-13    17.268   +2.04   +6.41  +10.84   +9.29  +12.96
+  20    PLTR  2025-10-23    17.437   +7.80  +14.79   -3.01   -4.62  -13.71
+
+VOLATILITY DIVERGENCE: MILD (ratio 1.55x)
+----------------------------------------------------------------------------
+  Candidate range_pct median: 0.0331    Top-K median: 0.0213
+  Modest volatility-regime mismatch between candidate and top-K analogs.
+
+NARRATIVE
+----------------------------------------------------------------------------
+  The P_300 signal for FIVE on the anchor date of 2026-05-20 is PASS at
+  horizon 5. The per-horizon statistics show a consistent win rate of
+  approximately 55% across horizons 5 to 20, with mean returns ranging
+  from -0.75% to +0.50%, and standard deviations between 10.22% and
+  12.26%. The z-scores for all horizons are negative (-0.456 to -0.541),
+  indicating the signal's performance is not statistically significantly
+  better than random. The top five historical analogs (DE, NKE, GLP, SHOP,
+  AMD) exhibit varied outcomes, with 5-day returns ranging from -7.26% to
+  +5.17% and 20-day returns from -8.90% to +4.83%, suggesting significant
+  dispersion in potential outcomes.
+
+============================================================================

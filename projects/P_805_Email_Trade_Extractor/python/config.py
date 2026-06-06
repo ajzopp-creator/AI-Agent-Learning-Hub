@@ -1,0 +1,166 @@
+"""P_805 configuration — paths, thresholds, parameters.
+
+Per the Hub-wide python-project-architecture standard: all constants live
+here and are imported by any layer that needs a value. No hardcoded paths
+or values exist in domain/, infrastructure/, or application/ modules.
+
+HUB_ROOT is the only hardcoded filesystem path allowed in this project.
+All other project paths are derived from it.
+"""
+
+from pathlib import Path
+
+# ── PATH CONFIGURATION ────────────────────────────────────────────────────────
+# Hub root — only hardcoded path allowed per architecture standard.
+HUB_ROOT: Path = Path(r"C:\Users\Trader\AI-Agent-Learning-Hub")
+
+# Project paths (derived)
+PROJECT_ROOT: Path = HUB_ROOT / "projects" / "P_805_Email_Trade_Extractor"
+DATA_DIR: Path = PROJECT_ROOT / "data"
+DATA_DAILY_DIR: Path = DATA_DIR / "daily"
+DATA_MONTHLY_DIR: Path = DATA_DIR / "monthly"
+SENDER_SHEET: Path = DATA_DIR / "sender_sheet.csv"
+LOGS_DIR: Path = PROJECT_ROOT / "python" / "logs"
+
+# ── THUNDERBIRD CONFIGURATION ─────────────────────────────────────────────────
+# Live Thunderbird profile. Confirmed 2026-04-26 by check_ietimport_dates.py:
+# all four IMAP INBOX caches (Yahoo, Gmail, iCloud, Outlook) are current and
+# receiving live mail under m306ztzh.IETimport, NOT 2slie5gz.default-release.
+# The "-1" suffix on imap.gmail-1.com / imap.mail.me-1.com is Thunderbird's
+# disambiguation when the same hostname appears in multiple account configs;
+# do not strip it.
+THUNDERBIRD_ROOT: Path = Path(r"C:\Users\Trader\AppData\Roaming\Thunderbird\Profiles")
+PROFILE_PATH: str = "m306ztzh.IETimport"
+PROFILE_ROOT: Path = THUNDERBIRD_ROOT / PROFILE_PATH
+
+# Thunderbird splits mail across two subdirectories:
+#   Mail\     — Local Folders (archived POP mail, user-created folders)
+#   ImapMail\ — Live IMAP inbox caches (one dir per server)
+MAIL_ROOT: Path = PROFILE_ROOT / "Mail"
+IMAP_ROOT: Path = PROFILE_ROOT / "ImapMail"
+
+# ── ACCOUNT MAP ───────────────────────────────────────────────────────────────
+MBOX_FILES: dict[str, str] = {
+    "icloud":  r"ImapMail\imap.mail.me-1.com\INBOX",
+    "gmail":   r"ImapMail\imap.gmail-1.com\INBOX",
+    "outlook": r"ImapMail\outlook.office365.com\INBOX",
+    "yahoo":   r"ImapMail\imap.mail.yahoo.com\INBOX",
+}
+IMAP_ACCOUNT_ORDER: list[str] = ["icloud", "gmail", "outlook", "yahoo"]
+
+# ── EXTRACTION DESTINATION (Phase 2+) ─────────────────────────────────────────
+EXTRACTED_FOLDER_NAME: str = "ExtractedNewsletterFolder"
+EXTRACTED_FOLDER_AUTOCREATE: bool = True
+
+# ── SCAN PARAMETERS ───────────────────────────────────────────────────────────
+SCAN_DAYS: int = 30
+CONSENSUS_THRESHOLD: int = 2
+
+# ── LOGGING ───────────────────────────────────────────────────────────────────
+LOG_FILE: Path = LOGS_DIR / "p805.log"
+REJECT_LOG_FILE: Path = LOGS_DIR / "rejected.log"
+LOG_LEVEL_CONSOLE: str = "INFO"
+LOG_LEVEL_FILE: str = "DEBUG"
+LOG_MAX_BYTES: int = 5_000_000
+LOG_BACKUP_COUNT: int = 3
+
+# ── PHASE 3: TICKER EXTRACTION ────────────────────────────────────────────────
+# Patterns are tried in order. Each pattern's regex MUST have exactly ONE
+# capturing group, which is the ticker. To add a new pattern, append a dict
+# here — no code changes elsewhere. Confidence is just a label that gets
+# carried into the output CSV; sort/filter on it downstream.
+TICKER_PATTERNS: list[dict] = [
+    {
+        "name": "exchange_paren",
+        "regex": r"\((?:NYSE|NASDAQ|Nasdaq|NYSE\s+American|AMEX|OTC)\s*:\s*([A-Z]{1,5})\)",
+        "confidence": "high",
+        "description": "(NYSE: ROLR), (Nasdaq: ACON), (NYSE American: ROLR)",
+    },
+    {
+        "name": "cashtag",
+        "regex": r"\$([A-Z]{1,5})\b",
+        "confidence": "high",
+        "description": "$TSLA, $AAPL — Twitter/Stocktwits convention",
+    },
+    {
+        "name": "wsz_url",
+        "regex": r"wallstreetzen\.com/stocks/us/(?:nyse|nasdaq)/([a-z]{1,5})\b",
+        "confidence": "high",
+        "description": "WallStreetZen URL paths — ticker is last segment, lowercased",
+    },
+    {
+        "name": "bare_paren",
+        "regex": r"\b\(([A-Z]{1,5})\)",
+        "confidence": "medium",
+        "description": "(TSLA), (AAPL) — bare ticker in parens; needs blocklist",
+    },
+]
+
+# Words that look like parenthesized tickers but aren't. Applies ONLY to
+# matches from patterns whose name contains 'paren' (extension point).
+BARE_PAREN_BLOCKLIST: set[str] = {
+    "CEO", "CFO", "COO", "CTO", "CMO", "VP", "USA", "PDF", "EST", "EDT",
+    "CST", "CDT", "PST", "PDT", "MST", "MDT", "GMT", "UTC", "LLC", "INC",
+    "LTD", "IPO", "ETF", "URL", "FAQ", "FYI", "NA", "USD", "EUR", "GBP",
+    "JPY", "AI", "ML", "AR", "VR", "VC", "PE", "NEW", "OLD", "FROM", "TO",
+    "PM", "AM", "ET", "Q1", "Q2", "Q3", "Q4", "ESG", "FOMC", "CPI", "GDP",
+    "PPI", "DOE", "DOJ", "FBI", "SEC", "FDA", "FCC", "NASA", "OPEC",
+}
+
+# Direction inference: search a window around each ticker for these keywords.
+# Add keywords here without touching code. First matching bucket wins; ties
+# resolve in dict-iteration order (long → short → watch).
+DIRECTION_KEYWORDS: dict[str, list[str]] = {
+    "long": [
+        "buy", "long", "bullish", "accumulate", "breakout", "upside",
+        "strong buy", "outperform", "overweight", "rally", "surge",
+        "uptrend", "calls", "going long",
+    ],
+    "short": [
+        "short", "sell", "bearish", "downside", "avoid", "puts",
+        "underperform", "underweight", "downgrade", "tumble", "crash",
+        "downtrend", "going short",
+    ],
+    "watch": [
+        "watch", "watching", "watchlist", "eye", "monitor", "track",
+        "tracking", "keep an eye",
+    ],
+}
+DIRECTION_WINDOW_CHARS: int = 120  # Chars before+after ticker to scan
+RAW_CONTEXT_CHARS: int = 80        # Chars stored in TickerSignal.raw_context
+
+# Senders to exclude even though they're on the approved list (e.g.,
+# personal contacts whose names look like tickers when uppercased).
+# Substring match, case-insensitive — "impens" matches "JOHN IMPENS <...>".
+EXCLUDED_SENDER_SUBSTRINGS: list[str] = ["impens", "andreessen", "gaud"]
+
+# Phase 3 output file pattern. {date} is replaced with today's ISO date.
+DAILY_OUTPUT_CSV: str = "{date}_signals.csv"
+
+# ── KB INTEGRATION (P_805 → P_800 Obsidian Interface) ────────────────────────
+# Path wiring to P_800 write handler (required before first KB write)
+import sys
+import os
+P800_SCRIPTS: str = r"C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_800_Automation_Note_Taking\scripts"
+if P800_SCRIPTS not in sys.path:
+    sys.path.insert(0, P800_SCRIPTS)
+
+# KB processing modes
+KB_MODE: str = os.getenv("KB_MODE", "full")  # "full" or "summary"
+KB_LOOKBACK_DAYS: int = int(os.getenv("KB_LOOKBACK_DAYS", "7"))
+KB_INBOX_DIR: Path = PROJECT_ROOT / "data" / "inbox"
+
+# Filename patterns for per-file mode override
+KB_MODE_PATTERN_FULL: str = r"--full\.eml$"
+KB_MODE_PATTERN_SUMMARIZE: str = r"--summarize\.eml$"
+
+# LM Studio configuration
+LM_STUDIO_URL: str = "http://127.0.0.1:1234/v1"
+LM_STUDIO_MODEL: str = "deepseek-r1-distill-qwen-14b"
+LM_STUDIO_TEMP: float = 0.3
+LM_STUDIO_MAX_TOKENS: int = 300
+LM_STUDIO_TIMEOUT: int = 60
+
+# ── LLM PRIORITY ──────────────────────────────────────────────────────────────
+LLM_PRIMARY: str = "LM Studio"
+LLM_FALLBACK: str = "Claude API"

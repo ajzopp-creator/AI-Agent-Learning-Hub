@@ -1,0 +1,32 @@
+{
+  "timestamp": "2026-05-18T14:00:03.622357",
+  "snapshot_timestamp": "2026-05-18T08:54:29.300060",
+  "spy_validation": {
+    "grid_close": 739.169982910156,
+    "current": 737.030029296875,
+    "price_change": -2.1399536132810226,
+    "price_move_pct": -0.29,
+    "pred_high": 742.441223144531,
+    "pred_low": 738.57275390625,
+    "band_status": "below_band",
+    "deviation_pct": 0.21,
+    "deviation_from": "pred_low",
+    "symbol": "SPY"
+  },
+  "qqq_validation": {
+    "grid_close": 708.929992675781,
+    "current": 703.7100219726562,
+    "price_change": -5.219970703124773,
+    "price_move_pct": -0.74,
+    "pred_high": 713.73095703125,
+    "pred_low": 705.546264648438,
+    "band_status": "below_band",
+    "deviation_pct": 0.26,
+    "deviation_from": "pred_low",
+    "symbol": "QQQ"
+  },
+  "morning_baseline": "FULL",
+  "intraday_signal": "DOWNGRADE",
+  "intraday_final_mode": "HALF",
+  "reason": "Intraday downgrade: Market weaker than predicted (prices below PRANGE)"
+}

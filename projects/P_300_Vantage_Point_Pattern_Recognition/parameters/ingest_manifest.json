@@ -1,0 +1,56 @@
+{
+  "_comment": "Maps VantagePoint History Grid XLSX columns to pattern_bars Pydantic field names defined in schemas.py. Single source of truth for VP -> catalog field translation. Updates to this file are the only code change required when VP export columns drift. Per architecture §2.5 (schema as protection layer) and §6 EC-035, EC-037, EC-063 (historical manifest failures). NOTE on merged headers: VP merges the top-row header across grouped columns (Professional Sentiment spans 12-13, Neural Index spans 14-15, Triple Cross spans 16-17-18). openpyxl returns the header value only for the first cell of each merge; continuation cells return null. The `header_top` field below records the LITERAL openpyxl value per cell, not the semantic group label.",
+
+  "manifest_version": "2.1",
+  "manifest_date": "2026-05-20",
+  "pairs_with_schema_version": "schemas.py v2.2",
+  "pairs_with_architecture": "P_300_System_Architecture v2.7 §9.2",
+  "vp_version": "10.0.2504.0114",
+  "vp_version_note": "Triple Cross sub-headers changed in v10.0.2504.0114 (data update ~17:30 ET 2026-05-20). Prior format: 'Short'/'Medium'/'Long'. New format: 'Triple Cross Short'/'Triple Cross Medium'/'Triple Cross Long'. header_sub reflects current VP version; header_sub_alt accepts legacy exports. VP support notified 2026-05-20.",
+
+  "source_format": {
+    "vendor": "VantagePoint",
+    "export_type": "History Grid XLSX",
+    "header_rows": 2,
+    "data_start_row_index": 2,
+    "date_order": "descending",
+    "expected_column_count": 22,
+    "minimum_bars_required": 60
+  },
+
+  "column_mapping": {
+    "0":  { "field": "bar_date",            "type": "date",  "header_top": "Date",                     "header_sub": null                   },
+    "1":  { "field": "stdiff",              "type": "float", "header_top": "Short\nTerm\nDifference",  "header_sub": null                   },
+    "2":  { "field": "mtdiff",              "type": "float", "header_top": "Medium\nTerm\nDifference", "header_sub": null                   },
+    "3":  { "field": "ltdiff",              "type": "float", "header_top": "Long\nTerm\nDifference",   "header_sub": null                   },
+    "4":  { "field": "open",                "type": "float", "header_top": "Open\nPrice",              "header_sub": null                   },
+    "5":  { "field": "high",                "type": "float", "header_top": "High\nPrice",              "header_sub": null                   },
+    "6":  { "field": "low",                 "type": "float", "header_top": "Low\nPrice",               "header_sub": null                   },
+    "7":  { "field": "close",               "type": "float", "header_top": "Close\nPrice",             "header_sub": null                   },
+    "8":  { "field": "pred_high",           "type": "float", "header_top": "Predicted\nHigh\nPrice",   "header_sub": null                   },
+    "9":  { "field": "pred_low",            "type": "float", "header_top": "Predicted\nLow\nPrice",    "header_sub": null                   },
+    "10": { "field": "volume",              "type": "float", "header_top": "Volume",                   "header_sub": null                   },
+    "11": { "field": "williams_emai",       "type": "float", "header_top": "Williams\nEMAI",           "header_sub": null                   },
+    "12": { "field": "psi",                 "type": "float", "header_top": "Professional Sentiment",   "header_sub": "PSI"                  },
+    "15": { "field": "neural_index",        "type": "float", "header_top": null,                       "header_sub": "NeuralXMax"           },
+    "16": { "field": "triple_cross_short",  "type": "float", "header_top": "Triple Cross",             "header_sub": "Triple Cross Short",  "header_sub_alt": "Short"  },
+    "17": { "field": "triple_cross_medium", "type": "float", "header_top": null,                       "header_sub": "Triple Cross Medium", "header_sub_alt": "Medium" },
+    "18": { "field": "triple_cross_long",   "type": "float", "header_top": null,                       "header_sub": "Triple Cross Long",   "header_sub_alt": "Long"   },
+    "21": { "field": "pred_range",          "type": "float", "header_top": "Predicted\nRange",         "header_sub": null                   }
+  },
+
+  "ignored_columns": {
+    "13": { "header_top": null,                     "header_sub": "ROC%",    "reason": "ROC% not part of architecture §9.2 pattern_bars schema" },
+    "14": { "header_top": "Neural Index",           "header_sub": "NeuralX", "reason": "NeuralX direction text ('up'/'down') is categorical; numeric value lives in NeuralXMax at column 15" },
+    "19": { "header_top": "Predicted\nHigh Diff",   "header_sub": null,      "reason": "Derivable from pred_high and close; raw value not stored separately" },
+    "20": { "header_top": "Predicted\nLow Diff",    "header_sub": null,      "reason": "Derivable from pred_low and close; raw value not stored separately" }
+  },
+
+  "validation_rules": {
+    "verify_header_text": true,
+    "strict_column_count": true,
+    "raise_on_unmapped_column": false,
+    "raise_on_missing_mapped_column": true,
+    "raise_on_header_mismatch": true
+  }
+}

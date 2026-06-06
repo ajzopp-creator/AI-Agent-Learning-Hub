@@ -1,0 +1,85 @@
+# P_010 Workstream D — Trade Bucket Analysis
+Generated: 2026-06-01 18:43
+
+## Summary
+- Total trades analyzed: 61
+- Trades matched to phase: 61
+- Trades unmatched (UNKNOWN): 0
+- Win-rate delta (best vs worst): n/a (insufficient data)
+- Phase 3 decision: **INSUFFICIENT_DATA**
+- Delta threshold: 10.0pp
+
+## Bucket Results
+
+| Phase | Trades | Wins | Win Rate | Avg PnL | Avg R | Note |
+|-------|--------|------|----------|---------|-------|------|
+| CONFIRMED_UPTREND | 4 | 1 | 25% | $+150 | n/a | LOW SAMPLE |
+| CORRECTION | 4 | 0 | 0% | $-119 | n/a | LOW SAMPLE |
+| NEUTRAL | 7 | 3 | 43% | $+161 | n/a | LOW SAMPLE |
+| RALLY_ATTEMPT | 46 | 24 | 52% | $+35 | n/a |  |
+
+## Trade Detail
+
+| Date | System | Symbol | Phase | PnL |
+|------|--------|--------|-------|-----|
+| 2026-01-02 | P_115 | QBTS | NEUTRAL | $+540.00 |
+| 2026-01-02 | P_118 | IBM | NEUTRAL | $+560.00 |
+| 2026-01-05 | P_115 | EVTL | RALLY_ATTEMPT | $-180.00 |
+| 2026-01-05 | P_115 | SOC | RALLY_ATTEMPT | $-364.00 |
+| 2026-01-06 | P_118 | AZN | RALLY_ATTEMPT | $+280.00 |
+| 2026-01-07 | P_115 | HIMS | RALLY_ATTEMPT | $-28.84 |
+| 2026-01-08 | P_118 | GOOG | RALLY_ATTEMPT | $+955.00 |
+| 2026-01-08 | P_118 | GOOG | RALLY_ATTEMPT | $+16.40 |
+| 2026-01-08 | P_118 | TDC | RALLY_ATTEMPT | $-112.00 |
+| 2026-01-09 | P_118 | GH | RALLY_ATTEMPT | $-3.60 |
+| 2026-01-12 | P_118 | GOOG | RALLY_ATTEMPT | $+505.00 |
+| 2026-01-12 | P_118 | BG | RALLY_ATTEMPT | $+1875.00 |
+| 2026-01-12 | P_118 | VSAT | RALLY_ATTEMPT | $+520.00 |
+| 2026-01-12 | P_118 | VSAT | RALLY_ATTEMPT | $+188.70 |
+| 2026-01-13 | P_118 | FLS | RALLY_ATTEMPT | $+545.09 |
+| 2026-01-13 | P_118 | GOOG | RALLY_ATTEMPT | $+18.10 |
+| 2026-01-15 | P_118 | ADI | RALLY_ATTEMPT | $+575.00 |
+| 2026-01-15 | P_118 | INTC | RALLY_ATTEMPT | $+30.00 |
+| 2026-01-15 | P_115 | TSSI | RALLY_ATTEMPT | $-172.00 |
+| 2026-01-16 | P_115 | GLXY | RALLY_ATTEMPT | $-108.00 |
+| 2026-01-20 | P_118 | MU | RALLY_ATTEMPT | $-15.00 |
+| 2026-01-21 | P_118 | ILMN | RALLY_ATTEMPT | $-5.60 |
+| 2026-01-21 | P_118 | ILMN | RALLY_ATTEMPT | $+240.00 |
+| 2026-01-22 | P_118 | NXT | RALLY_ATTEMPT | $+1048.00 |
+| 2026-01-22 | P_118 | GH | RALLY_ATTEMPT | $-131.80 |
+| 2026-01-22 | P_118 | GMED | RALLY_ATTEMPT | $-44.70 |
+| 2026-01-26 | P_118 | GOOG | RALLY_ATTEMPT | $+3.00 |
+| 2026-01-26 | P_115 | SPRY | RALLY_ATTEMPT | $-187.50 |
+| 2026-01-28 | P_118 | VSAT | RALLY_ATTEMPT | $+120.00 |
+| 2026-01-28 | P_118 | VSAT | RALLY_ATTEMPT | $-315.00 |
+| 2026-01-30 | P_118 | MOD | RALLY_ATTEMPT | $+79.70 |
+| 2026-02-02 | P_118 | LIVN | RALLY_ATTEMPT | $-53.30 |
+| 2026-02-03 | P_115 | APLD | RALLY_ATTEMPT | $-130.00 |
+| 2026-02-04 | P_115 | APLD | RALLY_ATTEMPT | $+450.00 |
+| 2026-02-05 | P_118 | GOOG | RALLY_ATTEMPT | $-85.00 |
+| 2026-02-06 | P_118 | CRUS | NEUTRAL | $-36.66 |
+| 2026-02-12 | P_118 | MCHP | RALLY_ATTEMPT | $-122.00 |
+| 2026-02-18 | P_118 | AAPL | RALLY_ATTEMPT | $+55.00 |
+| 2026-02-18 | P_118 | FTAI | RALLY_ATTEMPT | $+97.80 |
+| 2026-02-18 | P_118 | MBX | RALLY_ATTEMPT | $-119.54 |
+| 2026-02-19 | P_115 | GLUE | NEUTRAL | $-133.00 |
+| 2026-02-19 | P_115 | USAS | NEUTRAL | $-169.05 |
+| 2026-02-19 | P_118 | XP | NEUTRAL | $-76.86 |
+| 2026-02-20 | P_118 | CYTK | RALLY_ATTEMPT | $-34.20 |
+| 2026-03-02 | P_118 | ALMS | RALLY_ATTEMPT | $-187.34 |
+| 2026-03-02 | P_115 | ATOM | RALLY_ATTEMPT | $-199.98 |
+| 2026-03-11 | P_118 | POWL | RALLY_ATTEMPT | $+41.40 |
+| 2026-03-11 | P_118 | POWL | RALLY_ATTEMPT | $+29.47 |
+| 2026-03-11 | P_118 | POWL | RALLY_ATTEMPT | $+24.43 |
+| 2026-03-11 | P_118 | POWL | RALLY_ATTEMPT | $-3490.20 |
+| 2026-03-12 | P_118 | LNG | RALLY_ATTEMPT | $+8.40 |
+| 2026-03-18 | P_118 | CTRA | RALLY_ATTEMPT | $+1.50 |
+| 2026-03-26 | P_118 | KMI | CORRECTION | $-56.00 |
+| 2026-03-26 | P_118 | CRUS | CORRECTION | $-49.08 |
+| 2026-03-27 | P_118 | PUMP | CORRECTION | $-48.40 |
+| 2026-03-31 | P_118 | UGRO | CORRECTION | $-323.12 |
+| 2026-04-08 | P_118 | OII | CONFIRMED_UPTREND | $-12.18 |
+| 2026-04-09 | P_118 | CRUS | CONFIRMED_UPTREND | $-0.72 |
+| 2026-04-09 | P_115 | LXU | CONFIRMED_UPTREND | $-103.79 |
+| 2026-04-17 | P_118 | NVDA | CONFIRMED_UPTREND | $+717.00 |
+| 2026-05-22 | P_118 | IRDM | NEUTRAL | $+441.00 |

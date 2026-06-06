@@ -1,0 +1,56 @@
+============================================================================
+P_300 SIGNAL REPORT
+============================================================================
+Ticker:           NOC
+Anchor date:      2026-05-19
+Signal:           WATCH at horizon 5
+Generated:        2026-05-20 21:54 ET
+
+PER-HORIZON STATS
+----------------------------------------------------------------------------
+    h    n  win_rate  mean_ret  std_ret  z_score  class
+    5   20     0.650     +0.18    10.75   +0.456  WATCH
+    7   20     0.650     +1.16    10.13   +0.456  WATCH
+   10   20     0.650     +0.42    10.48   +0.456  WATCH
+   15   20     0.600     +0.81    10.66   +0.360  WATCH
+   20   20     0.650     +2.45    12.20   +0.456  WATCH
+
+TOP 20 MATCHES (by composite distance, ascending)
+----------------------------------------------------------------------------
+   #  ticker      anchor  compdist     +5d     +7d    +10d    +15d    +20d
+   1     DIS  2025-10-15    11.650   +1.23   -0.03   -1.32   -0.31   +4.42
+   2     GLP  2026-03-10    14.999   -0.31   +1.83   -3.04  -11.59   -0.38
+   3     CAT  2025-06-25    15.316   +7.23   +5.36   +9.89  +12.51  +15.59
+   4     NVO  2025-09-11    15.617  +13.90  +11.80   +3.20   +8.18   +8.07
+   5    NVDA  2025-10-24    17.134   +8.71   +6.67   +1.01   +2.10   -3.96
+   6     CVX  2026-02-10    17.322   +0.88   +0.92   +1.08   +2.07   +5.23
+   7     GEV  2025-09-25    17.766   -0.21   -0.71   +4.40   -0.91   -2.04
+   8     LMT  2025-09-02    17.839   +1.01   +4.03   +4.82   +7.55  +10.32
+   9    META  2025-11-05    17.913   -4.24   -4.17   -7.18   -0.37   +4.02
+  10    AVGO  2025-06-13    18.415   +2.04   +6.41  +10.84   +9.29  +12.96
+  11     XOM  2026-01-15    18.647   +4.52   +5.96   +9.50  +15.43  +14.96
+  12   GOOGL  2025-12-12    18.718   -0.69   +1.64   +1.38   +1.63   +8.63
+  13    PLTR  2025-10-23    18.909   +7.80  +14.79   -3.01   -4.62  -13.71
+  14      DE  2025-11-20    19.177   -2.49   -1.51   -0.26   +1.78   -1.21
+  15    AAPL  2026-01-27    19.338   +4.34   +6.83   +5.97   +2.35   +6.18
+  16    SHOP  2025-09-22    20.268   -5.17   -4.81   +4.70   -2.20   +4.83
+  17     SPY  2025-06-20    20.583   +3.47   +3.93   +4.44   +5.14   +5.80
+  18     QQQ  2026-04-14    21.197   +2.50   +3.63   +4.61   +8.43  +12.51
+  19     TTD  2025-08-07    21.508  -42.53  -37.79  -40.79  -37.33  -41.05
+  20     WMT  2026-02-25    22.120   +1.64   -1.55   -1.80   -3.00   -2.14
+
+NARRATIVE
+----------------------------------------------------------------------------
+  The P_300 Pipeline B signal report for NOC, generated on 2026-05-20 with
+  an anchor date of 2026-05-19, indicates a WATCH classification at
+  horizon 5. The per-horizon statistics show consistent win rates of
+  approximately 65% across all horizons (h=5 to h=20), with mean returns
+  ranging from +0.18% to +2.45%, and standard deviations between 10.13%
+  and 12.20%. The z-scores are generally positive but not significantly
+  high, suggesting the signal's effectiveness is moderate. The top five
+  historical analogs (DIS, GLP, CAT, NVO, NVDA) exhibit varied outcomes,
+  with some showing strong positive returns (+7.23% to +15.59%) and others
+  negative or mixed results (-0.38% to -3.96%), indicating potential
+  dispersion in future performance.
+
+============================================================================

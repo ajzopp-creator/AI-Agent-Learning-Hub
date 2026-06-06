@@ -1,0 +1,110 @@
+{
+  "trade_setup": {
+    "asset_type": "stock",
+    "symbol": "QQQ",
+    "option_symbol": null,
+    "strike": null,
+    "expiration": null,
+    "call_put": null,
+    "current_price": 517.42,
+    "entry_trigger": 515.80,
+    "entry_price": 515.80,
+    "stop_level": 510.90,
+    "primary_target": 525.00,
+    "secondary_target": 532.50,
+    "position_quantity_requested": 20,
+    "risk_mode": "FULL",
+    "framework_mode": "Normal",
+    "strategy_id": "P115",
+    "special_rules": [
+      "Use stock management only",
+      "No option translation"
+    ]
+  },
+  "council_review": {
+    "validation": {
+      "p010_constraints_passed": true,
+      "notes": "Setup is valid under current sizing and stop rules."
+    },
+    "role_statuses": [
+      {
+        "role": "Quant Strategist",
+        "status": "Approve",
+        "severity": "INFO",
+        "reason_code": "Q01_OK",
+        "reason": "Stop structure is intact and volatility is acceptable."
+      },
+      {
+        "role": "Macro Economist",
+        "status": "Approve",
+        "severity": "INFO",
+        "reason_code": "M01_OK",
+        "reason": "Macro backdrop does not require a freeze."
+      },
+      {
+        "role": "Momentum & Tape Reader",
+        "status": "Approve with Caution",
+        "severity": "SOFT_FLAG",
+        "reason_code": "T03_MIXED",
+        "reason": "Tape is acceptable but not fully clean."
+      },
+      {
+        "role": "Risk Manager",
+        "status": "Approve",
+        "severity": "INFO",
+        "reason_code": "R01_OK",
+        "reason": "Final size is within limits."
+      },
+      {
+        "role": "Behavioral Judge",
+        "status": "Approve",
+        "severity": "INFO",
+        "reason_code": "B01_OK",
+        "reason": "No emotional override detected."
+      }
+    ],
+    "derived_verdict": "Approve with Caution",
+    "blocking_roles": [],
+    "audit": {
+      "timestamp": "2026-06-03T17:49:00Z",
+      "simulation_notes": "Using stock trigger; no option leg."
+    }
+  },
+  "calculated_inputs": {
+    "gate1_risk_shares": 20,
+    "gate2_cash_shares": 20,
+    "gate3_concentration_shares": 20,
+    "final_shares": 20,
+    "binding_gate": "Gate1",
+    "stock_stop_trigger": 510.9,
+    "stock_stop_limit": 510.75,
+    "stock_limit_price": 515.8,
+    "option_entry_price": null,
+    "option_exit_stop": null,
+    "option_floor": null,
+    "t1": 525.0,
+    "t2": 532.5,
+    "rr_to_t1": 1.88
+  },
+  "broker_order_block": {
+    "stock_order": {
+      "asset": "QQQ",
+      "action": "BUY",
+      "quantity": 20,
+      "entry_trigger": 515.8,
+      "stop": 510.9,
+      "target": 525.0,
+      "order_notes": "STOPLIMIT entry; stop tied to underlying protection level."
+    },
+    "option_order": {
+      "asset": null,
+      "action": "BUY",
+      "option_symbol": null,
+      "quantity": null,
+      "entry": null,
+      "management_trigger": null,
+      "exit_stop": null,
+      "order_notes": null
+    }
+  }
+}

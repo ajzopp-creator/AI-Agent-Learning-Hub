@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0.0",
+  "data_standard": "VantagePoint_Export_v1",
+  "fields": {
+    "symbol_id": "INTEGER",
+    "anchor_date": "TEXT",
+    "data_type": "TEXT",
+    "neural_index": "REAL",
+    "predicted_ma_crossover": "REAL",
+    "price_variance": "REAL",
+    "volume_confirmation": "REAL"
+  },
+  "metadata": {
+    "data_type_allowed_values": ["PATTERN_IDENT", "EVAL_SET"]
+  }
+}

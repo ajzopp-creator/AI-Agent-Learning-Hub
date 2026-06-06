@@ -1,0 +1,60 @@
+============================================================================
+P_300 SIGNAL REPORT  EQX WATCH
+============================================================================
+Ticker:           EQX
+Anchor date:      2026-05-29
+Signal:           WATCH at horizon 5
+Generated:        2026-05-30 13:47 ET
+
+PER-HORIZON STATS
+----------------------------------------------------------------------------
+    h    n  win_rate  mean_ret  std_ret  z_score  class
+    5   20     0.600     +3.10     9.29   +0.157  WATCH
+    7   20     0.600     +3.78    11.76   +0.221  WATCH
+   10   20     0.600     +3.07    10.79   +0.286  WATCH
+   15   20     0.550     +3.41    12.53   -0.297   PASS
+   20   20     0.600     +3.30    13.76   +0.157  WATCH
+
+TOP 20 MATCHES (by composite distance, ascending)
+----------------------------------------------------------------------------
+   #  ticker      anchor  compdist     +5d     +7d    +10d    +15d    +20d
+   1     LEN  2026-01-08     2.740  +11.59   +5.12   +2.09   -0.18   +4.08
+   2     GAP  2025-10-17     2.806   +8.61  +12.87   +5.79   +8.61  +11.81
+   3    CHTR  2026-01-29     2.848  +16.71  +24.40  +24.31  +20.18  +22.51
+   4    BURL  2025-12-16     2.858   +8.84  +11.28  +10.71  +17.90  +17.39
+   5     BXP  2026-02-26     2.868   -9.32  -14.21  -13.80  -12.69  -13.09
+   6     CCJ  2026-03-11     2.944   -5.19  -11.99   -5.52   -3.69   +0.13
+   7     VMC  2026-02-27     2.949  -11.29  -12.26  -14.38  -16.65  -15.66
+   8     VST  2026-02-10     3.060   +6.87   +7.39   +9.87   +2.36   -0.28
+   9     VNO  2026-03-05     3.116   -8.02  -10.28   -6.46   -9.33  -10.46
+  10     BAC  2026-01-29     3.155   +3.50   +6.27   -1.06   -0.04   -6.12
+  11    DLTR  2026-01-26     3.234   -6.52   -2.85   -1.78   +2.49   +5.03
+  12     CCJ  2025-12-31     3.238  +15.60  +20.00  +23.34  +35.58  +34.87
+  13    CARG  2026-02-24     3.261  +11.97  +18.01  +11.73  +15.32  +20.19
+  14     DVN  2025-10-10     3.290   -2.34   -1.35   +1.45   -0.03   +3.69
+  15    DLTR  2026-03-02     3.349   -3.36   -5.53   -4.60   -9.68  -11.80
+  16     MOS  2026-03-17     3.373  -12.59  -13.28  -11.55   -7.67  -17.69
+  17    INMD  2026-01-23     3.408  +12.62  +13.98   +8.10   +2.51   +1.79
+  18    DECK  2026-01-29     3.454  +11.28  +14.61  +16.14  +18.81  +17.39
+  19    NVDA  2025-10-24     3.490   +8.71   +6.67   +1.01   +2.10   -3.96
+  20    AAPL  2026-01-27     3.497   +4.34   +6.83   +5.97   +2.35   +6.18
+
+VOLATILITY DIVERGENCE: MILD (ratio 1.58x)
+----------------------------------------------------------------------------
+  Candidate range_pct median: 0.0486    Top-K median: 0.0307
+  Modest volatility-regime mismatch between candidate and top-K analogs.
+
+NARRATIVE
+----------------------------------------------------------------------------
+  The P_300 Signal Report for EQX indicates a WATCH signal at a 5-day
+  horizon as of May 29, 2026. The report's per-horizon stats reveal that
+  over the past 20 occurrences with this signal, there has been a 60% win
+  rate, yielding an average return of +3.10% at five days with a standard
+  deviation of 9.29%. Historical analogs show mixed outcomes: four
+  instances resulted in positive returns (ranging from +8.61% to +22.51%)
+  over five and twenty days, while one instance showed significant losses
+  (-9.32% to -13.09%). The variability suggests moderate potential gains
+  with notable risk, particularly as the investment horizon extends beyond
+  five days.
+
+============================================================================

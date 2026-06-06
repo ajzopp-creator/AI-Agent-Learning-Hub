@@ -1,0 +1,56 @@
+============================================================================
+P_300 SIGNAL REPORT
+============================================================================
+Ticker:           GAP
+Anchor date:      2026-05-21
+Signal:           WATCH at horizon 5
+Generated:        2026-05-26 18:55 ET
+
+PER-HORIZON STATS
+----------------------------------------------------------------------------
+    h    n  win_rate  mean_ret  std_ret  z_score  class
+    5   20     0.600     +3.20    10.85   +0.060  WATCH
+    7   20     0.600     +4.15    11.75   +0.060  WATCH
+   10   20     0.600     +4.67    11.88   +0.060  WATCH
+   15   20     0.550     +5.73    14.58   -0.497   PASS
+   20   20     0.550     +4.14    15.32   -0.497   PASS
+
+TOP 20 MATCHES (by composite distance, ascending)
+----------------------------------------------------------------------------
+   #  ticker      anchor  compdist     +5d     +7d    +10d    +15d    +20d
+   1     LEN  2026-01-08    10.358  +11.59   +5.12   +2.09   -0.18   +4.08
+   2    INTC  2025-06-13    12.050   +5.21  +10.23  +11.22  +17.13  +13.80
+   3     MTB  2026-03-30    12.219   +5.46  +10.87   +9.64   +8.84   +8.15
+   4     VST  2026-02-10    12.513   +6.87   +7.39   +9.87   +2.36   -0.28
+   5    META  2025-11-05    12.607   -4.24   -4.17   -7.18   -0.37   +4.02
+   6     MOS  2026-03-17    12.634  -12.59  -13.28  -11.55   -7.67  -17.69
+   7     BAC  2026-01-29    12.781   +3.50   +6.27   -1.06   -0.04   -6.12
+   8    QCOM  2026-01-12    13.595   -8.98   -6.78   -9.59  -13.05  -17.24
+   9     BXP  2026-02-26    13.681   -9.32  -14.21  -13.80  -12.69  -13.09
+  10     VNO  2026-03-05    13.737   -8.02  -10.28   -6.46   -9.33  -10.46
+  11    AAPL  2026-01-27    13.758   +4.34   +6.83   +5.97   +2.35   +6.18
+  12      DE  2025-11-20    14.301   -2.49   -1.51   -0.26   +1.78   -1.21
+  13    GMED  2025-11-06    14.662  +36.10  +35.54  +33.33  +47.53  +47.63
+  14     LAC  2026-01-02    14.684  +13.00  +22.43  +24.95  +25.58   -0.21
+  15     FHN  2026-01-30    14.871   +7.10   +4.70   +0.29   -1.59   -1.35
+  16    SHOP  2025-09-22    14.892   -5.17   -4.81   +4.70   -2.20   +4.83
+  17    DLTR  2026-01-26    14.921   -6.52   -2.85   -1.78   +2.49   +5.03
+  18   CFPZF  2025-12-26    14.974  +11.82   +8.72  +16.83  +26.27  +33.21
+  19     CRS  2026-02-04    14.987  +10.63  +13.65  +14.90  +18.95  +18.20
+  20     HTH  2026-01-26    15.046   +5.65   +9.21  +11.38   +8.38   +5.37
+
+NARRATIVE
+----------------------------------------------------------------------------
+  The P_300 Signal Report for GAP indicates a WATCH classification at
+  horizon 5 as of the anchor date 2026-05-21. Per-horizon statistics show
+  a win rate of 60% across horizons 5, 7, and 10, with mean returns
+  between +3.20% and +4.67%, though statistical significance is low due to
+  z-scores near zero. Longer horizons (15 and 20 days) exhibit slightly
+  lower win rates of 55% and higher standard deviations, suggesting
+  reduced confidence in extended timeframes. The top historical analogs
+  include LEN, INTC, MTB, VST, and META, with varied outcomes: LEN shows
+  strong positive returns, while META experiences a short-term dip
+  followed by recovery, indicating potential dispersion in future
+  performance.
+
+============================================================================

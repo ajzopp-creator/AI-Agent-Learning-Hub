@@ -1,0 +1,19 @@
+{
+  "timestamp": "2026-03-17T09:15:46.432570",
+  "spy_posture": -8.070618,
+  "qqq_posture": -4.407654,
+  "avg_posture": -6.239136,
+  "risk_mode": "HALF",
+  "source": "Grid_XLSX",
+  "spy_grid_date": "03/13/2026",
+  "qqq_grid_date": "03/13/2026",
+  "vxx_posture": 1.798021,
+  "vxx_signal": "WARNING",
+  "vxx_note": "VP predicts sharp VXX rise -- potential fear spike, reduce exposure",
+  "vxx_close": 35.0999984741211,
+  "vxx_pred_high": 35.2018585205078,
+  "vxx_pred_low": 33.7517585754395,
+  "vxx_grid_date": "03/13/2026",
+  "intraday_signal": "UPGRADE",
+  "intraday_reason": "Intraday upgrade: Market stronger than predicted (prices above PRANGE)"
+}

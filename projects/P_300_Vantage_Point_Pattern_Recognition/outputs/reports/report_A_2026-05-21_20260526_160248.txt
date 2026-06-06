@@ -1,0 +1,56 @@
+============================================================================
+P_300 SIGNAL REPORT
+============================================================================
+Ticker:           A
+Anchor date:      2026-05-21
+Signal:           WATCH at horizon 5
+Generated:        2026-05-26 16:02 ET
+
+PER-HORIZON STATS
+----------------------------------------------------------------------------
+    h    n  win_rate  mean_ret  std_ret  z_score  class
+    5   20     0.700     +2.62     4.84   +0.970  WATCH
+    7   20     0.700     +4.97     5.89   +0.970  WATCH
+   10   20     0.700     +4.48     6.36   +0.970  WATCH
+   15   20     0.600     +4.46     7.35   -0.040   PASS
+   20   20     0.650     +3.94     9.17   +0.417  WATCH
+
+TOP 20 MATCHES (by composite distance, ascending)
+----------------------------------------------------------------------------
+   #  ticker      anchor  compdist     +5d     +7d    +10d    +15d    +20d
+   1     FHN  2026-01-30    11.079   +7.10   +4.70   +0.29   -1.59   -1.35
+   2    DLTR  2026-01-26    12.198   -6.52   -2.85   -1.78   +2.49   +5.03
+   3      OI  2025-11-24    12.846   +5.30   +9.81  +12.03  +19.86  +17.80
+   4      GS  2026-01-22    13.240   -1.52   -0.87   -6.73   -5.25   -3.39
+   5    SHOP  2025-09-22    13.578   -5.17   -4.81   +4.70   -2.20   +4.83
+   6    AAPL  2026-01-27    13.761   +4.34   +6.83   +5.97   +2.35   +6.18
+   7    INTC  2025-06-13    14.385   +5.21  +10.23  +11.22  +17.13  +13.80
+   8     VST  2026-02-10    14.600   +6.87   +7.39   +9.87   +2.36   -0.28
+   9      TM  2025-12-10    14.777   +6.70   +9.26   +7.94   +8.51  +10.33
+  10    PLTR  2025-10-23    15.137   +7.80  +14.79   -3.01   -4.62  -13.71
+  11    PLTR  2025-10-23    15.137   +7.80  +14.79   -3.01   -4.62  -13.71
+  12      UL  2026-01-12    15.147   +0.75   +1.72   +4.87   +7.34  +11.72
+  13     NKE  2025-09-15    15.295   -2.40   -2.48   -4.77   -2.55   -7.74
+  14     HTH  2026-01-26    15.296   +5.65   +9.21  +11.38   +8.38   +5.37
+  15     BAC  2026-01-29    15.429   +3.50   +6.27   -1.06   -0.04   -6.12
+  16     HAL  2025-10-09    15.458   -6.75   -3.33  +16.32  +15.21  +16.79
+  17     SPY  2025-06-20    15.462   +3.47   +3.93   +4.44   +5.14   +5.80
+  18     MTB  2026-03-30    15.541   +5.46  +10.87   +9.64   +8.84   +8.15
+  19     CAT  2025-06-25    15.560   +7.23   +5.36   +9.89  +12.51  +15.59
+  20     DVN  2025-10-10    15.574   -2.34   -1.35   +1.45   -0.03   +3.69
+
+NARRATIVE
+----------------------------------------------------------------------------
+  The P_300 system generated a WATCH signal for Ticker A with an anchor
+  date of 2026-05-21, targeting a horizon of 5 days. The per-horizon
+  statistics show generally positive mean returns across all tested
+  horizons (h=5 to h=20), though with increasing standard deviation and
+  mixed z-scores indicating varying statistical significance. Notably, the
+  signal's win rate remains stable at 70% for shorter horizons but
+  declines to 60% at h=15, where the mean return is still positive but the
+  z-score becomes marginally negative. The top five historical analogs
+  (FHN, DLTR, OI, GS, and SHOP) demonstrate varied outcomes, with 5-day
+  returns ranging from -5.17% to +7.10%, suggesting potential upside but
+  also highlighting dispersion in prior performance.
+
+============================================================================

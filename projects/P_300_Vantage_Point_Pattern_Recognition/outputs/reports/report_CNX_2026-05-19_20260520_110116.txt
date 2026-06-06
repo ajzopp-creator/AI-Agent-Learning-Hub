@@ -1,0 +1,54 @@
+============================================================================
+P_300 SIGNAL REPORT
+============================================================================
+Ticker:           CNX
+Anchor date:      2026-05-19
+Signal:           PASS at horizon 7
+Generated:        2026-05-20 11:01 ET
+
+PER-HORIZON STATS
+----------------------------------------------------------------------------
+    h    n  win_rate  mean_ret  std_ret  z_score  class
+    5   20     0.500     -0.68    10.83   -0.913   PASS
+    7   20     0.550     +0.42    10.19   -0.456   PASS
+   10   20     0.550     -0.92    10.64   -0.456   PASS
+   15   20     0.500     -0.64    10.85   -0.541   PASS
+   20   20     0.550     +0.75    12.43   -0.456   PASS
+
+TOP 20 MATCHES (by composite distance, ascending)
+----------------------------------------------------------------------------
+   #  ticker      anchor  compdist     +5d     +7d    +10d    +15d    +20d
+   1     NKE  2025-09-15    11.285   -2.40   -2.48   -4.77   -2.55   -7.74
+   2      GS  2026-01-22    11.380   -1.52   -0.87   -6.73   -5.25   -3.39
+   3     NVO  2025-09-11    12.899  +13.90  +11.80   +3.20   +8.18   +8.07
+   4     XOM  2026-01-15    13.935   +4.52   +5.96   +9.50  +15.43  +14.96
+   5    AAPL  2026-01-27    14.042   +4.34   +6.83   +5.97   +2.35   +6.18
+   6     TTD  2025-08-07    14.370  -42.53  -37.79  -40.79  -37.33  -41.05
+   7      DE  2025-11-20    14.486   -2.49   -1.51   -0.26   +1.78   -1.21
+   8    PLTR  2025-10-23    14.529   +7.80  +14.79   -3.01   -4.62  -13.71
+   9     GEV  2025-09-25    15.265   -0.21   -0.71   +4.40   -0.91   -2.04
+  10     QQQ  2026-04-14    15.297   +2.50   +3.63   +4.61   +8.43  +12.51
+  11     AMD  2025-08-18    15.410   -7.26   -5.12   -7.85  -11.54   -8.90
+  12    META  2025-11-05    15.435   -4.24   -4.17   -7.18   -0.37   +4.02
+  13    NVDA  2025-10-24    15.464   +8.71   +6.67   +1.01   +2.10   -3.96
+  14    AVGO  2025-06-13    15.579   +2.04   +6.41  +10.84   +9.29  +12.96
+  15     DIS  2025-10-15    15.662   +1.23   -0.03   -1.32   -0.31   +4.42
+  16   GOOGL  2025-12-12    15.855   -0.69   +1.64   +1.38   +1.63   +8.63
+  17     CAT  2025-06-25    16.031   +7.23   +5.36   +9.89  +12.51  +15.59
+  18     GLP  2026-03-10    16.268   -0.31   +1.83   -3.04  -11.59   -0.38
+  19    SHOP  2025-09-22    16.780   -5.17   -4.81   +4.70   -2.20   +4.83
+  20     CVX  2026-02-10    16.894   +0.88   +0.92   +1.08   +2.07   +5.23
+
+NARRATIVE
+----------------------------------------------------------------------------
+  The P_300 Signal Report for CNX as of May 19, 2026, indicates a PASS
+  decision at horizon 7. The per-horizon statistics reveal inconsistent
+  performance with win rates around 50-55% and mean returns ranging from
+  negative to slightly positive, coupled with high volatility (standard
+  deviations between 10-12%). Historical analogs show varied outcomes: NKE
+  experienced significant declines, while NVO and XOM showed gains. This
+  dispersion in past results contributes to the PASS signal, reflecting
+  uncertainty and lack of statistical confidence in predicting a favorable
+  outcome for CNX.
+
+============================================================================

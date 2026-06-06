@@ -1,0 +1,17 @@
+{
+  "timestamp": "2026-03-31T09:27:57.674134",
+  "spy_posture": -11.547546,
+  "qqq_posture": -13.234192,
+  "avg_posture": -12.390869,
+  "risk_mode": "OFF",
+  "source": "Grid_XLSX",
+  "spy_grid_date": "03/27/2026",
+  "qqq_grid_date": "03/27/2026",
+  "vxx_posture": 2.822325,
+  "vxx_signal": "WARNING",
+  "vxx_note": "VP predicts sharp VXX rise -- potential fear spike, reduce exposure",
+  "vxx_close": 39.4099998474121,
+  "vxx_pred_high": 41.3820571899414,
+  "vxx_pred_low": 38.1202774047852,
+  "vxx_grid_date": "03/27/2026"
+}

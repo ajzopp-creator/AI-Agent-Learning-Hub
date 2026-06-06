@@ -1,0 +1,54 @@
+============================================================================
+P_300 SIGNAL REPORT  SSNC BUY
+============================================================================
+Ticker:           SSNC
+Anchor date:      2026-05-29
+Signal:           BUY at horizon 5
+Generated:        2026-05-30 15:28 ET
+
+PER-HORIZON STATS
+----------------------------------------------------------------------------
+    h    n  win_rate  mean_ret  std_ret  z_score  class
+    5   20     0.750     +4.40     6.82   +1.517    BUY
+    7   20     0.750     +4.51     7.58   +1.579    BUY
+   10   20     0.600     +2.49     7.70   +0.286  WATCH
+   15   20     0.600     +3.05    10.37   +0.157  WATCH
+   20   20     0.550     +2.78     9.33   -0.297   PASS
+
+TOP 20 MATCHES (by composite distance, ascending)
+----------------------------------------------------------------------------
+   #  ticker      anchor  compdist     +5d     +7d    +10d    +15d    +20d
+   1     DIS  2025-10-15     1.272   +1.23   -0.03   -1.32   -0.31   +4.42
+   2    AAPL  2026-01-27     1.298   +4.34   +6.83   +5.97   +2.35   +6.18
+   3     BAC  2026-01-29     1.379   +3.50   +6.27   -1.06   -0.04   -6.12
+   4      TM  2025-12-10     1.379   +6.70   +9.26   +7.94   +8.51  +10.33
+   5    CCEP  2026-01-29     1.382   +5.15   +5.95   +8.58  +15.87  +21.06
+   6     TPR  2026-02-04     1.389  +19.05  +18.38  +17.23  +23.53  +15.15
+   7     FHN  2026-01-30     1.424   +7.10   +4.70   +0.29   -1.59   -1.35
+   8      DX  2026-03-03     1.560   -1.31   -3.27   -4.06   -9.58   -7.40
+   9    PINS  2026-04-14     1.571  +10.27   +5.83   +6.31  +19.14   +9.95
+  10     GLP  2026-03-10     1.572   -0.31   +1.83   -3.04  -11.59   -0.38
+  11    ARLP  2026-02-10     1.589   +5.42   +6.88   +7.82   +9.77  +11.97
+  12     LNC  2025-12-03     1.598   +7.40   +7.49   +7.99   +9.76   +7.37
+  13     MTB  2026-03-30     1.600   +5.46  +10.87   +9.64   +8.84   +8.15
+  14      DE  2025-11-20     1.618   -2.49   -1.51   -0.26   +1.78   -1.21
+  15     BXP  2026-02-26     1.656   -9.32  -14.21  -13.80  -12.69  -13.09
+  16     VMC  2026-02-27     1.669  -11.29  -12.26  -14.38  -16.65  -15.66
+  17     GAP  2025-10-17     1.675   +8.61  +12.87   +5.79   +8.61  +11.81
+  18    NVDA  2025-10-24     1.680   +8.71   +6.67   +1.01   +2.10   -3.96
+  19     RPM  2026-04-07     1.682  +12.37   +9.24  +10.94   +7.23   +2.79
+  20    ALLE  2026-02-02     1.697   +7.50   +8.38   -1.72   -4.02   -4.33
+
+NARRATIVE
+----------------------------------------------------------------------------
+  The P_300 signal for SSNC on the anchor date of May 29, 2026, is BUY
+  with a horizon of 5. The per-horizon statistics show a win rate of 75%
+  and a mean return of +4.40% at h=5, with a positive z-score indicating
+  statistical significance. Performance remains strong for shorter
+  horizons but declines as the horizon extends, with lower win rates and
+  diminishing z-scores beyond h=10. The top historical analogs include
+  DIS, AAPL, BAC, TM, and CCEP, each showing varied outcomes: while some
+  like TM and CCEP exhibit robust short-term gains, others like BAC and
+  CACEP demonstrate broader dispersion in 20-day returns.
+
+============================================================================

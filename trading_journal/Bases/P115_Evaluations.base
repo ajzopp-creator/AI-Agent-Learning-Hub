@@ -1,0 +1,28 @@
+view: table
+filter:
+  conditions:
+    - field: file.folder
+      operator: contains
+      value: TradeManagement/P115
+  conjunction: and
+sort:
+  - field: date
+    direction: desc
+columns:
+  - id: date
+    field: date
+  - id: symbol
+    field: symbol
+  - id: step1_verdict
+    field: step1_verdict
+  - id: setup_score
+    field: setup_score
+  - id: traded
+    field: traded
+  - id: outcome
+    field: outcome
+  - id: why_code
+    field: why_code
+views:
+  - type: table
+    name: Table

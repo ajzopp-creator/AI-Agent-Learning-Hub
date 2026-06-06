@@ -1,0 +1,347 @@
+================================================================================
+P_010 INITIALIZATION PARAMETERS GUIDE
+================================================================================
+Version: 4.0
+Updated: February 5, 2026
+
+================================================================================
+DAILY INITIALIZATION PARAMETERS (9:30 AM)
+================================================================================
+
+SOURCE: Grid Excel Files (exported from ThinkorSwim)
+  Location: data\excel_exports\
+  - History Grid (SPY)_v3.xlsx
+  - History Grid (QQQ)_v3.xlsx
+
+DATA READ FROM GRID:
+------------------------------------------------------------------------------
+1. Date
+   - Grid record date (most recent entry)
+   - Format: MM/DD/YYYY
+   - Example: 02/04/2026
+
+2. Close Price
+   - Grid closing price for the symbol
+   - Used as baseline for intraday comparison
+   - Example: SPY $686.19, QQQ $605.75
+
+3. Medium Term Difference
+   - Grid calculation: Price vs 50-day moving average
+   - Positive = above 50-day MA (bullish)
+   - Negative = below 50-day MA (bearish)
+   - Example: SPY -1.78, QQQ -7.19
+
+4. Long Term Difference  
+   - Grid calculation: Price vs 200-day moving average
+   - Positive = above 200-day MA (bullish)
+   - Negative = below 200-day MA (bearish)
+   - Example: SPY +0.42, QQQ -3.05
+
+5. Predicted High (PRANGE Upper)
+   - VP Grid predicted high for next period
+   - Used for intraday validation
+   - Example: SPY $691.37, QQQ $613.43
+
+6. Predicted Low (PRANGE Lower)
+   - VP Grid predicted low for next period
+   - Used for intraday validation
+   - Example: SPY $682.89, QQQ $599.46
+
+CALCULATED VALUES:
+------------------------------------------------------------------------------
+7. Posture (per symbol)
+   Formula: (Medium_Diff + Long_Diff) / 2.0
+   
+   Interpretation:
+   = 1.0  = Strong bullish (above both MAs significantly)
+   = 0.0  = Moderate bullish (mixed or slightly above)
+   < 0.0  = Bearish (below MAs)
+   
+   Example:
+   SPY: (-1.78 + 0.42) / 2 = -0.68
+   QQQ: (-7.19 + -3.05) / 2 = -5.12
+
+8. Average Posture
+   Formula: (SPY_Posture + QQQ_Posture) / 2.0
+   
+   This is the PRIMARY decision metric
+   
+   Example: (-0.68 + -5.12) / 2 = -2.90
+
+9. Risk Mode (PRIMARY OUTPUT)
+   Formula:
+   IF avg_posture >= 1.0  ? FULL
+   IF avg_posture >= 0.0  ? HALF
+   IF avg_posture < 0.0   ? OFF
+   
+   Meaning:
+   FULL = 100% position sizing (strong bullish market)
+   HALF = 50% position sizing (moderate/mixed market)
+   OFF  = 0% position sizing (bearish market, no longs)
+   
+   Example: avg_posture = -2.90 ? OFF
+
+OUTPUT FILES:
+------------------------------------------------------------------------------
+P_010_RiskConfig.json:
+{
+  "timestamp": "2026-02-05T09:37:55",
+  "spy_posture": -0.68,
+  "qqq_posture": -5.12,
+  "avg_posture": -2.90,
+  "risk_mode": "OFF",              ? USE THIS FOR POSITION SIZING
+  "source": "Grid_XLSX",
+  "spy_grid_date": "02/04/2026",
+  "qqq_grid_date": "02/04/2026"
+}
+
+grid_snapshot_latest.json:
+{
+  "timestamp": "2026-02-05T09:37:55",
+  "spy": {
+    "date": "02/04/2026",
+    "close": 686.19,               ? Baseline for intraday
+    "pred_high": 691.37,           ? PRANGE upper
+    "pred_low": 682.89,            ? PRANGE lower
+    "posture": -0.68
+  },
+  "qqq": { ... }
+}
+
+================================================================================
+INTRADAY INITIALIZATION PARAMETERS (2 PM+)
+================================================================================
+
+SOURCE: Morning Grid Snapshot + Live Market Data
+
+INPUT PARAMETERS:
+------------------------------------------------------------------------------
+1. Grid Close (from morning snapshot)
+   - Baseline price from Grid
+   - Used to calculate price movement
+   - Example: SPY $686.19
+
+2. Current Price (from yfinance)
+   - Live market price at time of check
+   - Fetched via yfinance API
+   - Example: SPY $680.69
+
+3. PRANGE (from morning snapshot)
+   - Predicted High: Upper band
+   - Predicted Low: Lower band
+   - Example: SPY $682.89 - $691.37
+
+CALCULATED VALUES:
+------------------------------------------------------------------------------
+4. Price Change
+   Formula: Current_Price - Grid_Close
+   Example: 680.69 - 686.19 = -5.50
+
+5. Price Move Percentage
+   Formula: (Price_Change / Grid_Close) × 100
+   Example: (-5.50 / 686.19) × 100 = -0.80%
+
+6. Band Status
+   Logic:
+   IF current > pred_high  ? "above_band"
+   IF current < pred_low   ? "below_band"
+   ELSE                    ? "in_band"
+   
+   Example: SPY $680.69 < $682.89 ? "below_band"
+
+7. Deviation Percentage (if outside band)
+   Formula (above): ((Current - Pred_High) / Pred_High) × 100
+   Formula (below): ((Pred_Low - Current) / Pred_Low) × 100
+   
+   Example: ((682.89 - 680.69) / 682.89) × 100 = 0.32%
+
+8. Intraday Adjustment (PRIMARY OUTPUT)
+   Logic:
+   IF both out of band OR any deviation > 5%  ? REDUCED
+   IF one out with deviation > 2%             ? HALF
+   ELSE                                       ? NONE
+   
+   Interpretation:
+   NONE    = No adjustment needed (prices normal)
+   HALF    = Moderate concern (one symbol deviating)
+   REDUCED = Severe concern (both out or large deviation)
+   
+   Example: 
+   SPY: below_band, 0.32% deviation
+   QQQ: in_band
+   Result: NONE (deviations < 2%)
+
+FINAL POSITION SIZING LOGIC:
+------------------------------------------------------------------------------
+Formula: MIN(Morning_Risk_Mode, Intraday_Adjustment)
+
+Conversion Table:
+FULL    = 100%
+HALF    = 50%
+REDUCED = 25%
+NONE    = 100% (no reduction)
+OFF     = 0%
+
+Application:
+MIN(OFF, NONE) = OFF = 0%
+MIN(FULL, NONE) = FULL = 100%
+MIN(FULL, HALF) = HALF = 50%
+MIN(FULL, REDUCED) = REDUCED = 25%
+MIN(HALF, NONE) = HALF = 50%
+MIN(HALF, REDUCED) = REDUCED = 25%
+
+Example:
+Morning: OFF (0%)
+Intraday: NONE (no reduction)
+Final: MIN(OFF, NONE) = OFF = 0% sizing
+
+OUTPUT FILE:
+------------------------------------------------------------------------------
+outputs/intraday_vp_check_YYYYMMDD_HHMMSS.json:
+{
+  "timestamp": "2026-02-05T09:59:52",
+  "spy_validation": {
+    "grid_close": 686.19,
+    "current": 680.69,
+    "price_change": -5.50,
+    "price_move_pct": -0.80,
+    "pred_high": 691.37,
+    "pred_low": 682.89,
+    "band_status": "below_band",
+    "deviation_pct": 0.32,
+    "deviation_from": "pred_low"
+  },
+  "qqq_validation": { ... },
+  "intraday_adjustment": "NONE",    ? USE FOR FINAL SIZING
+  "reason": "Prices within expected PRANGE"
+}
+
+================================================================================
+PARAMETER INTERPRETATION GUIDE
+================================================================================
+
+POSTURE RANGES:
+------------------------------------------------------------------------------
+> +2.0   = Very Strong Bull (rare)
++1.0 to +2.0 = Strong Bull (FULL risk)
+ 0.0 to +1.0 = Moderate Bull (HALF risk)
+-1.0 to  0.0 = Weak Bear (OFF risk)
+< -1.0   = Strong Bear (OFF risk)
+
+DEVIATION SEVERITY:
+------------------------------------------------------------------------------
+0% - 2%   = Normal variance (NONE adjustment)
+2% - 5%   = Moderate concern (HALF adjustment if outside band)
+> 5%      = Severe deviation (REDUCED adjustment)
+
+BAND STATUS MEANINGS:
+------------------------------------------------------------------------------
+in_band    = Price behaving as predicted (good)
+above_band = Price exceeded prediction (bullish surprise or overshoot)
+below_band = Price fell below prediction (bearish surprise or weakness)
+
+RISK MODE MEANINGS:
+------------------------------------------------------------------------------
+FULL = Market is bullish, trade at full size
+       Both symbols above their moving averages
+       Avg posture >= 1.0
+
+HALF = Market is mixed/transitional, use caution
+       Symbols showing mixed signals
+       Avg posture >= 0.0 but < 1.0
+
+OFF  = Market is bearish, do not trade longs
+       Both symbols weak or below moving averages
+       Avg posture < 0.0
+
+================================================================================
+DAILY WORKFLOW CHECKLIST
+================================================================================
+
+MORNING (9:30 AM):
+------------------------------------------------------------------------------
+? Export Grid Excel files from TOS to data\excel_exports\ (previous 6:30 PM)
+  - History Grid (SPY)_v3.xlsx
+  - History Grid (QQQ)_v3.xlsx
+
+? Run: .\P_010_daily_posture.bat
+
+? Read: P_010_RiskConfig.json
+  - Check: risk_mode (FULL/HALF/OFF)
+  - Apply: Position sizing all day
+
+? Parameters to Note:
+  - spy_posture: _______
+  - qqq_posture: _______
+  - avg_posture: _______
+  - risk_mode: _______
+
+INTRADAY (2:00 PM or later):
+------------------------------------------------------------------------------
+? Run: .\P_010_run_intraday_vp_check.bat
+
+? Read: outputs/intraday_vp_check_*.json (latest)
+  - Check: intraday_adjustment (NONE/HALF/REDUCED)
+  - Check: band_status for both symbols
+  - Check: deviation_pct if outside band
+
+? Parameters to Note:
+  - SPY band_status: _______
+  - QQQ band_status: _______
+  - intraday_adjustment: _______
+
+? Apply Final Sizing:
+  - Morning risk_mode: _______
+  - Intraday adjustment: _______
+  - Final sizing: MIN(morning, intraday) = _______
+
+EVENING (4:00 PM):
+------------------------------------------------------------------------------
+? Review logs: logs/P_010_Daily_*.log
+? Note any errors or warnings
+? Export fresh Grid files at 6:30 PM for tomorrow
+
+================================================================================
+TROUBLESHOOTING PARAMETERS
+================================================================================
+
+Issue: Risk mode seems wrong
+Check:
+  - Grid Excel dates (should be current)
+  - Medium_Diff and Long_Diff values in Excel
+  - Posture calculation: (med + long) / 2
+  - Average posture threshold (=1.0 FULL, =0.0 HALF, <0.0 OFF)
+
+Issue: Intraday adjustment unexpected
+Check:
+  - Current price vs PRANGE (pred_high/pred_low)
+  - Deviation percentage (>2% triggers adjustment)
+  - Band status (both out = REDUCED)
+  - Morning snapshot loaded correctly
+
+Issue: Position sizing confusion
+Check:
+  - Morning risk_mode value
+  - Intraday adjustment value
+  - MIN(morning, intraday) calculation
+  - OFF always = 0% regardless of intraday
+
+================================================================================
+QUICK REFERENCE FORMULAS
+================================================================================
+
+Posture = (Medium_Diff + Long_Diff) / 2.0
+
+Risk_Mode = IF posture >= 1.0 THEN FULL
+            ELSE IF posture >= 0.0 THEN HALF
+            ELSE OFF
+
+Price_Move_Pct = ((Current - Grid_Close) / Grid_Close) × 100
+
+Deviation_Pct = ABS((Current - Band_Edge) / Band_Edge) × 100
+
+Final_Sizing = MIN(Morning_Risk_Mode, Intraday_Adjustment)
+
+================================================================================
+END OF INITIALIZATION PARAMETERS GUIDE
+================================================================================

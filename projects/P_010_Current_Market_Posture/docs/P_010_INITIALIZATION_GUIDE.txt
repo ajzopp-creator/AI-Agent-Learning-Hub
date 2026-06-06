@@ -1,0 +1,225 @@
+================================================================================
+P_010 INITIALIZATION GUIDE
+================================================================================
+Version: 3.0
+Updated: February 4, 2026
+
+================================================================================
+DAILY INITIALIZATION SEQUENCE
+================================================================================
+
+STEP 1: VERIFY GRID XML FILES (6:30 PM - Previous Night)
+----------------------------------------------------------------------------
+Location: data/excel_exports/
+
+Required Files:
+  ? History Grid (SPY)_v3.xlsx
+  ? History Grid (QQQ)_v3.xlsx
+
+Verify:
+  cd C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_010_Current_Market_Posture
+  dir data\excel_exports\*.xml
+
+If missing:
+  ? Export fresh Grid files from ThinkorSwim
+  ? Save to: data/excel_exports/
+
+================================================================================
+STEP 2: MORNING INITIALIZATION (9:30 AM)
+----------------------------------------------------------------------------
+Command:
+  cd C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_010_Current_Market_Posture
+  .\P_010_daily_posture.bat
+
+Expected Output:
+  ? Reading SPY Grid XML
+  ? Reading QQQ Grid XML
+  ? SPY Posture calculated
+  ? QQQ Posture calculated
+  ? Risk Mode determined (FULL/HALF/OFF)
+  ? Created: grid_snapshot_latest.json
+  ? Created: P_010_RiskConfig.json
+  ? Backup created in data/snapshots/
+
+Verify Files Created:
+  type P_010_RiskConfig.json
+
+Check Risk Mode:
+  Look for: "risk_mode": "FULL" (or HALF/OFF)
+
+Integration:
+  ? P_115/P_118 systems read P_010_RiskConfig.json
+  ? Apply position sizing: FULL=100%, HALF=50%, OFF=0%
+
+Morning Initialization: COMPLETE ?
+
+================================================================================
+STEP 3: INTRADAY VALIDATION (2:00 PM or Later)
+----------------------------------------------------------------------------
+Command:
+  cd C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_010_Current_Market_Posture
+  .\P_010_run_intraday_vp_check.bat
+
+Expected Output:
+  ? Loaded grid snapshot
+  ? Fetched current SPY price
+  ? Fetched current QQQ price
+  ? Grid Close ? Current comparison
+  ? PRANGE validation
+  ? Deviation calculation
+  ? Adjustment determined (NONE/HALF/REDUCED)
+  ? Created: outputs/intraday_vp_check_[timestamp].json
+
+Verify File Created:
+  dir outputs\intraday_vp_check_*.json /o-d
+
+Check Adjustment:
+  type outputs\intraday_vp_check_[latest].json
+  Look for: "intraday_adjustment": "NONE" (or HALF/REDUCED)
+
+Integration:
+  ? P_115/P_118 read latest intraday_vp_check_*.json
+  ? Apply: MIN(morning_risk_mode, intraday_adjustment)
+  ? Example: FULL + HALF = use HALF sizing
+
+Intraday Validation: COMPLETE ?
+
+Can Run Multiple Times:
+  ? 2:00 PM
+  ? 3:00 PM
+  ? 4:00 PM
+  ? Evening (before close)
+  Each creates new timestamped file
+
+================================================================================
+QUICK INITIALIZATION COMMANDS
+================================================================================
+
+Morning (9:30 AM):
+  INIT daily
+  ? Shortcut for: .\P_010_daily_posture.bat
+
+Intraday (2 PM+):
+  INIT intraday
+  ? Shortcut for: .\P_010_run_intraday_vp_check.bat
+
+Check Status:
+  type P_010_RiskConfig.json
+  dir outputs\intraday_vp_check_*.json /o-d
+  type logs\P_010_Daily_*.log
+
+================================================================================
+INITIALIZATION CHECKLIST
+================================================================================
+
+Pre-Market (Before 9:30 AM):
+  [ ] Grid XML files exported from TOS (previous 6:30 PM)
+  [ ] Grid XML files in data/excel_exports/ folder
+  [ ] Previous day's logs reviewed
+  [ ] System ready for initialization
+
+At Market Open (9:30 AM):
+  [ ] Run: INIT daily
+  [ ] Verify: P_010_RiskConfig.json created
+  [ ] Check: risk_mode value (FULL/HALF/OFF)
+  [ ] Confirm: P_115/P_118 reading config file
+  [ ] Start trading with proper position sizing
+
+Mid-Day (2:00 PM):
+  [ ] Run: INIT intraday
+  [ ] Verify: intraday_vp_check_*.json created
+  [ ] Check: intraday_adjustment value
+  [ ] Apply: MIN(morning_risk, intraday_adj)
+  [ ] Adjust position sizing if needed
+
+End of Day (4:00 PM):
+  [ ] Review: logs/P_010_Daily_*.log
+  [ ] Verify: All systems executed correctly
+  [ ] Check: Any errors or warnings
+  [ ] Archive: Important snapshots if needed
+  [ ] Ready for next day
+
+================================================================================
+TROUBLESHOOTING INITIALIZATION
+================================================================================
+
+Issue: "Grid XML not found"
+  ? Check: data/excel_exports/ has both SPY and QQQ files
+  ? Verify: Filenames exactly match:
+      History Grid (SPY)_v3.xlsx
+      History Grid (QQQ)_v3.xlsx
+  ? Export fresh Grid files from ThinkorSwim
+
+Issue: "Python/yfinance error"
+  ? Check internet connection
+  ? Verify: pip list | findstr yfinance
+  ? Install: venv\Scripts\pip.exe install yfinance
+
+Issue: "No files created"
+  ? Check: logs/P_010_Daily_*.log for errors
+  ? Verify: Batch file paths correct
+  ? Run: python scripts directly to see errors
+
+Issue: "Old Grid dates"
+  ? Grid XML not updated from TOS
+  ? Export fresh Grid files (6:30 PM daily)
+  ? Verify export location
+
+Issue: "Intraday can't load snapshot"
+  ? Morning system must run first
+  ? Run: INIT daily before INIT intraday
+  ? Verify: grid_snapshot_latest.json exists
+
+================================================================================
+INITIALIZATION SHORTCUTS
+================================================================================
+
+From Projects Directory:
+  cd C:\Users\Trader\AI-Agent-Learning-Hub\projects
+  INIT daily           ? Morning initialization
+  INIT intraday        ? Intraday validation
+
+From P_010 Directory:
+  cd P_010_Current_Market_Posture
+  .\P_010_daily_posture.bat
+  .\P_010_run_intraday_vp_check.bat
+
+View Current Status:
+  type P_010_RiskConfig.json
+  dir outputs\*.json /o-d
+  type logs\P_010_Daily_*.log | more
+
+================================================================================
+INITIALIZATION COMPLETE
+================================================================================
+
+Morning:
+  ? Grid XML loaded
+  ? Posture calculated
+  ? Risk mode set
+  ? P_010_RiskConfig.json ready
+  ? P_115/P_118 position sizing active
+
+Intraday:
+  ? Snapshot loaded
+  ? Current prices validated
+  ? PRANGE checked
+  ? Adjustment determined
+  ? P_115/P_118 adjustment applied
+
+System: READY TO TRADE ?
+
+================================================================================
+DAILY WORKFLOW SUMMARY
+================================================================================
+
+6:30 PM (Previous Day): Export Grid XML from TOS
+9:30 AM (Market Open):  INIT daily ? Get risk_mode
+2:00 PM (Intraday):     INIT intraday ? Get adjustment (optional)
+4:00 PM (Market Close): Review logs and results
+
+Position Sizing = MIN(risk_mode, intraday_adjustment)
+
+Simple, clean, automated! ??
+
+================================================================================

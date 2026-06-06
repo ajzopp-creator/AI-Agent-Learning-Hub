@@ -1,0 +1,15 @@
+=== SCHWAB API TEST ===
+Python: 3.12.12 | packaged by Anaconda, Inc. | (main, Oct 21 2025, 20:05:38) [MSC v.1929 64 bit (AMD64)]
+
+schwab-py version: 1.5.1
+Credentials loaded OK
+APP_KEY starts with: 18F3UYwX...
+APP_SECRET starts with: CZJX...
+CALLBACK_URL: https://127.0.0.1
+TOKEN_PATH: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_020_AJZStrategies_PerformanceAnalysisSystem\python\api\schwab_token.json
+
+Attempting manual auth flow...
+This will generate an auth URL you paste into your browser.
+schwab.auth imported OK
+
+All checks passed - ready for auth flow

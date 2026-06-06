@@ -1,0 +1,56 @@
+============================================================================
+P_300 SIGNAL REPORT
+============================================================================
+Ticker:           COF
+Anchor date:      2026-05-21
+Signal:           WATCH at horizon 7
+Generated:        2026-05-26 16:36 ET
+
+PER-HORIZON STATS
+----------------------------------------------------------------------------
+    h    n  win_rate  mean_ret  std_ret  z_score  class
+    5   20     0.500     +1.20     7.16   -0.850   PASS
+    7   20     0.600     +1.02     9.24   +0.060  WATCH
+   10   20     0.600     +0.08    10.55   +0.060  WATCH
+   15   20     0.550     +1.09    12.36   -0.497   PASS
+   20   20     0.500     +0.79    12.75   -0.955   PASS
+
+TOP 20 MATCHES (by composite distance, ascending)
+----------------------------------------------------------------------------
+   #  ticker      anchor  compdist     +5d     +7d    +10d    +15d    +20d
+   1     MTB  2026-03-30    12.599   +5.46  +10.87   +9.64   +8.84   +8.15
+   2     OXY  2026-04-09    12.674   -2.84   -6.92   -1.20   +3.50   -7.84
+   3     NKE  2025-09-15    13.728   -2.40   -2.48   -4.77   -2.55   -7.74
+   4     TPR  2026-02-04    13.852  +19.05  +18.38  +17.23  +23.53  +15.15
+   5    NVDA  2025-10-24    14.083   +8.71   +6.67   +1.01   +2.10   -3.96
+   6     FHN  2026-01-30    14.315   +7.10   +4.70   +0.29   -1.59   -1.35
+   7     GLP  2026-03-10    14.418   -0.31   +1.83   -3.04  -11.59   -0.38
+   8    AAPL  2026-01-27    14.425   +4.34   +6.83   +5.97   +2.35   +6.18
+   9     CRS  2026-02-04    14.732  +10.63  +13.65  +14.90  +18.95  +18.20
+  10    INTC  2025-06-13    14.785   +5.21  +10.23  +11.22  +17.13  +13.80
+  11    SHOP  2025-09-22    14.895   -5.17   -4.81   +4.70   -2.20   +4.83
+  12    CCEP  2026-01-29    15.116   +5.15   +5.95   +8.58  +15.87  +21.06
+  13     CVX  2026-02-10    15.184   +0.88   +0.92   +1.08   +2.07   +5.23
+  14   GOOGL  2025-12-12    15.271   -0.69   +1.64   +1.38   +1.63   +8.63
+  15    FOXA  2026-02-03    15.292   -9.82  -19.70  -18.64  -22.98  -16.86
+  16    ETSY  2026-01-16    15.337   -2.72   -7.41  -13.21  -10.80  -28.19
+  17     XOM  2026-01-15    15.588   +4.52   +5.96   +9.50  +15.43  +14.96
+  18     AMD  2025-08-18    15.641   -7.26   -5.12   -7.85  -11.54   -8.90
+  19     WBD  2025-07-28    15.648   -6.57   -6.64  -21.31  -13.72  -12.12
+  20     BXP  2026-02-26    15.674   -9.32  -14.21  -13.80  -12.69  -13.09
+
+NARRATIVE
+----------------------------------------------------------------------------
+  The P_300 Signal Report for COF on 2026-05-21 with a final WATCH signal
+  at horizon 7 shows mixed performance across different horizons. The per-
+  horizon stats indicate moderate win rates (48-60%) and mean returns of
+  +0.08% to +1.20%, with higher variability in later horizons, as seen in
+  the standard deviations (7.16% to 12.75%). The z-scores suggest weaker
+  statistical significance at longer horizons. Top historical analogs
+  include MTB (+5.46% at +5 days), OXY (-2.84% at +5 days), NKE (-2.40% at
+  +5 days), TPR (+19.05% at +5 days), and NVDA (+8.71% at +5 days). The
+  dispersion in outcomes across these analogs highlights variability in
+  potential price movements, with both positive and negative returns
+  observed over the 5-20 day windows.
+
+============================================================================

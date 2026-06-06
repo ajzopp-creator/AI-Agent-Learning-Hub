@@ -1,0 +1,48 @@
+Running: auth 
+
+-- Schwab Initial Authentication --
+This only needs to run once (or when refresh token expires).
+
+2026-04-08 12:20:54  INFO      Credentials loaded from cache.
+2026-04-08 12:20:54  INFO      Starting OAuth flow.
+
+-- Schwab Login --
+schwab-py will print a URL below.
+Copy it, paste into your browser, log in with BROKERAGE credentials.
+After authorizing, copy the full redirect URL from the address bar.
+It will start with: https://127.0.0.1?code=...
+------------------------------------------------------------
+2026-04-08 12:20:54  INFO      Creating new token with callback URL 'https://127.0.0.1' and token path 'C:\Users\Trader\AI-Agent-Learning-Hub\integrations\schwab_api\credentials\P_020_schwab_config.json'
+
+**************************************************************
+
+This is the manual login and token creation flow for schwab-py.
+Please follow these instructions exactly:
+
+ 1. Open the following link by copy-pasting it into the browser
+    of your choice:
+
+        https://api.schwabapi.com/v1/oauth/authorize?response_type=code&client_id=18F3UYwX7YoyGBFsli6NpEVFt8biJPuLxGAx1ZKqoJrbOZzc&redirect_uri=https%3A%2F%2F127.0.0.1&state=rMreia0PJPCa7QH9FQlAGX19uNQA7k
+
+ 2. Log in with your account credentials. You may be asked to
+    perform two-factor authentication using text messaging or
+    another method, as well as whether to trust the browser.
+
+ 3. When asked whether to allow your app access to your account,
+    select "Allow".
+
+ 4. Your browser should be redirected to your callback URI. Copy
+    the ENTIRE address, paste it into the following prompt, and press
+    Enter/Return.
+
+If you encounter any issues, see here for troubleshooting:
+https://schwab-py.readthedocs.io/en/latest/auth.html#troubleshooting
+
+**************************************************************
+
+Redirect URL> 2026-04-08 12:21:05  INFO      HTTP Request: POST https://api.schwabapi.com/v1/oauth/token "HTTP/1.1 200 OK"
+2026-04-08 12:21:05  INFO      Updating token to file C:\Users\Trader\AI-Agent-Learning-Hub\integrations\schwab_api\credentials\P_020_schwab_config.json
+2026-04-08 12:21:06  INFO      OAuth flow completed successfully.
+
+[OK] Authentication successful. Tokens saved.
+2026-04-08 12:21:06  INFO      Initial auth workflow completed.

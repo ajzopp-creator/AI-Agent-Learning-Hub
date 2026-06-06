@@ -1,0 +1,55 @@
+============================================================================
+P_300 SIGNAL REPORT
+============================================================================
+Ticker:           FHN
+Anchor date:      2026-05-20
+Signal:           PASS at horizon 5
+Generated:        2026-05-20 22:36 ET
+
+PER-HORIZON STATS
+----------------------------------------------------------------------------
+    h    n  win_rate  mean_ret  std_ret  z_score  class
+    5   20     0.600     +2.35     5.58   +0.000   PASS
+    7   20     0.600     +2.68     5.09   +0.000   PASS
+   10   20     0.600     +1.64     5.21   +0.000   PASS
+   15   20     0.550     +1.53     7.01   -0.090   PASS
+   20   20     0.550     +2.49     7.85   -0.456   PASS
+
+TOP 20 MATCHES (by composite distance, ascending)
+----------------------------------------------------------------------------
+   #  ticker      anchor  compdist     +5d     +7d    +10d    +15d    +20d
+   1     SPY  2025-06-20    13.727   +3.47   +3.93   +4.44   +5.14   +5.80
+   2     GEV  2025-09-25    13.998   -0.21   -0.71   +4.40   -0.91   -2.04
+   3     GLP  2026-03-10    14.023   -0.31   +1.83   -3.04  -11.59   -0.38
+   4     NKE  2025-09-15    14.127   -2.40   -2.48   -4.77   -2.55   -7.74
+   5      DE  2025-11-20    14.302   -2.49   -1.51   -0.26   +1.78   -1.21
+   6    SHOP  2025-09-22    14.655   -5.17   -4.81   +4.70   -2.20   +4.83
+   7     XOM  2026-01-15    15.304   +4.52   +5.96   +9.50  +15.43  +14.96
+   8    NVDA  2025-10-24    15.531   +8.71   +6.67   +1.01   +2.10   -3.96
+   9     OII  2026-02-18    16.604  +14.60   +7.28   +6.20   +6.80   +2.36
+  10      GS  2026-01-22    16.916   -1.52   -0.87   -6.73   -5.25   -3.39
+  11     DIS  2025-10-15    17.060   +1.23   -0.03   -1.32   -0.31   +4.42
+  12     LMT  2025-09-02    17.189   +1.01   +4.03   +4.82   +7.55  +10.32
+  13     NVO  2025-09-11    17.234  +13.90  +11.80   +3.20   +8.18   +8.07
+  14    AVGO  2025-06-13    17.638   +2.04   +6.41  +10.84   +9.29  +12.96
+  15    PLTR  2025-10-23    17.664   +7.80  +14.79   -3.01   -4.62  -13.71
+  16     WMT  2026-02-25    17.848   +1.64   -1.55   -1.80   -3.00   -2.14
+  17     CAT  2025-06-25    18.058   +7.23   +5.36   +9.89  +12.51  +15.59
+  18     CVX  2026-02-10    18.091   +0.88   +0.92   +1.08   +2.07   +5.23
+  19     AMD  2025-08-18    18.282   -7.26   -5.12   -7.85  -11.54   -8.90
+  20   GOOGL  2025-12-12    18.381   -0.69   +1.64   +1.38   +1.63   +8.63
+
+NARRATIVE
+----------------------------------------------------------------------------
+  The P_300 Signal Report for FHN on 2026-05-20 shows a final
+  classification of PASS at horizon 5. The per-horizon statistics indicate
+  consistent win rates of 60% across horizons, with positive mean returns
+  ranging from +1.64% to +2.68%, though standard deviations are moderate
+  (3.94% to 7.85%) and z-scores mostly near zero, suggesting neutral
+  statistical significance except at longer horizons where confidence
+  wanes slightly. The top five historical analogs, including SPY, GEV,
+  GLP, NKE, and DE, show varied outcomes, with one positive (+3.47% to
+  +5.80%) and four negative 5-day returns (-0.21% to -2.49%), indicating
+  dispersion in potential outcomes.
+
+============================================================================

@@ -1,0 +1,55 @@
+============================================================================
+P_300 SIGNAL REPORT
+============================================================================
+Ticker:           DECK
+Anchor date:      2026-05-21
+Signal:           BUY at horizon 15
+Generated:        2026-05-26 17:44 ET
+
+PER-HORIZON STATS
+----------------------------------------------------------------------------
+    h    n  win_rate  mean_ret  std_ret  z_score  class
+    5   20     0.700     +8.43    16.12   +0.970  WATCH
+    7   20     0.700     +8.80    16.53   +0.970  WATCH
+   10   20     0.700     +7.66    16.99   +0.970  WATCH
+   15   20     0.750    +10.99    22.48   +1.332    BUY
+   20   20     0.700    +10.33    24.31   +0.874  WATCH
+
+TOP 20 MATCHES (by composite distance, ascending)
+----------------------------------------------------------------------------
+   #  ticker      anchor  compdist     +5d     +7d    +10d    +15d    +20d
+   1       J  2026-02-04     9.321   -0.68   -7.35   -2.80   -2.49   -5.04
+   2    DECK  2026-01-29     9.387  +11.28  +14.61  +16.14  +18.81  +17.39
+   3    LULU  2025-12-11     9.580  +15.03  +13.56  +11.74  +13.58  +11.78
+   4    CHTR  2026-01-29     9.625  +16.71  +24.40  +24.31  +20.18  +22.51
+   5    GMED  2025-11-06    10.095  +36.10  +35.54  +33.33  +47.53  +47.63
+   6     TPR  2026-02-04    10.320  +19.05  +18.38  +17.23  +23.53  +15.15
+   7    FIVE  2025-12-03    10.736   +8.59  +12.42   +9.43  +15.64  +18.57
+   8     HTH  2026-01-26    10.857   +5.65   +9.21  +11.38   +8.38   +5.37
+   9     MOS  2026-03-17    12.751  -12.59  -13.28  -11.55   -7.67  -17.69
+  10     CFG  2026-01-20    12.944   +6.04   +6.15  +10.30  +12.94   +8.74
+  11     ANF  2025-11-24    13.016  +52.61  +45.80  +52.35  +77.34  +88.71
+  12      RH  2026-02-23    13.054  -16.92  -20.27  -25.36  -30.28  -31.27
+  13     MAN  2026-01-28    13.618  +27.11  +26.52   +7.08   +0.24   -3.66
+  14    AAPL  2026-01-27    13.647   +4.34   +6.83   +5.97   +2.35   +6.18
+  15      MU  2025-09-12    14.140   +3.50   +5.84   +0.03  +19.46  +15.50
+  16    FOXA  2026-02-03    14.595   -9.82  -19.70  -18.64  -22.98  -16.86
+  17     MTB  2026-03-30    14.736   +5.46  +10.87   +9.64   +8.84   +8.15
+  18      GS  2026-01-22    14.749   -1.52   -0.87   -6.73   -5.25   -3.39
+  19    DLTR  2026-01-26    14.914   -6.52   -2.85   -1.78   +2.49   +5.03
+  20    INTC  2025-06-13    15.149   +5.21  +10.23  +11.22  +17.13  +13.80
+
+NARRATIVE
+----------------------------------------------------------------------------
+  The P_300 signal for DECK on 2026-05-26 is a BUY at a 15-day horizon,
+  generated with an anchor date of 2026-05-21. The per-horizon statistics
+  show consistent win rates of approximately 70% across horizons (h=5 to
+  h=20), with mean returns ranging from +8.43% at h=5 to +10.99% at h=15,
+  though standard deviations and z-scores suggest varying levels of
+  statistical significance. The top five historical analogs include mixed
+  outcomes, with DECK itself (anchor 2026-01-29) showing strong positive
+  performance (+11.28% at +5d and +17.39% at +20d), while other analogs
+  like LULU, CHTR, and GMED also demonstrate notable gains, though J shows
+  negative returns over the same period.
+
+============================================================================

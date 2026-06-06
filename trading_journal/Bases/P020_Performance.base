@@ -1,0 +1,30 @@
+view: table
+filter:
+  conditions:
+    - field: file.folder
+      operator: contains
+      value: TradeManagement/P020
+  conjunction: and
+sort:
+  - field: close_date
+    direction: desc
+columns:
+  - id: close_date
+    field: close_date
+  - id: symbol
+    field: symbol
+  - id: account_id
+    field: account_id
+  - id: system
+    field: system
+  - id: realized_pnl
+    field: realized_pnl
+  - id: realized_R
+    field: realized_R
+  - id: outcome
+    field: outcome
+  - id: sig_code
+    field: sig_code
+views:
+  - type: table
+    name: Table

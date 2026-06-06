@@ -1,0 +1,32 @@
+{
+  "timestamp": "2026-06-01T14:00:02.868312",
+  "snapshot_timestamp": "2026-06-01T07:51:50.185378",
+  "spy_validation": {
+    "grid_close": 756.47998046875,
+    "current": 759.5599975585938,
+    "price_change": 3.08001708984375,
+    "price_move_pct": 0.41,
+    "pred_high": 758.981506347656,
+    "pred_low": 755.498840332031,
+    "band_status": "above_band",
+    "deviation_pct": 0.08,
+    "deviation_from": "pred_high",
+    "symbol": "SPY"
+  },
+  "qqq_validation": {
+    "grid_close": 738.309997558594,
+    "current": 745.1400146484375,
+    "price_change": 6.830017089843523,
+    "price_move_pct": 0.93,
+    "pred_high": 741.804931640625,
+    "pred_low": 735.491088867188,
+    "band_status": "above_band",
+    "deviation_pct": 0.45,
+    "deviation_from": "pred_high",
+    "symbol": "QQQ"
+  },
+  "morning_baseline": "FULL",
+  "intraday_signal": "UPGRADE",
+  "intraday_final_mode": "FULL",
+  "reason": "Intraday confirm: Market strength confirmed (prices above PRANGE)"
+}

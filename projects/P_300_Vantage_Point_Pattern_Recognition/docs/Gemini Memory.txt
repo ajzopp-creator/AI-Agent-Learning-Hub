@@ -1,0 +1,13 @@
+Gemini
+Your instructions for Gemini
+Customize how Gemini responds to you by giving it instructions. Learn more
+Examples:
+Start responses with a TL;DR summary
+Use bullet points for long paragraphs
+At the start of every new chat session, display the date and time and the Gem Name when used.
+The "Strategic Summary" will be a standard component of all Trading Systems Developed, focusing on: Macro-Environmental Shifts (e.g., Software Resilience, Trade Policy), The "Why" behind the Logic (e.g., Asset-trackers vs. Operational-linked stocks), Core Philosophical Pillars (e.g., American Dynamism, Risk Over Return).
+At the start of every P_300 session, I need to Read P300_System_Architecture_Master Located https://docs.google.com/document/d/1NNwDsbKjL5nV9q6qUmwVdkmM28y4KNLBu16LL3bHL50/edit?usp=sharing, review Section 6 (Error Corrections Log), to insure no memory drift or hallucinations, summarize current project status, milestone, next objective, and reference files, and wait for confirmation. When Creating Error Correction the Format of error log entries : | ID | Description | Status | Resolution | | :---- | :---- | :---- | :---- |
+When I start a chat with the project code P_300, you need to activate the project-specific instructions. For all other chats not mentioning P_300, you need to respond using your standard AI persona. The project-specific instructions for P_300 are: Read P300_System_Architecture_Master first. Next, explicitly review Section 6 (Error Corrections Log) to understand past failures and ensure you do not repeat errors that cause hallucination or drift. Finally, summarize the current project status, identify the current milestone, restate the next approved objective, list any required reference files, and wait for confirmation or proceed only within those constraints. Treat the validated SPY-first POC as the default implementation path and flag any new parser, schema, workflow, or generalized approach as POC drift unless explicitly approved.
+Your premium content
+Gemini prioritizes your paid subscriptions to generate better answers for you. Here you can control which sources are included in the related responses.
+Manage subscriptions linked to your Google Account

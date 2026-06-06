@@ -1,0 +1,248 @@
+
+
+How to Use Obsidian and Claude to Learn Any Subject Twice as Fast by Building a Knowledge Graph**  
+*NeilXbt — May 30*
+
+---
+
+## **Introduction**
+
+The way most people study feels like learning but produces almost none of it.  
+They read the chapter. They highlight the key sentences. They review their highlights. They feel the comfortable familiarity of material they have seen before and mistake that familiarity for understanding. Then they sit down for the exam, or try to apply the knowledge in a real situation, and discover that familiarity is not the same thing as being able to use something.
+
+The research on this is unambiguous. Passive review of study material by re-reading notes or highlighting textbooks creates a false sense of familiarity rather than true understanding. The most popular study methods are also the least effective. Re-reading creates an illusion of knowledge. Highlighting produces passive engagement with zero retrieval practice. Cramming the night before works for roughly twenty-four hours and then it is gone.
+
+What actually works is the opposite of what feels comfortable:
+
+- **Active recall**  
+- **Spaced repetition**
+
+Research by Roediger and Karpicke showed that students who spent more time testing themselves through active recall retained significantly more information a week later than students who spent the same amount of time in passive review. Combining spaced repetition with active recall improved exam performance by fifteen to twenty percent compared to traditional study schedules, according to a 2025 study published in BMC Medical Education.
+
+The Obsidian and Claude learning system described in this article builds both mechanisms into the study process itself.  
+Every concept you add to your vault is immediately tested, connected, and scheduled for review. The knowledge graph does not replace studying. It transforms what studying means.
+
+---
+
+# **The Problem With Studying in Isolation**
+
+Traditional note-taking is linear. You read in sequence and write in sequence. Concept A appears on page twelve, concept B on page twenty, and concept C on page forty-five. Nothing in the act of writing down concept C connects it to concept A even when they are deeply related. The connections exist in the subject matter. They do not exist in your notes unless you deliberately create them.
+
+The connection is where the understanding lives.
+
+A student who knows that concept A, concept B, and concept C each exist has surface familiarity with three separate facts. A student who understands that concept A causes concept B under certain conditions, that concept C is the mechanism that explains when those conditions arise, and that this relationship maps onto a real-world pattern they have already observed has understanding. The second student is not smarter. They built the connections. The first student collected isolated nodes.
+
+The knowledge graph approach changes the structure of the notes from a collection of nodes to a network of connected nodes. Every new concept added to the graph is not stored in isolation. It is connected to what is already there.  
+**The tenth concept is more valuable than the first because there are nine existing concepts for it to connect to.  
+The fiftieth is more valuable than the tenth for the same reason.**
+
+Claude accelerates this in two ways:
+
+1. It finds connections that you would not have found yourself, because it can reason across everything in your vault simultaneously in a way your sequential reading brain cannot.  
+2. It generates the retrieval practice that forces you to pull information from memory rather than passively review it, which is where the actual learning occurs.
+
+---
+
+# **Vault Structure**
+
+```
+01-concepts/
+│   └── [concept-name].md
+02-connections/
+│   └── [link-name].md
+03-questions/
+│   └── YYYY-MM-DD.md
+04-reviews/
+│   └── [concept]-review.md
+05-synthesis/
+│   └── [topic]-synthesis.md
+06-skills/
+    ├── concept-add.md
+    ├── connection-find.md
+    ├── recall-generate.md
+    └── review-schedule.md
+```
+
+---
+
+# **CLAUDE.md**
+
+## **Purpose**
+This vault is a knowledge graph for active learning.  
+Every concept is a node. Every relationship between concepts is a link.  
+The goal is not to store information. The goal is to build understanding through connection.
+
+## **Core Principle**
+A fact stored in isolation is forgotten.  
+A fact connected to five other facts is retained.  
+Every concept added must be connected to at least two existing concepts before it is considered complete.
+
+## **Claude’s Role**
+1. Find non-obvious connections between concepts  
+2. Generate active recall questions that test understanding  
+3. Schedule spaced reviews at scientifically optimal intervals  
+4. Identify gaps where connections are missing  
+5. Produce synthesis documents that integrate related concepts  
+
+## **What Claude Never Does**
+- Never create a summary that just restates the source  
+- Summaries do not produce learning — connections do  
+- If a concept note does not link to anything, it is incomplete  
+
+---
+
+# **Module 1: The Concept Note**
+
+Every piece of material you study gets added to the vault as a concept note — not a summary, not a chapter outline. A concept note captures one idea precisely enough to be tested and connected.
+
+### **Frontmatter Template**
+```
+---
+concept: [name]
+subject: [subject area]
+source: [where this came from]
+date-added: YYYY-MM-DD
+review-due: YYYY-MM-DD
+connections: []
+mastery: 0
+---
+```
+
+### **Sections**
+- **What It Is**  
+- **Why It Matters**  
+- **The Mechanism**  
+- **Where It Breaks Down**  
+- **Connections**  
+- **The Test**  
+
+The “What It Is” section, written in your own words, is the most important part.  
+The cognitive effort of translating from source language to your language is the first act of retrieval practice.
+
+After writing the first three sections yourself, trigger Claude:
+
+1. Add at least two connections to existing concepts  
+2. Identify the most important missing connection  
+3. Generate an application-based recall question  
+
+---
+
+# **Module 2: The Connection Protocol**
+
+The connection protocol runs at the end of every study session.  
+Its purpose is to find the connections between new concepts and existing ones that you did not see while studying.
+
+This is where the knowledge graph produces its most distinctive value.  
+You studied sequentially. The graph stores non-sequentially. Claude can read across everything in your vault simultaneously and find patterns that your sequential study session could not produce.
+
+The non-obvious connection requirement is the critical instruction.  
+Without it, Claude finds the obvious links: concept A is similar to concept B, concept C relates to concept D.  
+Those connections are useful but not the ones that produce understanding.
+
+The non-obvious connection is the one where understanding the relationship changes how you understand both concepts individually.
+
+---
+
+# **Module 3: The Active Recall Generator**
+
+Active recall produces dramatically better outcomes than passive review.  
+Claude generates the questions. You answer them. The vault tracks which ones you get right.
+
+Each session pulls from:
+
+- Concept notes added in the last 7 days  
+- Concept notes with mastery score below 3  
+- One connection question  
+
+Rules:
+
+- Never ask for a definition  
+- At least 3 connection questions  
+- At least 2 prediction questions  
+
+Claude evaluates:
+
+- Whether your answer demonstrates understanding  
+- What gaps it reveals  
+- Whether mastery should increase, stay the same, or decrease  
+
+---
+
+# **Module 4: The Spaced Review System**
+
+Built on Ebbinghaus’s forgetting curve.
+
+### **Intervals**
+- 1 day  
+- 3 days  
+- 7 days  
+- 14 days  
+- 30 days  
+- 60 days  
+
+Mastery score determines interval movement.
+
+Each session:
+
+1. List concepts due  
+2. Sort by mastery  
+3. Generate harder questions  
+4. Update review-due dates  
+
+---
+
+# **Module 5: The Synthesis Session**
+
+Every two weeks per subject.
+
+### **Steps**
+1. Pattern Identification  
+2. Deepest Connection  
+3. Predictive Test  
+4. Gap Analysis  
+5. Synthesis Document (400–600 words)  
+
+The synthesis document is the artifact that proves understanding.
+
+---
+
+# **What the System Produces**
+
+- Retrieval practice  
+- Spaced repetition  
+- Connection-based understanding  
+- Faster learning  
+- Longer retention  
+
+Students using this approach outperform traditional study methods by 15–20%.
+
+---
+
+# **Starting This Weekend**
+
+You only need three things:
+
+1. Create one concept note  
+2. Run the connection prompt  
+3. Answer the recall question  
+
+Thirty minutes.  
+The difference between passive study and active learning.
+
+The knowledge graph is the difference between **knowing** and **understanding**.
+
+---
+
+# **Author**
+NeilXbt  
+Vibe Coder | AI x Crypto Insights | In Crypto Since '17 | NFA
+
+---
+
+If you want, I can now:
+
+- rebuild this into a **vault folder structure**,  
+- generate a **CLAUDE.md** file separately,  
+- or convert this into a **concept‑note template** you can reuse.
+
+Just tell me what you want next.

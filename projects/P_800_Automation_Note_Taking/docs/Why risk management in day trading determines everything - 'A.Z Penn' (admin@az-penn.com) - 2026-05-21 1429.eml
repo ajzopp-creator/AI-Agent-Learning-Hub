@@ -1,0 +1,1515 @@
+X-Mozilla-Status2: 00000000
+X-Mozilla-Keys:                                                                                 
+X-Mozilla-Status: 0001
+X-Mozilla-Status2: 00000000
+Return-path: <bounce-1960774-475-9979-tzoppi=icloud.com@em-1960774.az-penn.com>
+Original-recipient: rfc822;tzoppi@icloud.com
+Received: from p00-icloudmta-smtpin-us-east-2d-60-percent-23 by p152-mailgateway-smtp-58b87696d9-7bn5g (mailgateway 2620B256)
+	with SMTP id 26ae75fa-8943-478a-adb6-bcd153fde06e 
+	for <tzoppi@icloud.com>; Thu, 21 May 2026 18:29:46 GMT
+X-ICLOUD-MAIL-BWL: 1
+X-Apple-MoveToFolder: INBOX 
+X-Apple-Action: WL/INBOX
+X-Apple-UUID: 26ae75fa-8943-478a-adb6-bcd153fde06e
+Received: from s4.acemsrve.com (s4.acemsrve.com [192.92.97.226])
+	by p00-icloudmta-smtpin-us-east-2d-60-percent-23 (Postfix) with ESMTPS id 45639C0010A
+	for <tzoppi@icloud.com>; Thu, 21 May 2026 18:29:41 +0000 (UTC)
+X-ICL-Info: GAtbRVYDBVFFSlVFSgQEUFUKE0oWX1gHVQoPB0UBD1BbQFRZQQcYUEdPRhIcDVQNABcFElUBD1RFTlFDVQQBV1hAX0BBHUIYGgkWHkVZVQ4aDAJZG19bIhAUS0ZBBgZVQk1IFgIdRgcbF0gUF10WBBFEBw1VQFMMG1cFGBUQRAFIDRwYCEBfIhwaChgNVBgBGhRGHx1cWV8GTUgWG1VbEQcPA1kbX1tCBQ0USgsEGAMWHAsECkZTTBYWC1ccVAsDD1QWEhZeGAEaFF0WG1VbEURXBRgVEFsLEURaRkEDAlVEQFVOVgUBV0FOVkRWAQFVTEpeT0kHAlFNSyYUHVxaT0BUUUJBVFIGTU5fWgJGVA8ZRw==
+X-ICL-Score: 2.33303322422
+Authentication-Results: bimi.icloud.com; bimi=skipped reason="insufficient dmarc"
+X-ARC-Info: policy=fail; arc=none; r1=-20; r2=0
+Authentication-Results: arc.icloud.com; arc=none
+Authentication-Results: dmarc.icloud.com; dmarc=pass header.from=az-penn.com
+X-DMARC-Policy: v=DMARC1;p=none;
+X-DMARC-Info: pass=pass; dmarc-policy=none; s=r1; d=r1; pdomain=az-penn.com
+Authentication-Results: dkim-verifier.icloud.com; dkim=pass header.d=az-penn.com header.i=@az-penn.com header.b=qo/bOsS2
+Authentication-Results: dkim-verifier.icloud.com; dkim=pass header.d=acems1.com header.i=@acems1.com header.b=WU2MVSMF
+Received-SPF: pass (spf.icloud.com: domain of bounce-1960774-475-9979-tzoppi=icloud.com@em-1960774.az-penn.com designates 192.92.97.226 as permitted sender) receiver=spf.icloud.com; client-ip=192.92.97.226; helo=s4.acemsrve.com; envelope-from=bounce-1960774-475-9979-tzoppi=icloud.com@em-1960774.az-penn.com
+Authentication-Results: spf.icloud.com; spf=pass (spf.icloud.com: domain of bounce-1960774-475-9979-tzoppi=icloud.com@em-1960774.az-penn.com designates 192.92.97.226 as permitted sender) smtp.mailfrom=bounce-1960774-475-9979-tzoppi=icloud.com@em-1960774.az-penn.com
+X-KumoRef: eyJfQF8iOiJcXF8vIiwicmVjaXBpZW50IjoidHpvcHBpQGljbG91ZC5jb20ifQ==
+DKIM-Signature: v=1; a=rsa-sha256; d=az-penn.com; s=acdkim1; c=relaxed/relaxed;
+	bh=vD106oSyABb+63o1mAsZYftR2jNoWjLGlPbrz0DoeNo=;
+	h=from:to:subject:date:mime-version:content-type:sender:cc:date:message-id:
+		list-unsubscribe:list-unsubscribe-post; t=1779388174; x=1779992974;
+	b=qo/bOsS269o7Z6sb3Js45oga/tgv4e/68swlxlqoDnf5xZHRwzWGIZQQ6678x5dnUUSuf00Xo
+	iw80BVcg4siolfo04h6tlj0rf0uZplC2en5FLVD5dA4xmXX/UXgQJ15ceFTFSQASG++nxsDS3ln
+	nd4bW6TARfBZoAkUM2m3+rjriyoEztmvsZtJYATQzGP0GDUGTuMG59vUiHa9Urlm8yTYY3HXIsX
+	qaaob23rg3rCXj9eQZl0q58VTTIbr61v9STwGrCdW2DY0aP+4tYrlAYt/ESgg6Y3Cj8GK9+46F4
+	cCYnya1+FiBGmg44mU/YQLAOJ/dLsDKi1pik0JdzTyLg==;
+DKIM-Signature: v=1; a=rsa-sha256; d=acems1.com; s=acdkim1; c=relaxed/relaxed;
+	bh=vD106oSyABb+63o1mAsZYftR2jNoWjLGlPbrz0DoeNo=;
+	h=from:to:subject:date:mime-version:content-type:sender:cc:date:message-id:
+		list-unsubscribe:list-unsubscribe-post; t=1779388174; x=1779992974;
+	b=WU2MVSMFH+XJr/w/d6IK6tfAlKErMMHv+LGeNbh1y7MBBO04YqyL2Z4bKBoxn5cPtit+hPDrh
+	exlnb8YBvjsMx9XnTse5ntWWIwZH0rxerhpiBGZnwFq1HwJAzO557NiL3cZaQ9REDxnn2oWRDPZ
+	trMweG29r5aScqpp/abm9ZOAXCRA9yXsk3Gv7Hr9YIxWoM97gHCrWIjIHJt9cJ7kwypwvYNpFSg
+	ndB8kfjRViVoZVXQc3tO1pRKV53oZTiCKvu9DABm+KTIvoWolts0VteMbZV/O1eMqP8o0ZTwv3f
+	iSYFFAymBsKv59R9Ynbj+QWHeVlRk2XRro9nhZztE7sA==;
+CFBL-Address: fbl-report@acems1.com; report=arf
+X-Mailer: ActiveCampaign Mailer
+Received: from cell-5-759ddd879-zvbml (10.65.116.155)
+  by acems1.com (KumoMTA 10.13.187.210) 
+  with ESMTPS (TLSv1_3:TLS13_AES_256_GCM_SHA384)  id 040d53ea554311f1bcd502b2946a4797 for <tzoppi@icloud.com>;
+  Thu, 21 May 2026 18:29:34 +0000
+Date: Thu, 21 May 2026 18:29:34 +0000 (GMT)
+From: "A.Z Penn" <admin@az-penn.com>
+Reply-To: reply-azpenn.activehosted.475.744.9979@s4.acemsrve.com
+To: tzoppi@icloud.com
+Message-ID: <193471939.5754703.1779388174382@cell-5-759ddd879-zvbml>
+Subject: Why risk management in day trading determines everything
+MIME-Version: 1.0
+Content-Type: multipart/alternative; 
+	boundary="----=_Part_5754702_305756606.1779388174382"
+X-DKIM-Options: s=acdkim1
+List-Unsubscribe-Post: List-Unsubscribe=One-Click
+X-Virtual-Mta: s1.acemsrve.com
+X-250ok-CID: 1960774-475
+List-Unsubscribe: <https://azpenn.activehosted.com/box.php?nl=2&c=475&m=744&s=fdb8c94336ff334b64f60b53d0779399&funcml=unsub2&luha=1>,<mailto:unsubscribe-5cc6b2e73e68bee50c9bbf6c873b1c3f-475-fdb8c94336ff334b64f60b53d0779399@s4.acemsrve.com>
+Feedback-ID: 1960774:activecampaign
+X-Sending-Engine: Hedwig PCS
+X-Report-Abuse: Please report abuse to abuse@activecampaign.com
+X-lid: dHpvcHBpQGljbG91ZC5jb20gLCBjNDc1ICwgbTc0NCAsIHM0MTEzICwgbDI=
+X-mid: dHpvcHBpQGljbG91ZC5jb20gLCBjNDc1ICwgbTc0NCAsIHM0MTEz
+X-MANTSH: 1TFkXGxsRCllEF2xcb09lRF5YS39cEQpZTRdkRURPEQpZSRcacRoQGncGBxNxGBo
+ QGB93BhgaBhoRClleF2xseREKQ04XYBleGVtpQRhBYWMfcGhAQVBjGh1/b0tJeBh8aWJ9axwRC
+ lhcFxkEGgQfEgUbGgQbHBgEGRoEGBIQGx4aHxoRCl5ZF0J4emVdEQpNXBceHx0RCkxaF2loYl1
+ NXREKTEYXY01rEQpDWhcbExgEExgEEx0EGBgcEQpCXhcbEQpCRhd6Q155Q0dwaAVwehEKQkcXZ
+ nJnaF98bU96TE4RCkJcFxsRCl5OFxsRCkJLF2FDQnoTfUYdYURBEQpCSRdhQ0J6E31GHWFEQRE
+ KQkUXZE1TfG9/XXMbZW4RCkJOF2FDQnoTfUYdYURBEQpCTBdjTGFJHm1MWExAXxEKQmwXYEQee
+ 298HntfTR4RCkJAF2NSZ3IbE3lHWXobEQpCWBdgTRloRxNsb0YdSREKWlgXEhEKcGcXbRp7QB1
+ MRWNZeU0QGhEKcGgXYGZ8eVNnH3B9QmsQHhEKcGgXYAVQYhkceWBdR2IQHQQSEQpwaBdhHFBpG
+ BlCExp/fhAdBB8RCnBoF2BofXhybW1ye3N6EBsZEQpwaBdnRGkYZH5FSBlHbxAYGxEKcGgXZWt
+ hBWYccG5vXl4QGhEKcGgXbX17eBh+bGxgXVIQGxkRCnBoF29nBWEBaH1BG3pMEBoRCnB/F20bT
+ FgZXRNde11eEAccHREKcF8XY0N5W0ZuU01kSEAQGhEKcH0XZE1och8BThhaeVoQGhEKcGwXbkQ
+ bHnBTUnBbHBkQGhEKbX4XGhEKWE0XSxE=
+X-Proofpoint-ORIG-GUID: J3t3qCk2kKI5ZBjkzI07UEacR2VCHWA6
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNTIxMDE4NiBTYWx0ZWRfX5+E6zT5Zd2FR
+ XCJ9DcWi8yhiP27Fmom8b1IX1OL3qPdhpDC5YFhdH0MfGoj8RN4YLWiPN05zrmQrLax2XAh5kol
+ bbROWBpW7TlR6TgtW3wBPNnwkrRI0t2713v2hmxEZ/JJxaLXn/eQpEytOYDxxgU1bnTvpMH0Ok4
+ yr3s1/aAMmbXWZm1lwnVg+9lG/IO621u/DXajm/WtKQBk5QKQULtGBTZ6oc30c8wa8ZSAwjL+nD
+ D3kL4BvPsLmEiKa0i97K501cVQUfkYui9zfIGdertOml14uuvcG7n5xx/do8uavTEOO86cAiMXl
+ xYOMUAmpMZjSMaADwP5AngHAnD0AkIC0AfUi25JddsrVvaieXvRkwGg/gHBpoqNj0ePtulN06lv
+ sStJ4nSacmRhEBIv67+psS/MNNO9xnEgJbKimcV1P73Zdgf+y3GIjR1ot5GSQ35OunYyxQ6V
+X-Authority-Info: v=2.4 cv=ct+WUl4i c=1 sm=1 tr=0 ts=6a0f4f15 b=1
+ cx=c_apl:c_pps a=0N2LxC1HBsJSEzgKld54Rg==:117 a=0N2LxC1HBsJSEzgKld54Rg==:17
+ a=NGcC8JguVDcA:10 a=8m3jt7JJx10A:10 a=B0bUFRUmHNEA:10 a=G3N0J61AEGgA:10
+ a=lymaMkSsAAAA:8 a=v3ZZPjhaAAAA:8 a=vw4qQOV-ozeSj2hlv9YA:9 a=QEXdDO2ut3YA:10
+ a=WBXVALAIAAAA:8 a=RLK05D_FZJH7LvwHFLEA:9 a=2_MAYMRtPwHZmYLr:21
+ a=_W_S_7VecoQA:10 a=sJ4V-eEOM1furjnXJLQZ:22 a=MZb8HUUNSXywYDn6Qzur:22 cc=ntf
+X-Proofpoint-GUID: J3t3qCk2kKI5ZBjkzI07UEacR2VCHWA6
+X-JNJ: AAAAAAABPwQibwh7AzS10/nK/fAkGVsyXksCEn00cBqQMpD7asoYgwto/TZwbZeLXxaP9RGcLoNCRPro+u/HysLzbdPqbSYgnnU413rPJFR02M0r4YbhAbwqCRSQJM7eUo2ahg7FIKPBQF2P0WnH6WtosHV+sRVndoWH4YxEbmtbqzGBt0ZLnYkQ5emIxQ8CEOD4GeqVIDjtjRwqAyLz9yDkBKDQvs/0SVVtrg33U19wHefxQ5Wx+2cwfwKTAshJVjUcCeq0BLcDPRDtPmurh9UJ4LexP+jTmRf0/pIwaZcohSEkGBHddwIHyzZFKn1uOfeve/MgRbSjTSAdiTB9NSwptnO3eqsVD0CMXYV7ABidpPibR4P3nIMHHCIcSv3ameqHlskAGlc4F/ys58CWABv/aV7o1HgOY/gwP3+JMdoTS4q65HoQqlAV/GAEB9/3MJ8BwPM8+nEBQQSyLSDambjtG89tF/hDb/GWIan7exuZkX+RbLVlDyjqtkf7JzqmOcAvqTqwqtGUs6IhUpaOKDStC4kjpP73wOQsUJ3ZRrKkoJZ5gTX8r7dDCFw6gRPuY9aBnaOOnlRaKNvdQw7uzlNSBPwn/RjbtwDN6VLQ+d6kzGETbsrYmPFGAph+T7dWt6N6Ccrjz+ktDWBfsrVx9P3Ow0cmQ02NRpB60fykeFkkMe0RwIlTzmHDz7FLeHPQIr0EoYzzkH6U7F5pxV79MJaFUp2l1XuyVIF+uo+ECEr+7xXn7XhfhpK2KZjfrBiGElxSAI7EetwB4YRn0zeC9RQZLmY+1+qxwTf83ORSkPAyXumw21v95ONEYPNxQSrrBBPO29+2CZo747MT9F84RVGl3l/qR2qeoYwTQCizpU6StGDuDC3ygNPvj/RFYk3y2cGeTej5spuLo+nvCyPaCFqnyzQCfwGKBn2eOHc3SAktiz2MskfnM0NK2BAg32hUeiIzRuXWbNUJ9AE0yKjGgU0KGey1LUNSzD3zgK8=
+
+------=_Part_5754702_305756606.1779388174382
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+Finding the ideal setup, stock, and entry point is a major obsession for mo=
+st traders.=20
+
+Their eyes become blurry as they analyse chart patterns.=20
+
+In Discord rooms, they pursue hot tips.=20
+
+They persuade themselves that everything will make sense if they can just l=
+ocate that one magical clue.
+
+They're searching in the incorrect area.
+
+Finding superior setups isn't what separates traders who thrive from those =
+who fail.=20
+
+It's about realising something much more basic: the only thing that really =
+counts in day trading is risk management.=20
+
+Everything else collapses if your risk is incorrect.=20
+
+Even if your direction is correct, you can still lose money.
+
+You can have the best technical analysis skills in the world and still wash=
+ out of trading within six months.
+
+Professional traders lose all the time.=20
+
+The difference?=20
+
+Their losses are small enough that they don't matter.
+
+The harsh truth about day trading is that your skill level takes time to gr=
+ow and your capital is your lifeline.=20
+
+You are in a race against time when you first start trading.=20
+
+As you make mistakes and incur losses, your capital decreases from its init=
+ial high.=20
+
+In the meantime, as you collect experience, your skill level gradually rise=
+s.=20
+
+The vital junction point where competence surpasses capital depletion is ne=
+ver reached by the majority of traders.=20
+
+While their skills are still developing, they lose money too quickly.=20
+
+They never get to that pivotal point where things start to make sense and a=
+ctual progress starts.
+
+The culprit?=20
+
+Poor risk management.
+
+According to research from the Securities and Exchange Commission, the vast=
+ majority of retail day traders lose money, with studies showing failure ra=
+tes exceeding 90%.=20
+
+The primary cause isn't a lack of intelligence or poor strategy -- it's the=
+ systematic failure to manage risk properly.
+
+Enter any trading chat group and observe what transpires when a stock begin=
+s to move.=20
+
+When traders become enthusiastic, they scale up.=20
+
+When they are upset over a past defeat, they enlarge their positions.=20
+
+When FOMO takes over, they go all out.
+
+Risk management isn't that.=20
+
+That's speculation.
+
+The size of professional traders is determined by structure rather than emo=
+tion.=20
+
+You obtain random results when you use random position sizes.=20
+
+Structured sizing produces predictable, probability-based results that you =
+can rely on - on a weekly or monthly basis.
+
+The easy test: you're trading too much if one trade has the potential to ne=
+gatively impact your day, either financially or emotionally.=20
+
+I tell myself that if I'm willing to skip my nephew's soccer game on a rand=
+om Tuesday because I lost too much money, I've taken on too much risk.=20
+
+When trading starts interfering with basic life responsibilities, your posi=
+tion sizing has gone off the rails.
+
+On any given trade, professional traders usually risk between 0.5% and 1% o=
+f their account.=20
+
+Not ten percent.=20
+
+Not "all in on this setup I love."=20
+
+Don't put all of your money on Tesla just because you feel good about it.
+
+The game of trading is long.
+
+To fully utilise your advantage, hundreds of trades are required.=20
+
+You can survive long enough to develop into the trader you can be if you ta=
+ke a small risk.
+
+Because the maths is easy, I like the 1% risk guideline.=20
+
+Your worst-case scenario is losing 4% of your account if all four of the po=
+sitions in your portfolio are risked at 1%.=20
+
+That is manageable.
+
+A 3=E2=80=934% drawdown can be swiftly recovered from.
+
+But lose 30-40% of your account, and you're looking at months of grinding j=
+ust to get back to breakeven.
+
+This is consistent with decades of study on risk management.=20
+
+Professional money managers in all asset classes often restrict single-posi=
+tion risk to 1-2% of total capital, with institutional traders frequently g=
+oing even lower, according to Risk Management Association recommendations.
+
+The maths is harsh.=20
+
+To recover from a 50% loss, a 100% gain is needed.=20
+
+The climb back is tougher the deeper the decline.=20
+
+Little setbacks don't affect you, don't shock you, and won't make you behav=
+e differently.=20
+
+They enable you to maintain composure, consistency, and objectivity=E2=80=
+=94the real advantage in trading.
+
+Although it may seem paradoxical, you will eventually make more money if yo=
+u reduce the size of your stake.=20
+
+A magical thing occurs when you deal tiny.=20
+
+You look away from your P&L.=20
+
+Every tick, you stop perspiring.=20
+
+Instead of panicking and selling at the first indication of problems, you c=
+an actually hold trades through typical swings and capture the entire move.=
+=20
+
+Big position sizes create emotional chaos.=20
+
+When you're all-in on a trade, you hesitate.=20
+
+You move your stops.=20
+
+You revenge trade after a loss.=20
+
+You forget your entire trading plan and pre-trade checklist and start makin=
+g decisions based on fear and greed instead of price action.
+
+When your position size is appropriate, you tend to follow your plan.
+
+You stay calm.
+
+You execute cleanly.
+
+You're able to hold winners through the inevitable ups and downs because yo=
+u're not having a panic attack over every five-cent move against you.
+
+Position sizing isn't complicated.=20
+
+You need three numbers: your account size, your desired risk amount, and yo=
+ur stop distance.
+
+Here's a simple cheat sheet.=20
+
+Let's say you have a $10,000 account and want to risk $100 per trade (1%):
+
+10-cent stop =3D 1,000 shares
+
+20-cent stop =3D 500 shares
+
+50-cent stop =3D 200 shares
+
+$1 stop =3D 100 shares
+
+Create your own cheat sheet based on your account size.=20
+
+When you have this memorized, it takes the thinking out of position sizing.=
+=20
+
+Even in the heat of battle, you can quickly calculate the proper share coun=
+t for your risk tolerance.
+
+Consistency compounds.=20
+
+Big swings destroy -- both your capital and your psychology.
+
+If you lose 25% of your account, you need to make 33% just to get back to b=
+reakeven.=20
+
+Lose 50%?=20
+
+Now you need a 100% return.=20
+
+The math doesn't work in your favor when you allow large drawdowns.
+
+You don't need massive winners every day.=20
+
+You need to position yourself to occasionally find that massive winner whil=
+e taking consistent base hits, doubles, and occasional triples in the meant=
+ime.=20
+
+That's when the equity curve starts to compound upward in a sustainable way=
+.
+
+The traders who spike their accounts 50% one month and then crash 60% the n=
+ext month never build lasting wealth.=20
+
+They're on a perpetual cycle of building up and blowing out.=20
+
+Meanwhile, the trader grinding out 2-3% monthly gains with low volatility i=
+s building generational wealth.
+
+According to research from the Journal of Finance, volatility in returns is=
+ one of the strongest predictors of long-term trader failure.=20
+
+Smooth, consistent returns dramatically outperform lumpy, volatile returns =
+over any reasonable timeframe.
+
+We're not here to trade for pennies forever.=20
+
+At some point, you want to get into the big game.=20
+
+But you have to earn that right through consistency.
+
+Think about it this way: Month one, you're doing good.=20
+
+Month two, a little better.=20
+
+Month three, you're proving yourself.=20
+
+As you demonstrate consistency, two things happen naturally.=20
+
+First, your account grows, so your 1% risk represents more dollars.=20
+
+A 1% risk on a $50,000 account is $500 -- much different than 1% of $10,000=
+.
+
+Second, you start to identify your highest-probability setups through track=
+ing, journaling, and scanning for the most explosive stocks.=20
+
+This is where tools like the BOWS trade journal become invaluable.=20
+
+When you have documented proof that a specific setup like the first pullbac=
+k strategy wins 70-80% of the time with excellent risk-reward ratios, you c=
+an justify increasing risk on that particular pattern.
+
+But this is crucial: you only increase size on setups that appear rarely.=
+=20
+
+If a high-probability setup shows up once a month, that's when you might ri=
+sk 3-4% instead of your standard 1%.=20
+
+You're not increasing size on your everyday trades -- you're making calcula=
+ted decisions to go bigger when true edge appears.
+
+Everything about trading improves when risk management is done correctly.=
+=20
+
+Because you're not experiencing miniature heart attacks over every trade, y=
+our emotions become more stable.=20
+
+Because you can carry out your plan without being hampered by fear or greed=
+, your consistency increases.=20
+
+Knowing that you can endure any typical losing streak boosts your confidenc=
+e.
+
+Everyone wants to earn money quickly.=20
+
+We wish to swiftly recover previous losses.=20
+
+We want to hit our goals in weeks instead of months.=20
+
+So we size up too big too quickly and go for gold.
+
+However, the slow and steady road is actually the quickest way to achieve y=
+our objectives.=20
+
+Avoiding significant drawdowns helps you avoid the months of hard work need=
+ed to recover from them.
+
+Small, consistent gains compound faster than volatile swings.
+
+If you get risk management right, everything else in trading becomes easier=
+.=20
+
+Not easy -- trading will never be easy.
+
+But easier.=20
+
+More manageable.=20
+
+More sustainable.
+
+The choice is yours: fast and reckless, or slow and steady.=20
+
+One path leads to an endless cycle of building up and blowing out.=20
+
+The other leads to a legitimate trading career.
+
+Professional traders survive their losing streaks.=20
+
+Amateur traders don't.=20
+
+The only difference is risk management.
+
+Awais
+_________________
+
+Sent to: tzoppi@icloud.com
+
+Unsubscribe:
+http://azpenn.activehosted.com/proc.php?c=3D475&m=3D744&s=3Dfdb8c94336ff334=
+b64f60b53d0779399&d=3D4113&v=3D2&nl=3D2&act=3Dunsub
+
+AZ Penn, 223 Warren Road, Birmingham, B8 2YG, United Kingdom
+------=_Part_5754702_305756606.1779388174382
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE html><html>
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dutf-8">
+<meta http-equiv=3D"Content-Language" content=3D"en-us">
+<meta name=3D"format-detection" content=3D"telephone=3Dno">
+<meta name=3D"format-detection" content=3D"date=3Dno">
+<meta name=3D"format-detection" content=3D"address=3Dno">
+<meta name=3D"format-detection" content=3D"email=3Dno">
+<meta name=3D"viewport" content=3D"width=3Ddevice-width, minimal-ui, initia=
+l-scale=3D1.0, maximum-scale=3D1.0, user-scalable=3D0;">
+<meta http-equiv=3D"X-UA-Compatible" content=3D"IE=3Dedge">
+<title></title>
+<style data-ac-keep=3D"true"> .ExternalClass { width: 100%; background: inh=
+erit; background-color: inherit; } .ExternalClass, .ExternalClass p, .Exter=
+nalClass span, .ExternalClass font, .ExternalClass td, .ExternalClass div {=
+ line-height: 100%; } .ExternalClass p, .ExternalClass ul, .ExternalClass o=
+l { Margin: 0; } .undoreset div p, .undoreset p { margin-bottom: 20px; } di=
+v[class^=3D"aolmail_divbody"] { overflow: auto; } [owa] #ac-footer { paddin=
+g: 20px 0px !important; background: inherit; background-color: inherit; } a=
+[x-apple-data-detectors] { color: inherit !important; text-decoration: none=
+ !important; font-size: inherit !important; font-family: inherit !important=
+; font-weight: inherit !important; line-height: inherit !important; } @-ms-=
+viewport { width: device-width; } </style>
+<style data-ac-keep=3D"true">
+@media only screen and (max-width: 600px) { /*-----------------------------=
+--------------------------------------------*\ Abandoned Cart widget \*----=
+--------------------------------------------------------------------*/ .td_=
+abandoned-cart img {display: block;padding-right: 0 !important;padding-bott=
+om: 0 !important;width: 100% !important;max-width: 100% !important;height: =
+auto !important;} body { padding: 0!important; font-size:1em!important; } *=
+ { -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing:=
+ border-box; } *[class].divbody {-webkit-text-size-adjust:none !important;}=
+ *[class].td_picture img {width:auto !important;} *[class].td_text { line-h=
+eight: 110%; } *[class].td_button { width: auto; } /* Collapse all block el=
+ements */ :not(.body) table { display: block!important; float:none!importan=
+t; border-collapse:collapse !important; width:100% !important; min-width:10=
+0% !important; clear:both!important; } :not(.body) thead, :not(.body) tbody=
+, :not(.body) tr { display:block!important; float:none!important; width:100=
+% !important; } :not(.body) th, :not(.body) td, :not(.body) p { display:blo=
+ck!important; float:none!important; width:100% !important; clear:both!impor=
+tant; } /* Remove browser default styling for elements */ ul, ol { margin-l=
+eft: 20px; margin-bottom: 10px; margin-top: 10px; -webkit-margin-before: 0;=
+ -webkit-margin-after: 0; -webkit-padding-start: 0; } /* Set default height=
+ for spacer once collapse */ *[class].spacer { height: auto!important; } a[=
+href^=3Ddate]{ color:inherit !important; text-decoration:none !important;} =
+a[href^=3Dtelephone]{ color:inherit !important; text-decoration:none !impor=
+tant;} a[href^=3Daddress]{ color:inherit !important; text-decoration:none !=
+important;} a[href^=3Demail]{ color:inherit !important; text-decoration:non=
+e !important;} /* Default table cell height */ td[height=3D"12"]{height:12p=
+x!important;font-size:12px!important;line-height:12px!important;} /*-------=
+------------------------------------------------------------------*\ Produc=
+t Widget \*----------------------------------------------------------------=
+---------*/ .td_product div, .td_product .products-display { float: none !i=
+mportant; display: block !important; width: 100% !important; Margin-bottom:=
+ 20px !important; } .td_product img { width: 100% !important; max-width: 10=
+0% !important; } /* Default social icons */ *[class].ac-social-icon-16 {wid=
+th:16px !important; height:16px !important;} *[class].ac-social-icon-24 {wi=
+dth:24px !important; height:24px !important;} *[class].ac-social-icon-28 {w=
+idth:28px !important; height:28px !important;} *[class].__ac_social_icons {=
+ margin-right: 0px !important; } }
+</style>
+<style data-ac-keep=3D"true"> @media only screen and (max-width: 320px) { d=
+iv.divbody { padding: 20px !important; } table, tbody, td, .divbody { displ=
+ay: table !important; width: 100% !important; max-width: 100% !important; }=
+ .td_rss .rss-item img.iphone_large_image { width: auto !important; } u + .=
+body { display: table !important; width: 100vw !important; min-width: 100vw=
+ !important; } u + .body table { display: table !important; width: 100% !im=
+portant; min-width: 100% !important; } u + .body td { display: block !impor=
+tant; width: 100% !important; min-width: 100% !important; } u + .body img {=
+ display: inline-block !important; margin: auto !important; width: auto !im=
+portant; vertical-align: bottom !important; } u + .body center { display: b=
+lock !important; margin: auto !important; width: 100% !important; min-width=
+: 100% !important; text-align: center !important; } u + .body table._ac_soc=
+ial_table, u + .body table._ac_social_table td, u + .body table._ac_social_=
+table div, u + .body table._ac_social_table a { display: inline-block !impo=
+rtant; margin: auto !important; width: auto !important; min-width: auto !im=
+portant; text-align: center !important; } u + .body table._ac_social_table =
+img { display: inline-block !important; margin: auto !important; width: 32p=
+x !important; min-width: 32px !important; max-width: 32px !important; }
+}
+@media only screen and (max-width: 375px) { div.divbody { padding: 20px !im=
+portant; } table, tbody, td, .divbody { display: table !important; width: 1=
+00% !important; max-width: 100% !important; } .td_rss .rss-item img.iphone_=
+large_image { width: auto !important; } u + .body { display: table !importa=
+nt; width: 100vw !important; min-width: 100vw !important; } u + .body table=
+ { display: table !important; width: 100% !important; min-width: 100% !impo=
+rtant; } u + .body td { display: block !important; width: 100% !important; =
+min-width: 100% !important; } u + .body img { display: inline-block !import=
+ant; margin: auto !important; width: auto !important; vertical-align: botto=
+m !important; } u + .body center { display: block !important; margin: auto =
+!important; width: 100% !important; min-width: 100% !important; text-align:=
+ center !important; } u + .body table._ac_social_table, u + .body table._ac=
+_social_table td, u + .body table._ac_social_table div, u + .body table._ac=
+_social_table a { display: inline-block !important; margin: auto !important=
+; width: auto !important; min-width: auto !important; text-align: center !i=
+mportant; } u + .body table._ac_social_table img { display: inline-block !i=
+mportant; margin: auto !important; width: 32px !important; min-width: 32px =
+!important; max-width: 32px !important; }
+}
+@media only screen and (max-width: 414px) { div.divbody { padding: 20px !im=
+portant; } table, tbody, td, .divbody { display: table !important; width: 1=
+00% !important; max-width: 100% !important; } .td_rss .rss-item img.iphone_=
+large_image { width: auto !important; } u + .body { display: table !importa=
+nt; width: 100vw !important; min-width: 100vw !important; } u + .body table=
+ { display: table !important; width: 100% !important; min-width: 100% !impo=
+rtant; } u + .body td { display: block !important; width: 100% !important; =
+min-width: 100% !important; } u + .body img { display: inline-block !import=
+ant; margin: auto !important; width: auto !important; vertical-align: botto=
+m !important; } u + .body center { display: block !important; margin: auto =
+!important; width: 100% !important; min-width: 100% !important; text-align:=
+ center !important; } u + .body table._ac_social_table, u + .body table._ac=
+_social_table td, u + .body table._ac_social_table div, u + .body table._ac=
+_social_table a { display: inline-block !important; margin: auto !important=
+; width: auto !important; min-width: auto !important; text-align: center !i=
+mportant; } u + .body table._ac_social_table img { display: inline-block !i=
+mportant; margin: auto !important; width: 32px !important; min-width: 32px =
+!important; max-width: 32px !important; }
+}
+@media only screen and (max-width: 667px) { div.divbody { padding: 20px !im=
+portant; } table, tbody, td, .divbody { display: table !important; width: 1=
+00% !important; max-width: 100% !important; } .td_rss .rss-item img.iphone_=
+large_image { width: auto !important; } u + .body { display: table !importa=
+nt; width: 100vw !important; min-width: 100vw !important; } u + .body table=
+ { display: table !important; width: 100% !important; min-width: 100% !impo=
+rtant; } u + .body td { display: block !important; width: 100% !important; =
+min-width: 100% !important; } u + .body img { display: inline-block !import=
+ant; margin: auto !important; width: auto !important; vertical-align: botto=
+m !important; } u + .body center { display: block !important; margin: auto =
+!important; width: 100% !important; min-width: 100% !important; text-align:=
+ center !important; } u + .body table._ac_social_table, u + .body table._ac=
+_social_table td, u + .body table._ac_social_table div, u + .body table._ac=
+_social_table a { display: inline-block !important; margin: auto !important=
+; width: auto !important; min-width: auto !important; text-align: center !i=
+mportant; } u + .body table._ac_social_table img { display: inline-block !i=
+mportant; margin: auto !important; width: 32px !important; min-width: 32px =
+!important; max-width: 32px !important; }
+} </style><!--[if !mso]><!-- webfonts --> <!--<![endif]--> <!--[if lt mso 1=
+2]> <![endif]--> <!--[if gte mso 9]>
+<xml> <o:OfficeDocumentSettings> <o:AllowPNG/> <o:PixelsPerInch>96</o:Pixel=
+sPerInch> </o:OfficeDocumentSettings>
+</xml>
+<![endif]-->
+</head>
+<body id=3D"ac-designer" class=3D"body" style=3D"font-family: Arial; line-h=
+eight: 1.1; margin: 0px; background-color: #FFFFFF; width: 100%; text-align=
+: center;">
+<div class=3D"divbody" style=3D"margin: 0px; outline: none; padding: 0px; c=
+olor: #000000; font-family: arial; line-height: 1.1; width: 100%; backgroun=
+d-color: #FFFFFF; background: #FFFFFF; text-align: center;">
+<table class=3D"template-table" border=3D"0" cellpadding=3D"0" cellspacing=
+=3D"0" width=3D"100%" align=3D"left" style=3D"-ms-text-size-adjust: auto; -=
+webkit-text-size-adjust: 100%; border-collapse: collapse; font-size: 14px; =
+min-width: auto; mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-c=
+olor: #FFFFFF; background: #FFFFFF;">
+<tr style=3D"mso-line-height-rule: exactly;">
+<td align=3D"center" valign=3D"top" width=3D"100%" style=3D"mso-line-height=
+-rule: exactly;">
+<table class=3D"template-table" border=3D"0" cellpadding=3D"0" cellspacing=
+=3D"0" width=3D"650" bgcolor=3D"#FFFFFF" style=3D"-ms-text-size-adjust: aut=
+o; -webkit-text-size-adjust: 100%; border-collapse: collapse; font-size: 14=
+px; min-width: auto; mso-table-lspace: 0pt; mso-table-rspace: 0pt; max-widt=
+h: 650px;">
+<tr style=3D"mso-line-height-rule: exactly;">
+<td id=3D"layout_table_36dc5edf019f1bd52bb30050314ffce6596c8878" valign=3D"=
+top" align=3D"center" width=3D"650" style=3D"mso-line-height-rule: exactly;=
+">
+<table cellpadding=3D"0" cellspacing=3D"0" border=3D"0" class=3D"layout lay=
+out-table root-table" width=3D"650" style=3D"-ms-text-size-adjust: auto; -w=
+ebkit-text-size-adjust: 100%; border-collapse: collapse; font-size: 14px; m=
+in-width: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+<tr style=3D"mso-line-height-rule: exactly;">
+<td id=3D"layout-row-margin1488" valign=3D"top" style=3D"mso-line-height-ru=
+le: exactly;">
+<table width=3D"100%" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" styl=
+e=3D"-ms-text-size-adjust: auto; -webkit-text-size-adjust: 100%; border-col=
+lapse: collapse; font-size: 14px; min-width: 100%; mso-table-lspace: 0pt; m=
+so-table-rspace: 0pt;">
+<tr id=3D"layout-row1488" class=3D"layout layout-row widget _widget_text " =
+style=3D"mso-line-height-rule: exactly; margin: 0; padding: 0;">
+<td id=3D"layout-row-padding1488" valign=3D"top" style=3D"mso-line-height-r=
+ule: exactly;">
+<table width=3D"100%" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" styl=
+e=3D"-ms-text-size-adjust: auto; -webkit-text-size-adjust: 100%; border-col=
+lapse: collapse; font-size: 14px; min-width: 100%; mso-table-lspace: 0pt; m=
+so-table-rspace: 0pt;">
+<tr style=3D"mso-line-height-rule: exactly;">
+<td id=3D"text_div1488" class=3D"td_text td_block" valign=3D"top" align=3D"=
+left" width=3D"650" style=3D"line-height: 140%; mso-line-height-rule: exact=
+ly; margin: 0; outline: none; padding: 0; color: inherit; font-size: 12px; =
+font-weight: inherit; line-height: 1.4; text-decoration: inherit; font-fami=
+ly: arial;">
+<div style=3D"line-height: 140%; margin: 0; outline: none; padding: 0; colo=
+r: inherit; font-size: 12px; font-weight: inherit; line-height: 1.4; text-d=
+ecoration: inherit; mso-line-height-rule: exactly;" data-line-height=3D"1.4=
+">
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: inherit; font-weight: inherit; line-height: inherit; text-decoration: i=
+nherit;">
+<p style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-size=
+: inherit; font-weight: inherit; line-height: inherit; text-decoration: inh=
+erit;"></p>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Finding the ideal setup, stock, and entry point is a major obsession for mo=
+st traders.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Their eyes become blurry as they analyse chart patterns.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+In Discord rooms, they pursue hot tips.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+They persuade themselves that everything will make sense if they can just l=
+ocate that one magical clue.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+They're searching in the incorrect area.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Finding superior setups isn't what separates traders who thrive from those =
+who fail.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+It's about realising something much more basic: the only thing that really =
+counts in day trading is risk management.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Everything else collapses if your risk is incorrect.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Even if your direction is correct, you can still lose money.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+You can have the best technical analysis skills in the world and still wash=
+ out of trading within six months.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Professional traders lose all the time.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+The difference?
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Their losses are small enough that they don't matter.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+The harsh truth about day trading is that your skill level takes time to gr=
+ow and your capital is your lifeline.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+You are in a race against time when you first start trading.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+As you make mistakes and incur losses, your capital decreases from its init=
+ial high.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+In the meantime, as you collect experience, your skill level gradually rise=
+s.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+The vital junction point where competence surpasses capital depletion is ne=
+ver reached by the majority of traders.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+While their skills are still developing, they lose money too quickly.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+They never get to that pivotal point where things start to make sense and a=
+ctual progress starts.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+The culprit?
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Poor risk management.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+According to research from the Securities and Exchange Commission, the vast=
+ majority of retail day traders lose money, with studies showing failure ra=
+tes exceeding 90%.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+The primary cause isn't a lack of intelligence or poor strategy -- it's the=
+ systematic failure to manage risk properly.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Enter any trading chat group and observe what transpires when a stock begin=
+s to move.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+When traders become enthusiastic, they scale up.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+When they are upset over a past defeat, they enlarge their positions.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+When FOMO takes over, they go all out.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Risk management isn't that.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+That's speculation.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+The size of professional traders is determined by structure rather than emo=
+tion.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+You obtain random results when you use random position sizes.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Structured sizing produces predictable, probability-based results that you =
+can rely on - on a weekly or monthly basis.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+The easy test: you're trading too much if one trade has the potential to ne=
+gatively impact your day, either financially or emotionally.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+I tell myself that if I'm willing to skip my nephew's soccer game on a rand=
+om Tuesday because I lost too much money, I've taken on too much risk.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+When trading starts interfering with basic life responsibilities, your posi=
+tion sizing has gone off the rails.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+On any given trade, professional traders usually risk between 0.5% and 1% o=
+f their account.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Not ten percent.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Not "all in on this setup I love."
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Don't put all of your money on Tesla just because you feel good about it.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+The game of trading is long.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+To fully utilise your advantage, hundreds of trades are required.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+You can survive long enough to develop into the trader you can be if you ta=
+ke a small risk.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Because the maths is easy, I like the 1% risk guideline.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Your worst-case scenario is losing 4% of your account if all four of the po=
+sitions in your portfolio are risked at 1%.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+That is manageable.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+A 3=E2=80=934% drawdown can be swiftly recovered from.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+But lose 30-40% of your account, and you're looking at months of grinding j=
+ust to get back to breakeven.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+This is consistent with decades of study on risk management.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Professional money managers in all asset classes often restrict single-posi=
+tion risk to 1-2% of total capital, with institutional traders frequently g=
+oing even lower, according to Risk Management Association recommendations.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+The maths is harsh.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+To recover from a 50% loss, a 100% gain is needed.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+The climb back is tougher the deeper the decline.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Little setbacks don't affect you, don't shock you, and won't make you behav=
+e differently.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+They enable you to maintain composure, consistency, and objectivity=E2=80=
+=94the real advantage in trading.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Although it may seem paradoxical, you will eventually make more money if yo=
+u reduce the size of your stake.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+A magical thing occurs when you deal tiny.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+You look away from your P&amp;L.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Every tick, you stop perspiring.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Instead of panicking and selling at the first indication of problems, you c=
+an actually hold trades through typical swings and capture the entire move.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Big position sizes create emotional chaos.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+When you're all-in on a trade, you hesitate.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+You move your stops.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+You revenge trade after a loss.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+You forget your entire trading plan and pre-trade checklist and start makin=
+g decisions based on fear and greed instead of price action.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br>
+When your position size is appropriate, you tend to follow your plan.<br><b=
+r>
+You stay calm.<br><br>
+You execute cleanly.<br><br>
+You're able to hold winners through the inevitable ups and downs because yo=
+u're not having a panic attack over every five-cent move against you.<br><b=
+r></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Position sizing isn't complicated.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+You need three numbers: your account size, your desired risk amount, and yo=
+ur stop distance.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Here's a simple cheat sheet.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Let's say you have a $10,000 account and want to risk $100 per trade (1%):
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+10-cent stop =3D 1,000 shares
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+20-cent stop =3D 500 shares
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+50-cent stop =3D 200 shares
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+$1 stop =3D 100 shares
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Create your own cheat sheet based on your account size.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+When you have this memorized, it takes the thinking out of position sizing.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Even in the heat of battle, you can quickly calculate the proper share coun=
+t for your risk tolerance.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Consistency compounds.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Big swings destroy -- both your capital and your psychology.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+If you lose 25% of your account, you need to make 33% just to get back to b=
+reakeven.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Lose 50%?
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Now you need a 100% return.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+The math doesn't work in your favor when you allow large drawdowns.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+You don't need massive winners every day.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+You need to position yourself to occasionally find that massive winner whil=
+e taking consistent base hits, doubles, and occasional triples in the meant=
+ime.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+That's when the equity curve starts to compound upward in a sustainable way=
+.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+The traders who spike their accounts 50% one month and then crash 60% the n=
+ext month never build lasting wealth.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+They're on a perpetual cycle of building up and blowing out.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Meanwhile, the trader grinding out 2-3% monthly gains with low volatility i=
+s building generational wealth.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+According to research from the Journal of Finance, volatility in returns is=
+ one of the strongest predictors of long-term trader failure.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Smooth, consistent returns dramatically outperform lumpy, volatile returns =
+over any reasonable timeframe.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+We're not here to trade for pennies forever.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+At some point, you want to get into the big game.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+But you have to earn that right through consistency.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Think about it this way: Month one, you're doing good.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Month two, a little better.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Month three, you're proving yourself.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+As you demonstrate consistency, two things happen naturally.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+First, your account grows, so your 1% risk represents more dollars.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+A 1% risk on a $50,000 account is $500 -- much different than 1% of $10,000=
+.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Second, you start to identify your highest-probability setups through track=
+ing, journaling, and scanning for the most explosive stocks.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+This is where tools like the BOWS trade journal become invaluable.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+When you have documented proof that a specific setup like the first pullbac=
+k strategy wins 70-80% of the time with excellent risk-reward ratios, you c=
+an justify increasing risk on that particular pattern.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+But this is crucial: you only increase size on setups that appear rarely.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+If a high-probability setup shows up once a month, that's when you might ri=
+sk 3-4% instead of your standard 1%.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+You're not increasing size on your everyday trades -- you're making calcula=
+ted decisions to go bigger when true edge appears.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Everything about trading improves when risk management is done correctly.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Because you're not experiencing miniature heart attacks over every trade, y=
+our emotions become more stable.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Because you can carry out your plan without being hampered by fear or greed=
+, your consistency increases.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Knowing that you can endure any typical losing streak boosts your confidenc=
+e.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Everyone wants to earn money quickly.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+We wish to swiftly recover previous losses.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+We want to hit our goals in weeks instead of months.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+So we size up too big too quickly and go for gold.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+However, the slow and steady road is actually the quickest way to achieve y=
+our objectives.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Avoiding significant drawdowns helps you avoid the months of hard work need=
+ed to recover from them.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Small, consistent gains compound faster than volatile swings.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+If you get risk management right, everything else in trading becomes easier=
+.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Not easy -- trading will never be easy.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+But easier.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+More manageable.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+More sustainable.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+The choice is yours: fast and reckless, or slow and steady.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+One path leads to an endless cycle of building up and blowing out.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+The other leads to a legitimate trading career.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Professional traders survive their losing streaks.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Amateur traders don't.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+The only difference is risk management.
+</div><span style=3D"color: inherit; font-size: 16px; font-weight: inherit;=
+ line-height: inherit; text-decoration: inherit;" class=3D""><br></span>
+<div style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-si=
+ze: 16px; font-weight: inherit; line-height: inherit; text-decoration: inhe=
+rit; text-align: justify;">
+Awais
+</div>
+<p style=3D"margin: 0; outline: none; padding: 0; color: inherit; font-size=
+: inherit; font-weight: inherit; line-height: inherit; text-decoration: inh=
+erit;"></p>
+</div>
+</div><!--[if (gte mso 12)&(lte mso 15) ]>
+<style data-ac-keep=3D"true" data-ac-inline=3D"false"> #text_div1488, #text=
+_div1488 div { line-height: 140% !important; };
+</style>
+<![endif]--></td>
+</tr>
+</table></td>
+</tr>
+</table></td>
+</tr>
+</table></td>
+</tr>
+</table></td>
+</tr>
+</table>
+</div>
+<br>
+<div id=3D"ac-footer" style=3D"clear:both;background-color:inherit;backgrou=
+nd:inherit;min-width:100%;mso-table-lspace:0pt;mso-table-rspace:0pt;padding=
+:20px;color:#000000;font-size:11px;font-family:arial,helvetica,sans-serif;l=
+ine-height:140%;line-height:1.4;text-align:center;box-sizing:border-box;">
+<center>
+Sent to:<span style=3D"font-size:11px;font-family:arial,helvetica,sans-seri=
+f;font-weight:normal;text-decoration:none;outline:none;">tzoppi@icloud.com<=
+/span>
+<br>
+<br><a href=3D"http://azpenn.activehosted.com/proc.php?c=3D475&m=3D744&s=3D=
+fdb8c94336ff334b64f60b53d0779399&d=3D4113&v=3D2&nl=3D2&act=3Dunsub" style=
+=3D"font-size:11px;font-family:arial,helvetica,sans-serif;font-weight:bold;=
+text-decoration:underline;"><span style=3D"font-weight:bold;text-decoration=
+:underline;">Unsubscribe</span></a>
+<br>
+<br>
+AZ Penn, 223 Warren Road, Birmingham, B8 2YG, United Kingdom
+</center>
+</div>
+<br>
+<img src=3D"https://azpenn.acemlna.com/lteo?x=3D5DZiznTKJuHch40v_A1Ngulv13-=
+mvgTxjMlhYXU7J3DL65.ty_HMWON03e3U__LvjuigkPIHa6_ZHsWJ.Q6BjyWf0q_fxUA0_uegm.=
+UCYaXXT8nszt9JwxGkAOMhkNTukMwzza8~knMMHaWtN_POVul" border=3D"0" width=3D"1"=
+ height=3D"1" style=3D"display:block;width:1px!important;min-width:1px!impo=
+rtant;max-width:1px!important;height:1px!important;border:0;overflow:hidden=
+;"/>
+</body>
+</html>
+------=_Part_5754702_305756606.1779388174382--

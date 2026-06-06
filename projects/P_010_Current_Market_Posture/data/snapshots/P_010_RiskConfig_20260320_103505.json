@@ -1,0 +1,17 @@
+{
+  "timestamp": "2026-03-20T10:30:52.614473",
+  "spy_posture": -7.034393,
+  "qqq_posture": -4.67099,
+  "avg_posture": -5.852692,
+  "risk_mode": "OFF",
+  "source": "Grid_XLSX",
+  "spy_grid_date": "03/19/2026",
+  "qqq_grid_date": "03/19/2026",
+  "vxx_posture": 1.327808,
+  "vxx_signal": "CAUTION",
+  "vxx_note": "VP predicts modest VXX rise -- watch for increased volatility",
+  "vxx_close": 33.7700004577637,
+  "vxx_pred_high": 36.5786209106445,
+  "vxx_pred_low": 32.844554901123,
+  "vxx_grid_date": "03/19/2026"
+}

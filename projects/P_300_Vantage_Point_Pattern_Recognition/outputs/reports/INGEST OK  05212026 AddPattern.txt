@@ -1,0 +1,210 @@
+INGEST OK  -- master=C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\models\052126catalog.db
+backup=C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\models\052126catalog.db.bak
+post_counts={'symbols': 27, 'source_files': 27, 'feature_sets': 1, 'pattern_instances': 27, 'pattern_bars': 540, 'pattern_features': 0, 'forward_labels': 135}
+
+=======================================================================
+ DONE  --  pattern ingested.
+
+
+INGEST OK  -- master=C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\models\052126catalog.db
+backup=C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\models\052126catalog.db.bak
+post_counts={'symbols': 28, 'source_files': 28, 'feature_sets': 1, 'pattern_instances': 28, 'pattern_bars': 560, 'pattern_features': 0, 'forward_labels': 140}
+
+=======================================================================
+ DONE  --  pattern ingested.
+=======================================================================
+
+INFO: Added to zip: 20260521_Pattern_20251216_20260106_BURL.xlsx
+INFO: Deleted from historical_patterns: Pattern_20251216_20260106_BURL.xlsx
+ARCHIVE OK  -- Pattern_20251216_20260106_BURL.xlsx
+  zip  : C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\data\processed\2026-05.zip
+  entry: 20260521_Pattern_20251216_20260106_BURL.xlsx
+  symbol: BURL
+
+=======================================================================
+ DONE  --  pattern ingested and archived.
+=======================================================================
+
+[ARCHIVE] Archiving pattern file...
+
+INFO: Added to zip: 20260521_Pattern_20260303_20260318_NET.xlsx
+INFO: Deleted from historical_patterns: Pattern_20260303_20260318_NET.xlsx
+ARCHIVE OK  -- Pattern_20260303_20260318_NET.xlsx
+  zip  : C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\data\processed\2026-05.zip
+  entry: 20260521_Pattern_20260303_20260318_NET.xlsx
+  symbol: NET
+
+=======================================================================
+ DONE  --  pattern ingested and archived.
+=======================================================================
+
+Press any key to continue . . .
+
+
+INFO: Added to zip: 20260521_Pattern_20260129_20260227_CCEP.xlsx
+INFO: Deleted from historical_patterns: Pattern_20260129_20260227_CCEP.xlsx
+ARCHIVE OK  -- Pattern_20260129_20260227_CCEP.xlsx
+  zip  : C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\data\processed\2026-05.zip
+  entry: 20260521_Pattern_20260129_20260227_CCEP.xlsx
+  symbol: CCEP
+
+=======================================================================
+ DONE  --  pattern ingested and archived.
+=======================================================================
+
+Press any key to continue . . 
+
+INFO: Added to zip: 20260521_Pattern_20260130_20260209_FHN.xlsx
+INFO: Deleted from historical_patterns: Pattern_20260130_20260209_FHN.xlsx
+ARCHIVE OK  -- Pattern_20260130_20260209_FHN.xlsx
+  zip  : C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\data\processed\2026-05.zip
+  entry: 20260521_Pattern_20260130_20260209_FHN.xlsx
+  symbol: FHN
+
+=======================================================================
+ DONE  --  pattern ingested and archived.
+=======================================================================
+
+Press any key to continue . . .
+
+ARCHIVE] Archiving pattern file...
+
+INFO: Added to zip: 20260521_Pattern_20251203_20260106_FIVE.xlsx
+INFO: Deleted from historical_patterns: Pattern_20251203_20260106_FIVE.xlsx
+ARCHIVE OK  -- Pattern_20251203_20260106_FIVE.xlsx
+  zip  : C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\data\processed\2026-05.zip
+  entry: 20260521_Pattern_20251203_20260106_FIVE.xlsx
+  symbol: FIVE
+
+=======================================================================
+ DONE  --  pattern ingested and archived.
+=======================================================================
+
+Press any key to continue . . .
+
+ARCHIVE] Archiving pattern file...
+
+INFO: Added to zip: 20260521_Pattern_20251106_20251126_GMED.xlsx
+INFO: Deleted from historical_patterns: Pattern_20251106_20251126_GMED.xlsx
+ARCHIVE OK  -- Pattern_20251106_20251126_GMED.xlsx
+  zip  : C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\data\processed\2026-05.zip
+  entry: 20260521_Pattern_20251106_20251126_GMED.xlsx
+  symbol: GMED
+
+=======================================================================
+ DONE  --  pattern ingested and archived.
+=======================================================================
+
+Press any key to continue . . .
+
+INFO: Added to zip: 20260521_Pattern_20251203_20251212_LNC.xlsx
+INFO: Deleted from historical_patterns: Pattern_20251203_20251212_LNC.xlsx
+ARCHIVE OK  -- Pattern_20251203_20251212_LNC.xlsx
+  zip  : C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\data\processed\2026-05.zip
+  entry: 20260521_Pattern_20251203_20251212_LNC.xlsx
+  symbol: LNC
+
+=======================================================================
+ DONE  --  pattern ingested and archived.
+=======================================================================
+
+Press any key to continue . . .
+[ARCHIVE] Archiving pattern file...
+
+INFO: Added to zip: 20260521_Pattern_20251023_20251104_PLTR.xlsx
+INFO: Deleted from historical_patterns: Pattern_20251023_20251104_PLTR.xlsx
+ARCHIVE OK  -- Pattern_20251023_20251104_PLTR.xlsx
+  zip  : C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\data\processed\2026-05.zip
+  entry: 20260521_Pattern_20251023_20251104_PLTR.xlsx
+  symbol: PLTR
+
+=======================================================================
+ DONE  --  pattern ingested and archived.
+=======================================================================
+
+Press any key to continue . . .
+
+
+[ARCHIVE] Archiving pattern file...
+
+INFO: Added to zip: 20260521_Pattern_20260115_20260206_PNC.xlsx
+INFO: Deleted from historical_patterns: Pattern_20260115_20260206_PNC.xlsx
+ARCHIVE OK  -- Pattern_20260115_20260206_PNC.xlsx
+  zip  : C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\data\processed\2026-05.zip
+  entry: 20260521_Pattern_20260115_20260206_PNC.xlsx
+  symbol: PNC
+
+=======================================================================
+ DONE  --  pattern ingested and archived.
+=======================================================================
+
+Press any key to continue . . .
+INFO: Added to zip: 20260521_Pattern_20260113_20260122_RMBS.xlsx
+INFO: Deleted from historical_patterns: Pattern_20260113_20260122_RMBS.xlsx
+ARCHIVE OK  -- Pattern_20260113_20260122_RMBS.xlsx
+  zip  : C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\data\processed\2026-05.zip
+  entry: 20260521_Pattern_20260113_20260122_RMBS.xlsx
+  symbol: RMBS
+
+=======================================================================
+ DONE  --  pattern ingested and archived.
+=======================================================================
+
+Press any key to continue . . .
+
+[ARCHIVE] Archiving pattern file...
+
+INFO: Added to zip: 20260521_Pattern_20260204_20260226_TPR.xlsx
+INFO: Deleted from historical_patterns: Pattern_20260204_20260226_TPR.xlsx
+ARCHIVE OK  -- Pattern_20260204_20260226_TPR.xlsx
+  zip  : C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\data\processed\2026-05.zip
+  entry: 20260521_Pattern_20260204_20260226_TPR.xlsx
+  symbol: TPR
+
+=======================================================================
+ DONE  --  pattern ingested and archived.
+=======================================================================
+
+Press any key to continue . . .
+
+INFO: Added to zip: 20260521_Pattern_20260206_20260225_TPL.xlsx
+INFO: Deleted from historical_patterns: Pattern_20260206_20260225_TPL.xlsx
+ARCHIVE OK  -- Pattern_20260206_20260225_TPL.xlsx
+  zip  : C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\data\processed\2026-05.zip
+  entry: 20260521_Pattern_20260206_20260225_TPL.xlsx
+  symbol: TPL
+
+=======================================================================
+ DONE  --  pattern ingested and archived.
+=======================================================================
+
+Press any key to continue . . .
+
+INFO: Added to zip: 20260521_Pattern_20251210_20251222_TM.xlsx
+INFO: Deleted from historical_patterns: Pattern_20251210_20251222_TM.xlsx
+ARCHIVE OK  -- Pattern_20251210_20251222_TM.xlsx
+  zip  : C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\data\processed\2026-05.zip
+  entry: 20260521_Pattern_20251210_20251222_TM.xlsx
+  symbol: TM
+
+=======================================================================
+ DONE  --  pattern ingested and archived.
+=======================================================================
+
+Press any key to continue . . .
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

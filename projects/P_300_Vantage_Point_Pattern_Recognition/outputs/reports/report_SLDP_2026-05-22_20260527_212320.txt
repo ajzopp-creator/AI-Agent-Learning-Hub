@@ -1,0 +1,59 @@
+============================================================================
+P_300 SIGNAL REPORT
+============================================================================
+Ticker:           SLDP
+Anchor date:      2026-05-22
+Signal:           BUY at horizon 5
+Generated:        2026-05-27 21:23 ET
+
+PER-HORIZON STATS
+----------------------------------------------------------------------------
+    h    n  win_rate  mean_ret  std_ret  z_score  class
+    5   20     0.700     +4.33    13.04   +1.092    BUY
+    7   20     0.700     +5.07    13.97   +1.174    BUY
+   10   20     0.600     +3.69    14.64   +0.354  WATCH
+   15   20     0.550     +3.07    15.72   -0.182   PASS
+   20   20     0.550     +0.73    15.14   -0.097   PASS
+
+TOP 20 MATCHES (by composite distance, ascending)
+----------------------------------------------------------------------------
+   #  ticker      anchor  compdist     +5d     +7d    +10d    +15d    +20d
+   1    BURL  2025-12-16    13.572   +8.84  +11.28  +10.71  +17.90  +17.39
+   2     VNO  2026-03-05    14.147   -8.02  -10.28   -6.46   -9.33  -10.46
+   3    PTON  2026-02-04    14.385  -26.90  -28.09  -25.21  -30.96  -35.19
+   4     CLF  2026-03-02    14.695  -16.23  -18.60  -24.47  -29.56  -28.86
+   5     LEN  2026-01-08    14.962  +11.59   +5.12   +2.09   -0.18   +4.08
+   6     VST  2026-02-10    15.249   +6.87   +7.39   +9.87   +2.36   -0.28
+   7    MPWR  2026-02-24    16.180  -11.48  -11.14  -13.01  -12.11   -9.23
+   8    META  2025-11-05    16.225   -4.24   -4.17   -7.18   -0.37   +4.02
+   9    APLD  2026-01-02    16.382  +34.04  +30.59  +33.05  +28.71  +23.80
+  10     FHN  2026-01-30    16.798   +7.10   +4.70   +0.29   -1.59   -1.35
+  11     CRS  2026-02-04    16.934  +10.63  +13.65  +14.90  +18.95  +18.20
+  12    PTON  2025-12-12    17.008   -5.20   -6.57   -4.13   +0.92   +7.03
+  13    INTC  2025-06-13    17.157   +5.21  +10.23  +11.22  +17.13  +13.80
+  14     NET  2026-03-03    17.328  +15.97  +18.56  +18.23  +19.14  +15.33
+  15     LAC  2026-01-02    17.446  +13.00  +22.43  +24.95  +25.58   -0.21
+  16      MT  2026-04-07    17.473  +15.33  +11.12  +13.27   +7.62   +8.14
+  17    PLTR  2025-10-23    17.533   +7.80  +14.79   -3.01   -4.62  -13.71
+  18    PLTR  2025-10-23    17.533   +7.80  +14.79   -3.01   -4.62  -13.71
+  19     RPM  2026-04-07    17.586  +12.37   +9.24  +10.94   +7.23   +2.79
+  20    AVGO  2025-06-13    17.997   +2.04   +6.41  +10.84   +9.29  +12.96
+
+VOLATILITY DIVERGENCE: MILD (ratio 1.64x)
+----------------------------------------------------------------------------
+  Candidate range_pct median: 0.0607    Top-K median: 0.0369
+  Modest volatility-regime mismatch between candidate and top-K analogs.
+
+NARRATIVE
+----------------------------------------------------------------------------
+  The P_300 signal report for SLDP on 2026-05-27 indicates a BUY signal at
+  horizon 5. Per-horizon statistics show moderate success across shorter
+  horizons (h=5 and h=7) with win rates of 70% and mean returns of +4.33%
+  and +5.07%, respectively, though standard deviations suggest higher
+  volatility. Performance weakens at longer horizons (h=10 to h=20), with
+  declining win rates and lower mean returns, alongside negative z-scores
+  for h=15 and h=20. Top historical analogs include BURL (+8.84% at +5d)
+  and VNO (-8.02% at +5d), demonstrating significant dispersion in
+  outcomes across similar scenarios.
+
+============================================================================

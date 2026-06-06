@@ -1,0 +1,33 @@
+﻿{
+  "template_name": "Stocks Trade Log",
+  "version": "1.0",
+  "description": "Schema for P_020 Stocks trade log. source=parser means the importer writes this column. source=formula means Excel owns it - hands off.",
+  "columns": [
+    {"name": "Symbol",          "type": "string",  "source": "parser"},
+    {"name": "System",          "type": "string",  "source": "parser"},
+    {"name": "Long/Short",      "type": "string",  "source": "parser"},
+    {"name": "Trade Date",      "type": "date",    "source": "parser"},
+    {"name": "Entry Price",     "type": "number",  "source": "parser"},
+    {"name": "Shares",          "type": "number",  "source": "parser"},
+    {"name": "Exit #1",         "type": "number",  "source": "parser"},
+    {"name": "# Exited",        "type": "number",  "source": "parser"},
+    {"name": "Exit Date",       "type": "date",    "source": "parser"},
+    {"name": "# of Days",       "type": "number",  "source": "formula"},
+    {"name": "Exit #2",         "type": "number",  "source": "parser"},
+    {"name": "# Exited2",       "type": "number",  "source": "parser"},
+    {"name": "Exit Date3",      "type": "date",    "source": "parser"},
+    {"name": "# of Days4",      "type": "number",  "source": "formula"},
+    {"name": "Comm.",           "type": "number",  "source": "parser"},
+    {"name": "Gain/Loss",       "type": "number",  "source": "formula"},
+    {"name": "ROI",             "type": "number",  "source": "formula"},
+    {"name": "Trade Comments",  "type": "string",  "source": "parser"},
+    {"name": "Exit #1 Gain",    "type": "number",  "source": "formula"},
+    {"name": "Exit #2 Gain",    "type": "number",  "source": "formula"},
+    {"name": "Total Gain",      "type": "number",  "source": "formula"},
+    {"name": "Total ROI %",     "type": "number",  "source": "formula"},
+    {"name": "R:R Ratio",       "type": "number",  "source": "formula"},
+    {"name": "Win/Loss",        "type": "string",  "source": "formula"},
+    {"name": "Strategy Notes",  "type": "string",  "source": "parser"},
+    {"name": "Review Status",   "type": "string",  "source": "parser"}
+  ]
+}
