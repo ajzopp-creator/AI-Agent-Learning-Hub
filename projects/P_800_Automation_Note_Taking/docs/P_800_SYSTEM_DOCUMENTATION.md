@@ -1,61 +1,63 @@
-﻿# P_800 SYSTEM_DOCUMENTATION
+# P_800 SYSTEM_DOCUMENTATION
 ## Automation Note-Taking & Knowledge Building
 
 ---
 
 **Project ID:** P_800
-**Version:** 3.0
+**Version:** 4.0
 **Created:** 2026-03-07
-**Last Updated:** 2026-05-11
+**Last Updated:** 2026-06-07
 **Owner:** Tony
 **Status:** Active
 
 ---
 
-## Section 0 — What Changed in v3.0
+## Section 0 — What Changed in v4.0
 
-Full vault rebuild on 2026-05-11. Key changes from v2.1:
+Full architecture pivot on 2026-06-07. The single-stream `Trades/` mirror has been retired. P_800 now owns the **Obsidian Interface Layer** — a unified, multi-project data surface fed by all trading systems. Key shifts:
 
-- **Vault relocated** from OneDrive-redirected `C:\Users\Trader\Documents\...` to `C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\` — outside OneDrive's reach, peer to `projects\`, cross-system rather than per-project data
-- **Daily note format** changed to ISO `YYYY-MM-DD.md` (was `MM-DD-YYYY.md`)
-- **Bases architecture** added — Templates/, Bases/, TradeManagement/ subfolders under vault root; Excel tracker remains source of truth; Python export script will write one frontmatter-only `.md` per trade row to `TradeManagement/`; Bases queries the folder
-- **Master template P_800_Daily_Flow.md** rebuilt clean — 6 body sections, frontmatter schema for Bases queries, no WhatsApp section (scam contacts purged), Market Posture absorbed into Market Analysis, no Trade Execution Log table (redundant with TradeManagement/ base)
-- **MCP config** corrected to reflect actual command (`p140` conda Python invoking `mcp_obsidian.main`, not `uvx mcp-obsidian` as v2.1 documented)
-- **Templater API** corrected — `tp.web.request` does not exist; `tp.obsidian.requestUrl` is the supported function for external HTTP calls
-- **OneDrive Documents redirect lesson** logged — Windows redirects `C:\Users\<user>\Documents` to `D:\OneDrive\Documents` when OneDrive Documents sync is enabled, masking the true byte location. Both prior C:/D: claims were half-true. Solution: keep AJZ Strategies work under the Hub (outside OneDrive's scope by default)
-- **Fraud cleanup ratified** — Investment Pioneer Club, Club 84, Freedom Income Options contacts confirmed purged from all documentation
+- **Vault redesign**: TradeManagement/{P115, P300, P400, P020, signals} + TradeOrderManagement/signals + KnowledgeBase + Bases + Dashboard.md (replaces old Trades/ folder pattern)
+- **Python writers**: Consolidated under `python\obsidian_writers\` (renamed from `scripts\` in E3.001); public API via `write_to_vault()` in `shared_resources\python_utils\vault_interface.py`
+- **Interface docs**: Detailed schemas, bases, and roadmap live in `P_800_Interface_Arch_Part1_Schemas_v1_0.md` and `P_800_Interface_Arch_Part2_Bases_Dashboard_v1_0.md` (canonical reference; not duplicated here)
+- **Phase progress**: E-series cleanup (E1-E3) complete; Interface Layer Phases 5A–5D done; 5E–5H pending (cross-project integrations)
+
+**See Section 0 History** (below) for v3.0 and prior changes.
+
+### Section 0 History
+
+**v3.0 (2026-05-11):** Full vault rebuild on C: Hub, outside OneDrive; daily note ISO format; Bases architecture (Templates/, Bases/, Trades/); MCP bridge reconfigured; fraud cleanup (scam contacts purged); master template consolidation. Vault location: `C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\`.
 
 ---
 
 ## Section 1 — Project Overview
 
 ### 1.1 Purpose
-P_800 exists to eliminate manual typing and repetitive setup in Tony's daily workflow. It automates note-taking, knowledge capture, AI prompting, and daily flow initialization across Obsidian, Claude, and connected tools.
+P_800 eliminates manual typing and repetitive setup in Tony's daily workflow. It automates note-taking, knowledge capture, and integration across Obsidian, Claude, trading systems (P_115, P_300, P_400, P_020), and external tools.
 
 ### 1.2 Goals
 - Minimize keystrokes in daily trading and research workflow
-- Build a consistent, searchable knowledge base in Obsidian
-- Mirror the Excel trade tracker into a queryable Bases-driven structure
+- Build a consistent, searchable knowledge base in Obsidian (Interface Layer)
+- Feed all trading systems' output into unified queryable Bases
+- Provide a daily entry point (Dashboard.md) for all trade/market/research data
 - Integrate Claude, Grok, Perplexity, and Gemini efficiently
-- Connect automation to Tony's existing trading projects (P_010, P_020, etc.)
+- Connect automation to Tony's trading projects via the public `write_to_vault()` API
 
 ### 1.3 Scope
-- Obsidian vault under the Hub at `trading_journal\`
-- Templates folder (P_800 owns ALL templates)
-- Bases folder (`.base` files for trade and posture queries)
-- TradeManagement folder (one frontmatter-only `.md` per trade, machine-generated)
-- Claude Artifacts for daily tools
-- Text expansion tools (Espanso, AutoHotkey, Windows PowerToys)
-- Voice input workflows
-- Python automation scripts (Phase 5 onward — Excel→Markdown export, Telegram extraction)
+- Obsidian vault under the Hub at `trading_journal\` (the Interface Layer)
+- TradeManagement/ and TradeOrderManagement/ folders (normalized data from all projects)
+- KnowledgeBase/ (articles, clipped content, AI summaries)
+- Bases/ folder (`.base` files for queryable views)
+- Dashboard.md (daily entry point)
+- Python automation: `obsidian_writers` package + public `vault_interface.py` API
 - Claude ↔ Obsidian MCP bridge (direct read/write to vault)
+- Text expansion and voice input workflows (future phases)
 
 ### 1.4 Out of Scope
-- ThinkScript strategy development (trading project series)
-- Brokerage API connections (P_020 series)
+- Trading strategy development (P_115/116/117/118 own)
+- Brokerage API connections (P_020 owns)
 - Market Posture JSON generation (P_010 owns; P_800 reads only)
-- Trade rules / scoring (P_115/116/117/118 + Excel tracker; P_800 mirrors only)
-- Cross-system Trade Management logic (P_020)
+- Trade rules / scoring (P_115/116/117/118 + Excel tracker own; P_800 mirrors)
+- Signal generation logic (P_115, P_300, P_400 own)
 
 ---
 
@@ -64,24 +66,32 @@ P_800 exists to eliminate manual typing and repetitive setup in Tony's daily wor
 | Term | Definition |
 |------|-----------|
 | P_800 | This project — Automation Note-Taking & Knowledge Building |
-| Daily Flow | Tony's morning-to-evening routine: quotes → exercise → calendar → market posture → TOS analysis → AI trends |
-| Market Posture JSON | Structured JSON block summarizing daily market bias (bullish/neutral/bearish), regime, key setups, risk level |
-| P_010 | Tony's prompt system for market posture analysis (owns posture JSON, RiskConfig.json) |
-| P_020 | Tony's performance analysis + cross-system trade management |
-| P_115 | Buy The Dip trading system (V110 with 200-MA filter) |
-| TOS | ThinkOrSwim — primary trading platform |
-| VantagePoint | AI-based market forecasting tool used alongside TOS |
-| Templater | Obsidian community plugin for dynamic template population |
-| QuickAdd | Obsidian plugin for hotkey-triggered macros |
-| Espanso | Free cross-platform text expander (system-wide) |
-| AHK | AutoHotkey — Windows automation scripting tool |
-| Market Posture Display | P_800 read-only artifact — displays P_010 JSON, outputs Obsidian note block |
-| MCP | Model Context Protocol — open standard for connecting Claude to external tools and data |
-| Local REST API | Obsidian community plugin that creates a local server Claude can connect to via MCP |
+| Interface Layer | Obsidian vault (trading_journal/) acting as unified display/query surface fed by all upstream projects |
+| TradeManagement/ | Vault subfolder containing per-project normalized frontmatter notes: P115/, P300/, P400/, P020/ (and signals/) |
+| TradeOrderManagement/ | Vault subfolder for raw JSON signal packets (P_115 → P_400 handoff, not Obsidian notes) |
+| KnowledgeBase/ | Vault subfolder for articles, AI summaries, research clipped content |
+| Bases/ | Vault subfolder containing `.base` files (Obsidian Bases feature for queryable views) |
+| Dashboard.md | Daily entry point note in vault root; links to all six Base views |
+| Writer Module | Python script (in obsidian_writers/) that normalizes source data → YAML frontmatter `.md` files |
+| write_to_vault() | Public API function in shared_resources\python_utils\vault_interface.py; used by all sending projects |
+| obsidian_writers | Python package at projects\P_800_Automation_Note_Taking\python\obsidian_writers\; owns all vault write logic |
+| P400SIG | Schema name for raw JSON signal packets (P_115 → P_400); routed to TradeOrderManagement/signals/ |
+| SIGNALS_DIR | Config constant pointing to TradeOrderManagement/signals/ (raw JSON signal packets, not frontmatter notes) |
+| Frontmatter | YAML metadata block at top of .md file (parsed by Obsidian Bases) |
+| Base | Obsidian Bases `.base` file — defines a filtered, sorted, columnar view of notes |
+| WHY code | P_020 tag identifying the trading system (e.g., BTD = Buy The Dip, VPT = VantagePoint) |
+| SIG code | P_020 tag for signal conviction (A=high, B=standard, C=marginal, X=counter) |
+| SoT | Source of Truth — the upstream system (Excel, SQLite, TXT, JSON) that owns the data |
+| MCP | Model Context Protocol — open standard for connecting Claude to external tools (Obsidian vault) |
+| Local REST API | Obsidian community plugin creating a local server for MCP bridge |
 | MCP Bridge | Connection between Claude Desktop and Obsidian via Local REST API + claude_desktop_config.json |
-| Bases | Obsidian core feature (1.12.7+) — query notes as a database using frontmatter properties; `.base` files define views |
-| TradeManagement/ | Vault subfolder containing one frontmatter-only `.md` per trade row, machine-generated from the Excel tracker |
-| Excel Tracker | `Tracker_Log_Schema_v9_4_0_1.md` — 27-LOCKED-column source-of-truth for all TradeManagement |
+| P_010 | Tony's prompt system for market posture analysis (owns posture JSON, RiskConfig.json) |
+| P_020 | Performance analysis + cross-system trade management (owns SQLite trade DB, P_020 tags) |
+| P_115 | Buy The Dip trading system (V110 with 200-MA filter) |
+| P_300 | VantagePoint Grid system |
+| P_400 | Trade Order Management (BUY signal intake + Council logic) |
+| TOS | ThinkOrSwim — primary trading platform |
+| VantagePoint | AI-based market forecasting tool |
 
 ---
 
@@ -91,25 +101,22 @@ P_800 exists to eliminate manual typing and repetitive setup in Tony's daily wor
 
 **MUST:**
 - Acknowledge current date at start of each session
-- Run `tool_search("PowerShell")` at session start (handled globally by the `system-doc-initializer` skill — verifies Claude Desktop runtime)
 - Prioritize low-typing / minimal-effort solutions for Tony
 - Suggest Claude Artifacts before recommending external software installs
-- Keep instructions step-by-step and beginner-friendly
-- Use the Obsidian MCP tools to read/write vault content when the bridge is configured for the active vault
-- Treat `P_800_Daily_Flow.md` as the ONE master template — never create competing templates
-- Excel tracker is the source-of-truth for TradeManagement; Obsidian TradeManagement/ is a one-way mirror
+- Use the Obsidian MCP tools to read/write vault content when bridge is configured
+- Treat P_800_Daily_Flow.md as the ONE master template — never create competing templates
+- Excel tracker is source-of-truth for trades; Obsidian notes are one-way mirrors
 - File size discipline: 300 lines max per code/config file, 50 lines max per function
+- Refer to Interface Arch docs as canonical for detailed schemas/bases (avoid duplication)
 
 **MUST NOT:**
-- Recommend solutions requiring heavy coding without providing the full code
+- Recommend solutions requiring heavy coding without providing full code
 - Assume Tony knows advanced Python or VS Code features
-- Suggest paid tools without first exhausting free options
-- Skip the SYSTEM_DOCUMENTATION load at session start
-- Build artifacts that generate or modify the Market Posture JSON — that belongs to P_010
-- Allow P_800 artifacts to write to the P_010 posture file under any circumstances
-- Create or modify Obsidian templates outside of P_800 — P_800 owns all templates
-- Write to the Excel tracker from Obsidian — one-way only
-- Re-introduce scam-contact references (Investment Pioneer Club, Club 84, Freedom Income Options) anywhere in docs, templates, or scripts
+- Suggest paid tools without exhausting free options first
+- Build artifacts that generate or modify P_010 market posture data
+- Create or modify Obsidian templates outside of P_800
+- Write to Excel tracker from Obsidian (one-way mirror only)
+- Re-introduce scam-contact references (Investment Pioneer Club, Club 84, Freedom Income Options)
 
 ---
 
@@ -120,17 +127,14 @@ Tony's daily routine and automation targets:
 | Time | Activity | Automation Target |
 |------|----------|------------------|
 | Morning | Open Obsidian daily note | Ctrl+N at vault root → Templater fires P_800_Daily_Flow.md |
-| Morning | Bible verse + daily quote + humor joke | Auto-fetched by Templater (`tp.obsidian.requestUrl` + `tp.web.daily_quote`) |
+| Morning | Bible verse + daily quote + humor | Auto-fetched by Templater via tp.obsidian.requestUrl |
 | Morning | Senior exercise routine | Pre-filled wrist-friendly checklist in template |
 | Morning | Google Calendar review | Claude MCP injects events on request |
 | Morning | TOS + VantagePoint pre-market | Manual notes into Market Analysis section |
 | Morning | Market Posture | P_010 generates JSON → paste into Market Analysis → Market Posture subsection |
-| Midday | Trade execution | Logged to Excel tracker; nightly Excel→Markdown export writes to TradeManagement/ |
-| Midday | Trade rules / signals | Generated by P_115/116/117/118 prompt suite |
+| Midday | Trade execution | Logged to Excel tracker; nightly export writes to TradeManagement/P115/ (or relevant folder) |
 | Evening | AI trends review | Template section |
 | Evening | Daily rollover / review | Tasks plugin checkboxes |
-
-Manual chat-channel intelligence (formerly WhatsApp section) is discontinued. Channels purged as confirmed scams. A legitimate replacement source, if one emerges, will be scoped explicitly.
 
 ---
 
@@ -139,26 +143,24 @@ Manual chat-channel intelligence (formerly WhatsApp section) is discontinued. Ch
 | Tool | Category | Status | Notes |
 |------|----------|--------|-------|
 | Obsidian | Note-taking | ✅ Active (1.12.7+) | Primary knowledge base — vault on C: Hub |
-| Claude (claude.ai + Desktop) | AI Assistant | ✅ Active | Primary AI tool; Desktop required for Windows-MCP |
+| Claude (claude.ai + Desktop) | AI Assistant | ✅ Active | Primary AI tool; Desktop required for MCP |
 | ThinkOrSwim (TOS) | Trading Platform | ✅ Active | Primary brokerage platform |
 | VantagePoint | Market Forecasting | ✅ Active | AI-based forecasting |
 | Grok | AI Assistant | ✅ Active | Secondary AI |
 | Perplexity | AI Search | ✅ Active | Research + quotes |
 | Gemini / NotebookLM | AI Assistant | ✅ Active | Supplementary |
-| Copilot | AI (MS Apps) | ✅ Active | Microsoft integration |
-| LM Studio | Local LLM | ✅ Active | `http://127.0.0.1:1234/v1` — primary LLM for briefing pipeline |
+| LM Studio | Local LLM | ✅ Active | `http://127.0.0.1:1234/v1` — local LLM |
 | Espanso | Text Expander | Planned | Free, cross-platform |
 | AutoHotkey | Windows Automation | Planned | Free |
 | Templater | Obsidian Plugin | ✅ Installed + Configured | Folder template binding `/` → `Templates/P_800_Daily_Flow.md` |
 | QuickAdd | Obsidian Plugin | ✅ Installed | Hotkey macros |
 | Google Calendar | Obsidian Plugin | ✅ Installed | Calendar sync |
 | Tasks | Obsidian Plugin | ✅ Installed | Checkbox tracking |
-| Obsidian Web Clipper | Browser Extension | ✅ Installed | Web capture (Defuddle 0.10.9+) |
+| Obsidian Web Clipper | Browser Extension | ✅ Installed | Web capture |
 | Obsidian Local REST API | Obsidian Plugin | ✅ Installed + Active | MCP bridge endpoint — port 27124 HTTPS |
 | Bases (Obsidian core) | Native feature | ✅ Available | No plugin install — query notes as a database |
 | Claude Desktop App | AI Desktop App | ✅ Installed + Active | Required for MCP bridge |
-| Claude ↔ Obsidian MCP Bridge | Integration | ✅ Reconfigured 2026-05-11 | Points at new vault; uses p140 conda Python |
-| Telegram API | Chat Extraction | Enhancement Backlog | See Section 5.1, Enhancement #1 |
+| Claude ↔ Obsidian MCP Bridge | Integration | ✅ Configured 2026-06-07 | Points to C: Hub vault; uses p140 conda Python |
 
 ---
 
@@ -169,14 +171,22 @@ Manual chat-channel intelligence (formerly WhatsApp section) is discontinued. Ch
 | 1 | Obsidian daily note template (initial version) | ✅ Complete (2026-03-07) |
 | 2 | Obsidian Web Clipper + Defuddle setup guide | ✅ Complete (2026-03-08) |
 | 3 | Market Posture Display artifact | ✅ Complete (2026-03-08) |
-| 3.5 | Claude ↔ Obsidian MCP Bridge (D: vault) | ✅ Complete (2026-03-16) |
+| 3.5 | Claude ↔ Obsidian MCP Bridge | ✅ Complete (2026-03-16) |
 | 3.6 | Template ownership transfer + consolidation | ✅ Complete (2026-03-19) |
 | 4 | Vault rebuild — clean architecture, Bases foundation, C: Hub location | ✅ Complete (2026-05-11) |
-| 5 | Excel→Markdown export script + three starter `.base` files | Planned |
-| 6 | Chat Formatter (formerly WhatsApp — channels purged; legitimate source TBD) | ⏸ Paused |
-| 7 | Daily Flow Launcher artifact | Planned |
-| 8 | Espanso text expansion setup | Planned |
-| 9 | Voice input workflow guide | Planned |
+| E1 | Python project structure (initial) | ✅ Complete (2026-05-22) |
+| E2 | Duplicate/dead code cleanup | ✅ Complete (2026-06-04) |
+| E3 | Folder structure cleanup (scripts\ → python\); import hygiene | ✅ Complete (2026-06-06) |
+| 5A | Vault subfolders (TradeManagement/, TradeOrderManagement/, KnowledgeBase/, Bases/) | ✅ Complete (2026-05-22) |
+| 5B | Six .base files (P115_Evaluations, P300_Signals, P400_Trades, P020_Performance, Open_Positions, KB_Articles) | ✅ Complete (2026-05-22) |
+| 5C | Dashboard.md — link-only v1.0 | ✅ Complete (2026-05-22) |
+| 5D | Vault interface engine + public API + README | ✅ Complete (2026-05-22) |
+| 5E | P_300 integration — call write_to_vault() from P_300 project | Planned |
+| 5F | P_020 integration — call write_to_vault() from P_020 project | Planned |
+| 5G | KB Templater template + Web Clipper config | Planned |
+| 5H | P_400 integration — after P_400 schema locked | Planned |
+| 4 checkpoint | E4.001 — Git + Backup strategy | Planned |
+| 6 | Dataview embedded dashboard (trigger: 2+ projects live) | Planned |
 
 ---
 
@@ -184,9 +194,9 @@ Manual chat-channel intelligence (formerly WhatsApp section) is discontinued. Ch
 
 | # | Date Logged | Enhancement | Detail | Priority |
 |---|-------------|-------------|--------|----------|
-| 1 | 2026-03-12 | Telegram API — Chat Extraction | Auto-extract messages from legitimate Telegram trading channels (https://core.telegram.org/api). Scam channels permanently excluded. | High |
+| 1 | 2026-03-12 | Telegram API — Chat Extraction | Auto-extract messages from legitimate Telegram trading channels. Scam channels permanently excluded. | High |
 | 2 | 2026-03-12 | Google Calendar API — Python Script | Lower priority — Claude MCP + Google Calendar MCP may replace Python script. Re-evaluate before building. | Medium |
-| 3 | 2026-05-11 | Global Environment Detection Skill | Promote STEP 0 (Windows-MCP check via `tool_search`) from project-scoped P_115 to a global skill. Partially live via `system-doc-initializer`; formalize as a dedicated `environment-detection` skill. | Medium |
+| 3 | 2026-05-11 | Global Environment Detection Skill | Promote STEP 0 (Windows-MCP check) from project-scoped to a global skill. Partially live via `system-doc-initializer`; formalize. | Medium |
 | 4 | 2026-04-08 | Claude Code Evaluation | Evaluate as potential replacement for standalone Python scripts in P_800 automations. | Medium |
 
 ---
@@ -195,7 +205,7 @@ Manual chat-channel intelligence (formerly WhatsApp section) is discontinued. Ch
 
 ### Claude ↔ Obsidian MCP Bridge
 
-**What it does:** Allows Claude to read and write directly to the active Obsidian vault. Claude can inject content into any section of any daily note on command.
+**What it does:** Allows Claude to read and write directly to the active Obsidian vault. Claude can inject content into any note on command.
 
 **Components:**
 
@@ -204,11 +214,11 @@ Manual chat-channel intelligence (formerly WhatsApp section) is discontinued. Ch
 | Obsidian Plugin | Local REST API — installed and enabled |
 | Plugin Port | 27124 (HTTPS encrypted) |
 | Plugin Host | 127.0.0.1 (localhost) |
-| API Key | Auto-generated per vault by the Local REST API plugin; stored in `claude_desktop_config.json` |
+| API Key | Auto-generated per vault by Local REST API plugin; stored in `claude_desktop_config.json` |
 | Config File | `%APPDATA%\Claude\claude_desktop_config.json` |
-| MCP Server | `mcp_obsidian` Python package, invoked via the p140 conda Python |
+| MCP Server | `mcp_obsidian` Python package, invoked via p140 conda Python |
 
-**`claude_desktop_config.json` — obsidian entry (canonical as of v3.0):**
+**`claude_desktop_config.json` — obsidian entry (canonical):**
 
 ```json
 "obsidian": {
@@ -224,125 +234,85 @@ Manual chat-channel intelligence (formerly WhatsApp section) is discontinued. Ch
 }
 ```
 
-Note: v2.1 documented a `uvx mcp-obsidian` command — that was never the actual config. The p140 conda invocation has been live since the bridge was first set up.
-
 **Capabilities unlocked:**
 - Read any note in the active vault
 - Write / append content to daily notes on command
 - List vault files and directories
 - Inject formatted content directly into note sections
 
-**Scope boundary:** MCP write access is for daily note content only. Claude must never write to P_010 posture files via MCP. Claude must never modify Excel tracker rows via MCP.
-
-**Active vault (C: Hub — v3.0):**
+**Active vault:**
 - Vault path: `C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\`
 - Daily note format: `trading_journal/YYYY-MM-DD.md`
 - Templates: `trading_journal/Templates/`
 - Bases: `trading_journal/Bases/`
-- TradeManagement: `trading_journal/TradeManagement/`
+- Dashboard: `trading_journal/Dashboard.md`
 - Master template: `Templates/P_800_Daily_Flow.md`
 
 **Claude Desktop restart requirement:**
-After any change to OBSIDIAN_API_KEY (e.g., switching vaults or rotating the key), Claude Desktop must be fully quit (tray icon → Quit) and reopened. The MCP server holds the env vars in memory at spawn time.
+After any change to OBSIDIAN_API_KEY, Claude Desktop must be fully quit (tray icon → Quit) and reopened.
 
 ---
 
-## Section 5.3 — Bases Architecture (NEW in v3.0)
+## Section 5.3 — Interface Layer Architecture
 
-### Source-of-truth split
-- **Excel tracker** (`Tracker_Log_Schema_v9_4_0_1.md` — 27 LOCKED columns) remains the canonical record for every trade
-- **Obsidian TradeManagement/** is a one-way mirror: each `.xlsx` row becomes one frontmatter-only `.md` file
-- One-way sync means Obsidian edits cannot corrupt Excel
+### Canonical Reference
 
-### Why Excel stays SoT
-Locked 27-column schema, V110 scoring logic, copy-paste Excel-ready workflow are battle-tested. Rebuilding in Obsidian destroys value. Bases needs notes (not table rows) for granular queries by ticker, outcome, signal source, date range, strategy.
+Detailed schemas, base definitions, Python writer structure, and build phase details live in:
+- `P_800_Interface_Arch_Part1_Schemas_v1_0.md` (vault folder structure, data schemas for P115/P300/P400/P020/KB)
+- `P_800_Interface_Arch_Part2_Bases_Dashboard_v1_0.md` (six Bases definitions, Dashboard design, Python writers, roadmap 5A–5H)
 
-### Trade note frontmatter (27 columns → snake_case YAML)
+**Do not duplicate** architecture docs here. This section summarizes only the folder map and APIs.
 
-```yaml
----
-date: 2026-05-09
-symbol: MOD
-signal_source: P_115
-step1_verdict: BUY
-pattern_type: "--"
-breakout_verdict: "--"
-breakout_volume_multiple: null
-distribution_day_count: null
-follow_through_day: null
-market_direction: STANDARD
-rs_vs_spy: null
-fundamentals_tier: 3
-analysis_tier: 3
-candle_tier: 2
-setup_score: 3
-liquidity_tier: null
-traded: N
-entry_price: null
-tp_level: null
-sl_level: null
-stop_level: null
-risk_pct: null
-account_balance: 32812
-outcome: null
-recheck_status: null
-simulation_notes: ""
-comments: "HybridTier=6"
----
+### Vault Folder Map (Source: config.py VAULT_FOLDER_MAP)
+
+```
+TradeManagement/P115/     ← one frontmatter .md per P_115 evaluation
+TradeManagement/P300/     ← one frontmatter .md per P_300 signal report
+TradeManagement/P400/     ← one frontmatter .md per P_400 trade lifecycle
+TradeManagement/P020/     ← one frontmatter .md per P_020 closed trade
+TradeOrderManagement/signals/  ← raw JSON signal packets (P_115 → P_400, P400SIG schema)
+KnowledgeBase/            ← articles, AI summaries, research clipped content
+Bases/                    ← six .base queryable views (canonical in Arch Part2)
+Templates/                ← P_800_Daily_Flow.md (master template)
+Dashboard.md              ← daily entry point (vault root)
 ```
 
-### File naming
-- Daily notes: `trading_journal/{YYYY-MM-DD}.md` (vault root)
-- Trade notes: `trading_journal/TradeManagement/{YYYY-MM-DD}_{SYMBOL}_{SIGNAL_SOURCE}.md`
-  - Example: `TradeManagement/2026-05-09_MOD_P_115.md`
-- Templates: `trading_journal/Templates/`
-- Bases: `trading_journal/Bases/`
+### Public API
 
-### Three starter `.base` views (Phase 5)
+All sending projects (P_115, P_300, P_400, P_020) import and call:
 
-1. **`daily_trades.base`** — table of all TradeManagement in `TradeManagement/`, sorted by date desc; columns: date, symbol, signal_source, step1_verdict, tiers, setup_score, traded, outcome
-2. **`open_positions.base`** — filter `traded == "Y" AND outcome == null`; columns: date, symbol, signal_source, entry_price, tp_level, sl_level, risk_pct, account_balance, days_held formula
-3. **`performance_by_strategy.base`** — group by signal_source; columns: signal_source, count, count(outcome="TP Hit"), win_rate
+```python
+from shared_resources.python_utils.vault_interface import write_to_vault
 
-### Phase 5 export script (planned)
+write_to_vault("P115", {"date": "2026-06-07", "symbol": "AAPL", ...})
+write_to_vault("P400", {"date": "2026-06-07", "ticker": "NVDA", ...})
+```
 
-Save path: `C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_800_Automation_Note_Taking\scripts\trade_log_export\`
+**Implementation:** `shared_resources\python_utils\vault_interface.py` (reads canonical schemas from `obsidian_writers\schemas.py`, orchestrates write_handler, confirms routing to correct TradeManagement/<schema> subfolder).
 
-| File | ~Lines | Purpose |
-|------|--------|---------|
-| `__init__.py` | 5 | package marker |
-| `config.py` | 40 | Excel path, output path, schema map |
-| `excel_reader.py` | 80 | read `.xlsx` via openpyxl, normalize rows |
-| `frontmatter_writer.py` | 80 | dict → YAML frontmatter, write `.md` |
-| `main.py` | 60 | orchestration entry point |
-| `logger_setup.py` | 40 | logging |
-
-Run mode: on-demand (manually triggered after Excel updates), not scheduled.
-Environment: p140 conda.
+**No upstream project has Obsidian knowledge.** P_800 handles all vault logic.
 
 ---
 
 ## Section 6 — Obsidian Template Reference
 
 ### 6.1 Template Ownership
-**P_800 owns ALL Obsidian templates.** P_010 generates daily note content (market posture data) but does not own or manage templates.
+**P_800 owns ALL Obsidian templates.** No other project creates or modifies templates.
 
 ### 6.2 Active Templates
 
 | File | Status | Owner | Purpose |
 |------|--------|-------|---------|
-| `P_800_Daily_Flow.md` | ✅ Active master (v3.0) | P_800 | Full daily note template — rebuilt clean 2026-05-11 |
-
-Prior templates (`P_010_TemplateSchema_v1.md`, `Daily-Flow.md`, `Web Clipper Whats App.md`) all retired with the vault rebuild. The vault is fresh — no template archive carried over.
+| `P_800_Daily_Flow.md` | ✅ Active master (v3.0) | P_800 | Full daily note template — vault root |
 
 ### 6.3 Master Template Location
 
-**Live (active) path:**
+**Live path:**
 `C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\Templates\P_800_Daily_Flow.md`
 
-### 6.4 P_800_Daily_Flow.md — What It Contains (v3.0)
+### 6.4 P_800_Daily_Flow.md Contents (v3.0)
 
-**Frontmatter schema** (drives Bases queries on daily notes):
+**Frontmatter schema:**
 
 ```yaml
 ---
@@ -360,8 +330,8 @@ session_status: open
 ```
 
 **Body sections (in order):**
-1. H1 date header — `dddd, MMMM D, YYYY` via Templater
-2. Morning Starter — Verse of the Day, Daily Quote, Joke of the Day (all auto-fetched)
+1. H1 date header
+2. Morning Starter — Verse of the Day, Daily Quote, Joke (auto-fetched)
 3. Senior Exercise (wrist-friendly checklist)
 4. Schedule Check — placeholder; Claude MCP injects Google Calendar events on request
 5. Market Analysis
@@ -372,35 +342,10 @@ session_status: open
 
 Footer: `*Template owner: P_800 -- v3.0*`
 
-**Auto-fetch API calls:**
-- Bible verse: `tp.obsidian.requestUrl({url: "https://labs.bible.org/api/?passage=votd&type=json&formatting=plain"})`
-- Daily quote: `tp.web.daily_quote()` (Templater built-in)
-- Joke: `tp.obsidian.requestUrl({url: "https://v2.jokeapi.dev/joke/Any?safe-mode&type=single"})`
-
-**Removed from v2.1 template:**
-- WhatsApp section entirely (scam contacts purged)
-- Trade Execution Log table (redundant — TradeManagement live in `TradeManagement/` base)
-- Separate Market Posture section (now a subsection of Market Analysis)
-- Manual Notebook Activities section (rarely used)
-
-**Cursor tab stops:** 5 (one per editable section after the auto-fetched morning starter)
-
-### 6.5 Templater Settings (locked configuration)
-
-| Setting | Value |
-|---------|-------|
-| Template folder location | `Templates` |
-| Trigger Templater on new file creation | ON |
-| Folder template — `/` (vault root) | `Templates/P_800_Daily_Flow.md` |
-
-### 6.6 Plugins Required
-1. Templater — dynamic template population
-2. QuickAdd — hotkey macros
-3. Tasks — checkbox tracking
-4. Local REST API — MCP bridge endpoint (port 27124)
-5. Google Calendar — calendar sync
-6. Bases — core feature (no install)
-7. Web Clipper — browser extension
+**Templater settings:**
+- Template folder location: `Templates`
+- Trigger Templater on new file creation: ON
+- Folder template — `/` (vault root): `Templates/P_800_Daily_Flow.md`
 
 ---
 
@@ -413,9 +358,24 @@ C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\
 ├── .obsidian\                              <- Obsidian config (auto-created)
 ├── Templates\
 │   └── P_800_Daily_Flow.md                 <- Master template (P_800 owned)
-├── Bases\                                  <- .base view files (Phase 5)
-├── TradeManagement\                                 <- One .md per trade (Phase 5)
-└── YYYY-MM-DD.md                           <- Daily notes (one per day)
+├── Bases\
+│   ├── P115_Evaluations.base
+│   ├── P300_Signals.base
+│   ├── P400_Trades.base
+│   ├── P020_Performance.base
+│   ├── Open_Positions.base
+│   └── KB_Articles.base
+├── TradeManagement\
+│   ├── P115\                               <- one .md per P_115 evaluation
+│   ├── P300\                               <- one .md per P_300 signal
+│   ├── P400\                               <- one .md per P_400 trade
+│   ├── P020\                               <- one .md per P_020 closed trade
+│   └── signals\                            <- legacy folder (not in config map)
+├── TradeOrderManagement\
+│   └── signals\                            <- raw JSON signal packets (P400SIG schema)
+├── KnowledgeBase\                          <- articles, clipped content, AI summaries
+├── Dashboard.md                            <- daily entry point (vault root)
+└── YYYY-MM-DD.md                           <- daily notes (one per day)
 ```
 
 ### 7.2 Hub Project Folder
@@ -426,26 +386,28 @@ C:\Users\Trader\AI-Agent-Learning-Hub\
 └── projects\
     └── P_800_Automation_Note_Taking\
         ├── docs\
-        │   ├── P_800_SYSTEM_DOCUMENTATION.md   <- This file (v3.0)
-        │   ├── BASES_VAULT_REBUILD_PLAN.md     <- Vault rebuild plan
-        │   └── backups\                        <- Archived old docs
+        │   ├── P_800_SYSTEM_DOCUMENTATION.md    <- this file (v4.0)
+        │   ├── P_800_Interface_Arch_Part1_Schemas_v1_0.md
+        │   ├── P_800_Interface_Arch_Part2_Bases_Dashboard_v1_0.md
+        │   └── backups\
         ├── claude_artifacts\
         ├── espanso\
-        └── scripts\                            <- Python automation (Phase 5+)
+        └── python\
+            └── obsidian_writers\
+                ├── __init__.py
+                ├── config.py
+                ├── schemas.py
+                ├── domain\
+                │   ├── validator.py
+                │   ├── frontmatter_builder.py
+                │   └── filename_builder.py
+                ├── infrastructure\
+                │   └── vault_writer.py
+                ├── application\
+                │   └── write_handler.py
+                ├── logger_setup.py
+                └── tests\
 ```
-
-### 7.3 File Save Path Quick Reference
-
-| File Type | Save Path |
-|-----------|-----------|
-| Obsidian vault root | `C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\` |
-| Obsidian templates (live) | `...\trading_journal\Templates\` |
-| Daily notes | `...\trading_journal\YYYY-MM-DD.md` |
-| Trade notes | `...\trading_journal\TradeManagement\YYYY-MM-DD_SYMBOL_SOURCE.md` |
-| Bases views | `...\trading_journal\Bases\*.base` |
-| P_800 docs | `C:\...\P_800_Automation_Note_Taking\docs\` |
-| Claude artifacts | `C:\...\P_800_Automation_Note_Taking\claude_artifacts\` |
-| Python scripts | `C:\...\P_800_Automation_Note_Taking\scripts\` |
 
 ---
 
@@ -455,7 +417,7 @@ C:\Users\Trader\AI-Agent-Learning-Hub\
 1. Open Obsidian (vault auto-loads to `trading_journal`)
 2. Ctrl+N at vault root → Templater fires P_800_Daily_Flow.md
 3. Verse, quote, joke auto-fetched. Frontmatter populates with date/day.
-4. Rename the new file to today's date in `YYYY-MM-DD.md` format
+4. Rename file to today's date in `YYYY-MM-DD.md` format
 5. Tell Claude: "Inject today's Google Calendar events into my daily note"
 6. Open P_010 artifact → generate Market Posture JSON → paste into Market Analysis → Market Posture subsection
 7. TOS + VantagePoint → notes into Pre-Market Analysis subsection
@@ -467,42 +429,41 @@ C:\Users\Trader\AI-Agent-Learning-Hub\
 3. Claude builds artifact → test in session → save to `claude_artifacts\` folder
 
 ### Workflow 8.3 — Claude Direct Vault Write (MCP Bridge)
-1. Start Claude Desktop session (MCP tools load automatically when bridge is active)
+1. Start Claude Desktop session (MCP tools load automatically)
 2. Tell Claude what to write and where: "Append today's TOS notes to the Pre-Market Analysis section of today's daily note"
-3. Claude reads the current note, appends or injects the content, confirms success
-4. Verify in Obsidian — content appears immediately, no copy-paste needed
+3. Claude reads current note, appends or injects content, confirms success
+4. Verify in Obsidian — content appears immediately
 
-### Workflow 8.4 — Template Update Process (P_800 owns all templates)
+### Workflow 8.4 — Template Update Process
 1. Open session in P_800 project
-2. Read current template via Windows-MCP PowerShell or `filesystem:read_file`
-3. Edit via `filesystem:write_file` (avoids apostrophe escaping) or PowerShell `[System.IO.File]::WriteAllText` with a single-quoted here-string (doubled apostrophes)
+2. Read current template
+3. Edit via `filesystem:write_file` or PowerShell with UTF8 no-BOM encoding
 4. Verify by Ctrl+N test in Obsidian
 5. Bump template_version in frontmatter
 
-### Workflow 8.5 — Trade Log Export (Phase 5, planned)
-1. Update Excel tracker after each trade as usual
-2. Run `python -m trade_log_export.main` from the p140 conda env (or batch launcher)
-3. Script reads all rows, writes/updates one `.md` per trade in `TradeManagement/`
-4. Bases views refresh automatically in Obsidian
+### Workflow 8.5 — Interface Layer Data Intake (write_to_vault API)
+1. Upstream project (P_115, P_300, P_400, P_020) imports `write_to_vault` from shared_resources
+2. Project normalizes its data dict: `{"date": "...", "symbol": "...", ...}` (per schema in Arch Part1)
+3. Project calls: `write_to_vault("P115", data_dict)`
+4. `vault_interface.py` validates schema, routes to TradeManagement/P115/, writes frontmatter .md
+5. Obsidian Bases query the folder; data appears in views automatically
 
 ---
 
 ## Section 9 — Error Corrections Log
 
-| # | Date | Error | Correct Behavior | Severity |
-|---|------|-------|-----------------|----------|
-| 1 | 2026-03-07 | Created unnecessary sub-projects | P_800 is one project — use sections, not sub-projects | Medium |
-| 2 | 2026-03-08 | Built Market Posture JSON Generator in P_800 — generating posture data is P_010's job | P_800 only displays P_010 output — never generates or writes market posture data | High |
-| 3 | 2026-03-12 | Misspelled a contact name | Moot — contact later identified as scam; all references purged | Low |
-| 4 | 2026-03-12 | Incorrect chat channel names and membership | Channels later all identified as coordinated scams; all references purged | Medium |
-| 5 | 2026-03-12 | Incorrect Telegram contacts mapping | Channels later all identified as coordinated scams; all references purged | Medium |
-| 6 | 2026-03-16 | Vault root recorded as outer "Trading Journal" folder | Correct then-current vault root was the inner `TradingJournal\` folder | Medium |
-| 7 | 2026-03-16 | Vault path recorded as `D:\OneDrive\...` throughout v1.9/v2.0 | Active vault then was actually under `C:\Users\Trader\Documents\...` — but OneDrive Documents redirect made both half-true. See Error #11. | High |
-| 8 | 2026-03-19 | Misspelling persisted in templates | Moot — scam-identified, all references purged | Low |
-| 9 | 2026-03-19 | P_010 owned Obsidian templates — scope creep | P_800 owns ALL Obsidian templates. P_010 generates content only. | Medium |
-| 10 | 2026-04-XX | Trading channels identified as coordinated scams (Investment Pioneer Club, Club 84, Freedom Income Options) | All contact and channel references purged from documentation, templates, and scripts. Scam-recovery follow-up contacts also identified as scams. Tony advised to contact financial institutions and authorities. | Critical |
-| 11 | 2026-05-11 | OneDrive Documents redirect masked the true byte location of the vault — produced C: vs D: confusion across v1.9–v2.1 | Windows redirects `C:\Users\<user>\Documents` to `D:\OneDrive\Documents` when OneDrive Documents sync is enabled. Both "C:" and "D:" claims were half-true. Solution: vault relocated to `C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\` — outside OneDrive's reach. | High |
-| 12 | 2026-05-11 | Used `tp.web.request()` in Templater — function does not exist | Use `tp.obsidian.requestUrl({url: "..."})` for external HTTP calls. Returns an object with a `.json` property. | Medium |
+| # | Date | Error | Correction | Severity |
+|---|------|-------|-----------|----------|
+| 1 | 2026-03-07 | Created unnecessary sub-projects | P_800 is one project — use sections | Medium |
+| 2 | 2026-03-08 | Built Market Posture JSON Generator in P_800 | P_800 displays P_010 output only — never generates posture data | High |
+| 3–5 | 2026-03-12 | Incorrect contact names, channels, Telegram mapping | All identified as coordinated scams; all references purged | Medium |
+| 6 | 2026-03-16 | Vault root recorded as outer "Trading Journal" folder | Corrected; real root = `TradingJournal\` | Medium |
+| 7 | 2026-03-16 | Vault path recorded as `D:\OneDrive\...` throughout v1.9–v2.0 | OneDrive Documents redirect masked byte location; both C: and D: claims were half-true. Solution: vault relocated to C: Hub outside OneDrive. | High |
+| 8 | 2026-03-19 | P_010 owned Obsidian templates — scope creep | P_800 owns ALL templates. P_010 generates content only. | Medium |
+| 9 | 2026-05-11 | Templater used non-existent `tp.web.request()` function | Use `tp.obsidian.requestUrl({url: "..."})` for external HTTP calls. | Medium |
+| 10 | 2026-05-22 | Vault layout Trades/ → Interface Layer (TradeManagement/TradeOrderManagement/KnowledgeBase/Bases) not documented | Architecture pivot completed; detailed docs (Arch Part1 & Part2) created as canonical reference. | High |
+| 11 | 2026-06-06 | Python folder structure `scripts\` → `python\`; E3.001 cleanup completed | Verified E3 work complete; import all modules clean. | Medium |
+| 12 | 2026-06-07 | System doc v3.0 stale (described old Trades/ layout) | Updated to v4.0; reflects live Interface Layer architecture (TradeManagement/TradeOrderManagement/KnowledgeBase/Bases) and Python writer consolidation. | High |
 
 ---
 
@@ -510,16 +471,15 @@ C:\Users\Trader\AI-Agent-Learning-Hub\
 
 | Date | Session Topic | Key Decisions |
 |------|--------------|---------------|
-| 2026-03-07 | Project inception | P_800 created, single project structure, no sub-projects |
+| 2026-03-07 | Project inception | P_800 created, single project structure |
 | 2026-03-08 | Phase 3 — Market Posture Display | P_010 owns posture generation; P_800 reads only |
-| 2026-03-08 | Phase 2 — Web Clipper + Defuddle | 5 templates built; NPM not needed |
-| 2026-03-12 | Enhancement backlog + contact corrections | Telegram API logged; channel names corrected (later moot — all scams) |
 | 2026-03-16 | Phase 3.5 — MCP Bridge | Local REST API installed; vault read/write confirmed live |
-| 2026-03-16 | Doc update v2.0 | Vault path correction |
-| 2026-03-19 | Phase 3.6 — Template ownership transfer + consolidation | All templates moved to P_800 ownership |
-| 2026-04-XX | Scam identification + cleanup | All scam-channel references purged; outreach drafted to the real Marc Andreessen |
-| 2026-05-09 | Vault architecture pivot | Decision: rebuild vault outside OneDrive at `trading_journal\` under the Hub; integrate Bases; abandon old D: and `C:\Users\Trader\Documents\` copies |
-| 2026-05-11 | Phase 4 — Vault rebuild (Steps 1–10) | New vault built at `C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\`; Templates/Bases/TradeManagement subfolders created; 5 community plugins installed; Templater bound `/` → `P_800_Daily_Flow.md`; Local REST API key rotated; MCP config updated; clean v3.0 template tested end-to-end (Verse/Quote/Joke all populating); system doc rewritten to v3.0 |
+| 2026-03-19 | Phase 3.6 — Template ownership transfer | All templates moved to P_800 ownership |
+| 2026-05-11 | Phase 4 — Vault rebuild | New vault at `trading_journal\` (C: Hub, outside OneDrive); Bases/Templates subfolders; Templater bound |
+| 2026-05-22 | Phases 5A–5D — Interface Layer | Vault subfolders created; six .base files; Dashboard.md; vault_interface.py + README; public API locked |
+| 2026-06-04 | E-series cleanup (E1, E2 complete) | Duplicate code purged; dead imports removed |
+| 2026-06-06 | E3.001 complete | Folder structure scripts → python; import test verified clean |
+| 2026-06-07 | System doc v4.0 rewrite | Architecture pivot documented; Interface Arch docs confirmed as canonical reference; legacy folders cleaned |
 
 ---
 
@@ -531,30 +491,38 @@ C:\Users\Trader\AI-Agent-Learning-Hub\
 | Project structure | Single project — no sub-projects |
 | Hub root | `C:\Users\Trader\AI-Agent-Learning-Hub\` |
 | Project folder | `C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_800_Automation_Note_Taking\` |
+| Docs folder | `...\projects\P_800_Automation_Note_Taking\docs\` |
+| Python folder | `...\projects\P_800_Automation_Note_Taking\python\` |
+| obsidian_writers package | `...\python\obsidian_writers\` |
+| vault_interface.py | `shared_resources\python_utils\vault_interface.py` |
 | Obsidian vault root | `C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\` |
 | Daily note format | `YYYY-MM-DD.md` |
 | Templates folder | `trading_journal\Templates\` |
-| Bases folder | `trading_journal\Bases\` |
-| TradeManagement folder | `trading_journal\TradeManagement\` |
 | Master template | `Templates\P_800_Daily_Flow.md` (v3.0) |
+| Bases folder | `trading_journal\Bases\` |
+| Dashboard | `trading_journal\Dashboard.md` |
+| TradeManagement folder | `trading_journal\TradeManagement\` |
+| TradeOrderManagement folder | `trading_journal\TradeOrderManagement\` |
+| KnowledgeBase folder | `trading_journal\KnowledgeBase\` |
+| SIGNALS_DIR (config constant) | `trading_journal\TradeOrderManagement\signals\` |
+| Interface Arch Part1 | `docs\P_800_Interface_Arch_Part1_Schemas_v1_0.md` |
+| Interface Arch Part2 | `docs\P_800_Interface_Arch_Part2_Bases_Dashboard_v1_0.md` |
 | Template owner | P_800 (all templates) |
-| Trade source-of-truth | Excel tracker (`Tracker_Log_Schema_v9_4_0_1.md`, 27 LOCKED columns) |
-| Trade sync direction | Excel → Obsidian TradeManagement/ (one-way) |
+| Trade source-of-truth | Excel tracker (P_115/P_300/P_400/P_020 feed via write_to_vault) |
+| Trade sync direction | Upstream → TradeManagement/ (one-way via write_to_vault) |
 | Primary note-taking tool | Obsidian (1.12.7+) |
 | Primary AI tool | Claude (Desktop required for MCP) |
 | Trading platform | ThinkOrSwim (TOS) |
-| Tony skill level — Python | Novice |
-| Tony skill level — VS Code | Novice |
-| Wrist constraint | Yes — avoid wrist-intensive exercises |
 | Conda environment | p140 (`C:\Users\Trader\.conda\envs\p140\python.exe`) |
-| Primary local LLM | LM Studio at `http://127.0.0.1:1234/v1` |
-| Fallback LLM | Claude API |
+| Local LLM | LM Studio at `http://127.0.0.1:1234/v1` |
 | Obsidian Local REST API port | 27124 (HTTPS) |
 | MCP server command | `C:\Users\Trader\.conda\envs\p140\python.exe -c "from mcp_obsidian import main; main()"` |
 | Claude Desktop config | `%APPDATA%\Claude\claude_desktop_config.json` |
-| MCP Bridge status | ✅ LIVE — reconfigured 2026-05-11 |
-| File size discipline | 300 lines max per file, 50 lines max per function |
+| MCP Bridge status | ✅ LIVE — configured 2026-06-07 |
+| File size discipline | 300 lines max per code/config file; 50 lines max per function |
+| Python skill level | Novice |
+| VS Code skill level | Novice |
 
 ---
 
-*End of P_800 SYSTEM DOCUMENTATION v3.0 — 2026-05-11*
+*End of P_800 SYSTEM DOCUMENTATION v4.0 — 2026-06-07*

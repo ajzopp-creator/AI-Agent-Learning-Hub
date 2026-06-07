@@ -94,27 +94,3 @@ VERDICT_MAP: dict[str, str] = {
     "Override Required":    "WATCH",
     # P_020 — TBD; confirm when P_020 wired
 }
-
-# v2.0 Signal Schema — Compat Window Configuration
-from datetime import datetime, date
-from typing import Optional
-
-COMPAT_WINDOW_DAYS = 14
-CUTOVER_DATE: Optional[str] = None
-DUAL_EMIT_ENABLED = True
-SIGNAL_SCHEMA_VERSION = "v2.0"
-SIGNAL_FOLDER = "TradeManagement/signals"
-
-def cutover_passed() -> bool:
-    """Check if cutover date has passed."""
-    if not CUTOVER_DATE:
-        return False
-    try:
-        cutover = datetime.strptime(CUTOVER_DATE, "%Y-%m-%d").date()
-        return date.today() >= cutover
-    except ValueError:
-        raise ValueError(f"CUTOVER_DATE must be YYYY-MM-DD format, got {CUTOVER_DATE}")
-
-def get_dual_emit_status() -> bool:
-    """Get current dual-emit status."""
-    return DUAL_EMIT_ENABLED and not cutover_passed()

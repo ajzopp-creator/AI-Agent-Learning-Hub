@@ -1,79 +1,136 @@
+:: OpenProjects.bat
+:: Save to: C:\Users\Trader\AI-Agent-Learning-Hub\OpenProjects.bat
+:: Picks an environment (CMD/PowerShell), then a project folder, then opens
+:: that environment inside the selected project directory.
+
 @echo off
-SET "HUB=C:\Users\Trader\AI-Agent-Learning-Hub\projects"
-SET "P140=C:\Users\Trader\.conda\envs\p140"
-SET "PATH=%P140%;%P140%\Scripts;%PATH%"
+setlocal EnableDelayedExpansion
+cls
 
-echo.
-echo  ==========================================
-echo   AJZ Strategies - AI-Agent-Learning-Hub
-echo  ==========================================
+:: --- Configuration ---
+set "PROJECTS_ROOT=C:\Users\Trader\AI-Agent-Learning-Hub\projects"
+set "ENV_TYPE=NONE"
+set "SELECTED_PROJECT="
+
+
+:environment_menu
+cls
+echo ====================================================
+echo       SELECT INITIAL ENVIRONMENT OR PROCEED
+echo ====================================================
+echo  [1] Open Command Prompt (CMD) in project directory
+echo  [2] Open PowerShell in project directory
+echo  [3] Skip environment - just open the project folder
+echo  [4] Exit
+echo ====================================================
 echo.
 
-REM --- Confirm active Python ------------------------------------------------
-FOR /F "tokens=*" %%V IN ('"python --version" 2^>^&1') DO SET PYVER=%%V
-echo   Python : %PYVER%
-echo   Env    : %P140%
-echo.
-echo  ==========================================
+set /p env_choice="Enter your choice (1-4): "
+
+if "%env_choice%"=="1" (
+    set "ENV_TYPE=CMD"
+    goto project_menu
+)
+if "%env_choice%"=="2" (
+    set "ENV_TYPE=PS"
+    goto project_menu
+)
+if "%env_choice%"=="3" (
+    set "ENV_TYPE=NONE"
+    goto project_menu
+)
+if "%env_choice%"=="4" exit
+
+echo Invalid choice, please try again.
+pause
+goto environment_menu
+
+
+:project_menu
+cls
+echo ====================================================
+echo               SELECT A PROJECT
+echo ====================================================
+echo  Root: %PROJECTS_ROOT%
+echo ----------------------------------------------------
+
+:: Verify the projects root exists before listing
+if not exist "%PROJECTS_ROOT%\" (
+    echo  ERROR: Projects folder not found:
+    echo  %PROJECTS_ROOT%
+    pause
+    goto environment_menu
+)
+
+:: Build a numbered list of every subfolder under the root
+set count=0
+for /d %%D in ("%PROJECTS_ROOT%\*") do (
+    set /a count+=1
+    set "proj[!count!]=%%~fD"
+    echo  [!count!] %%~nxD
+)
+
+if %count%==0 (
+    echo  No project folders found under the root.
+    pause
+    goto environment_menu
+)
+
+echo ----------------------------------------------------
+echo  [B] Back to environment menu
+echo  [X] Exit
+echo ====================================================
 echo.
 
-echo  Hub Projects
-echo  -------------------------
-echo   1  D_130  TradetheBounce_OIL
-echo   2  P_000  PythonClaudeLocalLLM
-echo   3  P_010  Current_Market_Posture
-echo   4  P_020  AJZStrategies
-echo   5  P_115  BuytheDip
-echo   6  P_300  VantagePoint_PatternRecognition
-echo   7  P_301  Bullish_Trend_V2.5
-echo   8  P_400  TradeManagement
-echo   9  P_800  Automation_NoteTaking
-echo   0  P_805  Email_TradeExtractor
-echo.
-choice /c 1234567890 /n /m "Select: "
+set /p proj_choice="Enter project number: "
 
-if errorlevel 10 goto :dir0
-if errorlevel 9  goto :dir9
-if errorlevel 8  goto :dir8
-if errorlevel 7  goto :dir7
-if errorlevel 6  goto :dir6
-if errorlevel 5  goto :dir5
-if errorlevel 4  goto :dir4
-if errorlevel 3  goto :dir3
-if errorlevel 2  goto :dir2
-if errorlevel 1  goto :dir1
-goto :launch
+if /i "%proj_choice%"=="B" goto environment_menu
+if /i "%proj_choice%"=="X" exit
 
-:dir0
-cd /d "%HUB%\P_805_Email_Trade_Extractor"
-goto :launch
-:dir9
-cd /d "%HUB%\P_800_Automation_Note_Taking"
-goto :launch
-:dir8
-cd /d "%HUB%\P_400_TradeManagementSystem"
-goto :launch
-:dir7
-cd /d "%HUB%\P_301_Bullish_Trend_Pattern_V2.5"
-goto :launch
-:dir6
-cd /d "%HUB%\P_300_Vantage_Point_Pattern_Recognition"
-goto :launch
-:dir5
-cd /d "%HUB%\P_115_BuytheDipTradingSystem"
-goto :launch
-:dir4
-cd /d "%HUB%\P_020_AJZStrategies_PerformanceAnalysisSystem"
-goto :launch
-:dir3
-cd /d "%HUB%\P_010_Current_Market_Posture"
-goto :launch
-:dir2
-cd /d "%HUB%\P_000_PythonClaudeLocalLLM"
-goto :launch
-:dir1
-cd /d "%HUB%\D_130_TradetheBounce_OIL"
-goto :launch
+:: Reject anything that is not a valid list entry
+if not defined proj[%proj_choice%] (
+    echo Invalid choice, please try again.
+    pause
+    goto project_menu
+)
+
+set "SELECTED_PROJECT=!proj[%proj_choice%]!"
+goto launch
+
 
 :launch
-cmd /k
+:: /d sets the starting directory for the launched window
+if "%ENV_TYPE%"=="CMD" (
+    start "AJZ Project" /d "%SELECTED_PROJECT%" cmd.exe
+)
+if "%ENV_TYPE%"=="PS" (
+    start "AJZ Project" /d "%SELECTED_PROJECT%" powershell.exe -NoExit
+)
+if "%ENV_TYPE%"=="NONE" (
+    start "" explorer.exe "%SELECTED_PROJECT%"
+)
+goto main_menu
+
+
+:main_menu
+cls
+echo ====================================================
+echo                    MAIN MENU
+echo ====================================================
+echo  Active project: %SELECTED_PROJECT%
+echo ----------------------------------------------------
+:: Insert your existing menu options and logic here
+echo  [A] Existing Option 1
+echo  [B] Existing Option 2
+echo  [X] Exit
+echo ====================================================
+echo.
+
+set /p main_choice="Enter your choice: "
+
+:: Add your existing choice handling logic below
+if /i "%main_choice%"=="X" exit
+
+echo Option selected: %main_choice%
+pause
+goto main_menu

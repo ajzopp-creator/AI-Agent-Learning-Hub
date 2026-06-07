@@ -1,0 +1,343 @@
+ Volume in drive C is OS
+ Volume Serial Number is ECA6-01A7
+
+ Directory of C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_800_Automation_Note_Taking
+
+06/06/2026  08:00 AM    <DIR>          .
+06/02/2026  12:53 PM    <DIR>          ..
+06/05/2026  08:50 PM               200 .gitignore
+03/18/2026  05:01 PM    <DIR>          claude_artifacts
+03/19/2026  12:38 PM    <DIR>          data
+06/06/2026  07:26 AM    <DIR>          docs
+03/07/2026  10:42 PM    <DIR>          espanso
+06/05/2026  08:58 PM                 0 from
+06/06/2026  08:00 AM                 0 JUNe6P_800Dir.txt
+05/22/2026  09:59 PM    <DIR>          logs
+06/06/2026  07:29 AM    <DIR>          python
+03/16/2026  08:18 PM             4,718 SESSION_SUMMARY_2026-03-16.md
+05/24/2026  01:05 PM    <DIR>          templates
+06/05/2026  08:58 PM                 0 Traceback
+06/05/2026  05:57 PM    <DIR>          _archive
+               5 File(s)          4,918 bytes
+
+ Directory of C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_800_Automation_Note_Taking\claude_artifacts
+
+03/18/2026  05:01 PM    <DIR>          .
+06/06/2026  08:00 AM    <DIR>          ..
+03/18/2026  05:01 PM            34,558 P800_MCP Json Chat.md
+               1 File(s)         34,558 bytes
+
+ Directory of C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_800_Automation_Note_Taking\data
+
+03/19/2026  12:38 PM    <DIR>          .
+06/06/2026  08:00 AM    <DIR>          ..
+03/19/2026  12:38 PM    <DIR>          extract
+               0 File(s)              0 bytes
+
+ Directory of C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_800_Automation_Note_Taking\data\extract
+
+03/19/2026  12:38 PM    <DIR>          .
+03/19/2026  12:38 PM    <DIR>          ..
+03/19/2026  12:38 PM                 0 .keep
+               1 File(s)              0 bytes
+
+ Directory of C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_800_Automation_Note_Taking\docs
+
+06/06/2026  07:26 AM    <DIR>          .
+06/06/2026  08:00 AM    <DIR>          ..
+04/13/2026  11:06 AM             1,875 AI Chief of Staff (Obsidian Vault) - Copy.md
+04/13/2026  11:06 AM             1,875 AI Chief of Staff (Obsidian Vault).md
+05/15/2026  10:07 AM        11,255,916 ai-skills-for-academics.pdf
+05/11/2026  05:35 PM    <DIR>          backups
+05/09/2026  01:38 PM             6,517 BASES_VAULT_REBUILD_PLAN - Copy.md
+05/09/2026  01:38 PM             6,517 BASES_VAULT_REBUILD_PLAN.md
+05/18/2026  06:02 PM           280,380 C00_Co Pilot Prompt.jpg
+03/09/2026  11:38 PM               101 Client ID Google Calendar API.txt
+05/22/2026  09:03 PM             5,543 files.zip
+05/25/2026  11:29 AM             4,565 HUB_Obsidian_Interface_Architecture.md
+06/01/2026  08:54 PM    <DIR>          Knowledge
+04/13/2026  11:21 AM             5,587 Obsidian Strategy - Copy.md
+04/13/2026  11:21 AM             5,587 Obsidian Strategy.md
+06/01/2026  07:45 AM    <DIR>          output
+03/08/2026  02:25 PM             9,609 Phase2_WebClipper_Setup.md
+04/13/2026  10:44 AM             9,521 Poprosed Prompts for integrtion with Obsidian.txt
+05/22/2026  09:06 PM    <DIR>          prompts
+04/17/2026  10:54 AM             9,990 P_030 Day Trading.txt
+06/05/2026  10:32 AM             2,945 P_115_P400_SIGNAL_PACKET_SCHEMA_v2_0.md
+05/18/2026  06:36 PM             6,077 P_800 Claude Obsidian Setuo - Copy.txt
+05/18/2026  06:36 PM             6,077 P_800 Claude Obsidian Setuo.txt
+05/18/2026  07:04 PM             7,307 P_800 CoPilot Unified ObsidianClaudeBases Architecture - Copy.md
+05/18/2026  07:04 PM             7,307 P_800 CoPilot Unified ObsidianClaudeBases Architecture.md
+05/18/2026  06:16 PM           281,498 P_800 Obsidian Intelligence.jpg
+05/20/2026  05:56 PM             8,632 P_800 Vault Rebuild Plan Co Pilot - Copy.md
+05/20/2026  05:56 PM             8,632 P_800 Vault Rebuild Plan Co Pilot.md
+05/22/2026  09:04 PM             7,806 P_800_Interface_Arch_Part1_Schemas_v1_0.md
+05/22/2026  10:05 PM             5,982 P_800_Interface_Arch_Part2_Bases_Dashboard_v1_0.md
+04/15/2026  05:34 PM            12,236 P_800_Obsidiab Claude Code Gap Analysis - Copy.md
+04/15/2026  05:34 PM            12,236 P_800_Obsidiab Claude Code Gap Analysis.md
+04/15/2026  11:19 AM             7,112 P_800_Obsidian Claude Code architecture - Copy.md
+04/15/2026  11:19 AM             7,112 P_800_Obsidian Claude Code architecture.md
+05/31/2026  05:22 PM            16,160 P_800_Obsidian_Note_Standard_v1.0.md
+05/31/2026  05:42 PM            22,356 P_800_Obsidian_Note_Standard_v1.1.md
+05/22/2026  08:08 PM            29,418 P_800_SYSTEM_DOCUMENTATION - Copy.md
+05/22/2026  08:08 PM            29,418 P_800_SYSTEM_DOCUMENTATION.md
+06/05/2026  09:29 AM             7,545 P_800_System_Initialization_Prompt_v1_1.md
+05/23/2026  07:59 PM             7,652 P_800_Vault_Interface_Consumer_Guide_v1_1.md
+06/06/2026  07:26 AM            86,606 Why risk management in day trading determines everything - 'A.Z Penn' (admin@az-penn.com) - 2026-05-21 1429.eml
+              35 File(s)     12,183,697 bytes
+
+ Directory of C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_800_Automation_Note_Taking\docs\backups
+
+05/11/2026  05:35 PM    <DIR>          .
+06/06/2026  07:26 AM    <DIR>          ..
+03/16/2026  08:50 PM            21,365 P_800_SYSTEM_DOCUMENTATION_v2_0_20260511_173514.md
+03/19/2026  11:52 AM            24,367 P_800_SYSTEM_DOCUMENTATION_v2_1_20260511_173514.md
+               2 File(s)         45,732 bytes
+
+ Directory of C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_800_Automation_Note_Taking\docs\Knowledge
+
+06/01/2026  08:54 PM    <DIR>          .
+06/06/2026  07:26 AM    <DIR>          ..
+05/23/2026  09:06 PM             4,085 IntrotoOptions.md
+05/30/2026  10:10 PM             2,513 Obsidian_Vault_Organization_Guide.md
+06/01/2026  08:53 PM             8,565 P_000-Research-Integrated-Architecture-v0.2.md
+06/01/2026  08:26 PM           106,710 P_000-Research-Integrated-Architecture.md
+05/30/2026  05:05 PM            77,641 P_800_Trading_Brain_Obsidian_Implementation.md
+05/31/2026  04:53 PM            29,119 P_800-AJZ Integrated System Architecture and Gap Analysis (Trading Brain, Obsidian, and Risk Plan).md
+               6 File(s)        228,633 bytes
+
+ Directory of C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_800_Automation_Note_Taking\docs\output
+
+06/01/2026  07:45 AM    <DIR>          .
+06/06/2026  07:26 AM    <DIR>          ..
+05/31/2026  07:40 PM             2,490 Gap 1 Unified Inbox and Source Note.md
+05/31/2026  07:41 PM             3,775 Gap 2 Concept Note Standard.md
+05/31/2026  07:42 PM             3,551 Gap 3 entity Note Standard.md
+05/31/2026  07:46 PM             3,423 Gap 4 MOC and Index Standard.md
+05/31/2026  07:47 PM             3,203 Gap 5 Review and Lint Standard.md
+05/31/2026  07:48 PM             3,395 Gap 6 Migration and Backfill Standa.md
+05/31/2026  07:36 PM             3,797 Gap 8 Prompt and Wrkflow Standards.md
+05/31/2026  07:36 PM             3,797 Gap 8 Prompt and Wrkflow Standards.txt
+05/31/2026  07:50 PM             3,632 Gap 8 Source Classification Standar.md
+05/31/2026  07:39 PM             6,703 P800 Master Obsidian Vault Architecture.md
+05/31/2026  08:03 PM             7,398 P_800 Checklist .md
+06/01/2026  07:45 AM             9,394 Using Obsidian and Claude to Learn a Subject.md
+06/01/2026  07:34 AM             9,854 Using Obsidian and Claude to Learn a Subject.txt
+05/31/2026  07:45 PM            29,297 You are exactly right. The initiali.txt
+              14 File(s)         93,709 bytes
+
+ Directory of C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_800_Automation_Note_Taking\docs\prompts
+
+05/22/2026  09:06 PM    <DIR>          .
+06/06/2026  07:26 AM    <DIR>          ..
+05/22/2026  09:08 PM            11,422 P_800_System_Initialization_Prompt_v1_0.md
+               1 File(s)         11,422 bytes
+
+ Directory of C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_800_Automation_Note_Taking\espanso
+
+03/07/2026  10:42 PM    <DIR>          .
+06/06/2026  08:00 AM    <DIR>          ..
+               0 File(s)              0 bytes
+
+ Directory of C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_800_Automation_Note_Taking\logs
+
+05/22/2026  09:59 PM    <DIR>          .
+06/06/2026  08:00 AM    <DIR>          ..
+06/05/2026  11:33 AM         6,195,691 vault_interface.log
+               1 File(s)      6,195,691 bytes
+
+ Directory of C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_800_Automation_Note_Taking\python
+
+06/06/2026  07:29 AM    <DIR>          .
+06/06/2026  08:00 AM    <DIR>          ..
+06/06/2026  07:29 AM    <DIR>          obsidian_writers
+06/06/2026  07:29 AM    <DIR>          p115_backfill
+03/12/2026  07:41 AM             1,143 P_800_ Obsidian Image Optimizer .ps1
+05/23/2026  08:43 PM             2,619 smoke_test_pbf_2026_01_21.py
+05/23/2026  08:19 PM               175 smoke_test_v1_1.log
+05/23/2026  08:15 PM             1,047 smoke_test_v1_1.py
+05/23/2026  08:23 PM             1,580 test_p115_write.py
+               5 File(s)          6,564 bytes
+
+ Directory of C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_800_Automation_Note_Taking\python\obsidian_writers
+
+06/06/2026  07:29 AM    <DIR>          .
+06/06/2026  07:29 AM    <DIR>          ..
+06/06/2026  07:29 AM    <DIR>          application
+06/05/2026  10:21 AM             5,176 config.py
+06/06/2026  07:29 AM    <DIR>          domain
+06/06/2026  07:31 AM    <DIR>          infrastructure
+05/22/2026  09:48 PM             1,241 logger_setup.py
+06/05/2026  10:21 AM            18,791 schemas.py
+05/22/2026  09:47 PM               133 __init__.py
+06/06/2026  07:30 AM    <DIR>          __pycache__
+               4 File(s)         25,341 bytes
+
+ Directory of C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_800_Automation_Note_Taking\python\obsidian_writers\application
+
+06/06/2026  07:29 AM    <DIR>          .
+06/06/2026  07:29 AM    <DIR>          ..
+06/06/2026  07:33 AM            11,116 write_handler.py
+05/22/2026  09:57 PM                26 __init__.py
+06/06/2026  07:34 AM    <DIR>          __pycache__
+               2 File(s)         11,142 bytes
+
+ Directory of C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_800_Automation_Note_Taking\python\obsidian_writers\application\__pycache__
+
+06/06/2026  07:34 AM    <DIR>          .
+06/06/2026  07:29 AM    <DIR>          ..
+06/06/2026  07:34 AM            13,019 write_handler.cpython-312.pyc
+06/05/2026  10:25 AM            13,843 write_handler.cpython-314.pyc
+05/22/2026  09:59 PM               221 __init__.cpython-312.pyc
+               3 File(s)         27,083 bytes
+
+ Directory of C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_800_Automation_Note_Taking\python\obsidian_writers\domain
+
+06/06/2026  07:29 AM    <DIR>          .
+06/06/2026  07:29 AM    <DIR>          ..
+06/01/2026  08:42 PM             3,579 filename_builder.py
+06/01/2026  08:43 PM             5,115 frontmatter_builder.py
+05/22/2026  09:56 PM             2,021 validator.py
+05/22/2026  09:56 PM                21 __init__.py
+06/06/2026  07:29 AM    <DIR>          __pycache__
+               4 File(s)         10,736 bytes
+
+ Directory of C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_800_Automation_Note_Taking\python\obsidian_writers\domain\__pycache__
+
+06/06/2026  07:29 AM    <DIR>          .
+06/06/2026  07:29 AM    <DIR>          ..
+06/01/2026  08:51 PM             4,674 filename_builder.cpython-312.pyc
+06/01/2026  08:51 PM             6,611 frontmatter_builder.cpython-312.pyc
+05/22/2026  09:59 PM             3,121 validator.cpython-312.pyc
+05/22/2026  09:59 PM               216 __init__.cpython-312.pyc
+               4 File(s)         14,622 bytes
+
+ Directory of C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_800_Automation_Note_Taking\python\obsidian_writers\infrastructure
+
+06/06/2026  07:31 AM    <DIR>          .
+06/06/2026  07:29 AM    <DIR>          ..
+06/06/2026  07:31 AM             1,167 json_writer.py
+06/01/2026  08:56 PM             8,250 vault_writer.py
+05/22/2026  09:56 PM                29 __init__.py
+06/06/2026  07:33 AM    <DIR>          __pycache__
+               3 File(s)          9,446 bytes
+
+ Directory of C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_800_Automation_Note_Taking\python\obsidian_writers\infrastructure\__pycache__
+
+06/06/2026  07:33 AM    <DIR>          .
+06/06/2026  07:31 AM    <DIR>          ..
+06/06/2026  07:33 AM             1,960 json_writer.cpython-312.pyc
+06/01/2026  08:57 PM             9,540 vault_writer.cpython-312.pyc
+05/22/2026  09:59 PM               224 __init__.cpython-312.pyc
+               3 File(s)         11,724 bytes
+
+ Directory of C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_800_Automation_Note_Taking\python\obsidian_writers\__pycache__
+
+06/06/2026  07:30 AM    <DIR>          .
+06/06/2026  07:29 AM    <DIR>          ..
+06/06/2026  07:30 AM             3,128 config.cpython-312.pyc
+06/05/2026  10:25 AM             4,065 config.cpython-314.pyc
+05/22/2026  09:59 PM             2,038 logger_setup.cpython-312.pyc
+06/06/2026  07:30 AM            17,224 schemas.cpython-312.pyc
+06/05/2026  10:25 AM            17,662 schemas.cpython-314.pyc
+05/22/2026  09:59 PM               209 __init__.cpython-312.pyc
+               6 File(s)         44,326 bytes
+
+ Directory of C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_800_Automation_Note_Taking\python\p115_backfill
+
+06/06/2026  07:29 AM    <DIR>          .
+06/06/2026  07:29 AM    <DIR>          ..
+06/06/2026  07:29 AM    <DIR>          application
+05/23/2026  02:55 PM             2,149 cli.py
+05/23/2026  07:28 PM             3,454 config.py
+06/06/2026  07:29 AM    <DIR>          domain
+06/06/2026  07:29 AM    <DIR>          infrastructure
+05/23/2026  02:55 PM               782 launch_backfill.bat
+05/23/2026  02:52 PM                78 __init__.py
+06/06/2026  07:29 AM    <DIR>          __pycache__
+               4 File(s)          6,463 bytes
+
+ Directory of C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_800_Automation_Note_Taking\python\p115_backfill\application
+
+06/06/2026  07:29 AM    <DIR>          .
+06/06/2026  07:29 AM    <DIR>          ..
+05/23/2026  02:54 PM             3,211 backfill_runner.py
+05/23/2026  02:55 PM                18 __init__.py
+06/06/2026  07:29 AM    <DIR>          __pycache__
+               2 File(s)          3,229 bytes
+
+ Directory of C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_800_Automation_Note_Taking\python\p115_backfill\application\__pycache__
+
+06/06/2026  07:29 AM    <DIR>          .
+06/06/2026  07:29 AM    <DIR>          ..
+05/23/2026  03:19 PM             4,726 backfill_runner.cpython-312.pyc
+05/23/2026  03:19 PM               244 __init__.cpython-312.pyc
+               2 File(s)          4,970 bytes
+
+ Directory of C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_800_Automation_Note_Taking\python\p115_backfill\domain
+
+06/06/2026  07:29 AM    <DIR>          .
+06/06/2026  07:29 AM    <DIR>          ..
+05/23/2026  07:08 PM             4,074 row_mapper.py
+05/23/2026  02:54 PM                18 __init__.py
+06/06/2026  07:29 AM    <DIR>          __pycache__
+               2 File(s)          4,092 bytes
+
+ Directory of C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_800_Automation_Note_Taking\python\p115_backfill\domain\__pycache__
+
+06/06/2026  07:29 AM    <DIR>          .
+06/06/2026  07:29 AM    <DIR>          ..
+05/23/2026  07:08 PM             4,515 row_mapper.cpython-312.pyc
+05/23/2026  03:19 PM               239 __init__.cpython-312.pyc
+               2 File(s)          4,754 bytes
+
+ Directory of C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_800_Automation_Note_Taking\python\p115_backfill\infrastructure
+
+06/06/2026  07:29 AM    <DIR>          .
+06/06/2026  07:29 AM    <DIR>          ..
+05/23/2026  07:29 PM             3,621 excel_reader.py
+05/23/2026  02:53 PM                18 __init__.py
+06/06/2026  07:29 AM    <DIR>          __pycache__
+               2 File(s)          3,639 bytes
+
+ Directory of C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_800_Automation_Note_Taking\python\p115_backfill\infrastructure\__pycache__
+
+06/06/2026  07:29 AM    <DIR>          .
+06/06/2026  07:29 AM    <DIR>          ..
+05/23/2026  07:32 PM             4,808 excel_reader.cpython-312.pyc
+05/23/2026  03:19 PM               247 __init__.cpython-312.pyc
+               2 File(s)          5,055 bytes
+
+ Directory of C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_800_Automation_Note_Taking\python\p115_backfill\__pycache__
+
+06/06/2026  07:29 AM    <DIR>          .
+06/06/2026  07:29 AM    <DIR>          ..
+05/23/2026  03:19 PM             3,184 cli.cpython-312.pyc
+05/23/2026  07:32 PM             2,601 config.cpython-312.pyc
+05/23/2026  03:19 PM               295 __init__.cpython-312.pyc
+               3 File(s)          6,080 bytes
+
+ Directory of C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_800_Automation_Note_Taking\templates
+
+05/24/2026  01:05 PM    <DIR>          .
+06/06/2026  08:00 AM    <DIR>          ..
+03/07/2026  10:45 PM             3,692 Daily-Flow.md
+05/24/2026  01:05 PM             4,028 obsidian-web-clipper-settings.json
+               2 File(s)          7,720 bytes
+
+ Directory of C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_800_Automation_Note_Taking\_archive
+
+06/05/2026  05:57 PM    <DIR>          .
+06/06/2026  08:00 AM    <DIR>          ..
+06/05/2026  05:57 PM    <DIR>          backup_files_2026_06_05
+               0 File(s)              0 bytes
+
+ Directory of C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_800_Automation_Note_Taking\_archive\backup_files_2026_06_05
+
+06/05/2026  05:57 PM    <DIR>          .
+06/05/2026  05:57 PM    <DIR>          ..
+               0 File(s)              0 bytes
+
+     Total Files Listed:
+             121 File(s)     19,005,346 bytes
+              92 Dir(s)  570,748,612,608 bytes free
