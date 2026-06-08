@@ -1,9 +1,9 @@
-﻿# P_115 → P_400 Signal Packet Schema v2.0
+# P_115 → P_400 Signal Packet Schema v2.0
 
 **Purpose:** Unified machine-readable signal handoff from all trading systems (P_115, P_300, future) to P_400 order management. Supports both stocks and options in a single schema.
 
 **Format:** JSON  
-**Location:** Obsidian vault, `trading_journal/TradeManagement/signals/YYYY-MM-DD_SYMBOL_v2.0.json`  
+**Location:** Obsidian vault, `trading_journal/TradeOrderManagement/signals/YYYY-MM-DD_SYMBOL_v2.0.json`  
 **Owner:** P_800  
 **Status:** Active (dual-emit compat window: 2 weeks from deployment)  
 **Last Updated:** 2026-06-05
