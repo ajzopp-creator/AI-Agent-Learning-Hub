@@ -1,0 +1,19 @@
+{
+  "symbol": "HAL",
+  "price": 39.47,
+  "bid": 39.45,
+  "ask": 39.49,
+  "price_timestamp": "2026-06-12T14:49:00Z",
+  "price_delay_seconds": 15,
+  "atr_14": 1.42,
+  "avg_volume_20d": 11810000,
+  "data_source": "web",
+  "today_volume": 4690000,
+  "next_earnings_date": "2026-07-16",
+  "binary_events": [],
+  "sector": "Energy",
+  "iv_rank": null,
+  "option_chain_ref": null,
+  "market_open": true,
+  "guideline_stop_override": 38.05
+}

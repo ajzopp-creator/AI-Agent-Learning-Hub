@@ -14,7 +14,7 @@ Call `tool_search(query="PowerShell")`. If "Windows-MCP:PowerShell" present → 
 
 ### STEP 0.5: Work Order Review
 
-Query shared work order ledger at `C:\Users\Trader\AI-Agent-Learning-Hub\Agentic-Hub-Governance\work_orders\`:
+Query shared work order ledger at `C:\Users\Trader\AI-Agent-Learning-Hub\04-Shared-Resources\work_orders\`:
 - **Owner=P_400, status not CLOSED** → Display; **HALT** if action required before session proceeds
 - **P_400 in Affects, Ack pending** → Display; **ACTION REQUIRED** after session work to Ack entry
 

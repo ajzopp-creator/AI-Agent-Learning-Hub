@@ -1,0 +1,18 @@
+{
+  "symbol": "RGR",
+  "price": 37.74,
+  "bid": 37.72,
+  "ask": 37.76,
+  "price_timestamp": "2026-06-12T14:49:00Z",
+  "price_delay_seconds": 15,
+  "atr_14": 1.50,
+  "avg_volume_20d": 159000,
+  "data_source": "web",
+  "today_volume": null,
+  "next_earnings_date": "2026-08-05",
+  "binary_events": [],
+  "sector": "Consumer Discretionary",
+  "iv_rank": null,
+  "option_chain_ref": null,
+  "market_open": true
+}
