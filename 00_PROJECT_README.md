@@ -21,7 +21,7 @@ AI-Agent-Learning-Hub/
 │   ├── LM-Studio-Integration/ # LM Studio connection setup
 │   └── Model-Testing/         # Test different models
 │
-├── 04-Shared-Resources/       # Reusable components
+├── Agentic-Hub-Governance/       # Reusable components
 │   ├── config/                # Configuration files
 │   ├── utils/                 # Helper functions
 │   └── api-credentials/       # API keys (NEVER commit!)

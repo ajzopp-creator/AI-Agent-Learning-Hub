@@ -1,0 +1,21 @@
+P_300 -- Lambda tuning prep check (2026-06-30)
+
+What this checks: counts h20_return_pct fill status in buy_ledger.db
+(fired_signals table) to determine whether enough fully-filled rows
+exist to begin RISK_AVERSION_LAMBDA tuning against real outcomes (M-046).
+This gate has been pending since 2026-06-09; ledger-fill only produced
+its first real output on 2026-06-29 (see M-060 through M-064), with
+h20=0 at that time (oldest signals -- DE/COHR -- hit their 20th trading
+day on 06-29, before market close).
+
+Success criteria: read-only status report, no assertions. Reports
+total rows, per-horizon fill counts (h5/h7/h10/h15/h20), and h20-filled
+broken out by signal_class (BUY/WATCH).
+
+If h20_filled is still 0 or very low: lambda tuning is not yet
+practical -- too few complete outcomes to fit against. Wait for more
+trading days to elapse, or re-run ledger-fill (cli.py ledger-fill) to
+pick up newly-eligible rows first.
+
+Do not change test assertions -- there are none; this is a status
+report only. No production code touched.

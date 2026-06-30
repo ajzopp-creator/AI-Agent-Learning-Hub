@@ -1,7 +1,7 @@
 :: OpenProjects.bat
 :: Save to: C:\Users\Trader\AI-Agent-Learning-Hub\OpenProjects.bat
 :: Picks an environment (CMD/PowerShell), then a project folder, then opens
-:: that environment inside the selected project directory. Script then exits.
+:: that environment inside the selected project directory.
 
 @echo off
 setlocal EnableDelayedExpansion
@@ -99,17 +99,38 @@ goto launch
 
 
 :launch
-:: Empty title "" avoids start mis-parsing the quoted path as the window title.
-:: cmd uses /k and powershell uses -NoExit so the window stays open.
+:: /d sets the starting directory for the launched window
 if "%ENV_TYPE%"=="CMD" (
-    start "" /d "%SELECTED_PROJECT%" cmd.exe /k
+    start "AJZ Project" /d "%SELECTED_PROJECT%" cmd.exe
 )
 if "%ENV_TYPE%"=="PS" (
-    start "" /d "%SELECTED_PROJECT%" "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -NoExit
+    start "AJZ Project" /d "%SELECTED_PROJECT%" powershell.exe -NoExit
 )
 if "%ENV_TYPE%"=="NONE" (
     start "" explorer.exe "%SELECTED_PROJECT%"
 )
+goto main_menu
 
-:: Launch done - close the launcher.
-exit /b
+
+:main_menu
+cls
+echo ====================================================
+echo                    MAIN MENU
+echo ====================================================
+echo  Active project: %SELECTED_PROJECT%
+echo ----------------------------------------------------
+:: Insert your existing menu options and logic here
+echo  [A] Existing Option 1
+echo  [B] Existing Option 2
+echo  [X] Exit
+echo ====================================================
+echo.
+
+set /p main_choice="Enter your choice: "
+
+:: Add your existing choice handling logic below
+if /i "%main_choice%"=="X" exit
+
+echo Option selected: %main_choice%
+pause
+goto main_menu

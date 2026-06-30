@@ -36,7 +36,7 @@ WO-[ID] - [deliverable brief] - [date]
 - Configuration files (config.yaml, config.json)
 - Batch scripts and PowerShell files (.bat, .ps1)
 - .gitignore and workflow docs (GIT_WORKFLOW.md, etc.)
-- Work-order ledger (04-Shared-Resources/work_orders/)
+- Work-order ledger (Agentic-Hub-Governance/work_orders/)
 - ThinkScript files (.ts in tos_scripts/)
 - Templates and prompts (llm_prompts/)
 

@@ -143,7 +143,7 @@ AI-Agent-Learning-Hub/
 ├── 01-Learning-Path/
 ├── 02-Production-Agents/
 ├── 03-Local-LLM/
-├── 04-Shared-Resources/
+├── Agentic-Hub-Governance/
 ├── 05-Documentation/
 ├── 06-Experiments/
 └── venv/
