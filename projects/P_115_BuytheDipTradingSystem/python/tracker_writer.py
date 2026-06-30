@@ -20,15 +20,10 @@ from typing import Any
 
 import openpyxl
 
-# ---------------------------------------------------------------------------
-# Resolve shared_resources on sys.path so vault_interface is importable
-# ---------------------------------------------------------------------------
-_HUB_ROOT = Path(r"C:\Users\Trader\AI-Agent-Learning-Hub")
-_SHARED = _HUB_ROOT / "shared_resources" / "python_utils"
-if str(_SHARED) not in sys.path:
-    sys.path.insert(0, str(_SHARED))
-
-from vault_interface import write_to_vault  # noqa: E402
+# Hub interface -- the ONLY import path for cross-project vault writes (M-038).
+# Resolves via the hub_shared editable install (WO-P000-E2.002); no sys.path
+# side-channel required (WO-P000-E2.003).
+from shared_resources.python_utils.vault_interface import write_to_vault
 
 # Local config
 sys.path.insert(0, str(Path(__file__).parent))

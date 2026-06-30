@@ -1,7 +1,7 @@
 # P_115 — System Architecture
 **Project ID:** P_115
-**Version:** 1.0
-**Last Updated:** 2026-05-27
+**Version:** 1.2
+**Last Updated:** 2026-06-22
 **Maintained By:** Anthony Zoppi
 **Status:** Active
 
@@ -253,25 +253,34 @@ Cross-validation between systems occurs **only on exception basis** when explici
 ### 2.4 Scoring Architecture Summary
 
 ```
-FundamentalsTier (0-4)
-  └─ ROE>15%=20pts, Debt/Cap<60%=15pts, FCF>0=10pts → base tier
-  └─ 200-MA penalty applied → adjusted tier (decimals allowed)
+FundamentalsTier (0-4, V110)
+  └─ ROE>15%=20pts | Debt/Cap<60%=15pts | FCF>0=10pts → raw pts
+  └─ Base tier map: 40-45→4 | 30-39→3 | 20-29→2 | 10-19→1 | 0-9→0
+  └─ 200-MA Distance Penalty (adjustedFundTier = max(0, baseTier - penalty)):
+       at/above 200-MA or 0 to -3% below → 0.0  NORMAL
+       -3% to -10%                        → -1.0 PULLBACK
+       -10% to -20%                       → -2.0 CORRECTION
+       -20%+                              → -4.0 BEAR/AVOID (auto-reject)
+  └─ adjustedFundTier range: 0–4, decimals allowed
 
 CandleTier (0-3)
-  └─ T3 = candle + vol + STR + RSI + MTF
-  └─ T2 = candle + (vol OR STR OR RSI)
-  └─ T1 = candle only
-  └─ T0 = none
+  └─ T3: pattern at support + volume + STR<=-1  OR  candle+vol+STR>0+RSI rising+MTF support
+  └─ T2: pattern alone  OR  candle + (vol OR STR>0 OR RSI rising)
+  └─ T1: candle pattern only
+  └─ T0: none
+  └─ Patterns: BOSS (bull engulf/pierce at support) | Pin Bar (lower-wick reject) |
+               Inside Bar (consolidation in prior range at support)
 
 SetupScore (0-4)
-  └─ 4 binary gates: CandleTier>=2 | ModScore>=70 | STR>0 | RSI>RSI[1]
+  └─ 4 binary gates: CandleTier>=2 | ModulatedScore>=70 | SellTheRip>0 | RSI>RSI[1]
 
 AnalysisTier (1-4)
-  └─ Mapped from SetupScore (>=4=T4, >=3=T3, >=2=T2, <2=T1)
+  └─ Mapped from SetupScore: >=4→T4 | >=3→T3 | >=2→T2 | <2→T1
 
-HybridTier = AnalysisTier + Adjusted FundamentalsTier
+HybridTier = AnalysisTier + adjustedFundTier
   └─ >=6 → BUY
-  └─ AsymmetricSetup conditions → ASYM
+  └─ AsymmetricSetup → ASYM: AnalysisTier>=3 AND adjustedFundTier>=2 AND
+       (MTF support OR wickAlign OR rsiBounce4H)
   └─ Neither → PASS
 ```
 
@@ -1014,7 +1023,7 @@ LogEntry is authoritative over Final Verdict bar (display artifact conflicts mus
 | Morning Star Pattern (PA6) | PA4/PA5 precede in queue | Q3 2026 |
 | PA7 (Evening Star), PA8 (Three White Soldiers) | PA4/PA5/PA6 precede in queue | 2027 |
 
-**Gating condition for all Q3 enhancements:** June 30 baseline review — 20+ completed trades and >55% win rate required before any Q3 feature proceeds.
+**Gating condition for all Q3 enhancements:** June 30 baseline review — 20+ completed trades and >55% win rate required before any Q3 feature proceeds. *(Exception: Stop Derivation Rule v1.2 shipped 2026-06-22 under explicit user authorization to break the freeze — see Appendix G.)*
 
 ---
 
@@ -1057,14 +1066,28 @@ If post-earnings flag triggers → default Watch, override only on explicit user
 **Time Required:** 3-5 minutes
 
 **Steps:**
-1. User provides: Entry price, Stop price, Cash Balance for this trade
-2. Claude re-reads `P_010_RiskConfig.json` via Windows-MCP — MANDATORY
-3. Apply current risk_mode to all gate calculations
-4. Calculate three gates: Risk-based / Cash availability / Concentration cap
-5. Smallest gate wins
-6. If options selected: verify spread<=10% of mid, OI>=150, options R:R >= stock R:R
-7. Output TP/SL with stock price AND option price translation (if options)
-8. R:R minimum check: 2:1 to T1 or T2 (T2-trail-only acceptable when T1 fails)
+1. User provides: Entry price, Stop price (if known), Cash Balance for this trade
+2. If Stop price not provided, derive via Stop Derivation Rule (v1.2, below)
+3. Claude re-reads `P_010_RiskConfig.json` via Windows-MCP — MANDATORY
+4. Apply current risk_mode to all gate calculations
+5. Calculate three gates: Risk-based / Cash availability / Concentration cap
+6. Smallest gate wins
+7. If options selected: verify spread<=10% of mid, OI>=150, options R:R >= stock R:R
+8. Output TP/SL with stock price AND option price translation (if options)
+9. R:R minimum check: 2:1 to T1 or T2 (T2-trail-only acceptable when T1 fails)
+
+**Stop Derivation Rule (v1.2, added 2026-06-22):**
+```
+Primary:   PA Stop (Structure) — swing low over paStopLookback (default 10) bars
+           up to/including the signal bar, minus 0.1x ATR buffer.
+           Source: P_115_buyTheDipChart_V14.ts, def paStop.
+Fallback:  Entry - 2xATR — used automatically when structure low is invalid
+           (NaN) or sits above entry price.
+Display:   Chart label "PA Stop: [value] (Structure | ATR Fallback)" shows
+           which method is active for the current signal bar.
+Rule:      Always use the chart's displayed PA Stop value as Stop price.
+           Never recompute independently of the chart label.
+```
 
 **Expected Output:**
 - Position size (shares or contracts)
@@ -1072,6 +1095,12 @@ If post-earnings flag triggers → default Watch, override only on explicit user
 - SL level with stock + option prices
 - R:R calculation for both stock and option scenarios
 - Posture flag if changed since INIT
+
+**2-Tranche Exit Rule (applies to all STEP 2 outputs):**
+- T1 (50%): first resistance level — always show
+- T2 (50%): weekly-ATR trailing stop — always show
+- Zone strength: Strong = 3+ prior touches | Moderate = 2 | Weak = 1
+- R:R minimum 2:1 to T1 OR T2; T2-trail-only acceptable when T1 fails
 
 ### 8.3 Review Workflow: Daily Trade Outcome (STEP 3) — P_800 Enforcement
 
@@ -1107,9 +1136,15 @@ STEP 3 [TICKER] [Outcome] [Exit Price] [Realized R:R]
 ### 8.4 Exception Workflows
 
 #### Exception: Fund verification discrepancy
-- **Trigger:** Recomputed Fund is >1 tier below submitted Fund
-- **Action:** STOP. Display "FUND VERIFICATION FAILED: submitted=X, recomputed=Y (reason)". Do NOT proceed to STEP 2.
-- **Documentation:** User resolves (accept recomputed, override with justification, or abort). Note in Comments column.
+- **Trigger:** P_115 BUY or ASYM AND submitted Fund >= 2 (P_116/117/118 excluded)
+- **Protocol (run before outputting verdict):**
+  1. `web_search "[TICKER] ROE debt to capital free cash flow stockanalysis.com"`
+  2. Extract live ROE%, Debt/Cap%, FCF sign
+  3. Score: ROE>15%=20 | Debt/Cap<60%=15 | FCF>0=10 → apply base tier map → apply 200-MA penalty
+  4. Compare recomputed vs submitted tier:
+     - Recomputed >1 tier below → STOP; "FUND VERIFICATION FAILED: submitted=X recomputed=Y (reason)"
+     - Within 1 tier → proceed; note "Fund verified: ROE=.. D/C=.. FCF=.." in Comments
+- **Documentation:** User resolves (accept/override/abort). Reason in Comments. Scope: P_115 BUY/ASYM only.
 
 #### Exception: LogEntry vs Final Verdict bar conflict
 - **Trigger:** TOS chart shows conflicting values between LogEntry (top-right) and Final Verdict bar
@@ -1130,6 +1165,21 @@ STEP 3 [TICKER] [Outcome] [Exit Price] [Realized R:R]
 - **Trigger:** BUY signal becomes PASS during batch processing (e.g., chart updates)
 - **Action:** Retain in log with RecheckStatus="Flipped"
 - **Documentation:** SimulationNotes describes the flip reason
+
+---
+
+### 8.5 Chart Pattern Reference (P_118 PatternType)
+
+**Rule: Always read from chart. Never ask. Never default "--" if chart is present.**
+
+| Pattern | Shape / Key Characteristics | Entry |
+|---|---|---|
+| Cup and Handle | U-base 7-65 wks; volume dries at bottom; low-vol handle drifts down | Top of handle |
+| High Handle | After prior breakout; 4d-4wk tight controlled pullback | Top of handle |
+| Flat Base | Horizontal >=5 wks; <15% depth; volume contraction | Top of base |
+| Double Bottom | W-shape; two ~equal lows; higher vol on right | Mid-W or right handle |
+
+If chart present: assign pattern + reasoning in Comments. If no chart: "--", note No chart. If ambiguous: pick best fit, state reasoning.
 
 ---
 
@@ -1497,6 +1547,7 @@ P_115_STEP 1 AEO 4 3 2 3 0 BUY (submitted)
 | P_010_RiskConfig.json | `C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_010_Current_Market_Posture\` | Live posture (re-read each STEP 2) |
 | vault_interface.py (P_800 v1.1) | `C:\Users\Trader\AI-Agent-Learning-Hub\shared_resources\python_utils\` | Authoritative Obsidian write routing |
 | python-project-architecture SKILL.md | `C:\Users\Trader\AI-Agent-Learning-Hub\shared_resources\skills\python-project-architecture\SKILL.md` | Hub-wide Python standards |
+| P_115_buyTheDipChart_V14.ts | `C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_115_BuytheDipTradingSystem\tos_scripts\` | Current production ThinkScript — includes paStop (v1.2 Stop Derivation Rule) |
 
 ### Appendix C: Code Repository
 
@@ -1504,7 +1555,7 @@ P_115_STEP 1 AEO 4 3 2 3 0 BUY (submitted)
 |---|---|
 | Repository | Local: `C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_115_BuytheDipTradingSystem\` |
 | Primary Language | ThinkScript (TOS indicators), Python (helpers) |
-| Key Files | `P_115_buyTheDipChart_V110.ts` (TOS indicator), `P_910.ts` (scan), `P_050.ts` (scan) |
+| Key Files | `P_115_buyTheDipChart_V14.ts` (current production TOS indicator — see Appendix B), `P_910.ts` (scan), `P_050.ts` (scan) |
 | Dependencies | Shared resources: `vault_interface.py` (Python P_800), V110 ThinkScript library |
 
 ### Appendix D: Architecture Diagram (Detailed)
@@ -1566,7 +1617,7 @@ P_115_STEP 1 AEO 4 3 2 3 0 BUY (submitted)
 
 ```
 # P_115 — Key Configuration Parameters
-# Last Updated: 2026-05-27
+# Last Updated: 2026-06-22
 
 # Core Parameters (from P_000_Account_Parameters_Current.md)
 account_balance       = 32812.00       # USD, updated May 1, 2026
@@ -1603,6 +1654,11 @@ options_rr_min_rule   = "options R:R >= stock R:R"
 rr_minimum            = 2.0            # 2:1 to T1 or T2
 t2_trail_only         = "allowed when T1 fails but T2 clears"
 
+# Stop Derivation (v1.2 — P_115_buyTheDipChart_V14.ts)
+pa_stop_lookback      = 10             # bars, swing low up to/incl. signal bar
+pa_stop_atr_buffer    = 0.1            # x ATR subtracted from swing low
+pa_stop_fallback      = "Entry - 2xATR"  # used when structure low invalid/above entry
+
 # Post-Earnings
 earnings_stabilization_sessions = 3
 
@@ -1619,6 +1675,7 @@ vault_entry_function    = "write_to_vault(schema_key, data, overwrite=False)"
 |---|---|---|---|
 | 1.0 | 2026-05-27 | Anthony Zoppi | Initial release of P_115_System_Architecture. Migrated from P_115_BuyTheDip_MasterDoc_v1.0 (Feb 25, 2026). Renamed to System Architecture per template v1.1 convention. EC-XXX numbering applied to Error Corrections Log (EC-001 through EC-011). Section 6.1 summary table added. P_800 vault interface enforcement added to FR-3, Section 8.3 STEP 3 workflow, Section 8.4 exception workflow, and Section 10.4 known issues. Step1Verdict vocabulary standardized to PASS. Parameter registry refreshed to May 1, 2026 monthly review values. |
 | 1.1 | 2026-06-02 | Anthony Zoppi | Section 7 Enhancement Log updated. Enhancements renumbered 1-9. Added Enhancement 1 (P_400 Signal Packet Emitter) and Enhancement 2 (P_400 Full Handoff / eliminate P_115 order management) as new top priorities per P_115_P400_Process_Evaluation_Recommendations.md and P_115_P400_SIGNAL_PACKET_SCHEMA_v1_0.md. Former Enhancements 1-7 renumbered to 3-9. tracker_writer.py (558 rows, Jun 2) added to Completed. Q3 gating condition documented. Reference links to signal packet schema and evaluation doc added. |
+| 1.2 | 2026-06-22 | Anthony Zoppi | Added Stop Derivation Rule to Section 8.2 — PA Stop (Structure, swing-low based) now primary, Entry-2xATR fallback retained for invalid/missing structure. Sourced from P_115_buyTheDipChart_V14.ts (paStop). Appendix F config updated with pa_stop_lookback, pa_stop_atr_buffer, pa_stop_fallback. Appendix B/C updated to reference V14 script. Q3 feature freeze broken by explicit user authorization to ship this enhancement during Validation Phase (Section 7 gating note updated). |
 
 **Review Schedule:** Monthly (or when system changes significantly)
 **Last Review:** 2026-06-02

@@ -26,19 +26,19 @@ class SignalContext(BaseModel):
 
 
 class SignalMetadata(BaseModel):
-    """Linkage back to the upstream P_115 session and chart."""
+    """Linkage back to the upstream session and chart."""
 
     model_config = ConfigDict(extra="forbid")
 
-    p115_session_date: str
-    p115_chart_timeframe: str
+    session_date: str
+    chart_timeframe: str
     signal_source_link: str
 
-    @field_validator("p115_session_date")
+    @field_validator("session_date")
     @classmethod
     def _date_format(cls, v: str) -> str:
         if not re.match(config.DATE_REGEX, v):
-            raise ValueError("p115_session_date must be YYYY-MM-DD")
+            raise ValueError("session_date must be YYYY-MM-DD")
         return v
 
 

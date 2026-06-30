@@ -1,7 +1,42 @@
-﻿# STRATEGY CHANGE LOG - V110 Enhancement
+# STRATEGY CHANGE LOG - V110 Enhancement
 
 ---
 
+## V112 -- June 19, 2026
+**Status:** CONFIRMED -- Scan-side filter retired
+**Decision by:** Tony Zoppi
+
+### Change: P_920 Earnings Filter (V2.1) Confirmed Non-Functional -- Supersedes V2.1 Entry Below
+
+**Root cause:** A Fund-tier mismatch pattern across three P_920 BUY signals on 6/19/26 (MTN, SUNB, VIRT) prompted a review of P_920_BuyersinControl_EOD.V2.1. Its header comments describe `noRecentEarnings = Sum(HasEarnings(), earningsLookback) == 0` as actively filtering same-day + 2-prior-session earnings reactions. This contradicts the V1->V2 changelog entry already in this script, which documents that `HasEarnings()` is unsupported in TOS Stock Hacker and that the filter attempt was reverted to V2.0. V2.1 was confirmed live in production -- the documented revert had not actually been carried forward into the running script.
+
+**Confirmation:** Tony ran V2 and V2.1 side by side on 6/19/26. Identical result counts confirm `HasEarnings()` is inert in this scan engine (evaluates to a constant, never excludes anything). The filter has been a permanent no-op since it was added 5/8/26 -- roughly six weeks of believing the scan had earnings protection it did not have.
+
+**Note:** This did not affect the 6/19/26 MTN/SUNB/VIRT batch specifically -- none of those three had earnings within the 3-bar lookback window regardless (MTN 8 sessions prior, SUNB upcoming 6/23/26 not yet reported, VIRT not until 7/29/26). The Fund-tier mismatches that day were a separate, already-known issue (TOS fundamental data lag, same pattern as the AEO case).
+
+**Resolution:** V2.1 retired. V2 (pre-earnings-filter version) is confirmed as the live script -- no code change required, V2/V2.1 are behaviorally identical. Earnings filtering remains correctly handled at the review layer only (Claude's mandatory stockanalysis.com earnings-date check on every BUY/ASYM, per V110.3 below) -- that layer was never affected by this scan-side bug.
+
+**Tracking:** WO-P920-E1.001 (CLOSED).
+
+---
+
+## V111 -- June 18, 2026
+**Status:** PRODUCTION -- Active
+**Decision by:** Tony Zoppi
+
+### Change: Fund Verification Scope Extension -- P_118 and P_117-Recheck Mode
+
+**Root cause:** Memory review surfaced a scope conflict -- prior memory claimed Fund Verification (V110.2) had been expanded from P_115-only to all four strategies on 4/27/2026. No corresponding change log entry exists for that date. Root cause identified: the Post-Earnings Auto-Flag Rule (V110.3, 5/8/2026) legitimately expanded to all four strategies and reuses the same stockanalysis.com fetch as Fund Verification -- the two separate rules got conflated in memory.
+
+**Resolution:** V110.2's P_115-only scope is confirmed correct and unchanged for the original Fund Verification rule. Separately, review established that P_118 (mandatory P_115 recheck) and P_117 (optional P_115 recheck) already produce real Fund/Anal/Candle/Setup diagnostics when that recheck runs -- they are structurally P_115 signals at that point, not a different data pipeline. Extending Fund Verification to those two cases costs nothing additional (same stockanalysis.com fetch, same recompute logic already in use) and closes the same AEO-style failure mode V110.2 was built to prevent.
+
+**Scope (clarified):**
+- Fund Verification applies to: P_115 BUY/ASYM (unchanged) | P_118 BUY/ASYM (new -- via mandatory P_115 recheck) | P_117 BUY/ASYM when a P_115 recheck was performed (new -- conditional on recheck)
+- Does NOT apply to: P_116 (no Fund value exists in its bounce-pattern pipeline) | P_117 rows with no recheck performed (no Fund value to verify)
+
+**Cost:** Zero added time for the P_118/P_117-recheck cases -- same stockanalysis.com fetch already required by the recheck step itself.
+
+---
 ## V110.4 -- May 21, 2026
 **Status:** PRODUCTION -- Active
 **Decision by:** Tony Zoppi

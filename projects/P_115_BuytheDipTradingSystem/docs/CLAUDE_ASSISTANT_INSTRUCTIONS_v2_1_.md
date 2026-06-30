@@ -180,7 +180,7 @@ Output: Tracker row + position sizing
 **Key Rules:**
 - PatternType: ALWAYS comes from user input — NEVER ask for it
 - BreakoutVerdict: BUY / ASYM / No Signal (from user input)
-- SignalSource: `P_118_EddieZ`
+- SignalSource: `P_118`
 - PatternType options: Cup & Handle | High Handle | Flat Base | Double Bottom
 - If PatternType is missing from input → use "--" and note in Comments, DO NOT ask
 - May include P_115 recheck at Anthony's discretion only
@@ -366,7 +366,7 @@ Outcome | RecheckStatus | SimulationNotes | Comments
 | `P_115` or `P_910_Combined` or `P_910_RelativeStrength` | P_115 system |
 | `P_300_GridCrossover` | P_300 system |
 | `P_116_IncomeLaunchpad` | P_116 system |
-| `P_118_EddieZ` | P_118 system |
+| `P_118` | P_118 system |
 | `P_117_Gemini` | P_117 tracking (Gemini source) |
 | `P_117_Email` | P_117 tracking (Email source) |
 | `P_117_Manual` | P_117 tracking (Manual analysis) |
@@ -630,4 +630,13 @@ the weighting and conflict resolution rules together."
 
 ---
 
-**END OF CLAUDE ASSISTANT INSTRUCTIONS v2.7**
+**Version 2.8 (June 16, 2026):**
+- Python Execution Handoff (PEH) pattern established -- replaces old "standalone PowerShell script" timeout behavior
+- MCP Python timeout (~9/10 occurrence rate) now routes to Claude Code via peh-handoff skill
+- Claude writes run_this.py + run_this_context.txt to 04-Shared-Resources\verify\ BEFORE every MCP Python call
+- On timeout: give Tony the standard handoff prompt; do NOT retry MCP; do NOT write inline PowerShell
+- Skill: .claude\skills\peh-handoff\SKILL.md
+- Full doc: P_000\docs\PEH_Python_Execution_Handoff.md
+- First use: WO-P115-E2.001 stop field enrichment -- PASS on first run (2026-06-16)
+
+**END OF CLAUDE ASSISTANT INSTRUCTIONS v2.8**
