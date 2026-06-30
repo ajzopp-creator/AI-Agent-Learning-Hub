@@ -16,6 +16,7 @@ credentials.json
 **/config_private.py
 schwab_credentials.txt
 email_passwords.txt
+**/P_020_schwab_token.json
 
 # ============================================
 # Python
@@ -145,9 +146,41 @@ site/
 # Backup files
 # ============================================
 *.bak
+*.bak_*
 *.backup
 *.swp
 *~
+*_backup_*.md
+*_BACKUP_*.md
+*_backup_*.toml
+*BACKUP_*.py
+*.py.bak_*
+
+# ============================================
+# Transient run output / diagnostics (regenerated each run)
+# ============================================
+projects/P_300_Vantage_Point_Pattern_Recognition/outputs/reports/*.txt
+projects/P_010_Current_Market_Posture/data/snapshots/*.json
+projects/P_010_Current_Market_Posture/outputs/*.json
+projects/P_020_AJZStrategies_PerformanceAnalysisSystem/audit_logs/
+projects/P_020_AJZStrategies_PerformanceAnalysisSystem/data/api_pulls/
+projects/P_300_Vantage_Point_Pattern_Recognition/_diag_*.txt
+projects/P_300_Vantage_Point_Pattern_Recognition/output*.txt
+projects/P_300_Vantage_Point_Pattern_Recognition/ouput.txt
+projects/P_300_Vantage_Point_Pattern_Recognition/init*.txt
+projects/P_300_Vantage_Point_Pattern_Recognition/outputs/init_catalog_summary.txt
+projects/P_300_Vantage_Point_Pattern_Recognition/outputs/cohr_v2_test.txt
+projects/P_400_TradeOrderManagement/python/outputsummary.txt
+projects/P_400_TradeOrderManagement/python/restore.txt
+projects/P_400_TradeOrderManagement/python/snapshot_*.json
+projects/P_400_TradeOrderManagement/python/chain_*.json
+projects/P_300_Vantage_Point_Pattern_Recognition/P_300_preflight_status.json
+projects/P_300_Vantage_Point_Pattern_Recognition/P_300_AddPattern_Messages.txt
+projects/P_300_Vantage_Point_Pattern_Recognition/P_300_DailyEval_Messages.txt
+projects/P_300_Vantage_Point_Pattern_Recognition/_add_pattern_error.txt
+projects/P_300_Vantage_Point_Pattern_Recognition/_init_catsum.txt
+projects/P_300_Vantage_Point_Pattern_Recognition/tasks/*_out.txt
+projects/P_020_AJZStrategies_PerformanceAnalysisSystem/python/database/P_020_rematch.txt
 
 # ============================================
 # Notes for Beginners
