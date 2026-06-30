@@ -186,6 +186,8 @@ projects/P_300_Vantage_Point_Pattern_Recognition/_init_catsum.txt
 projects/P_300_Vantage_Point_Pattern_Recognition/tasks/*_out.txt
 projects/P_020_AJZStrategies_PerformanceAnalysisSystem/python/database/P_020_rematch.txt
 projects/P_300_Vantage_Point_Pattern_Recognition/outputs/reports/eval/*.txt
+projects/P_300_Vantage_Point_Pattern_Recognition/data/live/P_300_HistoryGrid_IntelliscanEvalParameters.xlsx
+projects/P_300_Vantage_Point_Pattern_Recognition/vault/
 
 # ============================================
 # Notes for Beginners
