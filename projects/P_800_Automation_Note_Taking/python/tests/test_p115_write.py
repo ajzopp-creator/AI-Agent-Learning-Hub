@@ -9,14 +9,7 @@ P_115 note to the vault. Safe to re-run -- uses overwrite=True.
 Aligned with: P_800_Vault_Interface_Consumer_Guide_v1_1.md (2026-05-23).
 """
 
-import sys
 from pathlib import Path
-
-# Hub root on sys.path so `shared_resources` namespace package resolves
-HUB = Path(r"C:\Users\Trader\AI-Agent-Learning-Hub")
-if str(HUB) not in sys.path:
-    sys.path.insert(0, str(HUB))
-
 from shared_resources.python_utils.vault_interface import write_to_vault
 
 SAMPLE = {

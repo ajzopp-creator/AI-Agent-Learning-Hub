@@ -31,7 +31,7 @@ Call `tool_search("PowerShell")`. If `windows-mcp:PowerShell` returned, proceed.
 
 ### Step 0.5 — Work Order Review
 
-Query shared work order ledger at `C:\Users\Trader\AI-Agent-Learning-Hub\04-Shared-Resources\work_orders\`:
+Query shared work order ledger at `C:\Users\Trader\AI-Agent-Learning-Hub\Agentic-Hub-Governance\work_orders\`:
 - **Owner=P_800, status not CLOSED** → Display; **HALT** if action required before session
 - **P_800 in Affects, Ack pending** → Display; **ACTION REQUIRED** after session work
 
@@ -149,7 +149,7 @@ Never proceed past a HALT condition silently.
 | Python env | `C:\Users\Trader\.conda\envs\p140\python.exe` |
 | P_000 params | `C:\...\P_000_PythonClaudeLocalLLM\config\P_000_Account_Parameters_Current.md` |
 | P_010 posture | `C:\...\P_010_Current_Market_Posture\P_010_RiskConfig.json` |
-| Work orders | `C:\Users\Trader\AI-Agent-Learning-Hub\04-Shared-Resources\work_orders\` |
+| Work orders | `C:\Users\Trader\AI-Agent-Learning-Hub\Agentic-Hub-Governance\work_orders\` |
 
 ### Standing Rules
 

@@ -46,8 +46,8 @@
     "signal_rationale": "string (free-text thesis summary)"
   },
   "signal_metadata": {
-    "p115_session_date": "YYYY-MM-DD",
-    "p115_chart_timeframe": "string (1D | 4H | 1H | etc)",
+    "session_date": "YYYY-MM-DD",
+    "chart_timeframe": "string (1D | 4H | 1H | etc)",
     "signal_source_link": "string (path to upstream P_115 or P_300 .md file)"
   }
 }

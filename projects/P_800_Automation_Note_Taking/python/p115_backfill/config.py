@@ -10,15 +10,10 @@ update their left-side keys to match your actual headers.
 from __future__ import annotations
 
 import os
-import sys
 from pathlib import Path
 
 # ── PATHS ─────────────────────────────────────────────────────────────────────
 HUB_ROOT = Path(r"C:\Users\Trader\AI-Agent-Learning-Hub")
-
-# Add HUB_ROOT to sys.path so shared_resources.python_utils is importable
-if str(HUB_ROOT) not in sys.path:
-    sys.path.insert(0, str(HUB_ROOT))
 
 # Real tracker lives in OneDrive — never hardcode the drive letter
 TRACKER_PATH = (
