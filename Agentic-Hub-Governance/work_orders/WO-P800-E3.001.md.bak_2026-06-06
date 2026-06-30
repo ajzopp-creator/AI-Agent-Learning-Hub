@@ -1,0 +1,84 @@
+﻿# WO-P800-E3.001 -- Python Folder Structure Cleanup (scripts -> python + hygiene)
+
+**Status:** OPEN
+**Owner:** P_800
+**Affects:**
+**Deliverable:** P_800 Python tree conforming to Hub standard (Section 3.1): top folder renamed scripts\ -> python\; backup .py removed from package layers; tests consolidated; committed caches/logs purged and gitignored; all path references repointed.
+**Verified:**
+**Depends On:**
+**Acks:** (none -- internal P_800 structure; spin a follow-up WO with Affects:P_115 only if p115_backfill is relocated)
+
+--------------------------------------------------------------------------------
+DIAGNOSIS (from P_000 scan 2026-06-05)
+--------------------------------------------------------------------------------
+The layered packages are correct -- obsidian_writers and p115_backfill both have
+proper domain / infrastructure / application separation. The problems are around them:
+
+1. Top folder is scripts\ , not python\ (Hub standard, Section 3.1).
+2. Backup .py files sitting INSIDE the package layers (get imported by accident,
+   pollute namespace):
+     - application\write_handler_BACKUP_20260602_171725.py
+     - application\write_handler_BACKUP_20260602.py
+     - config_BACKUP_20260602.py
+     - domain\filename_builder_BACKUP_20260602_171725.py
+     - domain\filename_builder_BACKUP_20260602.py
+     - schemas_BACKUP_20260602_171725.py
+     - schemas_BACKUP_20260602.py
+3. Tests split two ways: a proper obsidian_writers\tests\ folder AND loose files at
+   scripts\ root: smoke_test_pbf_2026_01_21.py, smoke_test_v1_1.py, test_p115_write.py
+   (+ smoke_test_v1_1.log).
+4. Committed junk: .pytest_cache\ inside obsidian_writers; logs\vault_interface.log
+   is 6.2 MB sitting in the project; __pycache__ throughout.
+
+--------------------------------------------------------------------------------
+TARGET STRUCTURE
+--------------------------------------------------------------------------------
+projects\P_800_Automation_Note_Taking\
+  python\                         (renamed from scripts\)
+    obsidian_writers\             (domain\ infrastructure\ application\ tests\)  -- layering kept as-is
+    p115_backfill\                (domain\ infrastructure\ application\ + cli.py config.py launch_backfill.bat)  [see OPEN DECISION]
+    tests\                        (loose smoke_test_*.py / test_p115_write.py consolidated here)
+  logs\                           (gitignored -- no committed logs)
+  docs\                           (doc-clutter cleanup is OUT OF SCOPE for this WO; tracked separately)
+
+--------------------------------------------------------------------------------
+CLEANUP STEPS (run in a P_800 session; order matters)
+--------------------------------------------------------------------------------
+1. SAFETY SCAN FIRST. Grep the Hub for references to the P_800 scripts\ path:
+   launch_backfill.bat (internal path), P_800 init prompt + docs, and ANY other
+   project that imports P_800 scripts (e.g. hub_lib, P_115). Record every hit.
+2. Rename scripts\ -> python\.
+3. Repoint every reference from step 1 in the SAME pass (.bat, init prompt, docs).
+   Do not leave dangling scripts\ paths.
+4. Remove the seven *_BACKUP_* .py duplicates listed in DIAGNOSIS. Back them up to
+   _archive\ first; never delete the live module, only the BACKUP copies.
+5. Consolidate loose tests into python\tests\ (or each package's tests\). Delete
+   smoke_test_v1_1.log.
+6. Purge committed junk: .pytest_cache\, logs\vault_interface.log. Add logs/,
+   __pycache__/, .pytest_cache/ to .gitignore.
+7. Resolve p115_backfill ownership (OPEN DECISION below).
+8. Verify: imports resolve from the new python\ path; launch_backfill.bat runs;
+   tests pass. Set Verified=[2026-06-05]; Status -> OWNER_DONE; then CLOSED (Affects empty).
+
+--------------------------------------------------------------------------------
+OPEN DECISION -- p115_backfill ownership
+--------------------------------------------------------------------------------
+scripts\p115_backfill\ is P_115-related code living in P_800. Hub rule: code belongs
+under the project that creates it. Decide:
+  KEEP in P_800  -- if P_800 owns the Obsidian backfill/note-writing pipeline.
+  MOVE to P_115  -- if it is P_115 domain logic. If moved, open a follow-up WO with
+                    Owner=P_115 (or P_800) and Affects:P_115, and repoint launch_backfill.bat.
+Default: KEEP unless it is clearly P_115 domain logic.
+
+--------------------------------------------------------------------------------
+NON-NEGOTIABLES
+--------------------------------------------------------------------------------
+- Back up before any delete (date-stamped copy or _archive\).
+- Only delete the *_BACKUP_* duplicates -- never a live module.
+- After the rename, repoint launch_backfill.bat + init/doc references in the same pass.
+- Keep the existing domain / infrastructure / application layering intact.
+- Load the python-project-architecture skill before touching any code.
+- Use a .ps1 script file for the multi-step move/rename/repoint (not inline commands).
+
+--------------------------------------------------------------------------------
+Created 2026-06-05 by P_000 (ledger admin) per Tony. Owner P_800 executes in a P_800 session.
