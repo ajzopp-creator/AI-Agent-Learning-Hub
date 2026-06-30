@@ -1,29 +1,29 @@
 {
-  "timestamp": "2026-06-07T09:41:02.333477",
+  "timestamp": "2026-06-30T07:30:00.859561",
   "spy": {
-    "date": "06/04/2026",
-    "close": 757.090026855469,
-    "pred_high": 759.373657226563,
-    "pred_low": 753.3974609375,
-    "pred_range": 5.9761962890625,
-    "posture": 5.077392578125
+    "date": "06/26/2026",
+    "close": 728.989990234375,
+    "pred_high": 732.542541503906,
+    "pred_low": 721.128601074219,
+    "pred_range": 11.4139404296875,
+    "posture": -5.72918701171875
   },
   "qqq": {
-    "date": "06/04/2026",
-    "close": 740.609985351563,
-    "pred_high": 743.850280761719,
-    "pred_low": 735.677795410156,
-    "pred_range": 8.1724853515625,
-    "posture": 10.538543701171875
+    "date": "06/26/2026",
+    "close": 706.52001953125,
+    "pred_high": 714.332336425781,
+    "pred_low": 700.900329589844,
+    "pred_range": 13.4320068359375,
+    "posture": -6.25100708007815
   },
   "vxx": {
-    "date": "06/04/2026",
-    "close": 23.5,
-    "pred_high": 23.4728126525879,
-    "pred_low": 23.0728130340576,
-    "pred_range": 0.399999618530273,
-    "posture": -1.3696422576904301,
-    "signal": "BULLISH_CONFIRM",
-    "note": "VP predicts VXX falling -- fear contracting, bullish equity confirmation"
+    "date": "06/26/2026",
+    "close": 23.5599994659424,
+    "pred_high": 24.4937362670898,
+    "pred_low": 23.3337364196777,
+    "pred_range": 1.15999984741211,
+    "posture": -0.340832710266113,
+    "signal": "NEUTRAL",
+    "note": "VP sees stable/flat volatility -- no directional signal from VXX"
   }
 }

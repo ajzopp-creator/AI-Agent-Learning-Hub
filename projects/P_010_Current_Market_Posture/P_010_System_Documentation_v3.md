@@ -1,4 +1,4 @@
-﻿# P_010 MARKET POSTURE SYSTEM — SYSTEM DOCUMENTATION
+# P_010 MARKET POSTURE SYSTEM — SYSTEM DOCUMENTATION
 **Version:** 3.3
 **Last Updated:** March 23, 2026
 **Status:** PRODUCTION
@@ -269,9 +269,40 @@ Can be run multiple times -- latest data always wins
 ```
 
 ### Manual Triggers (Claude Desktop)
+
+**CRITICAL — PowerShell Execution Rule (ERROR 002 — 2026-06-01):**
 ```
-"INIT daily"     --> Claude runs P_010_daily_posture.bat via Windows-MCP:Shell
-"INIT intraday"  --> Claude runs P_010_run_intraday_vp_check.bat
+BANNED:  Start-Process python.exe -NoNewWindow  (blocks MCP ~4 min; NEVER use)
+ALWAYS:  Start-Job + cmd /c pattern:
+
+  # CALL 1 — launch
+  $job = Start-Job -ScriptBlock {
+      cmd /c """C:\Users\Trader\.conda\envs\p140\python.exe"" ""script.py"" > ""C:\out.txt"" 2>&1"
+  }
+
+  # CALL 2 — read (separate tool call)
+  Start-Sleep -Seconds 45
+  Get-Content "C:\out.txt"
+
+Sleep sizing: no subprocess=0s | Python no Excel=20s | Python+Excel=45s | batch=90s
+Working dir:  cmd /c "cd /d ""C:\project\python"" && ""python.exe"" -m module > ""out.txt"" 2>&1"
+```
+
+**MCP Command Blocks:**
+```powershell
+# INIT daily (morning posture)
+$job = Start-Job -ScriptBlock {
+    cmd /c "cd /d ""C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_010_Current_Market_Posture"" && ""C:\Users\Trader\.conda\envs\p140\python.exe"" ""python\P_010_daily_posture_v5.py"" > ""C:\out.txt"" 2>&1"
+}
+# 45s later: Get-Content "C:\out.txt"
+# Produces: P_010_RiskConfig.json + grid_snapshot_latest.json + Obsidian note + data/snapshots/market_health/YYYYMMDD.json
+
+# INIT intraday
+$job = Start-Job -ScriptBlock {
+    cmd /c "cd /d ""C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_010_Current_Market_Posture"" && ""C:\Users\Trader\.conda\envs\p140\python.exe"" ""python\P_010_intraday_vp_check_v4.py"" > ""C:\out.txt"" 2>&1"
+}
+# 20s later: Get-Content "C:\out.txt"
+# Produces: UPDATES P_010_RiskConfig.json + audit in outputs/
 ```
 ### Morning Startup Sequence (Manual Steps Before Trading)
 ```

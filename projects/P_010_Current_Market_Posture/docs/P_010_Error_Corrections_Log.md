@@ -1,4 +1,4 @@
-﻿
+
 ================================================================================
 ERROR CORRECTIONS LOG
 ================================================================================
@@ -21,5 +21,19 @@ Rule       : NEVER read morning baseline from 'risk_mode'. Always use
 Verify     : After intraday run, P_010_RiskConfig.json must contain BOTH:
                "morning_risk_mode": "OFF"   <- locked, never changes
                "risk_mode": "HALF"          <- adjusted final mode
+
+================================================================================
+
+================================================================================
+
+ERROR 002 — Windows-MCP Start-Process Hang Bug
+Date Fixed : 2026-06-01
+Severity   : HIGH
+Symptom    : Start-Process python.exe -NoNewWindow caused MCP to block ~4 min then time out.
+Root Cause : Child process inherits MCP stdio pipes; MCP server blocks until child exits.
+Fix Applied: All Python launches use Start-Job + cmd /c (child detached from MCP pipes).
+Rule       : NEVER use Start-Process -NoNewWindow. ALWAYS use Start-Job + cmd /c.
+             See Section 8 Manual Triggers for canonical command block.
+Verify     : ~4 min hang with no output is the symptom. Fix = switch to Start-Job pattern.
 
 ================================================================================

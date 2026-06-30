@@ -1,126 +1,115 @@
-================================================================================
-P_010 SESSION INITIALIZATION PROMPT v2.8
-================================================================================
-PROJECT: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_010_Current_Market_Posture\
-================================================================================
+# P_010 System Initialization Prompt (SIP) v2.9
+**File:** `docs/SESSION_INITIALIZATION_PROMPT.md`
+**Version:** 2.9
+**Last Updated:** 2026-06-18
+**Pairs With:** `P_010_System_Documentation_v3.md`
 
-## ENVIRONMENT
-Claude Desktop + Windows-MCP. Claude has DIRECT file system access.
-NEVER say "I don't have access". NEVER ask user to run commands manually.
-MCP tool: windows-mcp:PowerShell
+---
 
-================================================================================
-## CRITICAL: POWERSHELL EXECUTION RULES (bug confirmed 2026-06-01)
-================================================================================
+## Purpose
 
-BANNED — Start-Process -NoNewWindow (any variant — blocks MCP ~4 min):
-  Start-Process python.exe -NoNewWindow [-Wait|-PassThru|nothing]
+Bootstraps every new P_010 chat. Reads today's posture state and surfaces it. Domain rules (risk mode thresholds, VXX overlay, intraday hierarchy, file locations, PowerShell execution rules) live in the system doc — this file is steps only.
 
-ALWAYS — Start-Job + cmd /c:
+---
 
-  # CALL 1: launch
-  $job = Start-Job -ScriptBlock {
-      cmd /c """C:\path\python.exe"" ""script.py"" > ""C:\out.txt"" 2>&1"
-  }
+## How to Trigger
 
-  # CALL 2: read (separate tool call)
-  Start-Sleep -Seconds 45
-  Get-Content "C:\out.txt"
+```
+INIT  |  P_010  |  P_010 INIT  |  INIT daily  |  INIT intraday
+```
 
-Sleep sizing: no subprocess=0s | Python no Excel=20s | Python+Excel=45s | batch/backfill=90s
-Working dir: cmd /c "cd /d ""C:\project\python"" && ""python.exe"" -m module > ""out.txt"" 2>&1"
+---
 
-================================================================================
-## ARCHITECTURE
-================================================================================
+## INIT Sequence (Execute in Order)
 
-ONE FILE: P_010_RiskConfig.json — only file P_115/P_118 read for decisions.
+**RULE: Complete Steps 0 through 5 before taking action.**
 
-Morning (9:30 AM) -> CREATES P_010_RiskConfig.json
-Intraday (2 PM+)  -> UPDATES P_010_RiskConfig.json + creates audit in outputs/
+### Step 0 — Environment Discovery
+Call `tool_search("PowerShell")`. Present = Claude Desktop → proceed. Absent = web → STOP; ask user to switch to Desktop. Never claim environment without running this check.
 
-================================================================================
-## DAILY WORKFLOW
-================================================================================
+### Step 0.5 — Work Order Review
+Read `Agentic-Hub-Governance\work_orders\` for Owner=P_010 or P_010 in Affects, Status not CLOSED.
+- BLOCKED → HALT; show Depends-On.
+- PENDING → warn; ask proceed? (y/n).
+- IN_PROGRESS or COMPLETE → note; proceed.
 
-INIT DAY / INIT daily:
-  $job = Start-Job -ScriptBlock {
-      cmd /c "cd /d ""C:\...\P_010_Current_Market_Posture"" && ""python.exe"" ""python\P_010_daily_posture_v5.py"" > ""C:\out.txt"" 2>&1"
-  }
-  # 45s later: Get-Content "C:\out.txt"
-  Produces: P_010_RiskConfig.json + grid_snapshot_latest.json + Obsidian note
-            + data/snapshots/market_health/YYYYMMDD.json
+### Step 1 — Session Header
+Display: `P_010 [Weekday, Month DD, YYYY] [HH:MM ET]`
+Time via: `[System.TimeZoneInfo]::ConvertTimeBySystemTimeZoneId((Get-Date),"Eastern Standard Time")`
 
-INIT intraday:
-  $job = Start-Job -ScriptBlock {
-      cmd /c "cd /d ""C:\..."" && ""python.exe"" ""python\P_010_intraday_vp_check_v4.py"" > ""C:\out.txt"" 2>&1"
-  }
-  Produces: UPDATES P_010_RiskConfig.json (intraday_adjustment) + audit in outputs/
+### Step 2 — Read Posture State
+Read `P_010_RiskConfig.json` (project root). Check `posture_date` vs today:
+- Today's data present → display risk_mode, avg_posture, SPY_posture, QQQ_posture, vxx_signal, intraday_adjustment.
+- Missing or stale → display: `POSTURE NOT CURRENT — run INIT daily to generate.`
+- Missing `morning_risk_mode` field → flag; ERROR 001 risk (see error corrections log).
 
-Verify morning:  read P_010_RiskConfig.json + latest log tail
-Verify intraday: outputs/intraday_vp_check_*.json (sort LastWriteTime desc)
+### Step 3 — Display Session Summary
 
-================================================================================
-## FILE LOCATIONS
-================================================================================
+```
+---------------------------------------------
+P_010 SESSION INITIALIZED
+---------------------------------------------
+Architecture:      v3
+Filesystem MCP:    [available | unavailable]
+Work Orders:       [status or OK]
+Posture date:      [today YYYY-MM-DD | STALE — run INIT daily]
+risk_mode:         [FULL | HALF | OFF]
+avg_posture:       [value]
+SPY / QQQ:         [spy_posture] / [qqq_posture]
+intraday_adj:      [NONE | HALF | REDUCED | not run]
+vxx_signal:        [BULLISH_CONFIRM | NEUTRAL | CAUTION | WARNING | not run]
+---------------------------------------------
+```
 
-P_010_RiskConfig.json               Master config
-grid_snapshot_latest.json           VP snapshot
-P_010_MarketHealth.json             Distribution day / rally state
-P_010_daily_posture.bat             Morning runner (steps 1+2+3)
-P_010_run_intraday_vp_check.bat     Intraday runner
+### Step 4 — If INIT daily or INIT intraday Triggered
+Use the MCP command blocks in `P_010_System_Documentation_v3.md` Section 8 (Manual Triggers).
+PowerShell execution rule: ALWAYS Start-Job + cmd /c. NEVER Start-Process -NoNewWindow.
 
-python/P_010_daily_posture_v5.py         Morning posture + VXX
-python/P_010_intraday_vp_check_v4.py     Intraday PRANGE
-python/P_010_write_daily_note.py         Obsidian note writer
-python/application/health_runner.py      Market health orchestration
-python/market_health/cli.py              Market health CLI
+### Step 5 — Confirm Session Focus
+> "Posture loaded, or run INIT daily/intraday first?"
+Wait for operator confirmation. Do NOT write code or take action until confirmed.
 
-data/excel_exports/History Grid (SPY/QQQ/VXX)_v3.xlsx
-data/snapshots/market_health/YYYYMMDD.json
+---
 
-================================================================================
-## RISK MODES
-================================================================================
+## What This SIP Does NOT Do
 
-avg_posture >= 1.0  -> FULL  (100%)
-avg_posture 0-1.0   -> HALF  (50%)
-avg_posture < 0     -> OFF   (0%, simulation only)
-avg_posture > 1.08  -> HOT MARKET: HT6=2% HT7=3% HT8=4% HT9+=5%
+Carry domain rules. Risk mode thresholds, VXX overlay, intraday hierarchy, file locations, and PowerShell command blocks live in `P_010_System_Documentation_v3.md` Sections 4, 3, and 8.
 
-Intraday: NONE / HALF (1 symbol >2% outside PRANGE) / REDUCED (both outside or >5%)
-Final = MIN(risk_mode, intraday_adjustment)
-Hierarchy: OFF < REDUCED < HALF < NONE < FULL
+---
 
-VXX signal (overlay only, does not change risk_mode):
-  < -1.0  -> BULLISH_CONFIRM | -1 to 0.5 -> NEUTRAL
-  0.5-1.5 -> CAUTION         | > 1.5      -> WARNING
+## Fail-Fast Conditions
 
-================================================================================
-## ERROR CORRECTIONS LOG
-================================================================================
+| Condition | Action |
+|---|---|
+| MCP unavailable | HALT; ask for Desktop |
+| WO BLOCKED | HALT; resolve first |
+| P_010_RiskConfig.json missing | Surface INIT daily prompt |
+| Posture date stale | Surface INIT daily prompt |
+| morning_risk_mode field missing | Flag ERROR 001 risk |
 
-ERROR 001 — Intraday Cascading Upgrade Bug
-Fixed: 2026-03-31 | Severity: HIGH
-Symptom:  Multiple intraday runs caused OFF->HALF->FULL escalation.
-Cause:    Script read morning_baseline from risk_config['risk_mode'] (overwritten each run).
-Fix:      Script writes 'morning_risk_mode' on first run; always reads from it.
-Rule:     NEVER read morning baseline from 'risk_mode'. Use 'morning_risk_mode'.
-Verify:   After intraday, JSON must have BOTH:
-            "morning_risk_mode": "OFF"   <- locked
-            "risk_mode": "HALF"          <- adjusted
+---
 
-ERROR 002 — Windows-MCP Start-Process Hang Bug
-Fixed: 2026-06-01 | Severity: HIGH
-Symptom:  Start-Process -NoNewWindow blocked MCP ~4 min then timed out.
-Cause:    Child inherits MCP stdio pipes; server blocks until child exits.
-Fix:      All launches use Start-Job + cmd /c (see Critical section above).
-Rule:     NEVER use Start-Process -NoNewWindow. ALWAYS use Start-Job.
-Verify:   ~4 min hang with no output -> suspect -NoNewWindow.
+## Quick Reference
 
-================================================================================
-## VERSION HISTORY
-================================================================================
-v2.8 (2026-06-01): Added PowerShell execution rules + ERROR 002; added market health step.
-v2.7 (2026-02-08): Added MCP environment section and INIT workflow.
-================================================================================
+| Item | Value |
+|---|---|
+| Project root | `C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_010_Current_Market_Posture\` |
+| Python | `C:\Users\Trader\.conda\envs\p140\python.exe` |
+| Master config | `P_010_RiskConfig.json` (project root) |
+| System doc | `P_010_System_Documentation_v3.md` (project root) |
+| Error log | `docs\P_010_Error_Corrections_Log.md` |
+| Work orders | `Agentic-Hub-Governance\work_orders\` |
+
+---
+
+## Changelog
+
+### v2.9 — 2026-06-18
+- Full rewrite to P_300 SIP pattern. Domain rules (risk thresholds, VXX, intraday hierarchy, file locations) removed — live in system doc. PowerShell execution rules migrated to system doc Section 8 + error corrections log. SIP is now steps-only.
+
+### v2.8 — 2026-06-01
+- Added PowerShell execution rules + ERROR 002; added market health step.
+
+---
+
+**End of P_010 SIP v2.9**
