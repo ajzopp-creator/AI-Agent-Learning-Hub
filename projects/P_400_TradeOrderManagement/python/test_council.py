@@ -1,4 +1,4 @@
-"""Tests for domain/council.py — WO-P400-E2.001 verify.
+"""Tests for domain/council.py ? WO-P400-E2.001 verify.
 
 Run: C:\\Users\\Trader\\.conda\\envs\\p140\\python.exe -m pytest test_council.py -v
 
@@ -58,8 +58,23 @@ def test_quant_blocks_stop_too_tight():
     assert v.decision == Decision.BLOCK
     assert v.reason_code == RC_STOP_TOO_TIGHT
 
+
+def test_quant_passes_stop_exactly_1x_atr():
+    # stop == exactly 1xATR -- should PASS (floating point tolerance fix WO-P400-E2.007)
+    # entry=50.0, atr=1.0 -> stop=49.0 -> risk_per_share=1.0 == 1.0*atr
+    v = quant_vote(rr_at_t1=2.5, stop=49.0, entry=50.0, target=55.0, atr_14=1.0)
+    assert v.decision == Decision.PASS
+
+
+def test_quant_blocks_stop_at_0_99x_atr():
+    # stop == 0.99xATR -- should still BLOCK (not swallowed by tolerance)
+    # entry=50.0, atr=1.0 -> stop=49.01 -> risk_per_share=0.99 < 1.0*atr - 0.005
+    v = quant_vote(rr_at_t1=2.5, stop=49.01, entry=50.0, target=55.0, atr_14=1.0)
+    assert v.decision == Decision.BLOCK
+    assert v.reason_code == RC_STOP_TOO_TIGHT
+
 def test_quant_passes_when_atr_zero():
-    # atr=0 means we cannot apply ATR block — should pass ATR check
+    # atr=0 means we cannot apply ATR block ? should pass ATR check
     v = quant_vote(rr_at_t1=2.5, stop=48.0, entry=50.0, target=55.0, atr_14=0.0)
     assert v.decision == Decision.PASS
 
@@ -169,10 +184,12 @@ def test_tape_passes_market_closed_with_premarket_flag():
                   adverse_drift_pct=0.0, rr_after_drift=2.5)
     assert v.decision == Decision.PASS
 
-def test_tape_blocks_adverse_drift():
+def test_tape_caution_adverse_drift():
+    # RC_ADVERSE_DRIFT is now CAUTION, not BLOCK -- QUANT already owns the R:R block.
+    # TAPE surfaces drift context without doubling the block vote (WO-P400-E2.013).
     v = tape_vote(price_delay_seconds=30, market_open=True, pre_market_flag=False,
                   adverse_drift_pct=2.5, rr_after_drift=1.5)
-    assert v.decision == Decision.BLOCK
+    assert v.decision == Decision.CAUTION
     assert v.reason_code == RC_ADVERSE_DRIFT
 
 

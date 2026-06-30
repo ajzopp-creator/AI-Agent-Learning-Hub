@@ -202,6 +202,12 @@ def build_spec(
     asset_class = getattr(packet.asset_class, "value", packet.asset_class)
     prefix = _paper_banner() if result.is_paper() else ""
 
+    override_note = ""
+    if getattr(result, 'qty_override', None) is not None:
+        override_note = (
+            f'[QTY OVERRIDE: {result.qty_override} shares -- concentration gate bypassed by trader]\n'
+        )
+
     if asset_class == "stock":
         effective_stop = snap.guideline_stop_override or packet.guideline_stop
         body = _pattern_a(
@@ -213,7 +219,7 @@ def build_spec(
             dollar_risk=sizing.dollar_risk,
             rr=result.rr_after_drift,
         )
-        return prefix + body
+        return override_note + prefix + body
 
     if asset_class == "option":
         option_sym = _occ_symbol(
@@ -232,6 +238,6 @@ def build_spec(
             dollar_risk=sizing.dollar_risk,
             rr=result.rr_after_drift,
         )
-        return prefix + body
+        return override_note + prefix + body
 
     return f"[NO SPEC -- {packet.symbol}] Unrecognised asset_class: {asset_class}"

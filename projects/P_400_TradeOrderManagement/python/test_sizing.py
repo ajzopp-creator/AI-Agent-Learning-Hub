@@ -173,3 +173,41 @@ def test_options_invalid_premium():
     )
     assert result.contracts == 0
     assert "invalid" in result.warning.lower()
+
+# ---------------------------------------------------------------------------
+# three_gate_size -- Gate 3 posture scaling (WO-P400-E2.014)
+# ---------------------------------------------------------------------------
+
+def test_gate3_standard_unreduced():
+    # entry=50, stop=40, huge cash -> Gate 3 binds. STANDARD cap $1,633.47.
+    # Gate3 = 1633.47/50 = 32; Gate1 = 490/10 = 49 -> smallest 32 (CONCENTRATION)
+    result = three_gate_size(
+        entry=50.0, stop=40.0, target=70.0,
+        base_risk_dollars=490.04, cash_available=50000.0,
+        max_position_dollars=1633.47, risk_mode="STANDARD",
+    )
+    assert result.gate3_shares == 32
+    assert result.shares == 32
+    assert result.winning_gate == "CONCENTRATION"
+
+def test_gate3_scales_half():
+    # HALF cap = 1633.47 * 0.75 = 1225.10 -> 1225.10/50 = 24 shares
+    result = three_gate_size(
+        entry=50.0, stop=40.0, target=70.0,
+        base_risk_dollars=490.04, cash_available=50000.0,
+        max_position_dollars=1633.47, risk_mode="HALF",
+    )
+    assert result.gate3_shares == 24
+    assert result.shares == 24
+    assert result.winning_gate == "CONCENTRATION"
+
+def test_gate3_scales_off():
+    # OFF cap = 1633.47 * 0.50 = 816.74 -> 816.74/50 = 16 shares
+    result = three_gate_size(
+        entry=50.0, stop=40.0, target=70.0,
+        base_risk_dollars=490.04, cash_available=50000.0,
+        max_position_dollars=1633.47, risk_mode="OFF",
+    )
+    assert result.gate3_shares == 16
+    assert result.shares == 16
+    assert result.winning_gate == "CONCENTRATION"

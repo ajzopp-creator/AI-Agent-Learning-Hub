@@ -20,6 +20,7 @@ from config import (
     MAX_SECTOR_EXPOSURE,
     MIN_ACCEPTABLE_RR,
     MIN_STOP_ATR_MULTIPLE,
+    STOP_ATR_TOLERANCE,
     PORTFOLIO_HEAT_MAX_PCT,
     PRICE_STALENESS_THRESHOLD_SEC,
 )
@@ -100,7 +101,7 @@ def quant_vote(
                 f"T1={target:.2f}, needs >= {entry + reward_for_2x:.2f}."
             ),
         )
-    if atr_14 > 0 and risk_per_share < (atr_14 * MIN_STOP_ATR_MULTIPLE):
+    if atr_14 > 0 and risk_per_share < (atr_14 * MIN_STOP_ATR_MULTIPLE) - STOP_ATR_TOLERANCE:
         return CouncilVote(
             role=Role.QUANT, decision=Decision.BLOCK,
             reason_code=RC_STOP_TOO_TIGHT,
@@ -227,7 +228,7 @@ def tape_vote(
         )
     if adverse_drift_pct > 0 and rr_after_drift < MIN_ACCEPTABLE_RR:
         return CouncilVote(
-            role=Role.TAPE, decision=Decision.BLOCK,
+            role=Role.TAPE, decision=Decision.CAUTION,
             reason_code=RC_ADVERSE_DRIFT,
             reason_detail=(
                 f"Adverse drift {adverse_drift_pct:.1f}% collapsed R:R to "

@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd \"C:\\Users\\Trader\\AI-Agent-Learning-Hub\\projects\\P_400_TradeOrderManagement\\python\"*)",
+      "Bash(C:\\Users\\Trader\\.conda\\envs\\p140\\python.exe*)",
+      "Grep(python\\*)",
+      "Grep(python\\infrastructure\\*)",
+      "Grep(python\\domain\\*)",
+      "Grep(python\\application\\*)"
+    ]
+  }
+}

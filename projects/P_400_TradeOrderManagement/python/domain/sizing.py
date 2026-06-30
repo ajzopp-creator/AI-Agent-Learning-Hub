@@ -153,7 +153,8 @@ def three_gate_size(
 
     gate1 = int(adj_risk / risk_per_share)
     gate2 = int(cash_available / entry)
-    gate3 = int(max_position_dollars / entry)
+    adj_max_position = max_position_dollars * mult
+    gate3 = int(adj_max_position / entry)
 
     final = min(gate1, gate2, gate3)
     if gate1 <= gate2 and gate1 <= gate3:

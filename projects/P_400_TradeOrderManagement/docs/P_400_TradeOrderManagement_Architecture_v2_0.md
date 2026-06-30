@@ -1,9 +1,9 @@
-# P_400 Trade Order Management — System Architecture
+# P_400 Trade Order Management ? System Architecture
 **Project ID:** P_400
 **Version:** 2.0 (Council Evidence Frameworks, Two-Tier Signal Flow, Deterministic Python Core, Guidelines Merged, Systems Lens)
 **Last Updated:** 2026-06-12
 **Maintained By:** Anthony Zoppi
-**Status:** Phase E2 Design Locked — Implementation Plan Active
+**Status:** Phase E2 CLOSED ? Phase E3 Design Locked
 **Supersedes:** Architecture v1.0 (2026-06-03); P_400_TradeordermanagementGuidelines_v1.1 (merged into Section 3)
 
 ---
@@ -12,7 +12,7 @@
 *Read this before creating any new documentation.*
 
 ### The Golden Rule
-**Always try to fit new content into this master document first.** Only spawn a separate file when content exceeds one page, changes frequently, is shared across projects, or needs its own version history. Guidelines v1.1 has been merged into this document (Section 3) per this rule — it is no longer maintained separately.
+**Always try to fit new content into this master document first.** Only spawn a separate file when content exceeds one page, changes frequently, is shared across projects, or needs its own version history. Guidelines v1.1 has been merged into this document (Section 3) per this rule ? it is no longer maintained separately.
 
 ### Reference Link Format
 > **Linked Document:** [Filename]
@@ -26,8 +26,8 @@
 
 1. [Project Overview & Current State](#1-project-overview--current-state)
 2. [System Architecture & Two-Tier Signal Flow](#2-system-architecture--two-tier-signal-flow)
-3. [Governance & Authority (Normative — merged Guidelines)](#3-governance--authority)
-4. [Council v2.0 — Evidence Frameworks & Deterministic Blocks](#4-council-v20)
+3. [Governance & Authority (Normative ? merged Guidelines)](#3-governance--authority)
+4. [Council v2.0 ? Evidence Frameworks & Deterministic Blocks](#4-council-v20)
 5. [Systems-Thinking Lens (Meadows)](#5-systems-thinking-lens)
 6. [Data Design](#6-data-design)
 7. [Phase E2 Implementation Plan](#7-phase-e2-implementation-plan)
@@ -48,7 +48,7 @@ v1.0 was written before the SIGNAL_V2 migration completed. The following v1.0 re
 | v1.0 (stale) | v2.0 (current) |
 |---|---|
 | P400SIG schema, `*_signal.json` packets | SIGNAL_V2, `*_v2.0.json` packets |
-| Schema owned inside P_800 internals | `shared_resources\python_utils\signal_schemas.py` — neutral cross-project contract; P_400 imports `SignalV2` from here only |
+| Schema owned inside P_800 internals | `shared_resources\python_utils\signal_schemas.py` ? neutral cross-project contract; P_400 imports `SignalV2` from here only |
 | Per-project work order folders (`work_orders\PHASE_E1\`) | Shared single ledger: `04-Shared-Resources\work_orders\` (alias `Agentic-Hub-Governance\work_orders\`), 1-to-many schema, OWNER_DONE vs CLOSED lifecycle |
 | Project path `P_400_Trade_Management_System` | `projects\P_400_TradeOrderManagement\` |
 | Primary AI engine: Perplexity | **Primary AI engine: Claude Desktop** with windows-mcp toolchain; Perplexity artifacts archived under `docs\Perplexity\` |
@@ -59,17 +59,17 @@ v1.0 was written before the SIGNAL_V2 migration completed. The following v1.0 re
 
 | Asset | Location | Status |
 |---|---|---|
-| Signal reader (v2.0) | `projects\P_400_TradeOrderManagement\python\` | CLOSED — application/domain/infrastructure layers + cli, config, schemas, tests |
-| Signal inbox | `trading_journal\TradeOrderManagement\signals\` | Live — `*_v2.0.json` packets from P_115/P_300 via P_800 `write_to_vault("P400SIG"→SIGNAL_V2 route)` |
+| Signal reader (v2.0) | `projects\P_400_TradeOrderManagement\python\` | CLOSED ? application/domain/infrastructure layers + cli, config, schemas, tests |
+| Signal inbox | `trading_journal\TradeOrderManagement\signals\` | Live ? `*_v2.0.json` packets from P_115/P_300 via P_800 `write_to_vault("P400SIG"?SIGNAL_V2 route)` |
 | Shared schema contract | `shared_resources\python_utils\signal_schemas.py` | `SignalV2`, `SignalContext`, `SignalMetadata` |
-| Open-position book | `trading_journal\TradeOrderManagement\P400\` | `*_P400.md` records (empty at v2.0 publication — no open positions) |
+| Open-position book | `trading_journal\TradeOrderManagement\P400\` | `*_P400.md` records (empty at v2.0 publication ? no open positions) |
 | Account parameters | `projects\P_000_PythonClaudeLocalLLM\config\P_000_Account_Parameters_Current.md` | Read live, never hard-coded |
 | Market posture | `P_010_RiskConfig.json` (path discovered by glob) | Re-read fresh before every size calculation |
 | Session INIT prompt | `docs\P_400_SESSION_INITIALIZATION_PROMPT_v1_2.md` | To be revved to v2.0 in WO-P400-E2.004 |
 
 ### 1.4 Scope Boundary
 
-*Order management* (signal → live order at Schwab) and *trade management* (open position → close) share one record but run on different clocks. Phase-3 auto-submission attaches to the order-management boundary only.
+*Order management* (signal ? live order at Schwab) and *trade management* (open position ? close) share one record but run on different clocks. Phase-3 auto-submission attaches to the order-management boundary only.
 
 **Out of scope:** signal generation (P_115/P_300 own it), automated submission, tax-lot accounting, SELL-side construction (Phase 3+), crypto (Phase 4), schema ownership of the shared signal contract (neutral; governed by work order, consumed by all).
 
@@ -154,9 +154,9 @@ v1.0 was written before the SIGNAL_V2 migration completed. The following v1.0 re
                                                         [CLOSED -> P_020 hand-off]
 ```
 
-### 2.2 Runtime Split — Who Does What
+### 2.2 Runtime Split ? Who Does What
 
-**Python owns everything deterministic.** Sizing, gates, heat, Council block decisions, screen ranking, order-spec field math. Same inputs always produce the same outputs. No network calls inside the deterministic core — it receives data, it never fetches it.
+**Python owns everything deterministic.** Sizing, gates, heat, Council block decisions, screen ranking, order-spec field math. Same inputs always produce the same outputs. No network calls inside the deterministic core ? it receives data, it never fetches it.
 
 **Claude owns everything that touches the world.** Live price/ATR/IV/earnings acquisition (web now, Schwab API Phase 1.5), the Tier-2A dossier narrative, Council role narration, the four-question Tony input batch, Obsidian writes via P_800, lifecycle event capture, and session orchestration.
 
@@ -166,7 +166,7 @@ v1.0 was written before the SIGNAL_V2 migration completed. The following v1.0 re
 
 | # | Component | Runtime | Status |
 |---|---|---|---|
-| C1 | Signal ingestion + validation | Python (built) | CLOSED — WO-P400-E1.001 |
+| C1 | Signal ingestion + validation | Python (built) | CLOSED ? WO-P400-E1.001 |
 | C1.5 | Tier-1 deterministic screen | Python `domain\screen.py` | Phase E2 build |
 | C2 | Live data layer (snapshot assembly) | Claude (web), Schwab API Phase 1.5 | Active (manual fallback) |
 | C3 | Reconciliation engine (directional drift) | Python, inside `evaluate_signal.py` | Phase E2 build |
@@ -181,7 +181,7 @@ v1.0 was written before the SIGNAL_V2 migration completed. The following v1.0 re
 
 ### 2.4 Directional Drift Rule (carried from v1.0, unchanged)
 
-Drift *toward target* beyond threshold invalidates the original thesis and stop — re-derive the stop from live structure/ATR and re-check R:R, or block if R:R collapses below 2.0. Drift *away* (deeper dip on a dip-buy) may improve the entry. Drift is directional, never symmetric.
+Drift *toward target* beyond threshold invalidates the original thesis and stop ? re-derive the stop from live structure/ATR and re-check R:R, or block if R:R collapses below 2.0. Drift *away* (deeper dip on a dip-buy) may improve the entry. Drift is directional, never symmetric.
 
 ### 2.5 Exception Workflows (carried from v1.0, all retained)
 
@@ -206,7 +206,7 @@ All order management decisions default to P_400: stock sizing, options sizing, s
 
 P_400 governs across all active strategies: P_115, P_116, P_117, P_118, P_300. Strategy integration exists *inside* the P_400 workflow, never beside it as a separate authority.
 
-### 3.3 Position Sizing Standard — Three Gates
+### 3.3 Position Sizing Standard ? Three Gates
 
 Every position passes the three-gate system; the smallest gate wins. No exception without explicit override and documented justification.
 
@@ -217,7 +217,7 @@ Gate 3 (Concentration): max_position$ / entry  (options: premium paid, not notio
 Final size = SMALLEST of the three
 ```
 
-Gate 1 risk dollars come from the **P_010 risk_mode re-read fresh at size time** — never the INIT snapshot, never recomputed independently from balance. Account parameters come from P_000's Risk Mode Adjustments table.
+Gate 1 risk dollars come from the **P_010 risk_mode re-read fresh at size time** ? never the INIT snapshot, never recomputed independently from balance. Account parameters come from P_000's Risk Mode Adjustments table.
 
 **Options risk:** dollar risk capped at premium-at-risk to the stop, delta-adjusted with a theta/IV-crush haircut. Never `(entry - stop)` stock math on a contract.
 
@@ -231,7 +231,7 @@ Gate 1 risk dollars come from the **P_010 risk_mode re-read fresh at size time**
 
 P_400 controls targets. Standard setups use resistance-based targets. Price-discovery setups (no visible overhead resistance) use the Confluence-Based Target Framework: ATR extension, round-number alignment, measured move when visually confirmed, prior structure when available. ATR alone is never sufficient; confluence governs.
 
-### 3.6 Reward-to-Risk Rule — 2:1 AT T1 (LOCKED v2.0)
+### 3.6 Reward-to-Risk Rule ? 2:1 AT T1 (LOCKED v2.0)
 
 **T1 must produce at least 2:1 reward-to-risk from entry or the setup is invalid.** This resolves the v1.0 conflict (config said 1.5) in favor of the Guidelines rule. `min_acceptable_rr = 2.0` is now the configuration value and the Quant block threshold.
 
@@ -248,7 +248,7 @@ P_400 controls stops for stocks and options. Stock stop = the more conservative 
 
 P_400 is the governing authority. Options must pass viability gates: spread width, open interest, and reward-to-risk parity versus the stock setup. Then either the chart-based primary method or risk-budget-first secondary method applies, per setup quality. If gate math yields zero contracts: fallback to stock or explicit override.
 
-**Management trigger:** underlying STOCK price by default — never the option Mark unless the trade plan explicitly says Mark. Exits use stop-limit structure with bid-aware option pricing where spreads are wide (P_000 Options Rule).
+**Management trigger:** underlying STOCK price by default ? never the option Mark unless the trade plan explicitly says Mark. Exits use stop-limit structure with bid-aware option pricing where spreads are wide (P_000 Options Rule).
 
 **Display rule:** every options plan shows BOTH stock and option prices for entry, take-profit, and stop, with delta-derived option estimates and the leverage multiple.
 
@@ -278,24 +278,24 @@ Work orders live in the shared single ledger `04-Shared-Resources\work_orders\` 
 
 ## 4. COUNCIL v2.0
 
-### 4.1 Principle — Evidence Frameworks Structure the Inputs; Math Makes the Blocks
+### 4.1 Principle ? Evidence Frameworks Structure the Inputs; Math Makes the Blocks
 
 v2.0 upgrades each Council role with an institutional evidence framework adapted from desk-analyst practice. The frameworks govern **what evidence is gathered and how it is organized**. They never change the verdict logic: every BLOCK remains a deterministic threshold check on captured numbers (`council.py`). The model narrates; the math blocks. This preserves determinism, auditability, and back-testability (same captured snapshot = same verdict, always).
 
-### 4.2 Quant Strategist — Technical Dossier Framework (Tier 2A)
+### 4.2 Quant Strategist ? Technical Dossier Framework (Tier 2A)
 
 When Tony selects the full dossier, the Quant role's evidence is the complete technical workup:
 
-1. Trend analysis — primary trend on daily, weekly, monthly timeframes
-2. Support and resistance — exact price levels, R3/R2/R1 over S1/S2/S3
-3. Moving averages — 20/50/100/200-day positions and crossover state
-4. RSI (14) — current value with interpretation, divergence note
-5. MACD — signal-line cross state, histogram momentum, divergence detection
-6. Bollinger Bands — position within bands, squeeze/expansion status
-7. Volume — confirming or contradicting the move; vs average; insider activity noted
-8. Fibonacci retracement — key levels from the most recent significant swing
-9. Chart pattern identification — H&S, double top, cup-and-handle, flags; explicit "what it is NOT"
-10. Trade setup synthesis — entry zone, stop basis, T1/T2 with realistic-fill R:R
+1. Trend analysis ? primary trend on daily, weekly, monthly timeframes
+2. Support and resistance ? exact price levels, R3/R2/R1 over S1/S2/S3
+3. Moving averages ? 20/50/100/200-day positions and crossover state
+4. RSI (14) ? current value with interpretation, divergence note
+5. MACD ? signal-line cross state, histogram momentum, divergence detection
+6. Bollinger Bands ? position within bands, squeeze/expansion status
+7. Volume ? confirming or contradicting the move; vs average; insider activity noted
+8. Fibonacci retracement ? key levels from the most recent significant swing
+9. Chart pattern identification ? H&S, double top, cup-and-handle, flags; explicit "what it is NOT"
+10. Trade setup synthesis ? entry zone, stop basis, T1/T2 with realistic-fill R:R
 
 The dossier renders as a structured note with a trade-plan summary block on top. In Tier 2B (straight-to-trade), items 1-9 are skipped; only the live snapshot fields needed by the deterministic core are gathered.
 
@@ -304,7 +304,7 @@ The dossier renders as a structured note with a trade-plan summary block on top.
 - Stop tighter than 1x ATR(14)
 - Stop wide enough that 2:1 cannot be honestly met
 
-### 4.3 Risk Manager — Portfolio Risk Framework
+### 4.3 Risk Manager ? Portfolio Risk Framework
 
 Evidence framework adapted from portfolio-level risk practice: position beta vs market regime, correlation to existing holdings, drawdown context, concentration exposure. Beta and correlation **annotate**; the four governance checks **block**:
 
@@ -315,9 +315,9 @@ Evidence framework adapted from portfolio-level risk practice: position beta vs 
 
 Heat math note: 12% cap / 1.5% base risk = 8 concurrent full-risk positions, consistent by construction.
 
-### 4.4 Macro Economist — Event Risk Framework
+### 4.4 Macro Economist ? Event Risk Framework
 
-Evidence framework adapted from earnings-analysis practice: next earnings date, historical earnings-day move (average and median), options implied move where available, known binary events (FDA, court, macro prints) across the **full expected holding period** — never a fixed 48-hour window.
+Evidence framework adapted from earnings-analysis practice: next earnings date, historical earnings-day move (average and median), options implied move where available, known binary events (FDA, court, macro prints) across the **full expected holding period** ? never a fixed 48-hour window.
 
 **Macro deterministic block:** earnings or known binary event inside the holding period, unless Tony confirms reduced size or a defined-risk structure (which converts BLOCK to CAUTION with annotation).
 
@@ -326,13 +326,13 @@ Evidence framework adapted from earnings-analysis practice: next earnings date, 
 - **Blocks:** adverse directional drift past threshold with collapsed R:R; price staleness beyond `price_staleness_threshold_sec`; market closed without explicit pre-market flag.
 - **Annotates:** volume character, relative strength vs SPY/QQQ posture, gap risk.
 
-### 4.6 Behavioral Judge — Annotate Only
+### 4.6 Behavioral Judge ? Annotate Only
 
 Never blocks. Flags revenge-trade patterns (new signal in a symbol that just stopped out), overtrading (order count vs daily norm), streak-chasing (size creep after consecutive wins). Annotations are written to the record so P_020 can correlate behavioral flags with outcomes over time.
 
-### 4.7 Vehicle Selection Gate (C5) — Options Structuring Framework
+### 4.7 Vehicle Selection Gate (C5) ? Options Structuring Framework
 
-Phase E2: pass-through of Tony's instrument choice plus the IV-rank gate — IV rank above 50 on a long single-leg flags expensive premium and recommends a defined-risk spread. Phase 2 adds structure scoring adapted from options-desk practice: outlook translated to structure category, exact strikes/expiry, max profit / max loss / breakeven, probability of profit from IV, Greeks exposure, adjustment plan, exit rules. Structure choice maximizes expected R:R per unit of capital subject to the viability gates in 3.8.
+Phase E2: pass-through of Tony's instrument choice plus the IV-rank gate ? IV rank above 50 on a long single-leg flags expensive premium and recommends a defined-risk spread. Phase 2 adds structure scoring adapted from options-desk practice: outlook translated to structure category, exact strikes/expiry, max profit / max loss / breakeven, probability of profit from IV, Greeks exposure, adjustment plan, exit rules. Structure choice maximizes expected R:R per unit of capital subject to the viability gates in 3.8.
 
 ### 4.8 Verdict Assembly
 
@@ -344,9 +344,49 @@ Tony invokes override after BLOCK      -> OVERRIDE_REQUIRED -> APPROVED_BY_OVERR
                                            (exact phrase required, permanent annotation)
 ```
 
-BLOCKED records are always written — Council vetoes are part of the audit trail.
+BLOCKED records are always written ? Council vetoes are part of the audit trail.
 
 ---
+
+### 4.9 Council Narrative Templates
+
+**QUANT**
+- ALL_CLEAR: "Quant PASS: R:R [X] clears 2.0. Stop >= 1x ATR."
+- RR_BELOW_MIN: "Quant BLOCK: R:R [X] < 2.0. T1 at [price] insufficient."
+- STOP_TOO_TIGHT: "Quant BLOCK: Stop [X] < 1x ATR ([Y]). Widen to structure."
+- STOP_BREAKS_RR: "Quant BLOCK: Target [X] fabrication check — honest confluence only."
+
+**RISK**
+- ALL_CLEAR: "Risk PASS: Heat $[X]/$[Y]. Positions [N]/8."
+- HEAT_BREACH: "Risk BLOCK: Heat $[X] over $[Y] cap."
+- POSITION_COUNT: "Risk BLOCK: [N]/8 — at max."
+- DAILY_LOSS: "Risk BLOCK: Day loss $[X] hit $[Y] circuit breaker (3%)."
+- SECTOR_CONCENTRATION: "Risk BLOCK: [X] sector at [N]/2 max."
+
+**MACRO**
+- ALL_CLEAR: "Macro PASS: No binary events in holding window."
+- EARNINGS_IN_WINDOW (BLOCK): "Macro BLOCK: Earnings inside hold period. Confirm defined-risk to convert to CAUTION."
+- EARNINGS_IN_WINDOW (CAUTION): "Macro CAUTION: Earnings inside window — defined-risk confirmed."
+
+**TAPE**
+- ALL_CLEAR: "Tape PASS: Price fresh ([N]s). No adverse drift."
+- PRICE_STALE: "Tape BLOCK: Price [N]s old, over 120s. Refresh snapshot."
+- MARKET_CLOSED: "Tape BLOCK: Market closed, no pre-market flag."
+- ADVERSE_DRIFT: "Tape BLOCK: Drift [X]% collapsed R:R to [Y]. Recalculate."
+
+**BEHAVIORAL (annotates only — never blocks)**
+- ALL_CLEAR: "Behavioral: No flags."
+- BEHAVIORAL_REVENGE: "Behavioral NOTE: [SYMBOL] recently stopped out. Logged for P_020."
+- BEHAVIORAL_OVERTRADING: "Behavioral NOTE: [N] orders today vs [M] norm."
+- BEHAVIORAL_STREAK_CHASING: "Behavioral NOTE: [N] consecutive wins — size-creep watch."
+
+**OPTIONS VIABILITY (options path only — runs before stock Council gates)**
+- OI_TOO_LOW: "Options BLOCK: OI=[N] < 150. Find different strike or expiry."
+- SPREAD_TOO_WIDE: "Options BLOCK: Spread=[X]% of mid > 10%. Fill quality unacceptable."
+- RR_PARITY_FAIL: "Options BLOCK: Option R:R=[X] < stock R:R=[Y]. Use stock or find better strike."
+- RR_BELOW_MIN: "Options BLOCK: Option R:R=[X] < 2.0."
+- IV_HIGH: "Options CAUTION: IV=[X]% > 50 — spread preferred. Confirm or switch."
+- ZERO_CONTRACTS: "Options CAUTION: 0 contracts from gate math. Override required — document justification."
 
 ## 5. SYSTEMS-THINKING LENS
 *Design rationale, Meadows framework. This section explains WHY the architecture is shaped this way; it adds no operational steps.*
@@ -366,14 +406,14 @@ The unmeasured stock matters most. Every NFR in this document (no fabrication, d
 ### 5.2 Feedback Loops
 
 **Balancing (the system's brakes):**
-- B1 — Posture-adjusted sizing: market deteriorates -> P_010 risk_mode drops -> Gate 1 shrinks -> less new risk in bad regimes. Re-reading P_010 fresh at size time shortens this loop's delay to near zero (Meadows leverage point 9: delays).
-- B2 — Heat cap: more open risk -> closer to 12% -> Risk role blocks -> heat stops growing.
-- B3 — Daily-loss circuit-breaker: losses accumulate -> breaker trips -> no new orders today.
-- B4 — 2:1 gate: marginal setups get blocked before they consume capital and attention.
+- B1 ? Posture-adjusted sizing: market deteriorates -> P_010 risk_mode drops -> Gate 1 shrinks -> less new risk in bad regimes. Re-reading P_010 fresh at size time shortens this loop's delay to near zero (Meadows leverage point 9: delays).
+- B2 ? Heat cap: more open risk -> closer to 12% -> Risk role blocks -> heat stops growing.
+- B3 ? Daily-loss circuit-breaker: losses accumulate -> breaker trips -> no new orders today.
+- B4 ? 2:1 gate: marginal setups get blocked before they consume capital and attention.
 
 **Reinforcing (the loops being watched):**
-- R1 — Win-streak size creep: wins -> confidence -> bigger sizing pressure. Behavioral role annotates; three-gate math caps it structurally.
-- R2 — Revenge trading: loss -> urge to re-enter same symbol -> worse entry -> loss. Duplicate detection plus Behavioral flag interrupt the loop at the trigger point.
+- R1 ? Win-streak size creep: wins -> confidence -> bigger sizing pressure. Behavioral role annotates; three-gate math caps it structurally.
+- R2 ? Revenge trading: loss -> urge to re-enter same symbol -> worse entry -> loss. Duplicate detection plus Behavioral flag interrupt the loop at the trigger point.
 
 ### 5.3 System Traps and Their Escapes
 
@@ -386,7 +426,7 @@ The unmeasured stock matters most. Every NFR in this document (no fabrication, d
 
 ### 5.4 Leverage Points Applied
 
-The deepest leverage in this build is not parameters (level 12 — risk percentages) but **information flows (level 6)** — fresh posture at size time, live earnings across the hold window, heat visible before every order — and **system rules (level 5)** — deterministic blocks the model cannot talk its way around. The 2:1 rule and the override-phrase ritual are rules-level interventions: they change what the system is allowed to do, not just how much.
+The deepest leverage in this build is not parameters (level 12 ? risk percentages) but **information flows (level 6)** ? fresh posture at size time, live earnings across the hold window, heat visible before every order ? and **system rules (level 5)** ? deterministic blocks the model cannot talk its way around. The 2:1 rule and the override-phrase ritual are rules-level interventions: they change what the system is allowed to do, not just how much.
 
 ---
 
@@ -427,6 +467,19 @@ snapshot = {
 
 Missing required keys = pipeline refuses to run (no fabrication, no defaults for market data). `null` is honest; an invented number is not.
 
+
+**snapshot_SYMBOL.json — JSON template (save in python\):**
+Never fabricate — use `null` for unknown optional fields.
+```json
+{
+  "symbol": "SYMBOL", "price": 0.00, "bid": 0.00, "ask": 0.00,
+  "price_timestamp": "YYYY-MM-DDTHH:MM:SSZ", "price_delay_seconds": 0,
+  "atr_14": 0.00, "avg_volume_20d": 0, "data_source": "web",
+  "today_volume": null, "next_earnings_date": null, "binary_events": [],
+  "sector": null, "iv_rank": null, "option_chain_ref": null, "market_open": true
+}
+```
+
 ### 6.3 Record Schema and Order Pattern Library
 
 The P_400 record field set (lifecycle, council verdicts, sizing fields, options fields, `p400_*` namespaced prototype fields) and the Schwab Order Pattern Library (Pattern A stock OCO bracket, Pattern B single-leg option 1st-trgs-All, Pattern C vertical debit spread, Pattern D reserved) carry forward from v1.0 Sections 9.3-9.3.1 **unchanged**, with one addition:
@@ -445,11 +498,26 @@ Two Pydantic models remain separate by design: `P400SignalRecord`-lineage signal
 
 ### 6.4 Data Integrity Rules
 
-1. Never fabricate prices, ATR, IV, fills, or P&L — `null` plus a flag, always.
+1. Never fabricate prices, ATR, IV, fills, or P&L ? `null` plus a flag, always.
 2. Every record carries `data_source` and `price_timestamp`.
 3. Malformed packets are rejected, never repaired.
 4. Every lifecycle event appends a dated log entry; frontmatter and body update together.
-5. BLOCKED records are written — vetoes are audit trail.
+5. BLOCKED records are written ? vetoes are audit trail.
+
+### 6.5 Entry Resolution Rule (WO-P400-E2.009)
+
+P_300 stamps guideline_entry as the close price at eval time ? a reference price, not an
+execution target. P_400 resolves the actual entry using the live snapshot price:
+
+| Case | Condition | Action |
+|---|---|---|
+| Favorable pullback | live_price < guideline_entry | Use live_price as entry. R:R improves. No block. |
+| Within threshold |   <= drift_pct <= ENTRY_DRIFT_THRESHOLD_PCT (1.5%) | Use guideline_entry as limit. R:R holds. No block. |
+| Entry missed | drift_pct > ENTRY_DRIFT_THRESHOLD_PCT | Recalculate R:R at live_price. If R:R < 2.0 ? REVIEWED_NO_TRADE, drop_reason=ENTRY_MISSED. |
+
+Drift is directional (Section 2.4). Negative drift (favorable) never triggers a block.
+The live snapshot price field is always the entry used in sizing and Council ? never the
+guideline. valuate_signal.py applies this rule at the reconciliation boundary.
 
 ---
 
@@ -459,7 +527,7 @@ Two Pydantic models remain separate by design: `P400SignalRecord`-lineage signal
 
 Four work orders, strictly ordered. Each lands in the shared ledger with P_400 as Owner. All Python goes under the existing `projects\P_400_TradeOrderManagement\python\` layered structure; every file <= 300 lines, every function <= 50.
 
-**WO-P400-E2.001 — Deterministic Core (sizing + council + screen)**
+**WO-P400-E2.001 ? Deterministic Core (sizing + council + screen)**
 
 | File | Layer | Est. lines | Contents |
 |---|---|---|---|
@@ -472,7 +540,7 @@ Four work orders, strictly ordered. Each lands in the shared ledger with P_400 a
 
 Verify: all tests pass under p140; re-run cli against the live inbox produces a ranked screen table with zero exceptions.
 
-**WO-P400-E2.002 — Portfolio + External Readers**
+**WO-P400-E2.002 ? Portfolio + External Readers**
 
 | File | Layer | Est. lines | Contents |
 |---|---|---|---|
@@ -483,17 +551,17 @@ Verify: all tests pass under p140; re-run cli against the live inbox produces a 
 
 Verify: heat/count math correct against synthetic book fixtures; live P_010 and P_000 files parse on the real filesystem.
 
-**WO-P400-E2.003 — Orchestrator + Order Spec + CLI**
+**WO-P400-E2.003 ? Orchestrator + Order Spec + CLI**
 
 | File | Layer | Est. lines | Contents |
 |---|---|---|---|
 | `application\evaluate_signal.py` | app | ~150 | snapshot+packet+book+posture -> reconcile -> size -> govern -> council -> result object |
 | `application\build_order_spec.py` | app | ~130 | Pattern A/B/C rendering to Schwab grid text |
-| `cli.py` (extend) | — | ~80 added | `screen-all`, `evaluate SYMBOL --snapshot file.json`, `spec SYMBOL` |
+| `cli.py` (extend) | ? | ~80 added | `screen-all`, `evaluate SYMBOL --snapshot file.json`, `spec SYMBOL` |
 
 Verify: end-to-end on a real inbox packet with a hand-built snapshot dict; BLOCK paths produce reason codes; APPROVED path renders a typed-ready Pattern A spec.
 
-**WO-P400-E2.004 — Session Prompt v2.0**
+**WO-P400-E2.004 ? Session Prompt v2.0**
 
 Rev `P_400_SESSION_INITIALIZATION_PROMPT` to v2.0: two-tier flow in STEP sequence, 2:1 rule, snapshot-dict handoff, Python CLI invocation points (commands delivered as plain text for Tony's terminal), Council narrative templates referencing `council.py` reason codes. Saved to `docs\prompts\`.
 
@@ -501,14 +569,149 @@ Verify: one full live session executes the v2.0 sequence with no improvised step
 
 ### 7.2 Execution Constraints (environment-hardened)
 
-- All Python runs in Tony's terminal via `C:\Users\Trader\.conda\envs\p140\python.exe` — Claude provides commands as plain text (windows-mcp hangs on python.exe invocation).
+- All Python runs in Tony's terminal via `C:\Users\Trader\.conda\envs\p140\python.exe` ? Claude provides commands as plain text (windows-mcp hangs on python.exe invocation).
 - File writes via PowerShell `Set-Content -Encoding UTF8`; `create_file`/`str_replace` are banned on Windows paths.
 - Until WO-P000-E2.002 closes, scripts outside hub root need `PYTHONPATH=C:\Users\Trader\AI-Agent-Learning-Hub` or `sys.path.insert(0, hub_root)`.
 - No sys.path side-channels in committed code (WO-P000-E2.003); imports resolve via the hub editable install once it lands.
 
-### 7.3 Definition of Done — Live End-to-End Run
+### 7.3 Definition of Done ? Live End-to-End Run
 
 Phase E2 is DONE when one real signal travels: inbox packet -> Tier-1 screen -> Tony selects -> live snapshot -> deterministic pipeline -> Council verdict -> order spec -> typed into Schwab -> SUBMITTED record in Obsidian via P_800 -> first lifecycle update. After 5 completed trades, review against Appendix-E-style benchmarks (spec accuracy 100%, deterministic repeat rate 100%, signal-to-order < 5 min).
+
+---
+
+## 7.3 Phase E3 ? Options Pipeline
+
+**Goal:** Extend P_400 to evaluate, size, and spec single-leg call/put trades using the P_115 Hybrid Options Methodology as the authoritative framework. Vertical debit spreads added in E3.002 as the fallback when premium or notional exceeds account constraints. Manual chain data input throughout; automated fetch deferred to E3.5+.
+
+**Scope boundary:** P_400 owns options method selection, delta translation, sizing, viability gates, and order spec. Signal generation remains stock-only. Options are a P_400 execution decision layered on top of any signal ? stock APPROVED or stock zero-sized due to account constraints.
+
+**Methodology authority:** `OPTIONS_RISK_METHODOLOGY.md` (P_115 docs) is the canonical reference. No parallel logic invented in P_400.
+
+---
+
+### Two Entry Points (both supported from E3.001)
+
+**Path 1 ? Stock APPROVED, Tony opts into options:**
+Stock signal passes Council ? Tony adds `--options` flag ? options evaluation runs alongside stock spec.
+
+**Path 2 ? Stock zero-sized or R:R fails:**
+Stock fails Gate 3 (price too high for account) OR stock R:R < 2:1 minimum ? options evaluated as the primary vehicle. `--options` flag triggers this path automatically when stock sizing returns 0 shares or R:R block fires.
+
+---
+
+### Two Methods (inherited directly from P_115 OPTIONS_RISK_METHODOLOGY.md)
+
+**Chart-Based (PRIMARY)** ? use when clear technical stop exists:
+1. Stock stop already established (from dossier or packet)
+2. Option stop = entry premium + (delta ? stock price movement to stop)
+3. Risk/contract = (entry premium ? option stop) ? 100
+4. Size via three gates on contract count
+5. Gate 3 = premium paid ? contracts ? max_position$ (not notional)
+
+**Risk-Budget-First (SECONDARY)** ? use when no clear technical structure:
+1. Risk budget = posture-adjusted risk$ (e.g. $245.02 at OFF)
+2. Risk-budget stop = entry premium ? (risk budget ? 100)
+3. 2?ATR floor stop = entry premium ? (delta ? 2 ? ATR)
+4. Final stop = tighter of the two
+5. If resulting risk > budget ? override or reject
+
+**Method selection rule:** Chart-Based is standard. Risk-Budget-First only when setup has no defensible technical stop. Document method used in every record.
+
+---
+
+### WO-P400-E3.001 ? Single-Leg Options Evaluation
+
+| File | Layer | Est. lines | Contents |
+|---|---|---|---|
+| `domain\options_sizer.py` | domain | ~130 | Chart-Based and Risk-Budget-First methods; delta translation; 2?ATR floor; three-gate sizing on contracts; override flag when Gate 1 rounds to 0 |
+| `domain\options_council.py` | domain | ~80 | Viability gates: OI ? 150, spread ? 10% of mid, option R:R ? stock R:R; IV-rank gate (>50 ? spread recommendation); verdict assembly |
+| `application\build_option_spec.py` | app | ~120 | Pattern B (single-leg 1st-trgs-All) Schwab grid; stock + option prices at entry/stop/T1; delta-derived estimates; leverage multiple; override annotation when applicable |
+| `test_options_sizer.py` | tests | ~100 | Chart-Based delta translation; Risk-Budget-First 2?ATR floor; Gate 3 premium cap; 0-contract override path |
+| `test_options_council.py` | tests | ~60 | OI block; spread block; R:R parity block; IV-rank caution |
+
+**Chain data input:** Tony provides chain data via `--chain chain_SYMBOL.json`. Required fields: symbol, expiration, strike, option_type, bid, ask, delta, iv, open_interest, underlying_price. Template delivered in E3.003.
+
+**CLI change:** `cli.py evaluate SYMBOL --snapshot FILE --cash DOLLARS --options --chain chain_SYMBOL.json`
+
+**Chain data source order (per Section 3.9):** TOS first ? ChartExchange ? Yahoo Finance ? Barchart/Nasdaq. Stop at first usable source. Manual entry always valid.
+
+**Verify:** one real signal (Path 1 or Path 2) ? chain file supplied ? method selected ? contract count sized ? viability gates checked ? Pattern B spec rendered ? record written with options fields populated.
+
+---
+
+### WO-P400-E3.002 ? Vertical Debit Spread Evaluation
+
+Triggered when: IV rank > 50 on single-leg evaluation, OR premium on single-leg exceeds Gate 3, OR Tony explicitly requests spread via `--spread` flag.
+
+| File | Layer | Est. lines | Contents |
+|---|---|---|---|
+| `domain\spread_sizer.py` | domain | ~130 | Long ATM strike + short OTM strike at T1 or next resistance; max loss = debit ? 100 ? contracts; Gate 3 = max loss ? max_position$; R:R = (spread width ? debit) ? debit |
+| `application\build_spread_spec.py` | app | ~110 | Pattern C (vertical debit spread) Schwab grid; max profit / max loss / breakeven; probability of profit note from IV |
+| `test_spread_sizer.py` | tests | ~80 | Max loss gate; R:R on spread; spread width selection logic |
+
+**Verify:** one real spread trade ? IV rank > 50 or premium breach ? spread recommended ? chain file ? spread spec rendered ? record written.
+
+---
+
+### WO-P400-E3.003 ? Chain Template + Record Schema + INIT Prompt Update
+
+**chain_SYMBOL.json template:**
+```json
+{
+  "symbol": "SYMBOL",
+  "underlying_price": 0.00,
+  "expiration": "YYYY-MM-DD",
+  "strike": 0.00,
+  "option_type": "call",
+  "bid": 0.00,
+  "ask": 0.00,
+  "mid": 0.00,
+  "delta": 0.00,
+  "iv": 0.00,
+  "open_interest": 0,
+  "spread_pct_of_mid": 0.00,
+  "data_source": "tos",
+  "chain_timestamp": "YYYY-MM-DDTHH:MM:SSZ"
+}
+```
+
+**`iv` units (WO-P400-E3.004 item 3):** decimal fraction, NOT a percentage.
+`0.41` for 41% IV -- never `41.00`. `options_sizer.py` computes `chain.iv *
+100` for display; entering a whole-number percentage silently produces a
+nonsensical displayed IV (e.g. 4069.0%) and falsely trips the IV-rank-50
+spread-preference flag. No code defect -- this is a manual chain-entry
+trap. Same fraction convention applies to `spread_pct_of_mid`, which IS a
+percentage already (e.g. `7.79` for 7.79%) -- do not confuse the two
+fields' conventions when transcribing from TOS.
+
+**P400Record options fields** (additions to vault_schemas.py):
+- `option_method` ? "chart_based" | "risk_budget_first"
+- `option_structure` ? "single_leg" | "vertical_spread"
+- `option_contract` ? e.g. "MCHP260320C80"
+- `option_entry_premium` ? float
+- `option_stop_premium` ? float
+- `option_target_premium` ? float
+- `option_contracts` ? int
+- `option_override` ? bool
+- `option_override_justification` ? str | null
+- `iv_rank` ? float | null
+
+**INIT prompt:** options path added to STEP 2 (Tier Selection) and STEP 4 (Snapshot + Pipeline). Council narrative templates extended with options viability blocks.
+
+**Architecture doc:** version bumped and component statuses updated on completion.
+
+---
+
+### 7.4 Phase E3 Definition of Done
+
+One real single-leg options trade and one real spread trade travel the full path: stock signal ? Council APPROVED (or stock zero-sized / R:R blocked) ? `--options` flag ? chain file supplied ? method selected (Chart-Based or Risk-Budget-First) ? viability gates checked ? spec rendered ? typed into Schwab ? record written with all options fields populated.
+
+---
+
+### 7.5 Phase E3.5 (Deferred ? Chain Data Automation)
+
+Investigate TOS export, ChartExchange scrape, or LLM-assisted chain fetch. Open only after E3.001?E3.003 are live and manual input is confirmed as the dominant friction point.
 
 ---
 
@@ -558,6 +761,8 @@ overwrite_records       = true
 |---|---|---|---|
 | 1.0 | 2026-06-03 | Anthony Zoppi | Finalized Phase 1 manual prototype; Enhancement 1 signal-file handoff |
 | 2.0 | 2026-06-12 | Anthony Zoppi / Claude | SIGNAL_V2 reality documented (reader CLOSED, shared schema, shared WO ledger); Claude Desktop primary engine; Guidelines v1.1 merged as Section 3 (superseded); R:R locked at 2:1 T1; Council v2.0 evidence frameworks (technical dossier, portfolio risk, event risk, options structuring) with deterministic blocks unchanged in authority; two-tier signal flow (deterministic screen -> dossier or straight-to-trade); Python deterministic core / Claude world-boundary runtime split with snapshot-dict contract; systems-thinking design lens; Phase E2 implementation plan (WO-P400-E2.001 through E2.004) |
+
+| 2.1 | 2026-06-16 | Anthony Zoppi / Claude | Phase E3 Options Pipeline plan added (WO-P400-E3.001 through E3.003); two entry paths (stock APPROVED + stock zero-sized/R:R blocked); P_115 Hybrid Methodology confirmed as authority; chain template defined; record schema options fields added; Phase E2 status updated to CLOSED |
 
 **Review Schedule:** after every 5 completed trades, then monthly
 **Next Review:** after 5 Phase-E2 trades

@@ -1,6 +1,6 @@
 """P_400 infrastructure: load open-position book from P400 vault records.
 
-Reads *_P400.md files from BOOK_DIR, extracts YAML frontmatter, validates
+Reads *.md files from BOOK_DIR, extracts YAML frontmatter, validates
 against BookRecord schema. CLOSED records are included so portfolio.py can
 compute today's realized losses. Malformed files are logged and skipped.
 
@@ -45,7 +45,7 @@ def load_book(book_dir: Path = BOOK_DIR) -> List[BookRecord]:
     Records that fail BookRecord validation are logged and skipped -- never repaired.
 
     Args:
-        book_dir: Folder containing *_P400.md files. Defaults to BOOK_DIR from config.
+        book_dir: Folder containing *.md files. Defaults to BOOK_DIR from config.
 
     Returns:
         List of BookRecord objects. Returns [] if folder absent or no matching files.
@@ -55,11 +55,13 @@ def load_book(book_dir: Path = BOOK_DIR) -> List[BookRecord]:
         return []
 
     records: List[BookRecord] = []
-    for path in sorted(book_dir.glob("*_P400.md")):
+    for path in sorted(book_dir.glob("*.md")):  # fixed WO-P400-E2.012
         try:
             fm = _parse_frontmatter(path)
             if not fm:
                 continue
+            fm["symbol"] = fm.pop("ticker", fm.get("symbol"))
+            fm["status"] = fm.pop("lifecycle_status", fm.get("status"))
             rec = BookRecord(**fm)
             records.append(rec)
         except Exception as exc:
