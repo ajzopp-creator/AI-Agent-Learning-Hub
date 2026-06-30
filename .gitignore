@@ -190,6 +190,13 @@ projects/P_300_Vantage_Point_Pattern_Recognition/data/live/P_300_HistoryGrid_Int
 projects/P_300_Vantage_Point_Pattern_Recognition/vault/
 
 # ============================================
+# NTFS junction alias (04-Shared-Resources -> Agentic-Hub-Governance, set 2026-06-05)
+# Same physical files as Agentic-Hub-Governance/work_orders and /verify, tracked there.
+# ============================================
+04-Shared-Resources/work_orders/
+04-Shared-Resources/verify/
+
+# ============================================
 # Notes for Beginners
 # ============================================
 # This file prevents you from accidentally uploading:
