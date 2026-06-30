@@ -74,8 +74,9 @@ def save_last_run(account_label, end_date):
     if LAST_RUN_FILE.exists():
         with open(LAST_RUN_FILE) as f:
             data = json.load(f)
-    data[account_label] = end_date
-    data["last_updated"] = datetime.now().isoformat()
+    data[account_label]    = end_date   # per-account key
+    data["last_run_date"]  = end_date   # canonical key read by batch
+    data["last_updated"]   = datetime.now().isoformat()
     with open(LAST_RUN_FILE, "w") as f:
         json.dump(data, f, indent=2)
 
@@ -169,6 +170,7 @@ def run():
     api_accounts = {a["accountNumber"][-4:]: a["hashValue"] for a in resp.json()}
 
     results = []
+    any_failed = False
 
     for acct_key, acct_info in account_list:
         last4         = acct_info["last4"]
@@ -176,6 +178,8 @@ def run():
 
         if last4 not in api_accounts:
             print(f"\nERROR: Account ...{last4} not found in API response", flush=True)
+            results.append({"account": account_label, "count": 0, "file": None})
+            any_failed = True
             continue
 
         account_hash = api_accounts[last4]
@@ -189,6 +193,7 @@ def run():
             results.append({"account": account_label, "count": len(transactions), "file": out_path.name})
         else:
             results.append({"account": account_label, "count": 0, "file": None})
+            any_failed = True
 
     print("\n" + "=" * 50, flush=True)
     print("SUMMARY", flush=True)
@@ -199,6 +204,8 @@ def run():
         else:
             print(f"  {r['account']}: FAILED", flush=True)
     print("\nPhase 2B complete.", flush=True)
+
+    sys.exit(1 if any_failed else 0)
 
 if __name__ == "__main__":
     run()

@@ -640,12 +640,45 @@ Audit log is clean               → Done ✅
 4. Confirm p140 env path, current phase, last completed task
 5. State today's task and begin
 
-### 9.4 Performance Review (Phase 3E+)
+### 9.4 Performance Review / Monthly Review
 
-1. Run `python cli.py stats-export` — generates ai_review\ CSVs
-2. Drop CSVs into Claude chat
-3. Ask: "Analyze my trading performance using these files"
-4. Review system comparison, equity curve, R-distribution
+**Trigger:** "monthly review" or first session of month
+Tony runs:
+```
+cd C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_020_AJZStrategies_PerformanceAnalysisSystem\python\database
+C:\Users\Trader\.conda\envs\p140\python.exe P_020_Trade_Manager.py analyze --account AJZ6348
+```
+Outputs 6 CSVs to `data\exports\ai_review\`: summary_by_system, monthly_summary, equity_curve, r_distribution, open_positions, drawdown.
+
+Tony pastes all six. Claude interprets in order: (1) P&L health vs prior month, (2) system win rate (flag <40%), (3) equity curve shape/drawdown >5%, (4) WHY/SIG analysis (FOMO/REVENGE cost, A vs X), (5) open positions (flag >30 days, missing stops), (6) data quality (untagged, bad R, SNVXX/SWPPX), (7) account parameters (flag if ±10% from $35K baseline; prompt sizing review), (8) 1-2 concrete observations + journal items.
+
+Claude does NOT advise trades, interpret opens as signals, or fix data without instruction.
+
+---
+
+### 9.5 ThinkLog Tag Vocabulary (Canonical)
+
+Format: `MMDD: [WHY] [SIG] optional free text` — WHY + SIG required. Vocabulary is open — parser never validates.
+
+**WHY — System:** `BTD`=P_115 | `OIL`=P_116 | `EXT`=P_117 | `EZB`=P_118 | `VPT`=P_300 | `SNT`=BigTrends | `DAY`=intraday-flat
+
+**WHY — Situation:** `ASYM`=near-miss BUY | `IFFY`=marginal | `LEARN`=educational | `CROWDED`=at-capacity | `FOMO`=honesty | `REVENGE`=loss-chase
+
+**SIG:** `A`=high-conviction | `B`=standard-fired | `C`=marginal-feels-off | `X`=counter-signal
+
+### 9.6 Session INIT Command Block
+
+**Rule:** NEVER `Start-Process -NoNewWindow` (blocks MCP ~4 min). ALWAYS `Start-Job + cmd /c`.
+
+```powershell
+$job = Start-Job -ScriptBlock {
+    cmd /c """C:\Users\Trader\.conda\envs\p140\python.exe"" ""C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_020_AJZStrategies_PerformanceAnalysisSystem\python\P_020_INIT.py"" > ""C:\Temp\init_out.txt"" 2>&1"
+}
+# Separate tool call — Start-Sleep 20; Get-Content "C:\Temp\init_out.txt"
+```
+
+Fallback: Tony pastes output of one-liner in Anaconda Prompt.
+Script output fields: MARKET block, DB block, ACCOUNT block (THRESHOLD flag at ±10% of $35K; STALE flag >14d).
 
 ---
 

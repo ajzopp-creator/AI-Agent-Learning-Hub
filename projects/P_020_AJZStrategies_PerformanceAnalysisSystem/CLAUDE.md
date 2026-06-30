@@ -1,184 +1,109 @@
-# P_020 — AJZ Strategies Performance Analysis System
+# CLAUDE.md — P_020 AJZ Strategies Performance Analysis System
 
-**Always read this before writing any code or referencing any file path for P_020.**
-
----
-
-## Canonical Folder Name
-
-```
-P_020_AJZStrategies_PerformanceAnalysisSystem
-```
-
-Note the underscore between AJZStrategies and PerformanceAnalysisSystem. Never type from memory — copy from here.
+Inherits hub-level rules from `AI-Agent-Learning-Hub/CLAUDE.md`. This file adds P_020-specific context.
 
 ---
 
-## Canonical Path Registry
+## Canonical Paths
 
 | Reference | Path |
 |---|---|
 | Project root | `C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_020_AJZStrategies_PerformanceAnalysisSystem` |
+| SQLite DB | `...\data\database\P_020_trades.db` |
 | Python scripts | `...\python\database\` |
 | Domain layer | `...\python\database\domain\` |
 | Infrastructure layer | `...\python\database\infrastructure\` |
 | Application layer | `...\python\database\application\` |
-| SQLite database | `...\data\database\P_020_trades.db` |
 | API pulls | `...\data\api_pulls\live\` |
-| Audit logs | `...\audit_logs\` |
-| Python executable | `C:\Users\Trader\.conda\envs\p140\python.exe` |
-| Options Log (live) | `C:\Users\Trader\Documents\AJZStrategiesLLC\2026_Operations\P_020_2026_AJZ_Strategies_Options_Log_v1.xlsx` |
-| Stock Log (live) | `C:\Users\Trader\Documents\AJZStrategiesLLC\2026_Operations\P_020_2026_AJZ_Strategies_Stock_Log_v1.xlsx` |
-| Tracker Dashboard | `F:\OneDrive\Documents\AJZStrategiesLLC\P_115_TrackerAudit\P_115_118_TrackerDashboard_V2.xlsx` |
-| Schwab config | `...\config\P_020_schwab_config.json` |
+| TOS exports (paper) | `...\data\tos_exports\paper\` |
 | Last run tracker | `...\data\api_pulls\P_020_last_run.json` |
-| Weekly batch runner | `...\P_020_Weekly_Update.bat` |
-| Desktop launcher | `Launch_P_020.bat` on Desktop |
-| ThinkLog parser | `...\python\database\domain\thinklog_parser.py` |
-| Session init prompt | `SESSION_INITIALIZATION_PROMPT_v2_7.md` (vocabulary source of truth) |
+| Schwab config | `...\config\P_020_schwab_config.json` |
+| Weekly runner | `...\P_020_Weekly_Update.bat` |
+| Options Log | `C:\Users\Trader\Documents\AJZStrategiesLLC\2026_Operations\P_020_2026_AJZ_Strategies_Options_Log_v1.xlsx` |
+| Stock Log | `C:\Users\Trader\Documents\AJZStrategiesLLC\2026_Operations\P_020_2026_AJZ_Strategies_Stock_Log_v1.xlsx` |
+| Tracker Dashboard | `D:\OneDrive\Documents\AJZStrategiesLLC\P_115_TrackerAudit\P_115_118_TrackerDashboard_V2.xlsx` |
 
-**Full DB path (use verbatim):**
+**Never reconstruct paths from memory. Copy from this table.**
+
+OneDrive path: `Path(os.environ["OneDrive"])` — never hardcode drive letter.
+
+---
+
+## Run a Script
+
+```powershell
+"C:\Users\Trader\.conda\envs\p140\python.exe" "python\database\application\paper_import.py" --commit
 ```
-C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_020_AJZStrategies_PerformanceAnalysisSystem\data\database\P_020_trades.db
+
+Always redirect stderr or errors are silent:
+```powershell
+& "C:\Users\Trader\.conda\envs\p140\python.exe" script.py > out.txt 2> err.txt
 ```
 
 ---
 
 ## Valid Trading Systems
 
-Only these values are valid for the `system` column in the `trades` table:
+Only these values are valid for the `system` column. Never use anything else. Never leave it empty.
 
-| System ID | Description |
-|---|---|
-| P_115 | Buy The Dip |
-| P_116 | Options Income Launchpad |
-| P_117 | External recommendations |
-| P_118 | Eddie Z Breakouts |
-| P_910 | Additional system |
-| P_920 | Additional system |
-| SNT | Sunday Night Trader / BigTrends email subscription |
-| Day | Day trades |
-| TOS_Import | Default — unmatched trades only |
+`P_115` · `P_116` · `P_117` · `P_118` · `P_910` · `P_920` · `SNT` · `Day` · `TOS_Import`
 
-Never use any value outside this list. Never return an empty system column.
-
----
-
-## ThinkLog Tag Format
-
-Every paper trade's TOS comment field starts with:
-
-```
-MMDD: [WHY] [SIG] free text
-```
-
-- `MMDD` — month/day of trade entry (e.g. `0421`)
-- `[WHY]` — reason code (e.g. `[SNT]`, `[BTD]`, `[IFFY]`, `[LEARN]`, `[CROWDED]`)
-- `[SIG]` — signal strength (e.g. `[A]`, `[B]`, `[C]`, `[X]`)
-- `free text` — everything after the last bracket
-
-Tag lives in the TOS trade comment field, not a separate file. Vocabulary is OPEN — the parser never validates `[WHY]` or `[SIG]` against a closed list. Tony defines vocabulary in `SESSION_INITIALIZATION_PROMPT_v2_7.md`.
-
-**Parser behavior (`domain/thinklog_parser.py`):**
-- Extracts `date_token`, `reason`, `signal_strength`, `notes`, `raw`
-- Returns `None` for any missing field — never raises on malformed input
-- Normalizes tag values to uppercase
-- Tag parsing runs only inside `paper_import.py` for paper account (`account_id='PAPER'`)
-- Live account trades leave tag columns NULL
+`TOS_Import` = unmatched fallthrough only.
 
 ---
 
 ## Database Rules
 
-- Scope: AJZ account (...6348), Jan 1, 2026 forward
-- Pre-2026 data: 324 TOS_Import trades from Oct 2024–Dec 2025 — leave alone unless Tony says otherwise
-- Dedup key: `schwab_transaction_id` — never insert a duplicate
-- Orphaned sells: flag in audit log, never silently drop
-- account_id formats: AJZ live = contains '6348'; Paper = 'PAPER'; Inherited IRA = contains '9885' (not traded)
-- Tables: `trades`, `exits`, `accounts`, `systems`, `account_balances`
-- View: `v_trade_summary` — use for all reporting queries
-- Tag columns: `trades.reason` and `trades.signal_strength` (added 2026-04-21 migration) — both TEXT, indexed, nullable
+- Scope: AJZ account (...6348), Jan 1 2026 forward
+- Pre-2026 data (Oct 2024–Dec 2025, 324 rows): leave alone unless Tony says otherwise
+- Dedup: `schwab_transaction_id` for Schwab pulls; `(account_id, symbol, date, entry_price, source)` for paper
+- Never silently drop orphaned sells — flag in audit log
+- All reporting queries use `v_trade_summary` view, not raw `trades` table
+- Tag columns: `trades.reason` (WHY) and `trades.signal_strength` (SIG) — TEXT, nullable
 
 ---
 
-## Bugs Already Fixed — Never Re-Introduce
+## ThinkLog Tag Format
+
+Tags live in the TOS ThinkLog CSV export — NOT in the Account Statement CSV (order comments are stripped on export).
+
+```
+MMDD: [WHY] [SIG] free text
+```
+
+TOS ThinkLog CSV is 4-line blocks separated by blank lines:
+```
+HEADER LINE
+M/D/YY HH:MM:SS
+BODY (free text, first line contains tags)
+Symbol: XXX
+```
+
+Parser joins to trades on Symbol + Date. Vocabulary is **open** — never validate WHY/SIG against a closed list.
+
+---
+
+## Bugs Fixed — Never Re-Introduce
 
 | Bug | Fix |
 |---|---|
-| `schwab_mapper.py` exit matching by `underlying_symbol` only — caused 2025 exits attaching to 2026 positions | Key by `full_symbol`, enforce `exit_date >= entry_date`, consume FIFO, use consumed-set |
-| `tracker_reader.py` — SNT not in `_VALID_SYSTEMS` caused silent normalization to TOS_Import | SNT added to `_VALID_SYSTEMS` |
-| Tracker matcher returning first-match instead of closest-date match | Use closest-date match — same symbol can appear from different systems on different dates |
-| `schwab_balance_pull.py` reading from wrong config file | Use `get_client()` from `P_020_Schwab_Token_Manager` with `get_account_hash(last4)` lookup |
-| ThinkLog parser validating against closed vocabulary | Parser MUST accept any tag string — vocabulary is open and evolves separately |
+| Exit matching by `underlying_symbol` only — 2025 exits attached to 2026 positions | Key by `full_symbol`, enforce `exit_date >= entry_date`, FIFO consume |
+| SNT missing from `_VALID_SYSTEMS` — silently fell through to TOS_Import | SNT is in `_VALID_SYSTEMS` |
+| Tracker matcher returning first match, not closest date | Use closest-date match |
+| `schwab_balance_pull.py` reading wrong config | Use `get_client()` from Token Manager with `get_account_hash(last4)` |
+| ThinkLog parser validating against closed vocabulary | Parser accepts any tag string |
+| Assumed order comments survive TOS CSV export — they don't | Tags are ThinkLog-only |
 
 ---
 
-## Schwab Auth Rules
+## Key Architecture Notes
 
-- Manual flow required: `schwab.auth.client_from_manual_flow()`
-- Schwab portal uses `https://127.0.0.1` without port — conflicts with schwab-py redirect server
-- Auth URL must be owned entirely by `client_from_manual_flow()` — building URL separately causes CSRF state mismatch
-- Authorization codes expire ~30 seconds — copy-paste must be fast
-- Credentials cached in `credentials_cache.json` after first auth
-- Token Manager lives at: `AI-Agent-Learning-Hub\integrations\schwab_api\`
-- Schwab API is shared infrastructure — never project-specific
+- Tracker `Traded` column must NOT gate matching — the trade file itself is proof of execution
+- Matching uses ±3-day date window, not exact date only
+- `TrackerLookup.get()` tries exact date, then walks ±1/2/3 days
+- Config key is `DATABASE_FILE` (not `DB_PATH`)
+- Python path depth from `python\database\`: use `Path(__file__).resolve().parents[2]` for project root
 
 ---
 
-## Windows-MCP Reliable Patterns
-
-Always attempt to run code via Windows-MCP before giving Tony a block to paste manually.
-
-**Multi-line Python script via PowerShell:**
-```powershell
-$script = @"
-[python code here]
-"@
-$script | Out-File -FilePath "C:\Temp\script.py" -Encoding UTF8
-Start-Process -FilePath "C:\Users\Trader\.conda\envs\p140\python.exe" -ArgumentList "C:\Temp\script.py" -Wait -NoNewWindow -RedirectStandardOutput "C:\Temp\out.txt" -RedirectStandardError "C:\Temp\err.txt"
-Start-Sleep -Seconds 3
-Get-Content "C:\Temp\out.txt"
-Get-Content "C:\Temp\err.txt"
-```
-
-Key rules:
-- Always redirect both stdout AND stderr — errors are silent without `-RedirectStandardError`
-- Always `Start-Sleep 3` before `Get-Content` or output files appear empty
-- Python patch scripts: use Python, NOT PowerShell string replacement (PowerShell corrupts UTF-8)
-- Batch files: `-Encoding ASCII` not UTF8
-- Tracker Dashboard (F: drive): NOT accessible via filesystem MCP — Windows-MCP PowerShell only
-- Obsidian ThinkLog vault: access via `obsidian` MCP tools, not raw filesystem
-
----
-
-## Weekly Workflow
-
-`P_020_Weekly_Update.bat` chains:
-1. `schwab_balance_pull.py` — pulls account balances
-2. Import (Schwab API → SQLite)
-3. Analyze / export CSVs
-
-**Paper workflow (starting 2026-04-27):**
-1. Wipe paper account in TOS
-2. On every paper trade, type the tag into the TOS order comment field: `MMDD: [WHY] [SIG] free text`
-3. Export TOS account statement CSV at end of week
-4. Run archived TOS parser → `_OPTIONS_IMPORT.csv` + `_STOCKS_IMPORT.csv`
-5. Run `paper_import.py --options ... --stocks ... --commit`
-6. Filter paper analysis by `reason` to compare setups
-
----
-
-## What Is Not Done Yet
-
-- SNVXX filter in ingest pipeline (money market sweeps inserting as trades — low urgency)
-- Phase 2C: `schwab_positions.py` — open positions + balance snapshot
-- Phase 3D: Excel Power Query view layer
-- Phase 3E: Stats export CSVs (summary_by_system, equity_curve, r_distribution, monthly_summary, open_positions, drawdown)
-- Phase 4: HTML performance dashboard (in progress — built against six AI review CSVs)
-- Wire HTML generator into `analyze` command for auto-regeneration
-- Token expiry detection in `P_020_Weekly_Update.bat`
-- `v_trade_summary` view update to expose `reason` and `signal_strength`
-
----
-
-*Skill version: 1.4 | Last updated: 2026-04-21*
+*Last updated: 2026-06-18*

@@ -1,4 +1,4 @@
-"""Tracker Dashboard reader — loads Tracker Excel into a TrackerLookup schema."""
+﻿"""Tracker Dashboard reader — loads Tracker Excel into a TrackerLookup schema."""
 
 import logging
 from pathlib import Path
@@ -106,7 +106,7 @@ def _find_columns(sheet) -> dict:
 
 def load_tracker_lookup(
     tracker_path: Optional[Path] = None,
-    require_traded: bool = True,
+    require_traded: bool = False,
 ) -> Optional[TrackerLookup]:
     """Read Tracker Dashboard and return a validated TrackerLookup object.
 

@@ -115,16 +115,19 @@ def cmd_import(args: argparse.Namespace) -> None:
     account_id = _resolve_account_id(args.account, account_label)
     logger.info(f"Importing {len(trade_dicts)} trades for account: {account_id}")
 
-    inserted, skipped, orphans = run_ingest(
+    inserted, updated, skipped, orphans = run_ingest(
         raw_trades=trade_dicts,
         account_id=account_id,
         save_run_date=not args.dry_run,
     )
 
-    print(f"\nImport complete — inserted: {inserted}  skipped: {skipped}  orphans: {orphans}")
+    print(
+        f"\nImport complete — inserted: {inserted}  updated: {updated}  "
+        f"skipped: {skipped}  orphans: {orphans}"
+    )
 
-    # Auto-export CSVs after successful import
-    if inserted > 0 and not args.no_export:
+    # Auto-export CSVs after successful import (new exits count as progress too)
+    if (inserted > 0 or updated > 0) and not args.no_export:
         logger.info("Running CSV export...")
         conn = get_connection()
         export_all(conn)

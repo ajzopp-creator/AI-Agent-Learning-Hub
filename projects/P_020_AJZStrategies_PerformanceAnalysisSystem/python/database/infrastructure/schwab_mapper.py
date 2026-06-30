@@ -7,7 +7,9 @@ Flow:
   2. Parse each transaction → extract instrument + fees
   3. Group fills by orderId → aggregate qty, weighted avg price, sum fees
   4. Separate OPENING (entries) from CLOSING (exits)
-  5. Match exits to entries by underlying_symbol
+  5. Allocate exits to entries qty-aware (domain.exit_allocator) -- see
+     WO-P020-E1.001. Replaces the old chronological-only matcher, which had
+     no concept of an entry's remaining quantity.
   6. Return list of trade dicts with exit_1/exit_2/exit_3 attached
 """
 
@@ -17,6 +19,8 @@ from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
+
+from domain.exit_allocator import allocate_exits
 
 logger = logging.getLogger(__name__)
 
@@ -70,6 +74,10 @@ def _parse_datetime(dt_str: str) -> Optional[datetime]:
 
 def _extract_instrument(transfer_items: List[Dict]) -> Optional[Dict]:
     """Extract the non-CURRENCY instrument item from transferItems.
+
+    NOTE: returns only the first non-CURRENCY leg found. Multi-leg orders
+    (spreads) have more than one such leg -- not yet supported, tracked in
+    WO-P020-E1.002. Single-leg calls/puts/stock are unaffected.
 
     Args:
         transfer_items: List of transferItem dicts from a Schwab transaction.
@@ -240,99 +248,6 @@ def _aggregate_by_order(fills: List[Dict]) -> List[Dict]:
     return aggregated
 
 
-# ── Entry / exit matching ──────────────────────────────────────────────────
-
-def _match_exits_to_entries(
-    entries: List[Dict],
-    exits: List[Dict],
-) -> List[Dict]:
-    """Attach exit records to matching entry records.
-
-    Rules:
-    - Match on full_symbol (prevents AMD stock exits matching AMD options).
-    - Exit date must be >= entry open_date (no backwards-in-time matching).
-    - Exits consumed FIFO (chronologically earliest first).
-    - Each exit consumed by only one entry.
-    """
-    from datetime import date as date_type
-
-    # Sort exits chronologically so FIFO works correctly
-    sorted_exits = sorted(exits, key=lambda x: x["open_date"] or date_type.min)
-
-    # Build exit pool keyed by full_symbol
-    exit_pool: Dict[str, List[Dict]] = defaultdict(list)
-    for ex in sorted_exits:
-        key = ex.get("full_symbol") or ex["underlying_symbol"]
-        exit_pool[key].append(ex)
-
-    consumed = set()
-
-    trade_dicts = []
-    for entry in entries:
-        symbol     = entry["underlying_symbol"]
-        full_sym   = entry.get("full_symbol") or symbol
-        entry_date = entry["open_date"]
-
-        candidate_exits = exit_pool.get(full_sym, [])
-
-        # Only exits on or after entry date, not yet consumed
-        valid_exits = [
-            ex for ex in candidate_exits
-            if id(ex) not in consumed
-            and ex["open_date"] is not None
-            and ex["open_date"] >= entry_date
-        ]
-
-        trade = {
-            "underlying_symbol"    : symbol,
-            "asset_type"           : entry["asset_type"],
-            "direction"            : entry["direction"],
-            "open_date"            : entry_date,
-            "open_datetime"        : entry["open_datetime"],
-            "qty"                  : entry["qty"],
-            "entry_price"          : entry["price"],
-            "total_commissions"    : entry["fees"],
-            "source"               : "schwab_api",
-            "schwab_transaction_id": entry["schwab_transaction_id"],
-        }
-
-        for n, ex in enumerate(valid_exits[:3], start=1):
-            consumed.add(id(ex))
-            trade[f"exit_{n}"] = {
-                "exit_price"      : ex["price"],
-                "qty_exited"      : ex["qty"],
-                "exit_date"       : ex["open_date"],
-                "exit_datetime"   : ex["open_datetime"],
-                "exit_commissions": ex["fees"],
-            }
-            trade["total_commissions"] = round(
-                trade["total_commissions"] + ex["fees"], 2
-            )
-
-        trade_dicts.append(trade)
-
-    # Flag orphaned exits
-    all_entry_syms = {e["underlying_symbol"] for e in entries}
-    for ex in exits:
-        if id(ex) not in consumed:
-            sym = ex["underlying_symbol"]
-            if sym not in all_entry_syms:
-                logger.warning(
-                    f"ORPHAN EXIT: {sym} {ex['open_date']} "
-                    f"price={ex['price']} qty={ex['qty']} "
-                    f"-- no matching entry in this batch."
-                )
-            else:
-                logger.warning(
-                    f"ORPHAN EXIT: {sym} {ex['open_date']} "
-                    f"price={ex['price']} qty={ex['qty']} "
-                    f"-- exit predates all entries (check prior week)."
-                )
-
-    return trade_dicts
-
-
-
 # ── Main public function ───────────────────────────────────────────────────
 
 def map_pull_file(path: Path) -> Tuple[str, List[Dict]]:
@@ -371,8 +286,8 @@ def map_pull_file(path: Path) -> Tuple[str, List[Dict]]:
     exits   = [f for f in aggregated if f["direction"] == "short"]
     logger.info(f"Entries (OPENING): {len(entries)}  Exits (CLOSING): {len(exits)}")
 
-    # Match exits to entries
-    trade_dicts = _match_exits_to_entries(entries, exits)
-    logger.info(f"Trade dicts ready for ingest: {len(trade_dicts)}")
+    # Allocate exits to entries, qty-aware (domain.exit_allocator)
+    trade_dicts, orphans = allocate_exits(entries, exits)
+    logger.info(f"Trade dicts ready for ingest: {len(trade_dicts)}  Orphaned exits: {len(orphans)}")
 
     return account_label, trade_dicts

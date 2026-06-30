@@ -1,100 +1,110 @@
-# P_020 SESSION INITIALIZATION v3.0
-Last Updated: 2026-06-04 (v3.0: STEP 0.5 Work Order Review added)
-AJZ Strategies Performance Analysis System. Python-driven init + monthly review.
+# P_020 System Initialization Prompt (SIP) v3.1
+**File:** `SESSION_INITIALIZATION_PROMPT_v2_9.md`
+**Version:** 3.1
+**Last Updated:** 2026-06-18
+**Pairs With:** `docs\P_020_MASTER_SYSTEM_DOCUMENTATION_v1_0.md`
 
-================================================================================
-STEP 0 -- ENVIRONMENT & GOVERNANCE
-================================================================================
-tool_search("PowerShell") -> Claude Desktop. Proceed.
+---
 
-STEP 0.5 -- WORK ORDER REVIEW (shared ledger)
-Read C:\Users\Trader\AI-Agent-Learning-Hub\04-Shared-Resources\work_orders\WO-*.md
-For P_020: Owner==P_020 AND Status!=CLOSED (must-do). P_020 in Affects AND Ack=pending (must-adopt).
-Print: my open WOs + my waiting-on acks.
+## Purpose
 
-================================================================================
-STEP 1 -- INIT BLOCK (Python-driven)
-================================================================================
-Run P_020_INIT.py via MCP auto-run (tries first; one-liner fallback if timeout):
+Bootstraps every new P_020 chat. Runs the Python INIT block and surfaces DB/account/posture state. Domain rules (ThinkLog vocabulary, monthly review workflow, command blocks, database rules) live in the system doc — this file is steps only.
 
-PowerShell:
-  Start-Process -FilePath "C:\Users\Trader\.conda\envs\p140\python.exe" `
-    -ArgumentList "C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_020_AJZStrategies_PerformanceAnalysisSystem\python\P_020_INIT.py" `
-    -Wait -NoNewWindow -RedirectStandardOutput "C:\Temp\init_out.txt" `
-    -RedirectStandardError "C:\Temp\init_err.txt"; Get-Content "C:\Temp\init_out.txt"; Get-Content "C:\Temp\init_err.txt"
+---
 
-Fallback one-liner (if MCP times out):
-  C:\Users\Trader\.conda\envs\p140\python.exe "C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_020_AJZStrategies_PerformanceAnalysisSystem\python\P_020_INIT.py"
-  (Tony pastes output into chat. Claude displays the block.)
+## How to Trigger
 
-Script reads: P_010_RiskConfig.json (SPY/QQQ/posture, final mode), P_020_last_run.json (date),
-  P_020_trades.db (counts, dates, account balances).
+```
+INIT  |  P_020  |  P_020 INIT  |  monthly review
+```
 
-Output block format:
-  === P_020 v2.9 ===
-  MARKET:  SPY[x]% QQQ[x]% Avg[x]% | Morning:[m] Intraday:[adj] Final:[f] | [HOT/STD/CORR]
-  DB:      LastRun:[date] Trades:[n] Open:[n] Latest:[date]
-  ACCOUNT: Balance:$[total] Cash:$[cash] BuyPow:$[bp] AsOf:[date]  [flags]
-  TAGS:    WHY=... SIG=...
-  ===================
+---
 
-Account parameter thresholds (script constants):
-  Baseline: $35,000. THRESHOLD flag: total >= $38,500 or <= $31,500 (±10%).
-  STALE flag: snapshot > 14 days old. On either flag: prompt Tony to review position sizing.
+## INIT Sequence (Execute in Order)
 
-================================================================================
-THINKLOG TAG STANDARD (locked)
-================================================================================
-Format: MMDD: [WHY] [SIG] [optional free text]  -- WHY + SIG required.
+**RULE: Complete Steps 0 through 5 before taking action.**
 
-WHY (system):     BTD=P_115 | OIL=P_116 | EXT=P_117 | EZB=P_118 | VPT=P_300 |
-                  SNT=BigTrends | DAY=intraday-flat
-WHY (situation):  ASYM=near-miss BUY | IFFY=marginal | LEARN=educational |
-                  CROWDED=at-capacity | FOMO=honesty | REVENGE=loss-chase
+### Step 0 — Environment Discovery
+Call `tool_search("PowerShell")`. Present = Claude Desktop → proceed. Absent = web → STOP; ask user to switch to Desktop. Never claim environment without running this check.
 
-SIG:              A=high-conviction | B=standard-fired | C=marginal-feels-off | X=counter-signal
+### Step 0.5 — Work Order Review
+Read `Agentic-Hub-Governance\work_orders\` for Owner=P_020 or P_020 in Affects, Status not CLOSED.
+- BLOCKED → HALT; show Depends-On.
+- PENDING → warn; ask proceed? (y/n).
+- IN_PROGRESS or COMPLETE → note; proceed.
 
-Examples:
-  0530: [BTD] [A] bounce off 50DMA RSI28
-  0530: [ASYM] [C] near-miss BTD watching
-  0530: [REVENGE] [X] lost TSLA yesterday
+### Step 1 — Session Header
+Display: `P_020 [Weekday, Month DD, YYYY] [HH:MM ET]`
+Time via: `[System.TimeZoneInfo]::ConvertTimeBySystemTimeZoneId((Get-Date),"Eastern Standard Time")`
 
-================================================================================
-MONTHLY REVIEW (trigger: "monthly review" or first session of month)
-================================================================================
-Tony runs:
-  cd C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_020_AJZStrategies_PerformanceAnalysisSystem\python\database
-  C:\Users\Trader\.conda\envs\p140\python.exe P_020_Trade_Manager.py analyze --account AJZ6348
-Outputs 6 CSVs to data\exports\ai_review\: summary_by_system, monthly_summary, equity_curve,
-  r_distribution, open_positions, drawdown.
+### Step 2 — Run INIT Block
+Use the `Start-Job + cmd /c` command block in `docs\P_020_MASTER_SYSTEM_DOCUMENTATION_v1_0.md` Section 9.6. NEVER use `Start-Process -NoNewWindow`.
 
-Tony pastes all six. Claude interprets in order:
-  1. P&L health (monthly total vs prior)
-  2. System performance (win rate per system, flag <40%)
-  3. Equity curve (shape, drawdown >5% flag, recovery)
-  4. WHY/SIG analysis (FOMO/REVENGE cost, A vs X outcomes)
-  5. Open positions (age, flag >30 days, missing stops)
-  6. Data quality (untagged, bad R values, SNVXX/SWPPX flags)
-  7. Account parameters (compare balance to $35,000 baseline; if ±10% crossed, ask Tony
-     to confirm new baseline + revisit position sizing)
-  8. 1-2 concrete observations + journal-worthy items.
+On MCP timeout: give Tony the one-liner for Anaconda Prompt; wait for paste; display the block.
 
-Claude does NOT advise trades, interpret opens as signals, or fix data without instruction.
+On "monthly review" trigger: skip to Section 9.4 of system doc for the monthly workflow.
 
-================================================================================
-FAILURE RULES
-================================================================================
-| Situation | Action |
-|-----------|--------|
-| MCP times out | Give Tony one-liner, wait for paste |
-| Single read fails in script | Script prints warning, continues -> Claude notes |
-| Monthly CSV missing | Ask Tony to re-run analyze |
-| WHY/SIG absent from DB | Note gap, review on available data |
-| Tony corrects tag | Apply immediately, flag for SKILL.md if rule change |
+### Step 3 — Display Session Summary
 
-================================================================================
-VERSION
-================================================================================
-3.0  2026-06-04 -- STEP 0.5 Work Order Review (shared ledger) added
-2.9  2026-05-31 -- Replaced 3-step PowerShell with single P_020_INIT.py; MCP auto-run + one-liner fallback
-2.8c 2026-05-30 -- Added Read 3 (account balance from DB)
+```
+---------------------------------------------
+P_020 SESSION INITIALIZED
+---------------------------------------------
+Architecture:    v1.0
+Filesystem MCP:  [available | unavailable]
+Work Orders:     [status or OK]
+[paste P_020_INIT.py output block here]
+---------------------------------------------
+```
+
+### Step 4 — Flag Review
+Surface any THRESHOLD or STALE flags from INIT output. On flag: prompt Tony to review account parameters and position sizing.
+
+### Step 5 — Confirm Session Focus
+> "Ready for trade import, monthly review, or something else?"
+Wait for operator confirmation. Do NOT write code or take action until confirmed.
+
+---
+
+## What This SIP Does NOT Do
+
+Carry domain rules. ThinkLog vocabulary, monthly review interpretation steps, INIT command block, database rules, and Schwab auth live in `docs\P_020_MASTER_SYSTEM_DOCUMENTATION_v1_0.md` Sections 9.4–9.6 and `docs\SKILL.md` (p020-project-context).
+
+---
+
+## Fail-Fast Conditions
+
+| Condition | Action |
+|---|---|
+| MCP unavailable | HALT; give one-liner; wait for paste |
+| WO BLOCKED | HALT; resolve first |
+| INIT script error | Display error; do not continue |
+| THRESHOLD or STALE flag | Surface flag; prompt sizing review |
+
+---
+
+## Quick Reference
+
+| Item | Value |
+|---|---|
+| Project root | `C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_020_AJZStrategies_PerformanceAnalysisSystem\` |
+| Python | `C:\Users\Trader\.conda\envs\p140\python.exe` |
+| System doc | `docs\P_020_MASTER_SYSTEM_DOCUMENTATION_v1_0.md` |
+| INIT command block | System doc Section 9.6 |
+| ThinkLog vocabulary | System doc Section 9.5 |
+| Monthly review | System doc Section 9.4 |
+| Work orders | `Agentic-Hub-Governance\work_orders\` |
+
+---
+
+## Changelog
+
+### v3.1 — 2026-06-18
+- Full rewrite to P_300 SIP pattern. ThinkLog vocabulary, monthly review workflow, INIT command block migrated to system doc Sections 9.4–9.6. Start-Process -NoNewWindow reference removed (banned per ERROR 002). SKILL vocabulary source updated to system doc. SIP is now steps-only.
+
+### v3.0 — 2026-06-04
+- STEP 0.5 Work Order Review (shared ledger) added.
+
+---
+
+**End of P_020 SIP v3.1**

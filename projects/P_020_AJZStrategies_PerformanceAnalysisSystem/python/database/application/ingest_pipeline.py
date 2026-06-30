@@ -1,4 +1,4 @@
-"""Ingest pipeline â€” orchestrates the full flow from raw trade data to SQLite."""
+"""Ingest pipeline — orchestrates the full flow from raw trade data to SQLite."""
 
 import json
 import logging
@@ -8,25 +8,22 @@ from typing import Dict, List, Optional, Tuple
 
 from config import AUDIT_LOGS_DIR, LAST_RUN_FILE, load_params
 from domain.trade_logic import (
-    calculate_exit_pnl,
-    calculate_hold_days,
     calculate_risk_amount,
     consolidate_fills,
     detect_orphaned_exits,
-    determine_trade_status,
     get_asset_multiplier,
 )
 from infrastructure.db_client import get_connection
-from infrastructure.db_writer import insert_exit, insert_trade, update_trade_status
 from infrastructure.tracker_reader import load_tracker_lookup
 from domain.matcher import match_system
 from infrastructure.tracker_reader import match_stop_price
-from schemas import Exit, Trade
+from application.trade_writer import write_trade
+from schemas import Trade
 
 logger = logging.getLogger(__name__)
 
 
-# â”€â”€ Audit log â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ── Audit log ────────────────────────────────────────────────────────────
 
 def _write_audit_log(lines: List[str]) -> Path:
     """Write audit log to audit_logs/ with today's date in filename."""
@@ -39,7 +36,7 @@ def _write_audit_log(lines: List[str]) -> Path:
     return path
 
 
-# â”€â”€ Last run date â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ── Last run date ────────────────────────────────────────────────────────
 
 def get_last_run_date() -> Optional[str]:
     """Read last successful run date from P_020_last_run.json."""
@@ -65,7 +62,7 @@ def save_last_run_date(run_date: str) -> None:
         logger.warning(f"Could not save last run date: {e}")
 
 
-# â”€â”€ System name matching â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ── System name matching ─────────────────────────────────────────────────
 
 def _apply_system_names(trades: List[Dict], lookup, default: str) -> None:
     """Apply Tracker Dashboard system name matching to all trade dicts.
@@ -74,7 +71,7 @@ def _apply_system_names(trades: List[Dict], lookup, default: str) -> None:
     Modifies trade dicts in place.
 
     Args:
-        trades: List of trade dicts â€” must have 'underlying_symbol' and 'open_date'.
+        trades: List of trade dicts — must have 'underlying_symbol' and 'open_date'.
         lookup: TrackerLookup object or None.
         default: Fallback system name.
     """
@@ -96,7 +93,7 @@ def _apply_system_names(trades: List[Dict], lookup, default: str) -> None:
     )
 
 
-# â”€â”€ Trade building â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ── Trade building ───────────────────────────────────────────────────────
 
 def _build_trade(raw: Dict, params: Dict, account_id: str) -> Optional[Trade]:
     """Convert a raw trade dict into a validated Trade schema object."""
@@ -137,51 +134,11 @@ def _build_trade(raw: Dict, params: Dict, account_id: str) -> Optional[Trade]:
             schwab_transaction_id=raw.get("schwab_transaction_id"),
         )
     except (KeyError, ValueError, TypeError) as e:
-        logger.warning(f"Skipping malformed trade record: {e} â€” {raw}")
+        logger.warning(f"Skipping malformed trade record: {e} — {raw}")
         return None
 
 
-# â”€â”€ Exit building â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-
-def _build_exits(raw: Dict, trade_id: int, params: Dict) -> List[Exit]:
-    """Build Exit objects from raw exit data attached to a trade dict."""
-    exits       = []
-    asset_type  = raw.get("asset_type", "stock")
-    multiplier  = get_asset_multiplier(asset_type, params["options_multiplier"])
-    entry_price = float(raw["entry_price"])
-    direction   = raw.get("direction", "long")
-
-    for n in (1, 2, 3):
-        ex = raw.get(f"exit_{n}")
-        if not ex:
-            continue
-        try:
-            exit_price = float(ex["exit_price"])
-            qty_exited = float(ex["qty_exited"])
-            exit_date  = ex["exit_date"]
-            open_date  = raw["open_date"]
-
-            pnl  = calculate_exit_pnl(entry_price, exit_price, qty_exited, direction, multiplier)
-            hold = calculate_hold_days(open_date, exit_date)
-
-            exits.append(Exit(
-                trade_id=trade_id,
-                exit_number=n,
-                exit_date=exit_date,
-                exit_datetime=ex.get("exit_datetime"),
-                qty_exited=qty_exited,
-                exit_price=exit_price,
-                exit_commissions=float(ex.get("exit_commissions", 0)),
-                exit_pnl=pnl,
-                hold_days=hold,
-            ))
-        except (KeyError, ValueError, TypeError) as e:
-            logger.warning(f"Skipping malformed exit_{n} for trade_id={trade_id}: {e}")
-
-    return exits
-
-
-# -- Stop price population (paper trades only) --------------------------------
+# ── Stop price population (paper trades only) ───────────────────────────
 
 def _apply_stop_prices(trades, lookup, account_id: str) -> None:
     """Populate stop_price on each trade dict from the Tracker Dashboard.
@@ -212,25 +169,26 @@ def _apply_stop_prices(trades, lookup, account_id: str) -> None:
     )
 
 
-# â”€â”€ Main pipeline â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ── Main pipeline ────────────────────────────────────────────────────────
 
 def run_ingest(
     raw_trades: List[Dict],
     account_id: str,
     save_run_date: bool = True,
-) -> Tuple[int, int, int]:
-    """Full ingest pipeline: consolidate â†’ match â†’ validate â†’ write to DB.
+) -> Tuple[int, int, int, int]:
+    """Full ingest pipeline: match → validate → write to DB.
 
     Args:
-        raw_trades: List of raw trade dicts from Schwab mapper or CSV.
+        raw_trades: List of raw trade dicts from schwab_mapper (already
+                    qty-aware exit-matched — see domain.exit_allocator).
         account_id: Target account ID (e.g. 'AJZ6348').
         save_run_date: Whether to update P_020_last_run.json on success.
 
     Returns:
-        Tuple of (inserted_count, skipped_count, orphan_count).
+        Tuple of (inserted_count, updated_count, skipped_count, orphan_count).
     """
     audit: List[str] = [
-        f"P_020 Weekly Audit â€” {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
+        f"P_020 Weekly Audit — {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
         f"Account: {account_id}",
         f"Input records: {len(raw_trades)}",
         "=" * 50,
@@ -243,15 +201,20 @@ def run_ingest(
     if lookup:
         audit.append(f"Tracker Dashboard: loaded ({len(lookup.entries)} entries)")
     else:
-        audit.append("Tracker Dashboard: unavailable â€” using TOS_Import default")
+        audit.append("Tracker Dashboard: unavailable — using TOS_Import default")
 
-    # Split entries and orphan-check exits
+    # NOTE: raw_trades arriving from schwab_mapper.map_pull_file() are already
+    # entry dicts with exit_1/2/3 attached (direction == 'long' for all of
+    # them) -- exit matching happens upstream via domain.exit_allocator.
+    # The split/consolidate/orphan-detect below is retained for any caller
+    # that still passes unmatched raw fills; it is a no-op for the Schwab
+    # API import path (exits_raw is always empty there).
     entries   = [t for t in raw_trades if t.get("direction") == "long"]
     exits_raw = [t for t in raw_trades if t.get("direction") == "short"]
 
     consolidated = consolidate_fills(entries, params["consolidation_window_minutes"])
     audit.append(
-        f"Consolidation: {len(entries)} entries â†’ {len(consolidated)} "
+        f"Consolidation: {len(entries)} entries → {len(consolidated)} "
         f"(merged {len(entries) - len(consolidated)} fills)"
     )
 
@@ -259,17 +222,14 @@ def run_ingest(
     for o in orphans:
         audit.append(
             f"ORPHAN: {o.get('underlying_symbol')} exit on "
-            f"{o.get('open_date')} â€” no matching entry in this batch"
+            f"{o.get('open_date')} — no matching entry in this batch"
         )
 
-    # Apply system name matching using TrackerLookup
     all_trades = consolidated + [t for t in exits_raw if t not in orphans]
     _apply_system_names(all_trades, lookup, params["default_system_name"])
-
-    # Apply stop prices from Tracker -- PAPER account only
     _apply_stop_prices(all_trades, lookup, account_id)
 
-    inserted = skipped = 0
+    inserted = updated = skipped = 0
 
     for raw in all_trades:
         trade = _build_trade(raw, params, account_id)
@@ -277,43 +237,49 @@ def run_ingest(
             skipped += 1
             continue
 
-        trade_id = insert_trade(conn, trade)
-        if trade_id is None:
+        outcome, trade_id, new_exits = write_trade(conn, raw, trade, params)
+
+        if outcome == "inserted":
+            inserted += 1
+            audit.append(
+                f"OK: {raw.get('underlying_symbol')} {raw.get('open_date')} "
+                f"system={raw.get('system')} exits={new_exits} (new trade)"
+            )
+        elif outcome == "updated":
+            updated += 1
+            audit.append(
+                f"UPDATED: {raw.get('underlying_symbol')} {raw.get('open_date')} "
+                f"system={raw.get('system')} new_exits={new_exits} "
+                f"(existing entry, exits attached)"
+            )
+        elif outcome == "unchanged":
             skipped += 1
             audit.append(
-                f"SKIPPED (duplicate): {raw.get('underlying_symbol')} "
-                f"{raw.get('open_date')} txn_id={raw.get('schwab_transaction_id')}"
+                f"UNCHANGED (duplicate, no new exits): "
+                f"{raw.get('underlying_symbol')} {raw.get('open_date')}"
             )
-            continue
-
-        exits = _build_exits(raw, trade_id, params)
-        qty_closed = 0.0
-        for exit_ in exits:
-            insert_exit(conn, exit_)
-            qty_closed += exit_.qty_exited
-
-        new_status = determine_trade_status(trade.qty, qty_closed)
-        if new_status != "open":
-            update_trade_status(conn, trade_id, new_status)
-
-        inserted += 1
-        audit.append(
-            f"OK: {raw.get('underlying_symbol')} {raw.get('open_date')} "
-            f"system={raw.get('system')} exits={len(exits)} status={new_status}"
-        )
+        else:  # error
+            skipped += 1
+            audit.append(
+                f"ERROR: {raw.get('underlying_symbol')} {raw.get('open_date')} "
+                f"duplicate txn_id but existing trade_id not found "
+                f"txn_id={raw.get('schwab_transaction_id')}"
+            )
 
     audit.append("=" * 50)
-    audit.append(f"Inserted: {inserted}  Skipped: {skipped}  Orphans: {len(orphans)}")
+    audit.append(
+        f"Inserted: {inserted}  Updated: {updated}  Skipped: {skipped}  "
+        f"Orphans: {len(orphans)}"
+    )
 
     _write_audit_log(audit)
     conn.close()
 
-    if save_run_date and inserted > 0:
+    if save_run_date and (inserted > 0 or updated > 0):
         save_last_run_date(datetime.now().strftime("%Y-%m-%d"))
 
     logger.info(
-        f"Ingest complete â€” inserted: {inserted}, "
+        f"Ingest complete — inserted: {inserted}, updated: {updated}, "
         f"skipped: {skipped}, orphans: {len(orphans)}"
     )
-    return inserted, skipped, len(orphans)
-
+    return inserted, updated, skipped, len(orphans)

@@ -29,6 +29,26 @@ def transaction_exists(conn: sqlite3.Connection, schwab_transaction_id: str) -> 
     return row is not None
 
 
+def get_trade_id_by_schwab_id(conn: sqlite3.Connection, schwab_transaction_id: str) -> Optional[int]:
+    """Look up the existing trade_id for a Schwab transaction ID.
+
+    Used when insert_trade() returns None (duplicate entry) but the trade may
+    have new exit data to attach -- see WO-P020-E1.001.
+
+    Args:
+        conn: Active SQLite connection.
+        schwab_transaction_id: Schwab's unique transaction identifier.
+
+    Returns:
+        The existing trade_id, or None if not found.
+    """
+    row = conn.execute(
+        "SELECT trade_id FROM trades WHERE schwab_transaction_id = ?",
+        (schwab_transaction_id,),
+    ).fetchone()
+    return row[0] if row else None
+
+
 # ── Trade writers ──────────────────────────────────────────────────────────
 
 def insert_trade(conn: sqlite3.Connection, trade: Trade) -> Optional[int]:
