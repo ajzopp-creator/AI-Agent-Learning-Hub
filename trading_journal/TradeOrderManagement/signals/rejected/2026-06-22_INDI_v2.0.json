@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-06-18-INDI-001",
+  "signal_timestamp": "2026-06-22T18:48:31Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "INDI",
+  "asset_class": "stock",
+  "guideline_entry": 4.25,
+  "guideline_stop": 3.8183820592085356,
+  "guideline_target": 4.3899998664856,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 3.8183820592085356,
+  "intelliscan_support_1": 3.77999997138977,
+  "intelliscan_support_2": 4.3899998664856,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 4.25,
+    "trailing_volume_30d": 14485500.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 80.0% WR, z=1.63, mean return +0.10% at h=5",
+    "atm_at_signal": 0.4316179407914643
+  },
+  "signal_metadata": {
+    "session_date": "2026-06-18",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeManagement/P300/2026-06-18_INDI.md"
+  }
+}

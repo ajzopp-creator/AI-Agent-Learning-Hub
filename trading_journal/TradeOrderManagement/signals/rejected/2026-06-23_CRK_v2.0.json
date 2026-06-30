@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-06-22-CRK-001",
+  "signal_timestamp": "2026-06-23T10:57:16Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "CRK",
+  "asset_class": "stock",
+  "guideline_entry": 13.4499998092651,
+  "guideline_stop": 12.871114861450076,
+  "guideline_target": 13.7399997711182,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 12.871114861450076,
+  "intelliscan_support_1": 12.8606004714966,
+  "intelliscan_support_2": 13.7399997711182,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 13.4499998092651,
+    "trailing_volume_30d": 2765343.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 80.0% WR, z=1.59, mean return +0.07% at h=5",
+    "atm_at_signal": 0.5788849478150239
+  },
+  "signal_metadata": {
+    "session_date": "2026-06-22",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeManagement/P300/2026-06-22_CRK.md"
+  }
+}

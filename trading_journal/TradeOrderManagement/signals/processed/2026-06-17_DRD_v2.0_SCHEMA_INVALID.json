@@ -1,0 +1,32 @@
+{
+  "signal_id": "P300-2026-06-16-DRD-001",
+  "signal_timestamp": "2026-06-17T13:30:48Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "DRD",
+  "asset_class": "stock",
+  "guideline_entry": 25.3999996185303,
+  "guideline_stop": 24.270129562009554,
+  "guideline_target": 27.659739731571786,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "MEDIUM",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 25.4599990844727,
+  "intelliscan_support_1": 25.4599990844727,
+  "intelliscan_support_2": 27.25,
+  "context": {
+    "close_at_signal": 25.3999996185303,
+    "trailing_volume_30d": 232600.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 65.0% WR, z=0.17, mean return +0.03% at h=5",
+    "atm_at_signal": 1.1298700565207447
+  },
+  "signal_metadata": {
+    "session_date": "2026-06-16",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeManagement/P300/2026-06-16_DRD.md"
+  }
+}

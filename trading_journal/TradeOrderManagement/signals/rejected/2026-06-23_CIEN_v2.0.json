@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-06-22-CIEN-001",
+  "signal_timestamp": "2026-06-23T10:56:33Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "CIEN",
+  "asset_class": "stock",
+  "guideline_entry": 460.329986572266,
+  "guideline_stop": 422.67785352879275,
+  "guideline_target": 479.510009765625,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 424.333892822266,
+  "intelliscan_support_1": 424.333892822266,
+  "intelliscan_support_2": 479.510009765625,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 460.329986572266,
+    "trailing_volume_30d": 3863828.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 80.0% WR, z=1.59, mean return +0.12% at h=5",
+    "atm_at_signal": 37.65213304347328
+  },
+  "signal_metadata": {
+    "session_date": "2026-06-22",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeManagement/P300/2026-06-22_CIEN.md"
+  }
+}

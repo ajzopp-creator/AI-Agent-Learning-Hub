@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-06-17-LIVE-001",
+  "signal_timestamp": "2026-06-18T10:09:25Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "LIVE",
+  "asset_class": "stock",
+  "guideline_entry": 9.55000019073486,
+  "guideline_stop": 8.882275750595253,
+  "guideline_target": 9.89999961853027,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "MEDIUM",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 8.882275750595253,
+  "intelliscan_support_1": 8.84000015258789,
+  "intelliscan_support_2": 9.89999961853027,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 9.55000019073486,
+    "trailing_volume_30d": 2174.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 65.0% WR, z=0.22, mean return +0.04% at h=5",
+    "atm_at_signal": 0.6677244401396065
+  },
+  "signal_metadata": {
+    "session_date": "2026-06-17",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeManagement/P300/2026-06-17_LIVE.md"
+  }
+}

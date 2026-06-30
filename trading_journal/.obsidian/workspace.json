@@ -4,24 +4,39 @@
     "type": "split",
     "children": [
       {
-        "id": "331f7ee2c8d343db",
+        "id": "07bac1b74f1935f0",
         "type": "tabs",
         "children": [
           {
-            "id": "93960eebb654b8d4",
+            "id": "d0fe7e9b1237f6ff",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "TradeManagement/P115/2026-06-03_JCI.md",
+                "file": "KnowledgeBase/2026-06-30_Loops explained Claude, GPT, Mira and what actually works.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "2026-06-03_JCI"
+              "title": "2026-06-30_Loops explained Claude, GPT, Mira and what actually works"
+            }
+          },
+          {
+            "id": "484e7f35109742f7",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "TradeManagement/P300/2026-06-29_APP.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "2026-06-29_APP"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -40,7 +55,7 @@
             "state": {
               "type": "file-explorer",
               "state": {
-                "sortOrder": "alphabetical",
+                "sortOrder": "alphabeticalReverse",
                 "autoReveal": false
               },
               "icon": "lucide-folder-closed",
@@ -53,7 +68,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "ROST",
+                "query": "AEM",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -162,8 +177,19 @@
               "icon": "lucide-list",
               "title": "Outline of Untitled"
             }
+          },
+          {
+            "id": "57b2902077e31653",
+            "type": "leaf",
+            "state": {
+              "type": "mermaid-toolbar-view",
+              "state": {},
+              "icon": "trident-custom",
+              "title": "Mermaid Toolbar"
+            }
           }
-        ]
+        ],
+        "currentTab": 5
       }
     ],
     "direction": "horizontal",
@@ -179,46 +205,54 @@
       "templates:Insert template": false,
       "command-palette:Open command palette": false,
       "bases:Create new base": false,
-      "templater-obsidian:Templater": false
+      "templater-obsidian:Templater": false,
+      "mermaid-tools:Open Mermaid Toolbar": false
     }
   },
-  "active": "93960eebb654b8d4",
+  "active": "484e7f35109742f7",
   "lastOpenFiles": [
-    "Bases/P300_Signals.md",
-    "TradeManagement/P115/2026-06-03_JCI.md",
-    "KnowledgeBase/2026-06-04_10 AI Tools.md",
-    "Dashboard.md",
-    "TradeOrderManagement/signals/2026-06-03_AMTM_signal.json",
-    "2026-05-26.md",
-    "TradeManagement/P300/2026-06-02_DE.md",
-    "TradeManagement/P300/2026-06-02_COHR.md",
-    "TradeManagement/P300/2026-06-02_AME.md",
-    "TradeManagement/P300/2026-06-02_CMI.md",
-    "TradeManagement/P300/2026-06-02_DNOW.md",
-    "TradeManagement/P300/2026-06-01_TDC.md",
-    "TradeManagement/P300/2026-06-02_PCAR.md",
-    "TradeManagement/P115/2024-12-18_AMTM.md",
-    "TradeManagement/P300/2026-06-01_FMCC.md",
-    "TradeManagement/P300/2026-06-01_INSG.md",
-    "TradeManagement/P300/2026-06-01_CGBD.md",
-    "TradeManagement/P300/2026-06-01_BKE.md",
-    "TradeManagement/P300/2026-06-01_BCO.md",
-    "TradeManagement/P300/2026-06-01_AJG.md",
-    "TradeManagement/P300/2026-06-01_ADBE.md",
-    "TradeManagement/P300/2026-06-01_MNST.md",
-    "TradeOrderManagement/signals/2026-06-02_TESTFILE_signal.json",
-    "TradeOrderManagement/signals",
-    "TradeOrderManagement",
-    "TradeManagement/signals/2026-06-02_TESTFILE_signal.json",
-    "TradeManagement/signals",
-    "TradeManagement/P300/2026-06-01_OI.md",
-    "TradeManagement/P300/2026-06-01_TEAM.md",
-    "KnowledgeBase/2026-05-25_-CREATE-YOUR-SECOND-BRAIN.md",
-    "TradeManagement/P300/2026-05-29_ROST.md",
-    "Bases/P300_Signals.base",
-    "KnowledgeBase/Obsidian Trading System – Implementation Plan.md",
-    "Bases/KB_Articles.base",
-    "Bases/Open_Positions.base",
-    "Bases/P020_Performance.base"
+    "TradeManagement/P400/2026-06-29_ZDGE.md",
+    "TradeManagement/P400/2026-06-29_JVA.md",
+    "TradeManagement/P400/2026-06-29_ZETA.md",
+    "TradeManagement/P400/2026-06-29_WRAP.md",
+    "TradeManagement/P400/2026-06-29_VOC.md",
+    "TradeManagement/P400/2026-06-29_TWLO.md",
+    "TradeManagement/P400/2026-06-29_APP.md",
+    "TradeManagement/P400/2026-06-29_KNDI.md",
+    "TradeManagement/P400/2026-06-29_STWD.md",
+    "TradeManagement/P400/2026-06-29_OPEN.md",
+    "TradeManagement/P400/2026-06-29_QS.md",
+    "TradeManagement/P400/2026-06-29_ARCC.md",
+    "TradeManagement/P300/2026-06-29_ARCC.md",
+    "TradeManagement/P300/2026-06-29_JVA.md",
+    "TradeManagement/P300/2026-06-29_KNDI.md",
+    "TradeManagement/P300/2026-06-29_OPEN.md",
+    "TradeManagement/P300/2026-06-29_QS.md",
+    "TradeManagement/P300/2026-06-29_STWD.md",
+    "TradeManagement/P300/2026-06-29_TWLO.md",
+    "TradeManagement/P300/2026-06-29_VOC.md",
+    "TradeManagement/P300/2026-06-29_WRAP.md",
+    "TradeManagement/P300/2026-06-29_ZDGE.md",
+    "TradeManagement/P300/2026-06-29_ZETA.md",
+    "KnowledgeBase/2026-06-30_A Profitable Strategy for Short-Term Traders.md",
+    "KnowledgeBase/2026-06-30_How Quant Hedge Funds Compress 500 Stocks Into 5 Hidden Forces.md",
+    "KnowledgeBase/2026-06-30_Loops explained Claude, GPT, Mira and what actually works.md",
+    "TradeOrderManagement/signals/2026-06-30_ZETA_v2.0.json",
+    "TradeOrderManagement/signals/2026-06-30_ZDGE_v2.0.json",
+    "TradeOrderManagement/signals/2026-06-30_WRAP_v2.0.json",
+    "TradeOrderManagement/signals/2026-06-30_VOC_v2.0.json",
+    "TradeOrderManagement/signals/2026-06-30_TWLO_v2.0.json",
+    "TradeOrderManagement/signals/2026-06-30_STWD_v2.0.json",
+    "TradeOrderManagement/signals/2026-06-30_QS_v2.0.json",
+    "TradeOrderManagement/signals/2026-06-30_OPEN_v2.0.json",
+    "TradeOrderManagement/signals/2026-06-30_KNDI_v2.0.json",
+    "TradeOrderManagement/signals/2026-06-30_JVA_v2.0.json",
+    "Pasted image 20260614115321.png",
+    "Pasted image 20260614115231.png",
+    "Pasted image 20260614115157.png",
+    "Pasted image 20260614115050.png",
+    "Pasted image 20260613092625.png",
+    "Pasted image 20260613092126.png",
+    "Pasted image 20260611180608.png"
   ]
 }

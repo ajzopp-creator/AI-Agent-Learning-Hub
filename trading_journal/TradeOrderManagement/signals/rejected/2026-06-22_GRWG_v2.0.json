@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-06-18-GRWG-001",
+  "signal_timestamp": "2026-06-22T18:47:32Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "GRWG",
+  "asset_class": "stock",
+  "guideline_entry": 1.5900000333786,
+  "guideline_stop": 1.5119940729224748,
+  "guideline_target": 1.8400000333786,
+  "signal_horizon": "10 trading days",
+  "confidence_level": "MEDIUM",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 1.5119940729224748,
+  "intelliscan_support_1": 1.49000000953674,
+  "intelliscan_support_2": 1.8400000333786,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 1.5900000333786,
+    "trailing_volume_30d": 382800.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 65.0% WR, z=0.30, mean return +0.05% at h=10",
+    "atm_at_signal": 0.07800596045612515
+  },
+  "signal_metadata": {
+    "session_date": "2026-06-18",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeManagement/P300/2026-06-18_GRWG.md"
+  }
+}

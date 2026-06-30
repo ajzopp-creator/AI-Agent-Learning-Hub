@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-06-18-TSLA-001",
+  "signal_timestamp": "2026-06-22T18:57:22Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "TSLA",
+  "asset_class": "stock",
+  "guideline_entry": 400.489990234375,
+  "guideline_stop": 384.25825520141194,
+  "guideline_target": 416.0,
+  "signal_horizon": "10 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 384.25825520141194,
+  "intelliscan_support_1": 380.149993896484,
+  "intelliscan_support_2": 416.0,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 400.489990234375,
+    "trailing_volume_30d": 58384700.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 70.0% WR, z=0.76, mean return +0.09% at h=10",
+    "atm_at_signal": 16.231735032963044
+  },
+  "signal_metadata": {
+    "session_date": "2026-06-18",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeManagement/P300/2026-06-18_TSLA.md"
+  }
+}

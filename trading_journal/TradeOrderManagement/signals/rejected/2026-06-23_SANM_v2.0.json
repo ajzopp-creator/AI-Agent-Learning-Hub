@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-06-22-SANM-001",
+  "signal_timestamp": "2026-06-23T11:00:34Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "SANM",
+  "asset_class": "stock",
+  "guideline_entry": 253.449996948242,
+  "guideline_stop": 236.97979913677486,
+  "guideline_target": 269.542297363281,
+  "signal_horizon": "10 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 236.97979913677486,
+  "intelliscan_support_1": 229.059997558594,
+  "intelliscan_support_2": 269.542297363281,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 253.449996948242,
+    "trailing_volume_30d": 1107742.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 70.0% WR, z=0.72, mean return +0.07% at h=10",
+    "atm_at_signal": 16.470197811467134
+  },
+  "signal_metadata": {
+    "session_date": "2026-06-22",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeManagement/P300/2026-06-22_SANM.md"
+  }
+}

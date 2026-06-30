@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-06-18-CTVA-001",
+  "signal_timestamp": "2026-06-22T18:45:51Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "CTVA",
+  "asset_class": "stock",
+  "guideline_entry": 78.5899963378906,
+  "guideline_stop": 76.84234863236178,
+  "guideline_target": 79.4100036621094,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 76.84234863236178,
+  "intelliscan_support_1": 74.4199981689453,
+  "intelliscan_support_2": 79.4100036621094,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 78.5899963378906,
+    "trailing_volume_30d": 13360300.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 70.0% WR, z=0.70, mean return +0.03% at h=5",
+    "atm_at_signal": 1.747647705528824
+  },
+  "signal_metadata": {
+    "session_date": "2026-06-18",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeManagement/P300/2026-06-18_CTVA.md"
+  }
+}

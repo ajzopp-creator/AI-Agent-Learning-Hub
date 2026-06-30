@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-06-18-TE-001",
+  "signal_timestamp": "2026-06-22T18:56:20Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "TE",
+  "asset_class": "stock",
+  "guideline_entry": 9.35000038146973,
+  "guideline_stop": 8.013271572458464,
+  "guideline_target": 12.4899997711182,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 8.013271572458464,
+  "intelliscan_support_1": 7.3600001335144,
+  "intelliscan_support_2": 12.4899997711182,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 9.35000038146973,
+    "trailing_volume_30d": 62793900.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 75.0% WR, z=1.16, mean return +0.13% at h=5",
+    "atm_at_signal": 1.3367288090112663
+  },
+  "signal_metadata": {
+    "session_date": "2026-06-18",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeManagement/P300/2026-06-18_TE.md"
+  }
+}

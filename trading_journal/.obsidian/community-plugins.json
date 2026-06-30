@@ -3,5 +3,7 @@
   "quickadd",
   "obsidian-tasks-plugin",
   "obsidian-local-rest-api",
-  "google-calendar"
+  "google-calendar",
+  "mermaid-tools",
+  "mermaid-exporter"
 ]
