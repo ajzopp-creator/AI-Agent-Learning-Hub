@@ -1,0 +1,103 @@
+=========================================================================
+DENSE FORMAT (print_signal_report):
+=========================================================================
+============================================================================
+P_300 SIGNAL REPORT  SPY BUY
+============================================================================
+Ticker:           SPY
+Anchor date:      2026-05-15
+Signal:           BUY at horizon 7
+Generated:        2026-05-17 20:45 ET
+Risk model:       CARA lambda=20  CE gate OBSERVE-only (not gating)
+
+PER-HORIZON STATS
+----------------------------------------------------------------------------
+    h    n  win_rate  mean_ret        ce  std_ret  z_score  class
+    5   18     0.778     +3.42       N/A     2.15   +1.234    BUY
+    7   18     0.833     +4.18       N/A     2.83   +1.567    BUY
+   10   17     0.706     +3.05       N/A     2.91   +0.987    BUY
+   15   15     0.667     +2.89       N/A     3.12   +0.456  WATCH
+   20   12     0.583     +2.14       N/A     3.45   +0.123   PASS
+
+TOP 2 MATCHES (by composite distance, ascending)
+----------------------------------------------------------------------------
+   #  ticker      anchor  compdist     +5d     +7d    +10d    +15d    +20d
+   1     SPY  2024-11-14     0.234   +5.81   +6.42   +5.19   +4.88   +4.21
+   2     QQQ  2025-03-08     0.281   +4.12   -1.03   +4.67     N/A   +3.45
+
+VOLATILITY DIVERGENCE: STRONG (ratio 2.73x)
+----------------------------------------------------------------------------
+  Candidate range_pct median:   0.0078
+  Top-K range_pct median:       0.0213
+  n_topk_matches:               2
+  Top-K analogs trade with materially different volatility regime
+  than the candidate. Statistics are apples-to-oranges; size
+  with extra caution.
+
+NARRATIVE
+----------------------------------------------------------------------------
+  The signal registers BUY at horizon 7 driven by z=1.567 and a sample
+  win-rate of 0.833 across 18 matches. Mean returns across the top analogs
+  cluster in the 3-4 percent range at the shorter horizons.
+
+============================================================================
+
+=========================================================================
+CLEAN FORMAT -- with narration:
+=========================================================================
+=========================================================================
+       P_300 DAILY EVALUATE + OBSIDIAN LOG + ARCHIVE
+=========================================================================
+Symbol  : SPY
+File    : data/live/History Grid (SPY).xlsx
+[STEP 1] Running Pipeline B evaluation...
+
+========================================================================
+P_300 SIGNAL REPORT  SPY BUY
+========================================================================
+Ticker:           SPY
+  The signal registers BUY at horizon 7 driven by z=1.567 and a sample
+  win-rate of 0.833 across 18 matches. Mean returns across the top
+  analogs cluster in the 3-4 percent range at the shorter horizons.
+
+============================================================OBSIDIAN SIGNAL WRITER
+============================================================
+[OK] SPY written to vault
+[STEP 3] Archiving eval file...
+ARCHIVE OK  -- History Grid (SPY).xlsx
+  zip  : data/processed/2026-05.zip
+
+=========================================================================
+ DONE  SPY  --  report / vault logged / XLSX archived
+=========================================================================
+Press any key to continue . . .
+
+=========================================================================
+CLEAN FORMAT -- [SMOKE DEMO] narrator-warning rendering (NOT a live
+LM Studio check; narrator_warning flag is forced on to show the slot):
+=========================================================================
+=========================================================================
+       P_300 DAILY EVALUATE + OBSIDIAN LOG + ARCHIVE
+=========================================================================
+Symbol  : SPY
+File    : data/live/History Grid (SPY).xlsx
+[STEP 1] Running Pipeline B evaluation...
+
+========================================================================
+P_300 SIGNAL REPORT  SPY BUY
+========================================================================
+Ticker:           SPY
+  Signal: BUY @ h=7
+  [WARNING] LM Studio unavailable -- narration skipped
+
+============================================================OBSIDIAN SIGNAL WRITER
+============================================================
+[OK] SPY written to vault
+[STEP 3] Archiving eval file...
+ARCHIVE OK  -- History Grid (SPY).xlsx
+  zip  : data/processed/2026-05.zip
+
+=========================================================================
+ DONE  SPY  --  report / vault logged / XLSX archived
+=========================================================================
+Press any key to continue . . .

@@ -1,7 +1,7 @@
 """
 FILE: vp_xlsx_reader.py
-VERSION: 1.2
-DATE: 2026-05-20
+VERSION: 1.4
+DATE: 2026-06-17
 AUTHOR: Anthony Zoppi + Claude
 LAYER: infrastructure
 DESCRIPTION:
@@ -47,6 +47,16 @@ DESCRIPTION:
         8. PatternFileParse validates the full set (>= 60 bars, ascending)
 
 CHANGELOG:
+    - 2026-06-17 v1.4: Fixed v1.3 regression -- filename.upper() was uppercasing
+      the ENTIRE filename before the regex match, breaking the literal
+      'Pattern_' / '.xlsx' portions and causing 100% ingest failure since
+      v1.3 shipped (caught: 18/18 AddPattern run failed 2026-06-17 09:25).
+      Regex now compiled with re.IGNORECASE; only the captured symbol group
+      is uppercased when building PatternFileMetadata. O-009 intent (RCl ->
+      RCL) preserved without mangling the rest of the filename.
+    - 2026-06-16 v1.3: Auto-uppercase filename before regex match in
+      _parse_filename(). Prevents case-mismatch ValueError on files saved
+      with lowercase symbol (e.g. RCl -> RCL). O-009.
     - 2026-05-20 v1.2: Updated _verify_header_text to accept header_sub_alt
       when present in the manifest ColumnMapEntry. Allows both old and new
       VP triple_cross sub-header formats ('Short' vs 'Triple Cross Short')
@@ -84,7 +94,8 @@ from schemas import (  # noqa: E402
 logger = logging.getLogger(__name__)
 
 _FILENAME_PATTERN = re.compile(
-    r"^Pattern_(?P<start>\d{8})_(?P<end>\d{8})_(?P<symbol>[A-Z][A-Z0-9_]{0,11})\.xlsx$"
+    r"^Pattern_(?P<start>\d{8})_(?P<end>\d{8})_(?P<symbol>[A-Za-z][A-Za-z0-9_]{0,11})\.xlsx$",
+    re.IGNORECASE,
 )
 _LIVE_FILENAME_PATTERN = re.compile(
     r"^History Grid \((?P<symbol>[A-Z][A-Z0-9_]{0,11})\)\.xlsx$"
@@ -117,7 +128,7 @@ def _parse_filename(filename: str) -> PatternFileMetadata:
         raise ValueError(f"Invalid date in filename {filename!r}: {e}") from e
     return PatternFileMetadata(
         filename=filename,
-        symbol=m.group("symbol"),
+        symbol=m.group("symbol").upper(),  # v1.4: normalize symbol case only (O-009)
         pattern_start_date=start_d,
         pattern_end_date=end_d,
     )

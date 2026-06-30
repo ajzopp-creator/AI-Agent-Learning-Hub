@@ -1,7 +1,7 @@
 """
 FILE: schemas_pipeline_b.py
-VERSION: 1.2
-DATE: 2026-05-20
+VERSION: 1.3
+DATE: 2026-06-09
 AUTHOR: Anthony Zoppi + Claude
 LAYER: schemas
 DESCRIPTION:
@@ -34,6 +34,20 @@ DESCRIPTION:
     the type discriminator — not used in this file directly.
 
 CHANGELOG:
+    - 2026-06-09 v1.3: Added optional `certainty_equivalent: float | None = None`
+      field to AggregatedSignalPerHorizon for the Certainty-Equivalent BUY gate
+      (config v1.7; Kochenderfer "Algorithms for Decision Making" Ch. 6). The
+      CE is the risk-adjusted forward return of this horizon's top-K analog
+      cluster, computed in domain/utility.py and attached by domain/aggregator.py.
+      Default None preserves backward compatibility and keeps the determinism
+      regression byte-identical while CE_GATE_ENABLED=False -- existing callers
+      that construct AggregatedSignalPerHorizon without CE continue unchanged.
+      Decimal-space throughout (M-020): CE is a decimal fraction like
+      mean_return_pct, x100 only at the report-writer display boundary. The
+      risk-aversion lambda under which the CE was computed is NOT stored per
+      horizon (one lambda per run); it is stamped on the report header and the
+      ledger record instead (config v1.7 provenance rule). File remains over the
+      Section 8.4.2 limit (M-031); one-field add only, split stays backlogged.
     - 2026-05-20 v1.2: Added Severity enum, VolatilityDivergence model, and
       optional `volatility_divergence` field on SignalReport, plus a
       model_validator enforcing n_topk_matches == len(top_matches) when the
@@ -269,6 +283,16 @@ class AggregatedSignalPerHorizon(BaseModel):
     matches at this horizon vs. the catalog's baseline win-rate at the
     same horizon. Z > 0 = matches win more often than typical catalog
     analogs; Z > 1.0 = significantly above baseline.
+
+    certainty_equivalent (v1.3): risk-adjusted forward return of the top-K
+    analog cluster at this horizon, computed via CARA exponential utility
+    in domain/utility.py (Kochenderfer Ch. 6). Decimal fraction, same space
+    as mean_return_pct (M-020). For any non-degenerate spread of analog
+    returns, CE < mean_return_pct; the gap is the risk penalty. None when
+    not computed (callers built before v1.3, or a degenerate cluster the
+    utility module guards out). The risk-aversion lambda is NOT stored here
+    (one lambda per run -- it lives on the report header and ledger record
+    per the config v1.7 provenance rule).
     """
     model_config = ConfigDict(frozen=True)
 
@@ -278,6 +302,7 @@ class AggregatedSignalPerHorizon(BaseModel):
     mean_return_pct: float
     std_return_pct: float = Field(ge=0)
     z_score: float
+    certainty_equivalent: float | None = None
 
     @field_validator("horizon_days")
     @classmethod

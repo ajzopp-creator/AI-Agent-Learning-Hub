@@ -28,11 +28,11 @@ def record_fired_signal(
 ) -> Optional[int]:
     """
     Record a fired signal to ledger (best-effort, non-blocking).
-    
+
     Called immediately after classify_signal() returns a BUY or WATCH.
     Snapshots predicted stats for later confidence calibration against realized returns.
     Errors are logged but do NOT block the signal from firing.
-    
+
     Args:
         ticker: Stock symbol (e.g., "AAPL").
         signal_date: ISO date YYYYMMDD.
@@ -40,7 +40,7 @@ def record_fired_signal(
         chosen_horizon: Forward-return window (5, 7, 10, 15, 20 trading days).
         pattern_id: Catalog pattern_id that matched.
         aggregated_horizon: AggregatedSignalPerHorizon for chosen_horizon.
-    
+
     Returns:
         ledger_id if successful, None if write failed (logged, non-fatal).
     """
@@ -49,16 +49,18 @@ def record_fired_signal(
         # We need source_file and source_file_hash for the fired_signal snapshot.
         from pathlib import Path
         from glob import glob
-        
+
         # Find latest catalog DB by modification time (glob *.db, sort by mtime).
         catalog_pattern = str(MODELS_DIR / "*catalog.db")
         catalog_files = glob(catalog_pattern)
         if not catalog_files:
-            logger.warning(f"No catalog found at {catalog_pattern}, skipping ledger record")
+            logger.warning(
+                "No catalog found at %s, skipping ledger record", catalog_pattern
+            )
             return None
-        
+
         catalog_path = max(catalog_files, key=lambda p: Path(p).stat().st_mtime)
-        
+
         # Query catalog for the source file name and ID.
         # We'll use source_file name as identifier (no hash in catalog schema).
         with sqlite3.connect(catalog_path) as conn:
@@ -70,14 +72,16 @@ def record_fired_signal(
                 WHERE pi.pattern_instance_id = ?
             """, (pattern_id,))
             row = cursor.fetchone()
-        
+
         if not row:
-            logger.warning(f"Pattern {pattern_id} not found in catalog, skipping ledger record.")
+            logger.warning(
+                "Pattern %s not found in catalog, skipping ledger record.", pattern_id
+            )
             return None
-        
+
         source_file = row[0]
         source_file_hash = source_file  # Use filename as identifier (no hash available)
-        
+
         # Construct domain objects.
         fired_signal = FiredSignal(
             ticker=ticker,
@@ -89,7 +93,7 @@ def record_fired_signal(
             source_file_hash=source_file_hash,
             fired_at=datetime.utcnow()
         )
-        
+
         predicted_stat = PredictedStat(
             n_matches=aggregated_horizon.n_matches,
             win_rate_pct=aggregated_horizon.win_rate * 100.0,
@@ -97,13 +101,20 @@ def record_fired_signal(
             std_return_pct=aggregated_horizon.std_return_pct,
             z_score=aggregated_horizon.z_score
         )
-        
+
         # Write to ledger.
         ledger_db = LedgerDB()
         ledger_id = ledger_db.insert_fired_signal(fired_signal, predicted_stat)
-        logger.info(f"Ledger record: {ticker} {signal_date} {signal_class.value} → ledger_id={ledger_id}")
+        # M-019: ASCII-only on stdout/logging (no Unicode arrows).
+        logger.info(
+            "Ledger record: %s %s %s -> ledger_id=%s",
+            ticker, signal_date, signal_class.value, ledger_id
+        )
         return ledger_id
-    
+
     except Exception as e:
-        logger.warning(f"Ledger record FAILED for {ticker} {signal_date}: {e}", exc_info=False)
+        logger.warning(
+            "Ledger record FAILED for %s %s: %s", ticker, signal_date, e,
+            exc_info=False
+        )
         return None

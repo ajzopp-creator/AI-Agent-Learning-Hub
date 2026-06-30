@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(C:\\Users\\Trader\\.conda\\envs\\p140\\python.exe \"python\\cli.py\" catalog-summary*)",
+      "Bash(C:\\Users\\Trader\\.conda\\envs\\p140\\python.exe \"integrations\\lm_studio\\examples\\p300_status_check.py\"*)",
+      "Grep(python\\config.py*)"
+    ]
+  }
+}

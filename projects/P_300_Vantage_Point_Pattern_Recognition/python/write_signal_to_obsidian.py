@@ -2,13 +2,23 @@
 """Parse latest report and write signal to Obsidian vault via Hub interface.
 
 FILE:        write_signal_to_obsidian.py
-VERSION:     1.4
-DATE:        2026-06-01
+VERSION:     1.5
+DATE:        2026-06-09
 AUTHOR:      Anthony Zoppi / Claude
 LAYER:       application (P_300 side -- calls Hub vault interface)
 DESCRIPTION: Find latest .txt report for a symbol, parse signal fields,
              write normalized note to Obsidian vault via the Hub interface.
 CHANGELOG:
+  v1.5  2026-06-09  WO-P000-E2.003: removed the sys.path side-channel
+                    (was line 42: sys.path.insert(0, _SHARED) where
+                    _SHARED = .../shared_resources/python_utils). The shared
+                    contract now resolves through the hub_shared editable
+                    install (WO-P000-E2.002), so the insert is dead coupling.
+                    Import changed to the full package path:
+                    from shared_resources.python_utils.vault_interface.
+                    'import sys' retained -- still used by sys.argv/sys.exit
+                    in __main__. # noqa: E402 dropped (import no longer
+                    preceded by code).
   v1.4  2026-06-01  Removed 'date' and 'anchor_date' from trade_data payload.
                     P300Record v2.0 types both as Optional[date] (datetime.date),
                     which rejects plain strings in Pydantic v2 strict mode.
@@ -36,12 +46,10 @@ import re
 from pathlib import Path
 from datetime import datetime
 
-# Hub interface -- the ONLY import path for cross-project vault writes (M-038)
-_SHARED = r'C:\Users\Trader\AI-Agent-Learning-Hub\shared_resources\python_utils'
-if _SHARED not in sys.path:
-    sys.path.insert(0, _SHARED)
-
-from vault_interface import write_to_vault  # noqa: E402
+# Hub interface -- the ONLY import path for cross-project vault writes (M-038).
+# Resolves via the hub_shared editable install (WO-P000-E2.002); no sys.path
+# side-channel required (WO-P000-E2.003).
+from shared_resources.python_utils.vault_interface import write_to_vault
 
 
 def parse_report_and_write(symbol: str, reports_dir: Path) -> bool:

@@ -2,9 +2,9 @@
 
 **Project ID:** P_300
 **Version:** 2.7
-**Last Updated:** 2026-05-20
+**Last Updated:** 2026-06-08
 **Maintained By:** Anthony Zoppi
-**Status:** Active / Stages 6/7/8/9 Sealed / Stage 9-followup volatility-divergence flag shipped 2026-05-20 / Milestone 6 (Trade Management) Planned
+**Status:** Active / Stages 6/7/8/9 Sealed / Stage 9-followup volatility-divergence flag shipped 2026-05-20 / Enhancement 1 (P_300 -> P_400 SIGNAL_V2 signal packet) shipped 2026-06-08 / Milestone 6 (Trade Management) Planned
 
 ---
 
@@ -371,6 +371,41 @@ See FR table above. Status reflects Stage 6 closeout; implementation tracking in
 ---
 
 # 5. Change Log
+
+## v2.7 (addendum) — 2026-06-10 — ATR upgraded to shared Wilder util + target-ownership boundary
+
+- **In-place addition to v2.7, not a version bump** (Appendix G: feature documentation, master version held at 2.7; SIP/SKILL references unchanged).
+- **What shipped.** P_300's ATR (which feeds the emitted `guideline_stop`/`guideline_target`) was a high-low-only simple average — it dropped the two gap terms of True Range and used no smoothing, understating volatility on gappy names and producing tighter-than-true stops. Replaced with full True Range + Wilder RMA, computed by a new shared hub utility so every evaluating project uses one formula.
+- **Math.** `TR_t = max(high-low, |high - close_{t-1}|, |low - close_{t-1}|)`; `ATR(n)` = Wilder RMA: seed = mean of the first n TRs, then `ATR_t = (ATR_{t-1}*(n-1) + TR_t)/n`. First bar TR = high-low (no prior close); fewer than n bars -> simple mean of available TRs; empty -> 0.0. Default n=14.
+- **NFR-1 holds.** ATR is not in the classification path — it only feeds `atm_at_signal` -> `guideline_stop`/`guideline_target` in the emitter. BUY/WATCH/PASS is unaffected; the determinism replay should show class byte-identical with only the two guideline levels shifting.
+- **Placement (M-049).** The util lives at `shared_resources/python_utils/atr.py` (pure domain; takes `(high, low, close)` tuples so it is decoupled from any project's bar type) and is imported via the editable install — no per-project copy, no sys.path side-channel. It is computed at evaluation time on the bars already in memory; moving ATR downstream to P_400 was considered and rejected because P_400 would have to re-read the bars at entry.
+- **Target-ownership boundary (M-050).** Every evaluating project emits the same baseline only — guideline entry/target/stop + context. P_400 is the single authority that resolves the broker-facing final target (RR validation, sizing, stop/council rules). P_300's ATR-derived levels are a candidate baseline, not execution-final. Enforcement is OWED in P_400's build-out — today P_400's only domain logic is `packet_classifier.classify(filename)`.
+- **2 files changed, 2 new.** `shared_resources/python_utils/atr.py` v1.0 NEW (`true_range` + `compute_atr_wilder`). `shared_resources/python_utils/test_atr.py` NEW (9/9 PASS, incl hand-computed Wilder 86/27). `application/daily_evaluate_pipeline.py` v1.15 -> v1.16 (removed local `_compute_atr_from_bars`; imports the shared util; call site adapts `candidate.bars`). `infrastructure/signal_emitter.py` docstring clarified (candidate/baseline; P_400 resolves final).
+- **Validation.** `test_atr.py` 9/9 PASS (gap-aware TR, Wilder seed-then-smooth vs hand value, sub-period fallback, edge cases); run from the P_300 dir, also proving the shared import resolves. **OWED:** operator runtime determinism replay (one eval pre/post — class identical, guideline stop/target shift); add `shared_resources/python_utils/atr.py` to the P_000_SYSTEM_DOCUMENTATION Document Index (WO-P000-E3.001 Completion Gate).
+- **New lessons** `tasks/lessons.md` M-049 (ATR is a shared Wilder util computed at eval time, never re-fetched) + M-050 (target ownership: eval projects emit a baseline; P_400 resolves the final target).
+
+## v2.7 (addendum) — 2026-06-09 — Enhancement 2: Certainty-Equivalent BUY Gate (CARA utility, observe-only)
+
+- **In-place addition to v2.7, not a version bump** (Appendix G: feature documentation, master version held at 2.7; SIP/SKILL references unchanged). Full detail in the §7 Enhancement Log entry.
+- **What shipped.** Risk-adjusted reasoning added to the Pipeline B decision per Kochenderfer "Algorithms for Decision Making" Ch. 6 (maximum expected utility). The aggregator now scores each top-K analog's forward return through a concave CARA exponential utility and inverts the mean utility to a certainty-equivalent (CE) return per horizon; the classifier can gate BUY on `CE >= CE_MIN_THRESHOLD`. Pure domain math — NFR-1 holds (no LLM, deterministic; CE rides inside the existing aggregate + classify stages, `daily_evaluate_pipeline` untouched).
+- **Shipped OFF (observe-only).** `CE_GATE_ENABLED` defaults False (NARRATOR_ENABLED precedent). While off, CE is computed and displayed but does NOT alter any signal — the determinism regression stays byte-identical until the operator flips the flag after tuning lambda against the ledger.
+- **Math.** `u(r) = -exp(-lambda*r)`; `CE = -(1/lambda)*ln(mean_i(exp(-lambda*r_i)))`. For any non-degenerate spread CE < arithmetic mean; the gap (mean - CE) is the risk penalty, so fat-tailed analog distributions are penalized INSIDE the decision rather than only flagged afterward. Degenerate guards: |lambda|~0 and flat clusters fall back to the arithmetic mean.
+- **Lambda is provenance.** `RISK_AVERSION_LAMBDA` is applied to DECIMAL-FRACTION returns (0.06 = 6%, per M-020), NOT percentages — meaningful band ~10-40, default 20.0. A BUY at lambda=20 is not comparable to one at lambda=5; any change is calibration-affecting (M-046). Lambda is stamped into the report header (`Risk model:` line) and is to be stamped into the ledger record at gate-on.
+- **6 files changed, 1 new.** `config.py` v1.6 -> v1.7 (RISK_AVERSION_LAMBDA, CE_MIN_THRESHOLD, CE_GATE_ENABLED). `schemas_pipeline_b.py` v1.2 -> v1.3 (optional `certainty_equivalent` on AggregatedSignalPerHorizon). `domain/utility.py` v1.0 NEW (utility / expected_utility / certainty_equivalent / risk_penalty + smoke harness; pure, no I/O, no config import — lambda passed in). `domain/aggregator.py` v1.0 -> v1.1 (computes + attaches CE per non-empty horizon). `domain/signal_classifier.py` v1.0 -> v1.1 (CE term on the BUY branch only, isolated in `_ce_term_ok`, no-op while gate off). `infrastructure/report_writer.py` v1.6 -> v1.7 (ce column in per-horizon table + lambda-stamped header; smoke demo block banner-labeled).
+- **Validation.** `domain/utility.py` smoke PASS 2026-06-09: flat cluster zero-penalty, dispersed cluster [-0.10, 0.02, 0.06, 0.20] mean +4.5% -> CE -3.7% at lambda=20 (8.2 pt penalty), lambda=0 risk-neutral fallback, monotonic in lambda, single-element, empty-raises. **OWED before gate-on:** signal_classifier gate-ON test (none exists, M-040), report_writer + classifier smoke runs, end-to-end daily-evaluate determinism replay (NFR-1 observe-mode proof), lambda tuning against ledger.
+- **New lessons** `tasks/lessons.md` M-046 (lambda is provenance; log every change as calibration-affecting) + M-047 (smoke harnesses must not emit production warning strings they did not earn — report_writer demo block banner-labeled).
+- **File-size note (M-031).** `schemas_pipeline_b.py` and `aggregator.py` remain over the §8.4.2 300-line limit through legitimate accretion; minimal/one-field adds only, splits stay backlogged.
+
+## v2.7 (addendum) — 2026-06-08 — Enhancement 1: P_300 -> P_400 Signal Packet Emission (SIGNAL_V2)
+
+- **In-place addition to v2.7, not a version bump** (Appendix G: feature documentation, master version held at 2.7; SIP/SKILL references unchanged). Full detail in the §7 Enhancement Log entry.
+- **What shipped.** On a BUY or WATCH classification, Pipeline B emits a machine-readable JSON signal packet for P_400 order management, in addition to the existing P_300 Obsidian md note. The emit runs at Stage 5a, AFTER `classify_signal()` — NFR-1 holds (no LLM in the path; the packet carries the already-locked signal and never influences it).
+- **Routing locked.** The packet routes exclusively through the P_800 Hub interface `write_to_vault("SIGNAL_V2", packet)`. P_800 validates against its `SignalV2` model, builds the filename, and writes to `trading_journal/TradeOrderManagement/signals/YYYY-MM-DD_SYMBOL_v2.0.json` (flat folder; `signal_source` field authoritative). P_300 constructs no path and never writes the vault directly (M-038). Upstream decisions: P_800 NOTICE 2026-06-03, schema v2.0 2026-06-05, Consumer Guide v1.2 2026-06-07.
+- **Boundary.** P_300 is a signal source, not a sizer: emits `asset_class="stock"` and `position_size=0` (sentinel). P_400 owns sizing via its three gates; no coupling to P_000 account params (WO-P800-E2; sentinel validated against P_800 `SignalV2` 2026-06-08).
+- **Defect corrected.** v1.14 Stage 5a passed `vault_root=` to `signal_emitter` v1.1, which had dropped that param for a required `output_filepath` — a `TypeError` at arg-binding on every BUY, fired after the ledger row was written and outside the emitter's own try/except (failure precedes the function body). Both files corrected.
+- **2 files changed, 1 deprecated.** `infrastructure/signal_emitter.py` v1.1 -> v2.0 (builds the SIGNAL_V2 dict, routes via `write_to_vault`; removed local schema import, `output_filepath`, path construction, direct file write; deferred `vault_interface` import). `application/daily_evaluate_pipeline.py` v1.14 -> v1.15 (Stage 5a gate widened BUY-only -> `config.LEDGER_LOG_CLASSES = (BUY, WATCH)`; removed `vault_root` + path; added `chosen_horizon`). `infrastructure/schemas_signal_packet.py` now vestigial (P_800 owns the schema) — flagged for removal in Backlog.
+- **Validation.** COHR live run 2026-06-08 via `P_300_DailyEval_v2.bat COHR` -> BUY @ h=15; packet written to `signals/2026-06-08_COHR_v2.0.json`; stock variant validated (`position_size=0`, options fields null); entry 426.89 / stop 399.52 / target 481.64; confidence HIGH. md note + XLSX archive unaffected.
+- **New lesson** `tasks/lessons.md` M-045 (verify the full cross-project write path — registry, format map, filename builder — before relying on a Hub-interface schema key).
 
 ## v2.7 — 2026-05-20 — Stage 9-followup: Volatility Divergence Flag + Process Runbooks
 
@@ -853,10 +888,84 @@ Symmetric ratio = `max(candidate_median, topk_median) / min(...)`. Aggregation p
 
 **New lessons** (full text in `tasks/lessons.md`): M-030 (PowerShell + python -c hang); M-031 (file-size accretion → split, not slim); M-019 extension (PowerShell `>` redirection UTF-16 LE).
 
+## Enhancement 1 — P_300 -> P_400 Signal Packet Emission (SIGNAL_V2) (2026-06-08)
+
+**Phase E1 (signal emission), P_300 side.** On a BUY or WATCH classification, Pipeline B emits a machine-readable JSON signal packet for P_400 order management, in addition to the existing P_300 Obsidian md note. The emit runs at Stage 5a of the pipeline, AFTER `signal_classifier.classify_signal()` — NFR-1 preserved (no LLM in the path; the packet carries the already-locked signal, never influences it).
+
+**Routing (locked upstream by P_800).** The packet routes exclusively through the P_800 Hub interface:
+
+```python
+from vault_interface import write_to_vault
+write_to_vault("SIGNAL_V2", packet_dict)
+```
+
+P_800 validates the dict against its `SignalV2` Pydantic model, builds the filename, and writes to `trading_journal/TradeOrderManagement/signals/YYYY-MM-DD_SYMBOL_v2.0.json`. The folder is flat across all sources (P_115, P_300, future); the `signal_source` field inside the packet is authoritative, not the path. P_300 constructs no path and never writes the vault directly (M-038). Upstream decisions: P_800 NOTICE 2026-06-03 (single unified v2 schema; flat folder; reject malformed; dual-read 2-4 week migration window for legacy P400SIG v1.0), `P_115_P400_SIGNAL_PACKET_SCHEMA_v2_0.md` 2026-06-05, `P_800_Vault_Interface_Consumer_Guide_v1_2.md` 2026-06-07.
+
+**Boundary — P_300 is a signal source, not a position sizer.** The packet sets `asset_class="stock"` and `position_size=0` (sentinel: "P_400 to size"). P_400 owns position sizing through its three-gate logic; P_300 stays decoupled from P_000 account parameters. The `position_size=0` sentinel was validated against P_800's `SignalV2` validators on 2026-06-08 (no validator rejects 0; the stock variant requires the four options-only fields to be null). (WO-P800-E2.)
+
+**Packet field derivation:**
+
+- `guideline_entry` = live close at signal; `guideline_stop` = close - 1 ATR; `guideline_target` = close + 2 ATR (ATR(14) proxy from the candidate window's high-low ranges). P_800's price-logic validator requires target > entry > stop, so a degenerate zero-ATR candidate is rejected (non-blocking).
+- `confidence_level` maps from win-rate: HIGH at >= 70, MEDIUM at >= 60, else LOW.
+- `signal_horizon` = the classified `chosen_horizon` rendered as "<n> trading days".
+- `signal_id` = `P300-<anchor_date>-<SYMBOL>-001`; `signal_timestamp` = generation time (UTC). The packet filename date derives from `signal_timestamp` per the locked schema, so it can differ from the anchor date that keys the md note — contract-correct, not a defect.
+
+**Gate.** Both the ledger hook and the packet emit fire on `config.LEDGER_LOG_CLASSES = ("BUY", "WATCH")`. Prior code gated on BUY only, leaving WATCH signals unrecorded and unemitted.
+
+**Defect corrected.** `daily_evaluate_pipeline.py` v1.14 Stage 5a passed `vault_root=` to `signal_emitter.emit_signal_packet()`, but `signal_emitter` v1.1 had dropped `vault_root` for a required `output_filepath`. The mismatch raised `TypeError` at arg-binding on every BUY — after the ledger row was written, outside the emitter's try/except (the failure precedes the function body). Fixed here.
+
+**Files delivered (2 changed, 1 deprecated):**
+
+- `python/infrastructure/signal_emitter.py` v1.1 -> v2.0 (~192 lines) — builds the SIGNAL_V2 dict and routes via `write_to_vault("SIGNAL_V2", packet)`. Removed the local `schemas_signal_packet` import, the `output_filepath` parameter, vault path construction, and the direct file write. The `vault_interface` import is deferred into the emit call so P_800 import health never blocks Pipeline B startup. Best-effort, non-blocking: `(False, msg)` + WARNING on reject/failure (M-043), `(True, msg)` + INFO on success (M-042).
+- `python/application/daily_evaluate_pipeline.py` v1.14 -> v1.15 — Stage 5a gate widened BUY-only -> `LEDGER_LOG_CLASSES`; removed the `vault_root` kwarg and vault path block; added `chosen_horizon` to the emit call; dropped pipeline-side logging of the emit result (the emitter logs it).
+- `python/infrastructure/schemas_signal_packet.py` — now vestigial. P_300 no longer owns the signal-packet schema; P_800's `SignalV2` (`obsidian_writers/domain/signal_schemas.py`) is the single source of truth, validated at `write_to_vault`. Flagged for removal (Backlog).
+
+**Validation (production batch, 2026-06-08):** `P_300_DailyEval_v2.bat COHR` -> COHR classified BUY @ h=15. The `SIGNAL_V2` packet wrote to `trading_journal/TradeOrderManagement/signals/2026-06-08_COHR_v2.0.json` and validated as a stock packet (`position_size=0`, options fields null). Guideline levels: entry 426.89 / stop 399.52 / target 481.64. Confidence HIGH (wr 70.0%). Rationale: 20 matches @ 70.0% WR, z=0.83. The md note (`2026-06-02_COHR.md` v4) and the XLSX archive ran in the same batch unaffected — no TypeError, confirming the v1.14 crash is resolved.
+
+**Relationship to E2 (future).** This delivers the P_300 producer side of Phase E1. Phase E2 (remove the P_300 STEP 2 md output so P_400 reads JSON as its sole upstream input) and E3 (options signals) remain future work, tracked in P_400's `E2_INTEGRATION_PLANNING_2026-06-03.md`. During the dual-emit window P_300 emits SIGNAL_V2 only (a new producer; legacy P400SIG dual-emit is not required of it).
+
+## Enhancement 2 — Certainty-Equivalent BUY Gate (CARA utility) (2026-06-09)
+
+**Shipped observe-only.** Risk-adjusted reasoning added to the Pipeline B decision per Kochenderfer "Algorithms for Decision Making" Ch. 6 (maximum expected utility). The existing gate reasons on the EXPECTED forward return of the top-K analog cluster; this enhancement adds a parallel risk-adjusted measure — a certainty-equivalent (CE) return — and lets the classifier gate BUY on it. `CE_GATE_ENABLED` defaults False: CE is computed and displayed but does NOT alter any signal until the operator flips the flag after tuning lambda. Determinism regression stays byte-identical while off (NARRATOR_ENABLED precedent). Pure domain math — NFR-1 preserved (no LLM in the decision path; deterministic to full float precision).
+
+**Mechanism.** For each horizon, score every top-K analog's forward return through a concave CARA exponential utility, average the utilities, invert back to a certainty-equivalent return:
+
+```
+u(r) = -exp(-lambda * r)
+CE   = -(1 / lambda) * ln( mean_i( exp(-lambda * r_i) ) )
+```
+
+For any non-degenerate spread of analog returns, CE < arithmetic mean; the gap (mean - CE) is the risk penalty. A cluster whose positive mean is propped up by a fat upside tail while carrying a deep downside tail produces a low — even negative — CE, so it can be rejected for BUY even though its raw mean cleared the win-rate gate. Fat-tailed distributions are penalized INSIDE the decision, not merely flagged afterward (contrast the post-classification volatility-divergence flag of Stage 9-followup).
+
+**Decimal space + lambda provenance (M-020, M-046).** lambda is applied to DECIMAL-FRACTION returns (0.06 = 6%), consistent with `forward_labels.return_pct` storage. At decimal magnitudes lambda must be large to bite — the meaningful band is ~10-40; `RISK_AVERSION_LAMBDA` default is 20.0. Calibrating lambda as if returns were in percent (6.0) would collapse every CE toward the worst-case analog and suppress all BUYs. A BUY made at lambda=20 is not comparable to one at lambda=5, so any lambda change is a calibration-affecting event (log to lessons.md); lambda is stamped into the report header and is to be stamped into the ledger record at gate-on.
+
+**Layer placement.** Utility math is its own module (`domain/utility.py`), separate from the aggregator — a distinct reason to change, and a pure kernel the smoke harness can exercise with arbitrary lambda. It imports nothing from config (lambda is passed in by the aggregator, which reads `config.RISK_AVERSION_LAMBDA`), nothing from infrastructure, and does no I/O (EC-027). CE rides inside the existing aggregate + classify stages; `daily_evaluate_pipeline.py` is untouched. The CE term lives on the BUY branch only — WATCH is a surveillance class, not a capital-commit decision, and is intentionally not CE-gated.
+
+**Files delivered (6 changed, 1 new):**
+
+- `python/config.py` v1.6 -> v1.7 (+`RISK_AVERSION_LAMBDA=20.0`, `CE_MIN_THRESHOLD=0.0`, `CE_GATE_ENABLED=False`; decimal-space + provenance rules documented inline).
+- `python/schemas_pipeline_b.py` v1.2 -> v1.3 (optional `certainty_equivalent: float | None = None` on `AggregatedSignalPerHorizon`; default None preserves backward compatibility + determinism. File remains over the §8.4.2 limit per M-031 — one-field add, split backlogged).
+- `python/domain/utility.py` v1.0 NEW (~210 lines incl docstring + smoke harness; longest function ~30 lines). `utility()`, `expected_utility()`, `certainty_equivalent()`, `risk_penalty()`; degenerate guards (|lambda|~0 -> arithmetic mean; flat cluster -> common value).
+- `python/domain/aggregator.py` v1.0 -> v1.1 (computes CE per non-empty horizon via `certainty_equivalent(returns, RISK_AVERSION_LAMBDA)` and attaches it; empty horizons keep None. No existing stat altered. File crosses 300 lines via docstring accretion — M-031, split backlogged).
+- `python/domain/signal_classifier.py` v1.0 -> v1.1 (CE term added to the Decision F BUY AND-gate, isolated in `_ce_term_ok()`; no-op when `CE_GATE_ENABLED=False` so classification is byte-identical to v1.0).
+- `python/infrastructure/report_writer.py` v1.6 -> v1.7 (`ce` column in the per-horizon stats table beside `mean_ret`; dense header gains a `Risk model:` line stamping lambda + whether the gate is ACTIVE or OBSERVE-only; smoke demo block banner-labeled per M-047).
+
+**Validation.** `domain/utility.py` smoke PASS 2026-06-09 (p140): flat cluster zero-penalty; dispersed cluster [-0.10, 0.02, 0.06, 0.20] mean +4.5% -> CE -3.7% at lambda=20 (8.2 pt penalty, confirming the fat-tail penalty fires); lambda=0 risk-neutral fallback; monotonic in lambda (CE decreases as lambda rises); single-element; empty-raises.
+
+**OWED before flipping `CE_GATE_ENABLED` to True (do not flip until complete):**
+
+- signal_classifier smoke harness covers only the gate-OFF path; the gate-ON path (CE below threshold blocks a BUY) has NO test yet — add gate-ON + gate-OFF-no-op cases (M-040).
+- report_writer + signal_classifier smoke runs (import-chain + None-CE rendering confirmation).
+- end-to-end `daily-evaluate` determinism replay vs a pre-change run — the NFR-1 proof that observe-mode changed nothing.
+- tune lambda against the ledger before flipping; stamp lambda into the ledger record at gate-on.
+
+**New lessons** (full text in `tasks/lessons.md`): M-046 (lambda is signal provenance; log every change as calibration-affecting; decimal-space discipline); M-047 (smoke harnesses must not emit production warning strings they did not earn — the report_writer demo block that printed a real `LM Studio unavailable` warning is now banner-labeled as simulated).
+
 ## Backlog — Future Candidates (Not Scheduled)
 
 Items here are real work — out of any current stage, not on the critical path, surfaced when relevant.
 
+- **Remove vestigial `python/infrastructure/schemas_signal_packet.py`** — superseded by P_800's `SignalV2` at Enhancement 1 (2026-06-08). P_300 no longer owns the signal-packet schema; the file is unimported after `signal_emitter` v2.0. Delete in a dedicated cleanup pass.
 - **Re-run sweep + ablation at N >= 50** — Stage 9 small-N caveat retires automatically at this catalog size. At N >= 50 the threshold sweep grid can center on production defaults rather than the firing region (M-028 retire trigger).
 - **NormalizedBar / PatternBarRecord shared-base refactor** — DEBT NOTE from `schemas_pipeline_b.py` v1.0 split at Stage 6. Two Pydantic models share most columns; a shared-base class would dedupe + standardize.
 - **`return_pct` schema field rename** to `return_fraction` / `return_decimal` (M-020 cleanup; bundle with shared-base refactor above).

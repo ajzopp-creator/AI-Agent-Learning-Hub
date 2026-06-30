@@ -1,7 +1,7 @@
 """
 FILE: config.py
-VERSION: 1.6
-DATE: 2026-05-30
+VERSION: 1.8
+DATE: 2026-06-28
 AUTHOR: Anthony Zoppi + Claude
 LAYER: config
 DESCRIPTION:
@@ -13,6 +13,32 @@ DESCRIPTION:
     DB resolution flows through db_utils.get_latest_catalog().
 
 CHANGELOG:
+    - 2026-06-28 v1.8: Re-tightened BUY_MIN_Z_SCORE from 0.0 to 1.0.
+      M-034's 2026-06-18+ re-evaluation trigger ("re-tighten toward 1.0 when
+      z becomes a meaningful separator") fires at N=331 (062326catalog.db).
+      A walk-forward eval (not LOO) comparing the two thresholds across the
+      full date-filtered catalog showed z>1.0 raises BUY accuracy 60.0%->
+      62.9% (93/155 -> 61/97 correct) at the cost of a 37% cut in BUY
+      volume; the 58 demoted patterns ran 55.2% (32W/26L), below the BUY
+      pool's 60% average, so the cut is a real if modest edge, not noise.
+      WATCH and PASS classification are mathematically unaffected (PASS
+      identical 106/44/62 across both runs -- confirms the gate change is
+      isolated to the BUY threshold only). See tasks/lessons.md M-034
+      addendum (2026-06-28) for full walk-forward numbers.
+    - 2026-06-09 v1.7: Added Certainty-Equivalent (CE) BUY-gate constants
+      (RISK_AVERSION_LAMBDA, CE_MIN_THRESHOLD, CE_GATE_ENABLED). Risk-adjusted
+      reasoning per Kochenderfer "Algorithms for Decision Making" Ch. 6
+      (maximum expected utility). CARA exponential utility scores each top-K
+      analog's forward return; the inverted mean utility is a certainty-
+      equivalent return that sits below the raw mean for a risk-averse trader.
+      CE_GATE_ENABLED defaults False -- CE is computed and displayed but does
+      NOT alter any signal until flipped on after lambda tuning (NARRATOR_ENABLED
+      precedent; determinism regression stays byte-identical while off).
+      CRITICAL: RISK_AVERSION_LAMBDA is applied to DECIMAL-FRACTION returns
+      (0.06 = 6%), NOT percentages. Any change to lambda is a calibration-
+      affecting event: log it to tasks/lessons.md and note that fired BUY/WATCH
+      signals are only comparable across runs at the same lambda. Lambda is
+      stamped into every ledger record and report header for this reason.
     - 2026-05-30 v1.6: Raised LM_STUDIO_TIMEOUT_SECONDS from 60 to 120.
       DeepSeek R1 14B reasoning traces were hitting the timeout at 47-52s
       (DOX, DD) causing `Client disconnected. Stopping generation.`
@@ -151,13 +177,56 @@ SIMILARITY_FEATURES: tuple[str, ...] = (
 #   58% baseline WR, cluster z rarely exceeds 0.5 even for strong
 #   matches; z>1.0 was suppressing valid BUY signals without improving
 #   precision. Re-tighten toward 1.0 as catalog grows to N=300+.
+#   v1.8 (2026-06-28): re-tightened to 1.0. N=331 walk-forward eval
+#   (tasks/lessons.md M-034 addendum) confirmed z is now a real, if
+#   modest, separator -- BUY accuracy 60.0%->62.9%, -37% BUY volume,
+#   demoted patterns ran below the original pool's average win rate.
 BUY_MIN_MATCHES: int = 5
 BUY_MIN_WIN_RATE: float = 0.70
-BUY_MIN_Z_SCORE: float = 0.0
+BUY_MIN_Z_SCORE: float = 1.0
 
 WATCH_MIN_MATCHES: int = 3
 WATCH_MIN_WIN_RATE: float = 0.60
 WATCH_MIN_Z_SCORE: float = 0.0
+
+# ---------------------------------------------------------------------------
+# CERTAINTY-EQUIVALENT (CE) BUY GATE -- risk-adjusted reasoning (v1.7)
+# ---------------------------------------------------------------------------
+# Source: Kochenderfer, "Algorithms for Decision Making", Ch. 6 (maximum
+# expected utility). The current gate reasons on the EXPECTED forward return
+# of the top-K analog cluster. The CE gate instead scores each analog's
+# forward return through a concave (risk-averse) CARA utility function,
+# averages the utilities, and inverts back to a certainty-equivalent return.
+#
+# CARA exponential utility:   u(r) = -exp(-lambda * r)
+# Certainty equivalent:       CE   = -(1/lambda) * ln( mean_i( exp(-lambda * r_i) ) )
+#
+# For any non-degenerate spread of returns, CE < arithmetic mean. The gap
+# (mean - CE) IS the risk penalty: fat-tailed / dispersed analog distributions
+# are penalized INSIDE the decision rather than merely flagged afterward.
+#
+# *** DECIMAL SPACE -- READ BEFORE TUNING LAMBDA ***
+# RISK_AVERSION_LAMBDA is applied to DECIMAL-FRACTION returns (0.06 = 6%),
+# consistent with forward_labels.return_pct storage (M-020). At decimal
+# magnitudes (~0.06), lambda must be large to bite: lambda=1 barely penalizes
+# anything (exp(-0.06) ~ 0.94). Meaningful CE gaps live in the lambda=10-40
+# band. DO NOT calibrate lambda as if returns were in percent (6.0) -- that
+# collapses every CE toward the worst-case analog and nukes every BUY.
+# Default 20.0 chosen as a moderate starting point; tune against the ledger.
+#
+# *** LAMBDA IS PROVENANCE ***
+# A BUY made at lambda=20 means something different from a BUY at lambda=5.
+# Any change to RISK_AVERSION_LAMBDA is a calibration-affecting event:
+#   (1) log the change + rationale to tasks/lessons.md
+#   (2) fired signals are only comparable across runs at the SAME lambda
+# Lambda is therefore stamped into every ledger record and report header.
+#
+# CE_GATE_ENABLED defaults False (NARRATOR_ENABLED precedent): the first runs
+# COMPUTE and DISPLAY CE without altering any signal, so the determinism
+# regression stays byte-identical until you flip it on after lambda tuning.
+RISK_AVERSION_LAMBDA: float = 20.0
+CE_MIN_THRESHOLD: float = 0.0
+CE_GATE_ENABLED: bool = False
 
 REPORTS_DIR: Path = OUTPUTS_DIR / "reports"
 

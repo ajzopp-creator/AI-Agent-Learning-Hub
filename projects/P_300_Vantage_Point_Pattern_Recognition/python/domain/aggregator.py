@@ -1,7 +1,7 @@
 """
 FILE: aggregator.py
-VERSION: 1.0
-DATE: 2026-05-17
+VERSION: 1.1
+DATE: 2026-06-09
 AUTHOR: Anthony Zoppi + Claude
 LAYER: domain
 DESCRIPTION:
@@ -53,6 +53,16 @@ DESCRIPTION:
             14-symbol historical set is ingested.
 
 CHANGELOG:
+    - 2026-06-09 v1.1: aggregate_top_k now computes the certainty-equivalent
+      return per horizon (domain/utility.certainty_equivalent) and attaches it
+      to AggregatedSignalPerHorizon.certainty_equivalent. lambda is read from
+      config.RISK_AVERSION_LAMBDA and passed into the pure utility kernel.
+      Decimal-space throughout (M-020): the `returns` list is already decimal
+      fractions, so CE is decimal too -- no scaling here. CE is computed for
+      every non-empty horizon regardless of CE_GATE_ENABLED; the flag only
+      controls whether signal_classifier USES it (config v1.7). Empty horizons
+      keep certainty_equivalent=None. Does not alter any existing stat, so the
+      determinism regression stays byte-identical until the gate is flipped on.
     - 2026-05-17 v1.0: Initial release. Stage 6 file #5 of 9.
 """
 from __future__ import annotations
@@ -66,11 +76,12 @@ _PYTHON_DIR = Path(__file__).resolve().parent.parent
 if str(_PYTHON_DIR) not in sys.path:
     sys.path.insert(0, str(_PYTHON_DIR))
 
-from config import FORWARD_HORIZONS  # noqa: E402
+from config import FORWARD_HORIZONS, RISK_AVERSION_LAMBDA  # noqa: E402
 from schemas_pipeline_b import (  # noqa: E402
     AggregatedSignalPerHorizon,
     ForwardLabelLite,
 )
+from domain.utility import certainty_equivalent  # noqa: E402
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -205,6 +216,7 @@ def aggregate_top_k(
             out[horizon] = AggregatedSignalPerHorizon(
                 horizon_days=horizon, n_matches=0, win_rate=0.0,
                 mean_return_pct=0.0, std_return_pct=0.0, z_score=0.0,
+                certainty_equivalent=None,
             )
             continue
         returns = [lbl.return_pct for lbl in labels_at_h]
@@ -213,9 +225,15 @@ def aggregate_top_k(
         sr = _population_std(returns, mr)
         baseline = baseline_win_rates.get(horizon, 0.0)
         z = z_score(wr, n, baseline)
+        # Risk-adjusted CE of this horizon's analog returns (decimal space,
+        # M-020). Computed unconditionally; CE_GATE_ENABLED governs USE in
+        # signal_classifier, not computation here. lambda is provenance --
+        # stamped on the report header + ledger record (config v1.7).
+        ce = certainty_equivalent(returns, RISK_AVERSION_LAMBDA)
         out[horizon] = AggregatedSignalPerHorizon(
             horizon_days=horizon, n_matches=n, win_rate=wr,
             mean_return_pct=mr, std_return_pct=sr, z_score=z,
+            certainty_equivalent=ce,
         )
     return out
 

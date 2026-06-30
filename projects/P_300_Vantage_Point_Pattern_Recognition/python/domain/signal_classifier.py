@@ -1,7 +1,7 @@
 """
 FILE: signal_classifier.py
-VERSION: 1.0
-DATE: 2026-05-17
+VERSION: 1.2
+DATE: 2026-06-09
 AUTHOR: Anthony Zoppi + Claude
 LAYER: domain
 DESCRIPTION:
@@ -16,19 +16,37 @@ DESCRIPTION:
           horizon "strongest horizon wins" with shortest-horizon
           tiebreak.
 
-    Decision F (locked 2026-05-16, config.py v1.2):
+    Decision F (locked 2026-05-16, config.py v1.2; CE term added v1.7):
         BUY:   n_matches >= BUY_MIN_MATCHES
                AND win_rate >= BUY_MIN_WIN_RATE
                AND z_score >  BUY_MIN_Z_SCORE
+               AND (CE gate -- see below)
         WATCH: n_matches >= WATCH_MIN_MATCHES
                AND win_rate >= WATCH_MIN_WIN_RATE
                AND z_score >  WATCH_MIN_Z_SCORE
         PASS:  otherwise
 
-        All three conditions must hold for a class — AND-gate.
+        All conditions must hold for a class — AND-gate.
         Currently tuned loose (BUY thresholds 5 / 0.70 / 1.0; WATCH
         thresholds 3 / 0.60 / 0.0). Parameter sweep against the
         broader 14-symbol catalog will refine (Stage 8 Backlog).
+
+    CE gate (config v1.7; Kochenderfer Ch. 6 -- BUY only):
+        When CE_GATE_ENABLED is True, a horizon must additionally clear
+        certainty_equivalent >= CE_MIN_THRESHOLD to qualify as BUY. The
+        CE is the risk-adjusted forward return of the analog cluster
+        (domain/utility.py); requiring it to clear a floor rejects BUYs
+        whose raw mean is dragged up by a fat upside tail while the
+        downside tail makes the risk-averse certainty-equivalent
+        unattractive. WATCH is intentionally NOT CE-gated -- WATCH is a
+        surveillance class, not a capital-commit decision.
+
+        DETERMINISM: CE_GATE_ENABLED defaults False (config v1.7). While
+        off, the CE term short-circuits True and classify_per_horizon is
+        byte-identical to v1.0 -- the determinism regression is preserved
+        until the operator flips the flag after tuning lambda. A None CE
+        (horizon with no matches, which can never be BUY-eligible anyway)
+        defensively passes the term rather than raising.
 
     Cross-horizon rule (schemas_pipeline_b SignalReport docstring):
         Signal class = strongest class achieved at any horizon.
@@ -40,7 +58,30 @@ DESCRIPTION:
         threshold). Ties broken by shortest horizon.
 
 CHANGELOG:
+    - 2026-06-09 v1.2: Smoke harness gains gate-ON coverage (cases 9-11):
+      CE above threshold -> BUY survives; CE below threshold -> BUY blocked,
+      drops to WATCH; gate OFF -> below-threshold CE ignored (no-op). The
+      harness rebinds this module's own CE_GATE_ENABLED local (not
+      config.CE_GATE_ENABLED) because the flag is bound at import time -- see
+      IMPORT-TIME BINDING note below. Save/restore brackets the flip so state
+      cannot leak into other runs. No change to the decision path.
+    - 2026-06-09 v1.1: Added the Certainty-Equivalent BUY term to the
+      Decision F AND-gate, guarded by config.CE_GATE_ENABLED (default False).
+      BUY now also requires certainty_equivalent >= CE_MIN_THRESHOLD when the
+      flag is on. WATCH unchanged. While the flag is off the term is a no-op
+      (short-circuits True) and classification is byte-identical to v1.0,
+      preserving the determinism regression. CE term applies to BUY only.
     - 2026-05-17 v1.0: Initial release. Stage 6 file #6 of 9.
+
+IMPORT-TIME BINDING (CE_GATE_ENABLED / CE_MIN_THRESHOLD):
+    These are imported by value at module load, so _ce_term_ok reads this
+    module's local copy -- NOT config.CE_GATE_ENABLED live. Flipping the
+    gate in production therefore means: edit config.py, then run a FRESH
+    process (the next batch run). In-process toggling has no effect. This
+    is correct for the workflow (set-once-per-run config), not a defect.
+    The smoke harness flips the gate by rebinding the local on this module
+    object, which is why it must `import domain.signal_classifier as sc`
+    and set `sc.CE_GATE_ENABLED`, not `config.CE_GATE_ENABLED`.
 """
 from __future__ import annotations
 
@@ -55,6 +96,7 @@ if str(_PYTHON_DIR) not in sys.path:
 from config import (  # noqa: E402
     BUY_MIN_MATCHES, BUY_MIN_WIN_RATE, BUY_MIN_Z_SCORE,
     WATCH_MIN_MATCHES, WATCH_MIN_WIN_RATE, WATCH_MIN_Z_SCORE,
+    CE_GATE_ENABLED, CE_MIN_THRESHOLD,
 )
 from schemas_pipeline_b import (  # noqa: E402
     AggregatedSignalPerHorizon,
@@ -74,11 +116,27 @@ _CLASS_RANK: dict[SignalClass, int] = {
 # Per-horizon classification — AND-gate
 # ─────────────────────────────────────────────────────────────────────────────
 
+def _ce_term_ok(stats: AggregatedSignalPerHorizon) -> bool:
+    """CE BUY-gate term. True (no-op) when CE_GATE_ENABLED is False or the
+    horizon has no CE; otherwise requires CE >= CE_MIN_THRESHOLD.
+
+    Isolated so the short-circuit logic reads clearly and the BUY branch
+    stays a flat AND-chain. While the gate is off this returns True
+    unconditionally, keeping classification byte-identical to v1.0.
+    """
+    if not CE_GATE_ENABLED:
+        return True
+    if stats.certainty_equivalent is None:
+        return True
+    return stats.certainty_equivalent >= CE_MIN_THRESHOLD
+
+
 def classify_per_horizon(stats: AggregatedSignalPerHorizon) -> SignalClass:
     """Apply Decision F AND-gate to one horizon's stats."""
     if (stats.n_matches >= BUY_MIN_MATCHES
             and stats.win_rate >= BUY_MIN_WIN_RATE
-            and stats.z_score > BUY_MIN_Z_SCORE):
+            and stats.z_score > BUY_MIN_Z_SCORE
+            and _ce_term_ok(stats)):
         return SignalClass.BUY
     if (stats.n_matches >= WATCH_MIN_MATCHES
             and stats.win_rate >= WATCH_MIN_WIN_RATE
@@ -164,10 +222,12 @@ if __name__ == "__main__":
           f"{classify_per_horizon(stats(7, 3, 0.5, 1.0, 0.5, 0.4))} "
           f"(expect SignalClass.PASS)")
 
-    # 4. Per-horizon: BUY win_rate met but z fails (1.0 not > 1.0) → WATCH
-    print(f"WATCH (z=1.0 strict-gt fails): "
+    # 4. Per-horizon: clear BUY at the live z gate. BUY_MIN_Z_SCORE is 0.0
+    #    (M-034, lowered 2026-05-28), so z=1.0 > 0.0 passes; n/wr also clear.
+    #    (Originally written against the retired z>1.0 gate; updated v1.2.)
+    print(f"BUY (z=1.0 vs live gate 0.0):  "
           f"{classify_per_horizon(stats(7, 10, 0.8, 3.5, 1.0, 1.0))} "
-          f"(expect SignalClass.WATCH)")
+          f"(expect SignalClass.BUY)")
 
     # 5. Cross-horizon: BUY at 15 beats WATCH at 10 beats PASS at 5
     mixed = {
@@ -205,3 +265,69 @@ if __name__ == "__main__":
         print("FAIL: empty dict should have raised")
     except ValueError as err:
         print(f"empty dict raises:             OK ({err})")
+
+    # ---------------------------------------------------------------------
+    # CE GATE coverage (cases 9-11). The gate value is read as a module
+    # global by _ce_term_ok, so we must flip it on the SAME module object
+    # that function lives in. When this file is run directly that module is
+    # __main__, NOT the re-imported `domain.signal_classifier` (that would be
+    # a second, separate copy -- the v1.2-first-cut bug). Resolve the real
+    # module via the function's __module__ so it is correct under any
+    # invocation. Save/restore brackets the flip so state cannot leak.
+    # ---------------------------------------------------------------------
+    import sys as _sys
+    _selfmod = _sys.modules[classify_per_horizon.__module__]
+
+    def ce_stats(h: int, n: int, wr: float, z: float,
+                 ce: float) -> AggregatedSignalPerHorizon:
+        """BUY-shaped stats with an explicit certainty_equivalent."""
+        return AggregatedSignalPerHorizon(
+            horizon_days=h, n_matches=n, win_rate=wr,
+            mean_return_pct=0.05, std_return_pct=0.02, z_score=z,
+            certainty_equivalent=ce,
+        )
+
+    print("-" * 60)
+    print("CE GATE coverage (flag flipped on the live module object):")
+
+    _saved_flag = _selfmod.CE_GATE_ENABLED
+    _saved_thresh = _selfmod.CE_MIN_THRESHOLD
+    ce_fails = 0
+    try:
+        _selfmod.CE_GATE_ENABLED = True
+        _selfmod.CE_MIN_THRESHOLD = 0.0
+
+        # 9. Gate ON, CE above threshold (+0.05) -> BUY survives.
+        r9 = classify_per_horizon(ce_stats(7, 10, 0.8, 1.5, 0.05))
+        ok9 = r9 == SignalClass.BUY
+        ce_fails += 0 if ok9 else 1
+        print(f"  9. gate ON, CE=+0.05 (>=0):   {r9} "
+              f"(expect SignalClass.BUY){'' if ok9 else '  <<< FAIL'}")
+
+        # 10. Gate ON, CE below threshold (-0.04) -> BUY blocked, falls to
+        #     WATCH (n/wr/z still clear the WATCH gate; CE term is BUY-only).
+        r10 = classify_per_horizon(ce_stats(7, 10, 0.8, 1.5, -0.04))
+        ok10 = r10 == SignalClass.WATCH
+        ce_fails += 0 if ok10 else 1
+        print(f"  10. gate ON, CE=-0.04 (<0):   {r10} "
+              f"(expect SignalClass.WATCH){'' if ok10 else '  <<< FAIL'}")
+
+        # Restore BEFORE case 11 so it tests the genuine gate-OFF path.
+        _selfmod.CE_GATE_ENABLED = _saved_flag
+        _selfmod.CE_MIN_THRESHOLD = _saved_thresh
+
+        # 11. Gate OFF, same below-threshold CE -> CE ignored, BUY survives
+        #     (no-op proof: with the flag off the term short-circuits True).
+        r11 = classify_per_horizon(ce_stats(7, 10, 0.8, 1.5, -0.04))
+        ok11 = r11 == SignalClass.BUY
+        ce_fails += 0 if ok11 else 1
+        print(f"  11. gate OFF, CE=-0.04 ignored:{r11} "
+              f"(expect SignalClass.BUY){'' if ok11 else '  <<< FAIL'}")
+    finally:
+        # Guarantee restore even if a case raised.
+        _selfmod.CE_GATE_ENABLED = _saved_flag
+        _selfmod.CE_MIN_THRESHOLD = _saved_thresh
+
+    print("-" * 60)
+    print("CE GATE: PASS" if ce_fails == 0
+          else f"CE GATE: FAIL ({ce_fails} failing checks)")

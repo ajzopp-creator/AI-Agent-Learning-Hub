@@ -1,6 +1,6 @@
 @echo off
 color 0B
-TITLE P_300 Daily Evaluate + Obsidian Write + Archive (v2.3)
+TITLE P_300 Daily Evaluate + Obsidian Write + Archive (v2.4)
 
 echo =======================================================================
 echo        P_300 DAILY EVALUATE + OBSIDIAN LOG + ARCHIVE
@@ -15,7 +15,6 @@ if "%SYMBOL%"=="" (
 set "PROJECT_ROOT=C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition"
 set "PYTHON=C:\Users\Trader\.conda\envs\p140\python.exe"
 set "CLI=%PROJECT_ROOT%\python\cli.py"
-set "WRITE_SCRIPT=%PROJECT_ROOT%\python\write_signal_to_obsidian.py"
 set "XLSX=%PROJECT_ROOT%\data\live\History Grid (%SYMBOL%).xlsx"
 
 echo Symbol  : %SYMBOL%
@@ -32,17 +31,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [STEP 2] Writing signal to Obsidian vault...
-echo.
-"%PYTHON%" "%WRITE_SCRIPT%" "%SYMBOL%"
-if errorlevel 1 (
-    echo.
-    echo [ERROR] Obsidian write failed.
-    goto :done
-)
-
-echo.
-echo [STEP 3] Archiving eval file...
+echo [STEP 2] Archiving eval file...
 echo.
 "%PYTHON%" "%CLI%" archive-eval --xlsx "%XLSX%"
 if errorlevel 1 (

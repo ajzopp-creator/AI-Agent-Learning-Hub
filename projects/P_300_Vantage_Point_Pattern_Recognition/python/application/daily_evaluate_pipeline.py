@@ -1,7 +1,7 @@
 """
 FILE: daily_evaluate_pipeline.py
-VERSION: 1.13
-DATE: 2026-05-30
+VERSION: 1.20
+DATE: 2026-06-17
 AUTHOR: Anthony Zophi + Claude
 LAYER: application
 DESCRIPTION:
@@ -19,6 +19,7 @@ DESCRIPTION:
             -> SignalReport (signal_class + chosen_horizon + volatility_divergence
                locked here)
             -> [v1.1 Stage 8] narrator_prompt + llm_client -> narration
+            -> [v1.4] signal_emitter.emit_signal_packet (JSON to vault for P_400)
             -> report_writer.print_signal_report  (+ optional write_signal_report)
 
     LM Studio readiness:
@@ -56,6 +57,41 @@ DESCRIPTION:
                 python application/daily_evaluate_pipeline.py --xlsx <path>
 
 CHANGELOG:
+    - 2026-06-17 v1.20: M-043 fix. _obsidian_write() call (Stage 8a) was
+      discarding its True/False return -- a clean False (no report file
+      found, signal parse failed) logged nothing at all, silently
+      indistinguishable from success. Now logs WARNING on False. Paired
+      with report_writer.py v1.8 (M-051 fix on the console-output side of
+      the same vault-write path).
+    - 2026-06-17 v1.19: atr_adjusted_stop guard (WO-P300-E1.003). The
+      max(_is1, _atr_floor) selection assumed _is1 (IntelliScan support_1)
+      always sits below entry. Caught via DRD 2026-06-17: support_1=25.46
+      sat above entry=25.40, max() picked the invalid above-entry value as
+      the stop. Now _is1 only counts as a candidate when it's < _close;
+      otherwise atr_adjusted_stop = the ATR floor alone. The old `else`
+      branch (max(_close - _atr, _atr_floor)) was always just _atr_floor
+      written confusingly -- collapsed to that directly.
+    - 2026-06-16 v1.18: IntelliScan stop integration (WO-P300-E1.001).
+      load_intelliscan() called once per run at pipeline start. Per-symbol
+      get_support_levels() feeds atr_adjusted_stop, intelliscan_support_1,
+      intelliscan_support_2 into emit_signal_packet(). Non-blocking when
+      IntelliScan file absent -- all three fields emit as None.
+    - 2026-06-10 v1.16: ATR upgraded from high-low-only simple-average
+      proxy to full True Range + Wilder smoothing via the shared hub util
+      shared_resources.python_utils.atr.compute_atr_wilder. Removed local
+      _compute_atr_from_bars. Classification path unchanged (ATR only
+      drives guideline stop/target); determinism replay confirms
+      BUY/WATCH/PASS byte-identical, only guideline stop/target shift.
+    - 2026-06-08 v1.15: Stage 5a corrected. Gate widened from BUY-only to
+      config.LEDGER_LOG_CLASSES = (BUY, WATCH) so WATCH signals are also
+      laddered to the ledger and emitted. Removed the broken vault_root
+      kwarg + vault path construction; signal_emitter v2.0 now routes the
+      packet via the P_800 Hub interface (SIGNAL_V2). Added chosen_horizon
+      to the emit call; dropped pipeline-side logging of the emit result
+      (the emitter logs INFO on success / WARNING on failure internally).
+    - 2026-06-07 v1.14: Added signal_emitter.emit_signal_packet() call
+      after ledger_record (Enhancement 1: P_300 → P_400 signal packet).
+      BUY and WATCH signals now write JSON to vault for P_400 ingestion.
     - 2026-05-30 v1.13: Removed _diag_log path construction; check() no
       longer takes diag_log param (lm_studio_status.py v1.2).
     - 2026-05-30 v1.12: lm_studio_status import updated to Hub-level.
@@ -107,8 +143,8 @@ if str(_HUB_ROOT) not in sys.path:
 
 from application import ledger_record  # noqa: E402
 from config import (  # noqa: E402
-    LOG_FORMAT, LOG_LEVEL, NARRATOR_ENABLED, ORIGIN_PATTERN_IDENT,
-    REPORTS_DIR, TOP_K_MATCHES,
+    LEDGER_LOG_CLASSES, LOG_FORMAT, LOG_LEVEL, NARRATOR_ENABLED,
+    ORIGIN_PATTERN_IDENT, REPORTS_DIR, TOP_K_MATCHES,
 )
 from domain import aggregator, similarity, signal_classifier  # noqa: E402
 from domain.narrator_prompt import (  # noqa: E402
@@ -118,8 +154,13 @@ from domain.normalization import NormalizedValues, normalize_window  # noqa: E40
 from domain.volatility_divergence import (  # noqa: E402
     compute_volatility_divergence,
 )
-from infrastructure import catalog_reader, report_writer  # noqa: E402
+from infrastructure import catalog_reader, report_writer, signal_emitter  # noqa: E402
+from write_signal_to_obsidian import parse_report_and_write as _obsidian_write  # noqa: E402
 from integrations.lm_studio.infrastructure.lm_studio_status import check as lm_studio_check  # noqa: E402
+from shared_resources.python_utils.atr import compute_atr_wilder  # noqa: E402
+from utilities.intelliscan_reader import (  # noqa: E402
+    load_intelliscan, get_support_levels,
+)
 from infrastructure.report_writer import (  # noqa: E402
     print_signal_report_clean,
 )
@@ -237,6 +278,11 @@ def run_daily_evaluate(
     """
     logger.info("Pipeline B start: %s", xlsx_path.name)
 
+    # IntelliScan stop grid -- loaded once per pipeline run (non-blocking).
+    # Provides VP structural support levels for atr_adjusted_stop calculation.
+    # Returns {} if file absent; emit_signal_packet receives None fields.
+    _intelliscan = load_intelliscan()
+
     # Stage 1: parse + normalize live candidate (no DB touch yet)
     symbol, raw_bars = parse_live_file(xlsx_path)
     candidate = _build_live_candidate(raw_bars, symbol, window_length)
@@ -297,8 +343,11 @@ def run_daily_evaluate(
         per_horizon_stats,
     )
 
-    # Stage 5a: record fired signal to ledger (best-effort, non-blocking).
-    if top_k_pids and signal_class.value != "PASS":
+    # Stage 5a: record fired signal to ledger + emit P_400 signal packet
+    # (Enhancement 1). Both fire on actionable classes per
+    # config.LEDGER_LOG_CLASSES = (BUY, WATCH). Best-effort, non-blocking --
+    # a failure in either hook logs a WARNING but never blocks the signal.
+    if top_k_pids and signal_class.value in LEDGER_LOG_CLASSES:
         best_pattern_id = top_k_pids[0]
         aggregated_horizon = per_horizon_stats[chosen_horizon]
         ledger_record.record_fired_signal(
@@ -308,6 +357,44 @@ def run_daily_evaluate(
             chosen_horizon=chosen_horizon,
             pattern_id=best_pattern_id,
             aggregated_horizon=aggregated_horizon,
+        )
+        
+        # Emit SIGNAL_V2 packet for P_400 via the P_800 Hub interface.
+        # signal_emitter owns the SIGNAL_V2 dict + write_to_vault call;
+        # P_300 passes data only, never constructs a vault path (M-038).
+        # The emitter logs INFO on success / WARNING on failure internally.
+        anchor_iso = candidate.anchor_date.isoformat()
+        _close = candidate.bars[-1].close
+        _atr = compute_atr_wilder([(b.high, b.low, b.close) for b in candidate.bars])
+        _is1, _is2 = get_support_levels(candidate.ticker, _intelliscan)
+        # atr_adjusted_stop: IntelliScan support_1 only counts as a candidate
+        # when it sits below entry -- a valid stop for a long (WO-P300-E1.003;
+        # an above-entry level isn't a stop at all). Otherwise the ATR floor
+        # alone is used.
+        _atr_floor = _close - _atr
+        if _is1 is not None and _is1 < _close:
+            _atr_adjusted_stop = max(_is1, _atr_floor)
+        else:
+            _atr_adjusted_stop = _atr_floor
+
+        signal_emitter.emit_signal_packet(
+            symbol=candidate.ticker,
+            signal_date=anchor_iso,
+            chosen_horizon=chosen_horizon,
+            n_matches=len(top_matches),
+            wr=aggregated_horizon.win_rate * 100,  # 0.0-1.0 -> 0-100
+            mean_ret=aggregated_horizon.mean_return_pct,
+            z_score=aggregated_horizon.z_score,
+            close_at_signal=_close,
+            atm_at_signal=_atr,
+            trailing_volume_30d=candidate.bars[-1].volume,
+            signal_source_link=(
+                f"trading_journal/TradeManagement/P300/"
+                f"{anchor_iso}_{candidate.ticker}.md"
+            ),
+            atr_adjusted_stop=_atr_adjusted_stop,
+            intelliscan_support_1=_is1,
+            intelliscan_support_2=_is2,
         )
 
     # Stage 5b (v1.2): volatility divergence flag.
@@ -367,6 +454,27 @@ def run_daily_evaluate(
     if write_file:
         out_path = report_writer.write_signal_report(report, reports_dir)
         logger.info("Wrote report to %s", out_path)
+        # Stage 8a: write P_300 Obsidian note for actionable signals.
+        # Best-effort -- failure logs a warning and never blocks the signal.
+        if signal_class.value in LEDGER_LOG_CLASSES:
+            try:
+                _obsidian_ok = _obsidian_write(
+                    candidate.ticker, reports_dir or REPORTS_DIR,
+                )
+                if not _obsidian_ok:
+                    # M-043: a clean False return (no exception -- e.g. no
+                    # report file found, signal parse failed) was
+                    # previously discarded silently. Log it at WARNING so
+                    # it doesn't disappear the way the M-051 console bug
+                    # let operators believe every actionable signal was
+                    # vault-logged.
+                    logger.warning(
+                        "Obsidian write returned False for %s (no exception "
+                        "-- see [SKIP]/[FAIL] line above for reason)",
+                        candidate.ticker,
+                    )
+            except Exception as exc:  # noqa: BLE001
+                logger.warning("Obsidian write failed for %s: %s", candidate.ticker, exc)
 
     logger.info(
         "Pipeline B done: %s -> %s at horizon %d",
@@ -463,3 +571,4 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
+

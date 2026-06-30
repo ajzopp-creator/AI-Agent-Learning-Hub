@@ -3,6 +3,16 @@ Price history reader adapter.
 
 Fetches daily OHLCV data from yfinance for a given ticker and date range.
 Returns sorted (date_str, close) tuples for realized-return computation.
+
+VERSION: 1.1
+DATE: 2026-06-29
+CHANGELOG:
+    - 2026-06-29 v1.1: M-061 fix -- yf.download() returns MultiIndex columns
+      even for a single ticker on the version installed in p140; row["Close"]
+      against a MultiIndex returns a sub-Series, not a scalar, throwing
+      "truth value of a Series is ambiguous" downstream in
+      realized_return.compute_realized_returns(). Flatten columns to
+      single-level immediately after download in both functions.
 """
 
 import logging
@@ -57,6 +67,14 @@ def fetch_price_history(
             progress=False,  # Suppress download progress output.
         )
         
+        # M-061: recent yfinance versions return MultiIndex columns
+        # (e.g. ('Close', 'DE')) even for a single ticker. row["Close"]
+        # against a MultiIndex returns a sub-Series, not a scalar, which
+        # blows up downstream ("truth value of a Series is ambiguous").
+        # Flatten to single-level columns; no-op if already single-level.
+        if data.columns.nlevels > 1:
+            data.columns = data.columns.get_level_values(0)
+        
         if data.empty:
             logger.warning(
                 f"yfinance returned no data for {ticker} "
@@ -105,6 +123,10 @@ def fetch_price_on_date(ticker: str, date_str: str) -> float | None:
         end_dt = target_dt + timedelta(days=1)
         
         data = yf.download(ticker, start=target_dt, end=end_dt, progress=False)
+        
+        # M-061: flatten MultiIndex columns (see fetch_price_history).
+        if data.columns.nlevels > 1:
+            data.columns = data.columns.get_level_values(0)
         
         if data.empty:
             logger.warning(f"No price data for {ticker} on {date_str}")

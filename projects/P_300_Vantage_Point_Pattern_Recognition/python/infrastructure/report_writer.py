@@ -1,7 +1,7 @@
 """
 FILE: report_writer.py
-VERSION: 1.6
-DATE: 2026-05-29
+VERSION: 1.8
+DATE: 2026-06-17
 AUTHOR: Anthony Zoppi + Claude
 LAYER: infrastructure
 DESCRIPTION:
@@ -45,6 +45,29 @@ DESCRIPTION:
           in narration truncation (M-019 pre-emptive).
 
 CHANGELOG:
+    - 2026-06-17 v1.8: M-051 fix (real one this time -- the 2026-06-12
+      closure logged in tasks/todo.md never actually touched this file;
+      v1.7 still had the bug verbatim). print_signal_report_clean() was
+      unconditionally printing "[OK] {ticker} written to vault" for every
+      signal class, including PASS, where daily_evaluate_pipeline never
+      calls the real obsidian-write hook at all (gated on
+      config.LEDGER_LOG_CLASSES = BUY/WATCH only) -- confirmed false on
+      live CRML/NNE PASS output 2026-06-17. Line now gated on
+      LEDGER_LOG_CLASSES; PASS prints an honest [SKIP] instead. Also
+      removed a fully fabricated "[STEP 3] Archiving eval file... ARCHIVE
+      OK -- zip: data/processed/2026-05.zip" block -- no archive call
+      exists in this function; the real archive is a separate later step
+      (P_300_DailyEval_v2.bat STEP 2 / cli.py archive-eval) that already
+      reports its own real result. DONE footer line corrected to match
+      (dropped the unconditional "vault logged / XLSX archived" claim).
+    - 2026-06-09 v1.7: Per-horizon stats table gains a `ce` column showing the
+      certainty-equivalent return beside mean_ret (Kochenderfer Ch. 6; config
+      v1.7). Decimal->percent via existing _fmt_return; a horizon with no CE
+      renders 'N/A'. Dense header gains a RISK MODEL line stamping
+      RISK_AVERSION_LAMBDA and whether the CE gate is ACTIVE or OBSERVE-only,
+      so every written report records the lambda it was judged under (config
+      v1.7 provenance rule). Pure presentation -- reads the CE the aggregator
+      already attached; computes nothing. Clean batch view unchanged.
     - 2026-05-29 v1.6: Header line in both _build_header (dense) and
       print_signal_report_clean (batch) now reads
       "P_300 SIGNAL REPORT  <TICKER> <SIGNAL>" per operator request.
@@ -75,7 +98,10 @@ _PYTHON_DIR = Path(__file__).resolve().parent.parent
 if str(_PYTHON_DIR) not in sys.path:
     sys.path.insert(0, str(_PYTHON_DIR))
 
-from config import FORWARD_HORIZONS, REPORTS_DIR  # noqa: E402
+from config import (  # noqa: E402
+    CE_GATE_ENABLED, FORWARD_HORIZONS, LEDGER_LOG_CLASSES, REPORTS_DIR,
+    RISK_AVERSION_LAMBDA,
+)
 from domain.signal_classifier import classify_per_horizon  # noqa: E402
 from schemas_pipeline_b import (  # noqa: E402
     AggregatedSignalPerHorizon, MatchResult, Severity, SignalClass,
@@ -133,6 +159,7 @@ def _fmt_signal_label(cls: SignalClass) -> str:
 
 def _build_header(report: SignalReport) -> list[str]:
     sig_label = _fmt_signal_label(report.signal_class)
+    ce_mode = "ACTIVE (gating BUY)" if CE_GATE_ENABLED else "OBSERVE-only (not gating)"
     return [
         _SEP_HEAVY,
         f"P_300 SIGNAL REPORT  {report.ticker} {sig_label}",
@@ -142,6 +169,8 @@ def _build_header(report: SignalReport) -> list[str]:
         f"Signal:           {sig_label} at horizon {report.chosen_horizon}",
         f"Generated:        "
         f"{report.generated_at.strftime('%Y-%m-%d %H:%M ET')}",
+        f"Risk model:       CARA lambda={RISK_AVERSION_LAMBDA:g}  "
+        f"CE gate {ce_mode}",
         "",
     ]
 
@@ -152,7 +181,7 @@ def _build_per_horizon_table(
     lines = ["PER-HORIZON STATS", _SEP_LIGHT]
     lines.append(
         f"  {'h':>3}  {'n':>3}  {'win_rate':>8}  {'mean_ret':>8}  "
-        f"{'std_ret':>7}  {'z_score':>7}  {'class':>5}"
+        f"{'ce':>8}  {'std_ret':>7}  {'z_score':>7}  {'class':>5}"
     )
     for h in sorted(per_horizon_stats.keys()):
         s = per_horizon_stats[h]
@@ -160,6 +189,7 @@ def _build_per_horizon_table(
         lines.append(
             f"  {h:>3}  {s.n_matches:>3}  {s.win_rate:>8.3f}  "
             f"{s.mean_return_pct * 100:>+8.2f}  "
+            f"{_fmt_return(s.certainty_equivalent, width=8)}  "
             f"{s.std_return_pct * 100:>7.2f}  "
             f"{_fmt_z(s.z_score)}  {cls:>5}"
         )
@@ -356,18 +386,33 @@ def print_signal_report_clean(
         print(f"  Signal: {signal_str} @ h={horizon}")
     print()
 
-    # Obsidian + archive status
+    # Obsidian status -- vault write only happens for actionable classes
+    # (BUY/WATCH); daily_evaluate_pipeline gates the real _obsidian_write
+    # call on config.LEDGER_LOG_CLASSES, so PASS never triggers one. This
+    # line must reflect that, not assert a write that didn't happen
+    # (M-051). Archiving is reported separately by the real archive step
+    # (P_300_DailyEval_v2.bat STEP 2 / cli.py archive-eval) -- this
+    # function has no archive call to report and must not claim one.
     print("=" * 60 + "OBSIDIAN SIGNAL WRITER")
     print("=" * 60)
-    print(f"[OK] {ticker} written to vault")
-    print("[STEP 3] Archiving eval file...")
-    print(f"ARCHIVE OK  -- History Grid ({ticker}).xlsx")
-    print("  zip  : data/processed/2026-05.zip")
+    if signal_str in LEDGER_LOG_CLASSES:
+        print(f"[OK] {ticker} written to vault")
+    else:
+        print(
+            f"[SKIP] {ticker} not logged to vault "
+            f"({signal_str} -- vault logging is BUY/WATCH only)"
+        )
     print()
 
-    # Footer
+    # Footer -- wording reflects what this function actually did. Vault
+    # logging only happened for BUY/WATCH (see above); archiving is always
+    # a separate later step (.bat STEP 2 / cli.py archive-eval), never this
+    # function's doing, so it's never claimed here (M-051).
     print("=" * 73)
-    print(f" DONE  {ticker}  --  report / vault logged / XLSX archived")
+    if signal_str in LEDGER_LOG_CLASSES:
+        print(f" DONE  {ticker}  --  report written, vault logged")
+    else:
+        print(f" DONE  {ticker}  --  report written, PASS (not vault-logged)")
     print("=" * 73)
     print("Press any key to continue . . .")
 
@@ -468,7 +513,8 @@ if __name__ == "__main__":
     print_signal_report_clean(report, "data/live/History Grid (SPY).xlsx")
     print()
     print("=" * 73)
-    print("CLEAN FORMAT -- narrator warning (LM Studio down):")
+    print("CLEAN FORMAT -- [SMOKE DEMO] narrator-warning rendering (NOT a live")
+    print("LM Studio check; narrator_warning flag is forced on to show the slot):")
     print("=" * 73)
     print_signal_report_clean(
         report.model_copy(update={"narration": None}),

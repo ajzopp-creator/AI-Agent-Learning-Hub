@@ -106,6 +106,12 @@ class LedgerDB:
         Retrieve all rows with unfilled realized returns.
         For ledger_fill.py to process.
         
+        M-062: checks h20_return_pct (the LAST horizon to fill), not
+        h5_return_pct. The original h5 check meant any row that got even
+        a partial fill (h5 only) would drop out of this query forever,
+        permanently freezing h7/h10/h15/h20 as NULL with no way to ever
+        revisit and complete them.
+        
         Returns:
             List of (ledger_id, ticker, signal_date, chosen_horizon) tuples.
         """
@@ -114,7 +120,7 @@ class LedgerDB:
             cursor.execute("""
                 SELECT ledger_id, ticker, signal_date, chosen_horizon
                 FROM fired_signals
-                WHERE h5_return_pct IS NULL
+                WHERE h20_return_pct IS NULL
                 ORDER BY signal_date ASC
             """)
             return cursor.fetchall()
@@ -128,21 +134,28 @@ class LedgerDB:
         Update realized outcome for a ledger row.
         Called by ledger_fill.py after computing forward returns.
         
+        M-064: uses COALESCE so a None field in `outcome` (a horizon not
+        yet reachable -- e.g. h20 before 20 trading days have elapsed)
+        preserves whatever is already in the DB rather than overwriting
+        a previously-filled value with NULL. Safe to call repeatedly as
+        more horizons become available across multiple runs.
+        
         Args:
             ledger_id: Primary key in fired_signals.
-            outcome: RealizedOutcome with h5/h7/h10/h15/h20_return_pct populated.
+            outcome: RealizedOutcome with any subset of h5/h7/h10/h15/h20
+                populated; None fields are left untouched in the DB.
         """
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
             cursor.execute("""
                 UPDATE fired_signals
-                SET h5_return_pct = ?,
-                    h7_return_pct = ?,
-                    h10_return_pct = ?,
-                    h15_return_pct = ?,
-                    h20_return_pct = ?,
-                    filled_date = ?,
-                    filled_at = ?
+                SET h5_return_pct = COALESCE(?, h5_return_pct),
+                    h7_return_pct = COALESCE(?, h7_return_pct),
+                    h10_return_pct = COALESCE(?, h10_return_pct),
+                    h15_return_pct = COALESCE(?, h15_return_pct),
+                    h20_return_pct = COALESCE(?, h20_return_pct),
+                    filled_date = COALESCE(?, filled_date),
+                    filled_at = COALESCE(?, filled_at)
                 WHERE ledger_id = ?
             """, (
                 outcome.h5_return_pct,
