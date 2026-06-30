@@ -90,6 +90,10 @@ Thumbs.db
 desktop.ini
 *.lnk
 
+# Excel lock files
+~$*.xlsx
+~$*.xls
+
 # macOS
 .DS_Store
 .AppleDouble
