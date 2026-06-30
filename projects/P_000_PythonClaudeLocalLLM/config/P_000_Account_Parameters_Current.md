@@ -1,4 +1,4 @@
-# P_000 Account Parameters — All Trading Projects
+# P_000 Account Parameters ? All Trading Projects
 
 **File:** P_000_Account_Parameters_Current.md
 **Location:** C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_000_PythonClaudeLocalLLM\config\
@@ -19,6 +19,8 @@
 ---
 
 ## Risk Mode Adjustments (from P_010_RiskConfig.json)
+
+**Authority rule:** `risk_mode` in P_010_RiskConfig.json is the authoritative value at all times. The avg_posture thresholds below are reference ranges only ? the JSON field governs when they conflict.
 
 | Risk Mode | Risk/Trade | Max Position | Notes |
 |-----------|------------|--------------|-------|
@@ -120,6 +122,8 @@ Calculate option prices using delta. Show leverage multiple.
 
 ## Change Log
 
-- May 31, 2026 — Perplexity P_400_Trade Management System — corrected option rule to use stock-price management trigger with stop-limit and bid-aware option exit handling.
+- May 31, 2026 ? Perplexity P_400_Trade Management System ? corrected option rule to use stock-price management trigger with stop-limit and bid-aware option exit handling.
 - June 3, 2026 - Updated Account Balance
 - June 3, 2026 - Synced derived tables to base $490.04 / $1,633.47 (Risk Mode Adjustments, Three-Gate block, Growth current row) 
+- June 16, 2026 - Added authority rule clarifying JSON risk_mode governs over avg_posture thresholds (WO-P010-E1.001 Option A)
+
