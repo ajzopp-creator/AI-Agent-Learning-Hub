@@ -23,13 +23,8 @@ The sending project needs zero knowledge of Obsidian or the vault structure.
 from shared_resources.python_utils.vault_interface import write_to_vault
 ```
 
-If `shared_resources` is not already on your Python path, add this before the import:
-
-```python
-import sys
-sys.path.insert(0, r"C:\Users\Trader\AI-Agent-Learning-Hub\shared_resources\python_utils")
-sys.path.insert(0, r"C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_800_Automation_Note_Taking\scripts")
-```
+No sys.path manipulation needed. `shared_resources` resolves through the `hub_shared`
+editable install (WO-P000-E2.002, closed 2026-06-09).
 
 ---
 

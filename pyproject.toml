@@ -1,0 +1,33 @@
+# C:\Users\Trader\AI-Agent-Learning-Hub\pyproject.toml
+# Hub-root editable package (WO-P000-E2.002).
+# ONE installed distribution ("hub_shared") mapping TWO flat top-level names:
+#   hub_lib            -> shared model-routing facade  (hub_lib\)
+#   shared_resources   -> hub-wide shared signal contract + utilities (shared_resources\)
+# Both packages are flat folders at Hub root, so a simple find with include
+# pinned to exactly these two trees is enough -- no package-dir mapping, no
+# nested hub_lib\hub_lib. include is pinned (NOT excludes) so setuptools never
+# scans projects\ venv\ integrations\.
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hub_shared"
+version = "0.1.0"
+description = "Hub-wide shared infrastructure: hub_lib model routing + shared_resources signal contract."
+requires-python = ">=3.10"
+authors = [{ name = "Tony" }]
+dependencies = [
+    "python-dotenv>=1.0",
+]
+
+[project.optional-dependencies]
+lmstudio  = ["openai>=1.40"]
+anthropic = ["anthropic>=0.40"]
+google    = ["google-genai>=0.8"]
+all       = ["openai>=1.40", "anthropic>=0.40", "google-genai>=0.8"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["hub_lib*", "shared_resources*", "obsidian_writers*"]
