@@ -23,6 +23,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import config  # noqa: E402
 from application.phase1_scan import run as run_phase1  # noqa: E402
 from application.phase3_extract import run as run_phase3  # noqa: E402
+from application.phase4_rank import run as run_phase4  # noqa: E402
+from application.phase35_enrich import run as run_phase35  # noqa: E402
 from application.p805_kb_writer import scan_kb_inbox  # noqa: E402
 
 
@@ -32,9 +34,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--phase",
         type=int,
-        choices=[1, 3],
+        choices=[1, 3, 4, 35],
         default=1,
-        help="1 = scan + sender filter (default). 3 = scan + ticker extraction.",
+        help="1 = scan + sender filter (default). 3 = extraction. 35 = LLM direction enrichment. 4 = consensus ranking.",
     )
     parser.add_argument(
         "--account",
@@ -67,3 +69,7 @@ if __name__ == "__main__":
         run_phase1(account=args.account)
     elif args.phase == 3:
         run_phase3(account=args.account)
+    elif args.phase == 35:
+        run_phase35()
+    elif args.phase == 4:
+        run_phase4()

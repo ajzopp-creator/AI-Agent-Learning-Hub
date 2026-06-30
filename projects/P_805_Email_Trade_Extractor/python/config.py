@@ -112,14 +112,24 @@ BARE_PAREN_BLOCKLIST: set[str] = {
 # resolve in dict-iteration order (long → short → watch).
 DIRECTION_KEYWORDS: dict[str, list[str]] = {
     "long": [
+        # Standard
         "buy", "long", "bullish", "accumulate", "breakout", "upside",
         "strong buy", "outperform", "overweight", "rally", "surge",
         "uptrend", "calls", "going long",
+        # Newsletter-typical price-action verbs
+        "ripped", "soared", "popped", "jumped", "climbed", "spiked",
+        "exploded", "screamed", "roared", "blasted", "gapped up",
+        "higher", "gained", "bounced", "recovered", "lifted",
     ],
     "short": [
+        # Standard
         "short", "sell", "bearish", "downside", "avoid", "puts",
         "underperform", "underweight", "downgrade", "tumble", "crash",
         "downtrend", "going short",
+        # Newsletter-typical price-action verbs
+        "cratered", "tumbled", "tanked", "plunged", "collapsed",
+        "dropped", "fell", "slid", "dumped", "flushed", "gapped down",
+        "lower", "lost", "declined", "weakened", "sold off",
     ],
     "watch": [
         "watch", "watching", "watchlist", "eye", "monitor", "track",
@@ -128,6 +138,14 @@ DIRECTION_KEYWORDS: dict[str, list[str]] = {
 }
 DIRECTION_WINDOW_CHARS: int = 120  # Chars before+after ticker to scan
 RAW_CONTEXT_CHARS: int = 80        # Chars stored in TickerSignal.raw_context
+
+# Per-sender max tickers per email. Applies after _best_per_ticker() in
+# phase3_extract.py. Keyed by full sender address (lowercase). Senders that
+# blast large earnings calendars or watchlists get a cap to reduce noise.
+# Add entries here; no code changes needed elsewhere.
+SENDER_MAX_TICKERS: dict[str, int] = {
+    "newsletter@thedailyrip.stocktwits.com": 5,
+}
 
 # Senders to exclude even though they're on the approved list (e.g.,
 # personal contacts whose names look like tickers when uppercased).
@@ -164,3 +182,9 @@ LM_STUDIO_TIMEOUT: int = 60
 # ── LLM PRIORITY ──────────────────────────────────────────────────────────────
 LLM_PRIMARY: str = "LM Studio"
 LLM_FALLBACK: str = "Claude API"
+
+# Gemini configuration
+GEMINI_MODEL: str = "gemini-2.5-flash"
+
+# Phase 4 ranked output filename pattern
+DAILY_RANKED_CSV: str = "{date}_ranked.csv"

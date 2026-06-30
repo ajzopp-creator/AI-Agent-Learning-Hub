@@ -111,7 +111,14 @@ def scan_account(account: str, enabled: set[str]) -> list[TickerSignal]:
         )
         if not matches:
             continue
-        for match in _best_per_ticker(matches).values():
+        best = list(_best_per_ticker(matches).values())
+        cap = config.SENDER_MAX_TICKERS.get(sender_addr.lower())
+        if cap is not None and len(best) > cap:
+            logger.debug(
+                f"[{account}] {sender_addr}: capped {len(best)} → {cap} tickers"
+            )
+            best = best[:cap]
+        for match in best:
             signals.append(_build_signal(
                 match, msg_date, sender_addr, raw_from, subject, account,
             ))
@@ -127,7 +134,7 @@ def write_csv(signals: list[TickerSignal], output_path: Path) -> None:
     """Write one TickerSignal per row to a CSV; create parent dir if needed."""
     output_path.parent.mkdir(parents=True, exist_ok=True)
     headers = list(TickerSignal.model_fields.keys())
-    with open(output_path, "w", newline="", encoding="utf-8") as fh:
+    with open(output_path, "w", newline="", encoding="utf-8-sig") as fh:
         writer = csv.DictWriter(fh, fieldnames=headers)
         writer.writeheader()
         for sig in signals:

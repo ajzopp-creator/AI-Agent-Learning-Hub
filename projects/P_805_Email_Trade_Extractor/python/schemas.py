@@ -7,9 +7,11 @@ before the read/write code is written.
 Currently modeled:
   - ApprovedSender — one row of data/sender_sheet.csv
   - TickerSignal   — one row of data/daily/YYYY-MM-DD_signals.csv
+  - RankedSignal   — one row of data/daily/YYYY-MM-DD_ranked.csv
 """
 
 from datetime import date, datetime
+from typing import Optional
 
 from pydantic import BaseModel, Field
 
@@ -46,3 +48,18 @@ class TickerSignal(BaseModel):
     subject: str
     raw_context: str                           # ~80 chars around the match
     account: str                               # icloud / gmail / outlook / yahoo
+
+
+class RankedSignal(BaseModel):
+    """One consensus-ranked ticker for a single trading day.
+
+    Produced by Phase 4 from the daily signals CSV. Only tickers that
+    appear in >= CONSENSUS_THRESHOLD distinct sources are included.
+    """
+
+    ticker: str
+    source_count: int                          # number of distinct senders
+    sources: str                               # pipe-separated sender addresses
+    direction: str = Field(default="unknown")  # majority direction across signals
+    first_seen: datetime
+    last_seen: datetime

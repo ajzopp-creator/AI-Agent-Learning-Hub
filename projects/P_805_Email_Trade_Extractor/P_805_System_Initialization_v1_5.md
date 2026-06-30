@@ -12,7 +12,7 @@ Display: P_805 [Day, Month DD, YYYY — HH:MM ET]
 ───────────────────────────────────────────────────────────────
 
 STEP 0.5 — Work Order Review
-Query shared ledger: C:\Users\Trader\AI-Agent-Learning-Hub\04-Shared-Resources\work_orders\
+Query shared ledger: C:\Users\Trader\AI-Agent-Learning-Hub\Agentic-Hub-Governance\work_orders\
 - Owner=P_805, status not CLOSED → Display; HALT if required
 - P_805 in Affects, Ack pending → Display; ACTION REQUIRED after session
 

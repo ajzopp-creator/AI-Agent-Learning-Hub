@@ -5,11 +5,11 @@
 
 **Project ID:** P_805
 **Project Name:** Email Trade Extractor
-**Version:** 1.5
+**Version:** 1.8
 **Created:** 2026-04-20
-**Updated:** 2026-05-25 (v1.5 — KB writer integration complete; MIME header decode fixed; LM Studio context window resolved; Phase 5 Writer partially live; obsidian_writers package integrated)
+**Updated:** 2026-06-14 (v1.8 — per-sender ticker cap added; SENDER_MAX_TICKERS in config.py; Stocktwits Daily Rip capped at 5 tickers/email; Gemini 2.5 Flash added as LLM primary for direction enrichment and KB summarization)
 **Owner:** Tony
-**Status:** **ACTIVE** — Phases 1, 2, 3 complete. Phase 5 Writer (KB mode) live for .eml ingestion. Phase 4 (consensus ranking) is next. Phase 3 (daily ticker CSV) on 30-day schedule via scheduled task.
+**Status:** **ACTIVE** — Phases 1, 2, 3, 3.5, 4 complete. Phase 5 Writer (KB mode) live for .eml ingestion. Phase 3 (daily ticker CSV) on 30-day schedule via scheduled task.
 **Parent Relationship:** Peer of P_800 (no sub-project relationship; peer within multi-project hub)
 **Root Path:** `C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_805_Email_Trade_Extractor\`
 
@@ -145,25 +145,29 @@ C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_805_Email_Trade_Extractor\
 │   └── sender_sheet.csv                      # AUTHORITATIVE whitelist (59 enabled)
 └── python\
     ├── config.py                             # all paths, thresholds, patterns, keywords
-    ├── schemas.py                            # ApprovedSender, TickerSignal
-    ├── cli.py                                # entry point: --phase 1|3, --account icloud|gmail|outlook|yahoo
+    ├── schemas.py                            # ApprovedSender, TickerSignal, RankedSignal
+    ├── cli.py                                # entry point: --phase 1|3|35|4, --account icloud|gmail|outlook|yahoo
     ├── requirements.txt                      # pydantic, email-validator, python-dateutil
     ├── domain\                               # pure logic, no I/O
     │   ├── __init__.py
     │   ├── headers.py                        # RFC 2047 header decoding
     │   ├── html_strip.py                     # HTML → text
     │   ├── sender_filter.py                  # extract address, approved-set membership
-    │   └── ticker_extractor.py               # find_tickers, infer_direction
+    │   ├── ticker_extractor.py               # find_tickers, infer_direction
+    │   └── ranker.py                         # rank_signals, majority_direction (Phase 4)
     ├── infrastructure\                       # all I/O
     │   ├── __init__.py
     │   ├── logging_setup.py                  # main + reject loggers, rotating
     │   ├── mbox_body.py                      # extract plain-text body from message
     │   ├── mbox_reader.py                    # stdlib mailbox.mbox() wrapper
-    │   └── sender_sheet.py                   # load CSV → enabled set
+    │   ├── sender_sheet.py                   # load CSV → enabled set
+    │   └── daily_csv_reader.py               # load signals CSV → TickerSignal list (Phase 4)
     ├── application\                          # orchestration
     │   ├── __init__.py
     │   ├── phase1_scan.py                    # scan + sender filter + per-account summary
     │   ├── phase3_extract.py                 # scan + ticker extraction + daily CSV
+    │   ├── phase35_enrich.py                 # LLM direction enrichment for unknown signals (Phase 3.5)
+    │   ├── phase4_rank.py                    # load signals → consensus ranking → ranked CSV (Phase 4)
     │   └── p805_kb_writer.py                 # KB mode: ingest .eml from data/inbox/, summarize, write to P_800 vault
     ├── logs\                                 # run logs (rotating)
     │   ├── p805.log
@@ -279,8 +283,11 @@ Console output replaced by main + reject loggers (rotating files at `python\logs
 **Phase 3 — Ticker Extraction: ✅ COMPLETE (2026-04-26)**
 Regex extractor with four configured patterns (`exchange_paren`, `cashtag`, `wsz_url`, `bare_paren`). Pattern list lives in `config.TICKER_PATTERNS` as a list of dicts; adding a new pattern is a one-line edit with no domain-code changes. Direction inference is keyword-based via `config.DIRECTION_KEYWORDS`. First run produced 175 rows in `data\daily\2026-04-26_signals.csv` covering \~140 unique tickers across all four accounts. Scheduled to run daily at 9:15 AM via Windows Task Scheduler.
 
-**Phase 4 — Aggregation & Ranking: ⏭ NEXT**
-Dedup across sources, compute consensus (`CONSENSUS_THRESHOLD=2` minimum), rank by source count and recency. Pandas DataFrame output. Will need to expand `DIRECTION_KEYWORDS` to capture the verbs that newsletters actually use ("ripped", "soared", "popped", "cratered", "tumbled", "tanked", "jumped", "climbed", "plunged"). Most of the 175 Phase 3 rows currently have `direction=unknown` because of this gap.
+**Phase 3.5 — LLM Direction Enrichment: ✅ COMPLETE (2026-06-14)**
+Runs after Phase 3, before Phase 4. Loads today's signals CSV, calls LM Studio for every `direction=unknown` row, rewrites CSV in-place. Non-unknown rows are never touched. Production run: 203 of 275 unknowns resolved (74%); 72 remain unknown (genuinely ambiguous context). Key learnings: DeepSeek R1 distill models (any size) consume all tokens on reasoning and return empty `content` — unusable for single-word classification. **Qwen2.5-7B-Instruct (bartowski Q4_K_S)** is the correct model — returns answers directly in `content` with no reasoning overhead. `RAW_CONTEXT_CHARS` must be ≥300 for reliable classification; raised to 500 alongside `DIRECTION_WINDOW_CHARS`. Synonym mapping in parser handles model returning `bullish`/`bearish`/`neutral` instead of `long`/`short`/`watch`. Direction majority vote in Phase 4 is correct behavior when sources disagree.
+
+**Phase 4 — Aggregation & Ranking: ✅ COMPLETE (2026-06-14)**
+Dedup across sources, consensus filter (`CONSENSUS_THRESHOLD=2`), rank by source count descending then ticker ascending. Output: `data\daily\YYYY-MM-DD_ranked.csv` (one row per consensus ticker, columns: ticker, source_count, sources, direction, first_seen, last_seen). New modules: `domain\ranker.py`, `infrastructure\daily_csv_reader.py`, `application\phase4_rank.py`. First run: 347 raw signals → 20 consensus tickers. Top hits: ADBE (3 sources, short), SPCX (3 sources, long). 12 of 20 returned direction=unknown — expected until Phase 3.5 LLM enrichment is added.
 
 **Phase 5 — Writer: ⏳ PARTIALLY LIVE (2026-05-25)**
 KB mode (`--kb-mode summary|full`) complete and producing Obsidian notes from `.eml` files in `data\inbox\`. Integrates with P_800's `obsidian_writers` package and LM Studio for optional email summarization. Each email → one note with title (decoded subject), frontmatter (source, date, tags, ticker relevance), and body (full or summarized per CLI flag). Moves to `trading_journal\KnowledgeBase\` via P_800 interface. CSV output (Phase 5.1) and `.md`/`.json` alongside CSV (Phase 5.2) are future items.
@@ -290,14 +297,14 @@ KB mode (`--kb-mode summary|full`) complete and producing Obsidian notes from `.
 ## Section 8 — Enhancement Backlog
 
 - ~~Direct IMAP pull (remove Thunderbird dependency)~~ — SHELVED (2026-04-26, Entry 005). Local cache works.
-- Expand `DIRECTION_KEYWORDS` with newsletter-typical verbs (ripped, soared, popped, cratered, tumbled, tanked, jumped, climbed, plunged) — should be done at the start of Phase 4
-- Fix CSV encoding for Excel — write the daily CSV with a UTF-8 BOM so Excel auto-detects encoding (one-line change in `phase3_extract.py:write_csv`)
-- LLM-based direction & conviction scoring (LM Studio first, fall back to Claude API) — natural Phase 3.5 work after Phase 4 ranking is in place
+- ~~Expand `DIRECTION_KEYWORDS` with newsletter-typical verbs~~ — DONE (2026-06-14). Added ripped, soared, popped, cratered, tumbled, tanked, jumped, climbed, plunged and others.
+- ~~Fix CSV encoding for Excel~~ — DONE (2026-06-14). `phase3_extract.py:write_csv` now uses `encoding="utf-8-sig"`.
+- ~~LLM-based direction & conviction scoring (LM Studio first, fall back to Claude API)~~ — DONE (2026-06-14) as Phase 3.5. Qwen2.5-7B-Instruct via LM Studio; 74% unknown resolution rate.
 - Sentiment analysis on subject lines
 - Historical signal performance tracking vs. actual ticker moves (hooks into P_010 data)
 - Populate `sector` column in `sender_sheet.csv` for sector-weighted consensus
 - Add a `parent_domain` column to `sender_sheet.csv` for dedup-by-publisher
-- Stocktwits Daily Rip earnings-calendar enumeration produces many low-signal rows — Phase 4 consensus filtering will naturally suppress these, but a per-sender "max tickers per email" cap could be added if needed
+- ~~Stocktwits Daily Rip per-sender ticker cap~~ — DONE (2026-06-14). `SENDER_MAX_TICKERS` in config.py; Stocktwits Daily Rip capped at 5 tickers/email.
 - BigTrends Sunday Night Trader pattern check (deferred 2026-04-26) — only worth doing if Phase 4 shows we're missing structured picks from that source
 - Gmail MCP connector as alternative Gmail source (parallel path, not replacement)
 - WhatsApp export ingestion path shared with P_800 (reuse extractor layer)
@@ -333,15 +340,17 @@ All parameters live as constants in `python\config.py`. This table is the canoni
 | `TICKER_PATTERNS` | list of 4 dicts | `exchange_paren`, `cashtag`, `wsz_url`, `bare_paren` — extension point: append new dicts here |
 | `BARE_PAREN_BLOCKLIST` | set, ~50 entries | Common parenthesized non-tickers (CEO, USA, PDF, etc.) |
 | `DIRECTION_KEYWORDS` | dict (long/short/watch → keyword lists) | Extension point: edit lists in config |
-| `DIRECTION_WINDOW_CHARS` | `120` | Context window for direction inference |
-| `RAW_CONTEXT_CHARS` | `80` | Stored on each `TickerSignal.raw_context` |
+| `DIRECTION_WINDOW_CHARS` | `500` | Context window for direction inference (raised from 120, 2026-06-14) |
+| `RAW_CONTEXT_CHARS` | `500` | Stored on each `TickerSignal.raw_context` (raised from 80, 2026-06-14) |
 | `EXCLUDED_SENDER_SUBSTRINGS` | `["impens", "andreessen", "gaud"]` | Substring match against From header |
 | `DAILY_OUTPUT_CSV` | `"{date}_signals.csv"` | Phase 3 output filename pattern |
 | `CONSENSUS_THRESHOLD` | `2` | Min source count for consensus signal (Phase 4+) |
 | `LLM_PRIMARY` | `"LM Studio"` | localhost |
 | `LLM_FALLBACK` | `"Claude API"` | |
+| `GEMINI_MODEL` | `"gemini-2.5-flash"` | Gemini primary for classify_direction and summarize; key loaded from python\.env |
+| `SENDER_MAX_TICKERS` | `{"newsletter@thedailyrip.stocktwits.com": 5}` | Per-sender cap on tickers per email; checked in phase3_extract.py after _best_per_ticker() |
 | `LM_STUDIO_URL` | `"http://127.0.0.1:1234/v1"` | OpenAI-compatible endpoint |
-| `LM_STUDIO_MODEL` | `"deepseek-r1-distill-qwen-14b"` | KB summarization (Entry 008: loaded at n_ctx=8192+) |
+| `LM_STUDIO_MODEL` | `"qwen2.5-7b-instruct"` | Phase 3.5 direction classification (bartowski Q4_K_S). KB summarization uses deepseek-r1-distill-qwen-14b at n_ctx=8192 — swap model in LM Studio before running KB mode. |
 | `LM_STUDIO_TEMP` | `0.3` | Lower temp for focused summaries |
 | `LM_STUDIO_MAX_TOKENS` | `300` | Output limit per summary |
 | `LM_STUDIO_TIMEOUT` | `60` | Request timeout in seconds |
@@ -354,37 +363,36 @@ All parameters live as constants in `python\config.py`. This table is the canoni
 
 ## Section 12 — Session Close & Resume Path
 
-### 12.1 Status at Close (2026-05-25)
-Phases 1, 2, 3 complete and producing daily ticker CSV. Phase 5 Writer (KB mode) now live for newsletter ingestion and Obsidian note generation.
+### 12.1 Status at Close (2026-06-14)
+Phases 1, 2, 3, 3.5, and 4 are complete. Full pipeline runs daily: Phase 3 → Phase 3.5 → Phase 4. Per-sender ticker cap live (v1.8).
 
 What works end-to-end:
 - `python cli.py` — Phase 1 scan with per-account summary
 - `python cli.py --phase 1 --account icloud` — single-account scan
-- `python cli.py --phase 3` — full extraction → daily CSV (scheduled 9:15 AM)
-- `python cli.py --phase 3 --account icloud` — single-account extraction
-- `python cli.py --kb-mode summary` — ingest .eml files from `data\inbox\`, summarize via LM Studio, write KB notes to Obsidian vault
-- `python cli.py --kb-mode full` — ingest .eml files, write full-text KB notes (no LM Studio call)
+- `python cli.py --phase 3` — full extraction → daily signals CSV (scheduled 9:15 AM). Latest: 347 signals, 2026-06-14.
+- `python cli.py --phase 35` — LLM direction enrichment on today's signals CSV. Latest: 203/275 unknowns resolved.
+- `python cli.py --phase 4` — consensus ranking → ranked CSV. Latest: 22 consensus tickers.
+- `python cli.py --kb-mode summary` — ingest .eml files, summarize via LM Studio (load deepseek-r1-distill-qwen-14b at n_ctx=8192 first), write KB notes to Obsidian vault
+- `python cli.py --kb-mode full` — ingest .eml files, write full-text KB notes
 - All runs go through `infrastructure\logging_setup.py` for consistent log handling
-- `data\sender_sheet.csv` is the single source of truth for the whitelist (59 enabled rows)
-- `python\config.py` is the single source of truth for all paths, thresholds, regex patterns, LLM settings, and KB mode flags
+- `data\sender_sheet.csv` — single source of truth for whitelist (59 enabled rows)
+- `python\config.py` — single source of truth for all paths, thresholds, patterns, LLM settings
+
+**Important model note:** `LM_STUDIO_MODEL` is now `qwen2.5-7b-instruct` (Phase 3.5). KB mode (`--kb-mode`) requires swapping to `deepseek-r1-distill-qwen-14b` at `n_ctx=8192` in LM Studio before running.
 
 What's queued (in priority order):
-1. **Expand `DIRECTION_KEYWORDS`** with newsletter-typical verbs (ripped, soared, popped, cratered, tumbled, tanked, jumped, climbed, plunged). Most Phase 3 rows currently have `direction=unknown`. Pure config edit, ~10 lines.
-2. **Fix CSV encoding for Excel.** Write the daily CSV with a UTF-8 BOM. One-line change in `phase3_extract.py:write_csv` — add `encoding="utf-8-sig"` to `open()`.
-3. **Phase 4 — Consensus ranking.** Dedup across sources, compute consensus (≥2 sources for same ticker), rank by source count + recency. Pandas DataFrame. New modules: `application\phase4_rank.py`, `infrastructure\daily_csv_reader.py`, `domain\ranker.py`.
+1. **Schedule Phase 3.5 and Phase 4.** Add both to Windows Task Scheduler so the full pipeline runs automatically after Phase 3 at 9:15 AM.
+2. **Sector weighting.** Populate `sector` column in `sender_sheet.csv` so Phase 4 can weight consensus by cross-sector agreement.
+3. **Entry 009.** Add an error corrections entry documenting the DeepSeek R1 distill reasoning-model failure for single-word classification tasks.
 
-### 12.2 Memory & Skill Updates Made This Session
-- **Memory edit #1** added (visible across all future sessions): "In Claude Desktop, run `tool_search` for filesystem write at session start. For any project code under `C:\Users\Trader\AI-Agent-Learning-Hub` or `D:\OneDrive`, ALWAYS use `filesystem:write_file` or `filesystem:edit_file` directly to the final project path. NEVER use `create_file` + `present_files` for project code — that download-and-move pattern is wrong. `/mnt/user-data/outputs` is only for one-off diagnostics."
+### 12.2 Session Identifier for Resume Reference
+- Chat on 2026-06-14 covered: DIRECTION_KEYWORDS expansion, CSV UTF-8 BOM fix, Phase 4 build, Phase 3.5 LLM enrichment build, DeepSeek R1 distill failure diagnosis, Qwen2.5-7B-Instruct adoption, RAW_CONTEXT_CHARS/DIRECTION_WINDOW_CHARS raised to 500, full pipeline producing 22 consensus tickers (ADBE long 3 sources, SPCX long 3 sources, TSLA short, PLTR short, GLD short).
 
 ### 12.3 First Tasks on Resume
-1. Read this document section 12 first, confirm date and status with Tony.
-2. Verify `tool_search` for filesystem write tools and load them.
-3. Ask Tony which of the queued items to start with (likely #1 + #2 together as a quick warmup, then #3).
-
-### 12.4 Session Identifier for Resume Reference
-- Chat on 2026-04-26 covered: profile-path correction (Entries 005, 006), Phase 1 → Phase 2 → Phase 3 implementation, sender whitelist expansion 31 → 59, first daily ticker CSV at 175 rows.
-- Key diagnostic artifacts under `python\_legacy\`: `check_ietimport_dates.py` (proved IETimport is live), `peek_approved_bodies.py` (sampled real newsletter bodies for pattern design).
+1. Read Section 12, confirm date and status with Tony.
+2. Verify `tool_search` for filesystem write tools.
+3. Ask Tony which queued item to start with — likely Phase 3.5 scheduling or Phase 5 scoping.
 
 ---
 
-*End of P_805 SYSTEM_DOCUMENTATION v1.5 — ACTIVE*
+*End of P_805 SYSTEM_DOCUMENTATION v1.8 — ACTIVE*
