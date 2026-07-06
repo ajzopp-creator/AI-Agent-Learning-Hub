@@ -190,6 +190,9 @@ Get-Content "C:\Temp\err.txt"
 | `schwab_balance_pull.py` reading from wrong config file | Use `get_client()` from `P_020_Schwab_Token_Manager` with `get_account_hash(last4)` lookup |
 | Diagnostic scripts using hardcoded wrong Token Manager path | Always construct from project root using `_PROJECT_ROOT / 'python' / 'api'` pattern |
 | `schwab_positions.py` unrealized P&L always 0.00 | Schwab API has no `unrealizedProfitLoss` field — use `longOpenProfitLoss` / `shortOpenProfitLoss` — fixed 2026-04-07 |
+| `thinklog_reader.py` timestamp regex required `HH:MM:SS` -- TOS exports without seconds (`H:MM`) silently parsed 0 records, tags never matched -- fixed 2026-07-05 | Made seconds optional in `_TIMESTAMP_RE`, default to 0 |
+| `paper_import.py` `read_options_csv()` read column headers `Long` / `Entry Price` -- parser v2.4 actually outputs `Long/Short` / `Entry $$` -- every options row got `entry_price=None`, `direction=short` -- fixed 2026-07-05 | Fixed to read `Long/Short` and `Entry $$` |
+| TOS parser (v2.3, v2.4) fee parsing: `abs(pd.to_numeric(x, errors=coerce) or 0)` on blank fee cells -- `NaN or 0` evaluates to `NaN` not `0` (NaN is truthy). Silently NaN-ed stock commissions whenever any leg had a blank fee cell. Correctly fixed with `.fillna(0)` in `old_P_020_TOS_Parser_v2.py`, regressed in v2.3/v2.4 rewrite -- fixed 2026-07-05 | Replaced with explicit `pd.notna()` check on both fee columns |
 
 ---
 
