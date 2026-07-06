@@ -140,6 +140,24 @@ def test_schwab_positions_field_guard():
     check("schwab_positions_field_guard", "SOURCE", ok)
 
 
+def test_closed_trades_have_exits():
+    """BEHAVIOR -- any trade with status='closed' must have >=1 exit row.
+    Regression guard for paper_import.py writing status='closed' without
+    ever inserting exit records (found 2026-07-05, 28 trades affected).
+    Will FAIL until that gap is fixed -- that is the point of this test."""
+    import sqlite3
+    db = Path(r"C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_020_AJZStrategies_PerformanceAnalysisSystem\data\database\P_020_trades.db")
+    con = sqlite3.connect(db)
+    cur = con.cursor()
+    cur.execute(
+        "SELECT COUNT(*) FROM trades t WHERE t.status = 'closed' "
+        "AND NOT EXISTS (SELECT 1 FROM exits e WHERE e.trade_id = t.trade_id)"
+    )
+    orphan_count = cur.fetchone()[0]
+    con.close()
+    check("closed_trades_have_exits", "BEHAVIOR", orphan_count == 0,
+          f"{orphan_count} closed trades with zero exit rows")
+
 def main():
     tests = [v for k, v in list(globals().items()) if k.startswith("test_")]
     for t in tests:
