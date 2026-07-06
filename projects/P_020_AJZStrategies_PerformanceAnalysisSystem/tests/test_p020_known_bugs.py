@@ -158,6 +158,52 @@ def test_closed_trades_have_exits():
     check("closed_trades_have_exits", "BEHAVIOR", orphan_count == 0,
           f"{orphan_count} closed trades with zero exit rows")
 
+
+def test_wo_e1001_no_unrecorded_closes():
+    """BEHAVIOR -- re-run qty-aware allocator against the latest AJZ6348
+    pull and confirm no open/partial trade has a close the DB is missing.
+    Regression guard for WO-P020-E1.001 (skip-bug + qty-aware allocation).
+    Skips cleanly if the latest pull file isn't present."""
+    import sqlite3
+    root = Path(r"C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_020_AJZStrategies_PerformanceAnalysisSystem")
+    pull = root / "data" / "api_pulls" / "ajz_strategies" / "P_020_raw_AJZ_Strategies_2026-06-28_to_2026-07-05_20260705_132949.json"
+    if not pull.exists():
+        check("wo_e1001_no_unrecorded_closes", "BEHAVIOR", True, "SKIPPED -- pull file not present")
+        return
+
+    sys.path.insert(0, str(root / "python" / "database"))
+    sys.path.insert(0, str(root / "python" / "database" / "domain"))
+    import schwab_mapper as sm
+
+    _, trade_dicts = sm.map_pull_file(pull)
+    con = sqlite3.connect(root / "data" / "database" / "P_020_trades.db")
+    flags = []
+    for trade in trade_dicts:
+        txn_id = trade.get("schwab_transaction_id")
+        if not txn_id:
+            continue
+        row = con.execute(
+            "SELECT trade_id, status FROM trades "
+            "WHERE schwab_transaction_id = ? AND account_id = 'AJZ6348'",
+            (txn_id,),
+        ).fetchone()
+        if row is None:
+            continue
+        trade_id, status = row
+        if status not in ("open", "partial"):
+            continue
+        pull_exits = {n for n in (1, 2, 3) if trade.get(f"exit_{n}")}
+        if not pull_exits:
+            continue
+        recorded = {r[0] for r in con.execute(
+            "SELECT exit_number FROM exits WHERE trade_id = ?", (trade_id,)
+        ).fetchall()}
+        if pull_exits - recorded:
+            flags.append(f"trade_id={trade_id} missing={sorted(pull_exits - recorded)}")
+    con.close()
+    check("wo_e1001_no_unrecorded_closes", "BEHAVIOR", len(flags) == 0, "; ".join(flags))
+
+
 def main():
     tests = [v for k, v in list(globals().items()) if k.startswith("test_")]
     for t in tests:
