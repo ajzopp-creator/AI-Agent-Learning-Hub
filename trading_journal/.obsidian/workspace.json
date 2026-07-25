@@ -4,39 +4,24 @@
     "type": "split",
     "children": [
       {
-        "id": "07bac1b74f1935f0",
+        "id": "8b5cdcf37e5cc7fd",
         "type": "tabs",
         "children": [
           {
-            "id": "d0fe7e9b1237f6ff",
+            "id": "403b44d083a2b1e2",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "KnowledgeBase/2026-06-30_Loops explained Claude, GPT, Mira and what actually works.md",
+                "file": "Templates/# P910 DIP‑BUY PLAYBOOK.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "2026-06-30_Loops explained Claude, GPT, Mira and what actually works"
-            }
-          },
-          {
-            "id": "484e7f35109742f7",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "TradeManagement/P300/2026-06-29_APP.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "2026-06-29_APP"
+              "title": "# P910 DIP‑BUY PLAYBOOK"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -68,8 +53,8 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "AEM",
-                "matchingCase": false,
+                "query": "How To Use Markov Chains [\"title\":",
+                "matchingCase": true,
                 "explainSearch": false,
                 "collapseAll": false,
                 "extraContext": false,
@@ -209,44 +194,44 @@
       "mermaid-tools:Open Mermaid Toolbar": false
     }
   },
-  "active": "484e7f35109742f7",
+  "active": "403b44d083a2b1e2",
   "lastOpenFiles": [
-    "TradeManagement/P400/2026-06-29_ZDGE.md",
-    "TradeManagement/P400/2026-06-29_JVA.md",
-    "TradeManagement/P400/2026-06-29_ZETA.md",
-    "TradeManagement/P400/2026-06-29_WRAP.md",
-    "TradeManagement/P400/2026-06-29_VOC.md",
-    "TradeManagement/P400/2026-06-29_TWLO.md",
-    "TradeManagement/P400/2026-06-29_APP.md",
-    "TradeManagement/P400/2026-06-29_KNDI.md",
-    "TradeManagement/P400/2026-06-29_STWD.md",
-    "TradeManagement/P400/2026-06-29_OPEN.md",
-    "TradeManagement/P400/2026-06-29_QS.md",
-    "TradeManagement/P400/2026-06-29_ARCC.md",
-    "TradeManagement/P300/2026-06-29_ARCC.md",
-    "TradeManagement/P300/2026-06-29_JVA.md",
-    "TradeManagement/P300/2026-06-29_KNDI.md",
-    "TradeManagement/P300/2026-06-29_OPEN.md",
-    "TradeManagement/P300/2026-06-29_QS.md",
-    "TradeManagement/P300/2026-06-29_STWD.md",
-    "TradeManagement/P300/2026-06-29_TWLO.md",
-    "TradeManagement/P300/2026-06-29_VOC.md",
-    "TradeManagement/P300/2026-06-29_WRAP.md",
-    "TradeManagement/P300/2026-06-29_ZDGE.md",
-    "TradeManagement/P300/2026-06-29_ZETA.md",
-    "KnowledgeBase/2026-06-30_A Profitable Strategy for Short-Term Traders.md",
-    "KnowledgeBase/2026-06-30_How Quant Hedge Funds Compress 500 Stocks Into 5 Hidden Forces.md",
-    "KnowledgeBase/2026-06-30_Loops explained Claude, GPT, Mira and what actually works.md",
-    "TradeOrderManagement/signals/2026-06-30_ZETA_v2.0.json",
-    "TradeOrderManagement/signals/2026-06-30_ZDGE_v2.0.json",
-    "TradeOrderManagement/signals/2026-06-30_WRAP_v2.0.json",
-    "TradeOrderManagement/signals/2026-06-30_VOC_v2.0.json",
-    "TradeOrderManagement/signals/2026-06-30_TWLO_v2.0.json",
-    "TradeOrderManagement/signals/2026-06-30_STWD_v2.0.json",
-    "TradeOrderManagement/signals/2026-06-30_QS_v2.0.json",
-    "TradeOrderManagement/signals/2026-06-30_OPEN_v2.0.json",
-    "TradeOrderManagement/signals/2026-06-30_KNDI_v2.0.json",
-    "TradeOrderManagement/signals/2026-06-30_JVA_v2.0.json",
+    "TradeManagement/P300/2026-07-23_CLF.md",
+    "TradeOrderManagement/signals/2026-07-24_CLF_v2.0.json",
+    "Untitled 1.md",
+    "Untitled.md",
+    "KnowledgeBase/2026-07-14_Home.md",
+    "KnowledgeBase/2026-07-23_Post by @ChartMantra_ on X.md",
+    "TradeManagement/P300/2026-07-23_TEX.md",
+    "TradeOrderManagement/signals/2026-07-24_TEX_v2.0.json",
+    "TradeManagement/P300/2026-07-23_TECK.md",
+    "TradeOrderManagement/signals/2026-07-24_TECK_v2.0.json",
+    "TradeManagement/P300/2026-07-23_SXT.md",
+    "TradeOrderManagement/signals/2026-07-24_SXT_v2.0.json",
+    "TradeManagement/P300/2026-07-23_PWR.md",
+    "TradeOrderManagement/signals/2026-07-24_PWR_v2.0.json",
+    "TradeManagement/P300/2026-07-23_MRCY.md",
+    "TradeOrderManagement/signals/2026-07-24_MRCY_v2.0.json",
+    "TradeManagement/P300/2026-07-23_LBTYK.md",
+    "TradeOrderManagement/signals/2026-07-24_LBTYK_v2.0.json",
+    "TradeManagement/P300/2026-07-23_JCI.md",
+    "TradeOrderManagement/signals/2026-07-24_JCI_v2.0.json",
+    "TradeManagement/P300/2026-07-23_JBL.md",
+    "TradeOrderManagement/signals/2026-07-24_JBL_v2.0.json",
+    "TradeManagement/P300/2026-07-23_DNN.md",
+    "TradeOrderManagement/signals/2026-07-24_DNN_v2.0.json",
+    "TradeManagement/P300/2026-07-23_CW.md",
+    "TradeManagement/P300/2026-07-23_CRDO.md",
+    "TradeManagement/P300/2026-07-23_CPSS.md",
+    "TradeManagement/P300/2026-07-23_BWA.md",
+    "KnowledgeBase/2026-07-23_Claude Can Do All of This. Most People Have No Idea.md",
+    "KnowledgeBase/2026-07-20_Model Context Protocol Architecture, Deployment, and Enterprise Integration.md",
+    "KnowledgeBase/2026-07-23_Post by @RohOnChain on X.md",
+    "KnowledgeBase/2026-07-20_Building a Decentralized RAG with Blockchain Verification & Source Code.md",
+    "KnowledgeBase/2026-07-20_Agent-to-Agent (A2A) Systems with Google ADK + Free Source Code.md",
+    "KnowledgeBase/Obsidian Trading System – Implementation Plan.md",
+    "KnowledgeBase/2026-07-13_10 Python Libraries That Made Me Stop Writing Messy Code.md",
+    "TradeManagement/P400/2026-07-16_CRH.md",
     "Pasted image 20260614115321.png",
     "Pasted image 20260614115231.png",
     "Pasted image 20260614115157.png",
