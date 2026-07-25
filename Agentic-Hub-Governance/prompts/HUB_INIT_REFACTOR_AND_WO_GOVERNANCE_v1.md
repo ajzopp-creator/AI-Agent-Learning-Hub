@@ -1,6 +1,6 @@
 # HUB INIT REFACTOR + WORK ORDER GOVERNANCE -- Generic Prompt v1.1
 Applies To: ALL AI-Agent-Learning-Hub projects (P_010, P_020, P_115, P_116,
-P_117, P_118, P_300, P_301, P_400, P_800, P_805, D_130, ...). Plain ASCII.
+P_117, P_118, P_300, P_301, P_400, P_800, P_805, P_110, ...). Plain ASCII.
 Last Updated: 2026-06-04
 v1.1 change: governance moved to a single SHARED LEDGER with 1-to-many
 (one Owner, many Affects) work orders + per-consumer Acks.

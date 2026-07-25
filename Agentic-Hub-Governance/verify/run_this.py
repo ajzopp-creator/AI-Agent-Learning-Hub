@@ -1,61 +1,55 @@
+"""run_this.py -- PEH verification script for WO-P400-E2.023 (backward-
+looking post-earnings stabilization check, MACRO role).
+
+Runs an import smoke check, then the full P_400 pytest suite from
+python\, PYTHONPATH set to hub root (matches Tony's normal invocation
+pattern). Self-contained; never modifies production files.
+
+Ends with 'PASS' on success or 'FAIL: <reason>' + exit(1) on failure.
 """
-PEH run_this.py -- Ledger fill-status check (read-only)
-Date: 2026-06-30
-Purpose: Count rows by horizon-fill status in buy_ledger.db to determine
-whether sufficient h20-complete rows exist to begin lambda tuning (M-046).
-Read-only -- no writes, no production code touched.
-Success criteria: prints counts for total rows, rows with h20_return_pct
-NOT NULL (fully h20-filled), and a class breakdown (BUY/WATCH) of the
-h20-filled subset. No assertions to fix; this is a status report, not a test.
-"""
-import sqlite3
+import os
+import subprocess
 import sys
-from pathlib import Path
 
-DB_PATH = Path(
-    r"C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\models\ledger\buy_ledger.db"
-)
+HUB_ROOT = r"C:\Users\Trader\AI-Agent-Learning-Hub"
+P400_PYTHON_DIR = HUB_ROOT + r"\projects\P_400_TradeOrderManagement\python"
+PYTHON = r"C:\Users\Trader\.conda\envs\p140\python.exe"
 
-def main():
-    if not DB_PATH.exists():
-        print(f"FAIL: ledger db not found at {DB_PATH}")
+env = os.environ.copy()
+env["PYTHONPATH"] = HUB_ROOT
+
+
+def main() -> None:
+    print("=== IMPORT SMOKE CHECK ===")
+    smoke = subprocess.run(
+        [PYTHON, "-c",
+         "from domain.council import macro_vote; "
+         "from application.evaluate_signal import _sessions_since_earnings; "
+         "from config import POST_EARNINGS_STABILIZATION_SESSIONS; "
+         "from schemas import SnapshotDict; "
+         "print('IMPORTS OK')"],
+        capture_output=True, text=True, cwd=P400_PYTHON_DIR, env=env,
+    )
+    print(smoke.stdout)
+    print(smoke.stderr)
+    if smoke.returncode != 0:
+        print("FAIL: import smoke check failed -- see stderr above")
         sys.exit(1)
 
-    conn = sqlite3.connect(str(DB_PATH))
-    conn.row_factory = sqlite3.Row
-    cur = conn.cursor()
-
-    cur.execute("SELECT COUNT(*) AS n FROM fired_signals")
-    total = cur.fetchone()["n"]
-
-    cur.execute(
-        "SELECT COUNT(*) AS n FROM fired_signals WHERE h20_return_pct IS NOT NULL"
+    print("=== PYTEST (full P_400 suite) ===")
+    result = subprocess.run(
+        [PYTHON, "-m", "pytest", ".", "-v"],
+        capture_output=True, text=True, cwd=P400_PYTHON_DIR, env=env,
     )
-    h20_filled = cur.fetchone()["n"]
+    print(result.stdout[-10000:])
+    print(result.stderr[-3000:])
 
-    cur.execute(
-        "SELECT signal_class, COUNT(*) AS n FROM fired_signals "
-        "WHERE h20_return_pct IS NOT NULL GROUP BY signal_class"
-    )
-    by_class = {row["signal_class"]: row["n"] for row in cur.fetchall()}
+    if result.returncode != 0:
+        print("FAIL: pytest reported failures -- see output above")
+        sys.exit(1)
 
-    cur.execute(
-        "SELECT h5_return_pct, h7_return_pct, h10_return_pct, h15_return_pct, h20_return_pct "
-        "FROM fired_signals"
-    )
-    rows = cur.fetchall()
-    h5 = sum(1 for r in rows if r["h5_return_pct"] is not None)
-    h7 = sum(1 for r in rows if r["h7_return_pct"] is not None)
-    h10 = sum(1 for r in rows if r["h10_return_pct"] is not None)
-    h15 = sum(1 for r in rows if r["h15_return_pct"] is not None)
-    h20 = sum(1 for r in rows if r["h20_return_pct"] is not None)
-
-    conn.close()
-
-    print(f"total_rows={total}")
-    print(f"h5_filled={h5} h7_filled={h7} h10_filled={h10} h15_filled={h15} h20_filled={h20}")
-    print(f"h20_filled_by_class={by_class}")
     print("PASS")
+
 
 if __name__ == "__main__":
     main()

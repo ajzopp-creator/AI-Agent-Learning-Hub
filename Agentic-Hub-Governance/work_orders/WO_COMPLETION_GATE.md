@@ -2,7 +2,7 @@
 # Location: Agentic-Hub-Governance\work_orders\WO_COMPLETION_GATE.md
 # Owner: P_000
 # Loaded by INIT every session. Governs all WO closures Hub-wide.
-# Last updated: 2026-06-09 (WO-P000-E3.001)
+# Last updated: 2026-07-06 (Never Touch list added)
 
 ---
 
@@ -33,6 +33,33 @@ Copy this block into the WO before marking OWNER_DONE:
 ```
 
 ---
+
+## Independent Review Requirement
+
+The session that implements a WO does not close it. Before OWNER_DONE moves
+to CLOSED, a separate session -- a fresh chat, or a Claude Code subagent, not
+the one that wrote the fix -- re-reads the WO's Acceptance Criteria against
+the actual code and output, and confirms each box independently.
+
+Reason: the implementing session grading its own work is how the ten P_400 /
+P_300 WOs sat OWNER_DONE with an empty Completion Gate checklist for weeks --
+nothing forced a second look before self-certifying done.
+
+This applies Hub-wide, to every project, no exceptions for small WOs.
+
+## Never Touch
+
+These are known, Hub-wide. No WO overrides this list without a new WO
+that explicitly supersedes the entry.
+
+| Path / item | Reason |
+|---|---|
+| `tracker_reader.py` line 24 | Deliberately left on old D_130 reference for backward compatibility (D_130->P_110 rename audit) |
+| 17 frozen/archived files from D_130->P_110 rename audit | Frozen intentionally; do not update to P_110 |
+| `WO-P000-E1.002_backup_2026-06-05.md` and any `*_backup_*.md` in the live ledger folder | Backups only, not registered WOs; do not treat as OPEN or action their contents |
+| `claude_desktop_config.json` | Must be written with `[System.IO.File]::WriteAllText()`, no BOM; `isDxtAutoUpdatesEnabled: false` -- editing carelessly reverts config |
+| `.env` files anywhere in the Hub | Never read or modify |
+| git operations via windows-mcp | Always hangs -- credential helper conflict. Use Anaconda Prompt or Claude Code CLI directly, never git.exe through MCP |
 
 ## Hub Canonical Path Standards
 

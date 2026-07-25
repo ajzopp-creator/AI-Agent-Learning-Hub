@@ -1,21 +1,41 @@
-P_300 -- Lambda tuning prep check (2026-06-30)
+WO-P400-E2.023 -- Backward-Looking Post-Earnings Proximity Check (MACRO)
+Date: 2026-07-24
 
-What this checks: counts h20_return_pct fill status in buy_ledger.db
-(fired_signals table) to determine whether enough fully-filled rows
-exist to begin RISK_AVERSION_LAMBDA tuning against real outcomes (M-046).
-This gate has been pending since 2026-06-09; ledger-fill only produced
-its first real output on 2026-06-29 (see M-060 through M-064), with
-h20=0 at that time (oldest signals -- DE/COHR -- hit their 20th trading
-day on 06-29, before market close).
+WHAT THIS TESTS:
+New CAUTION-only (never BLOCK) check in domain\council.py macro_vote() --
+flags candidates within POST_EARNINGS_STABILIZATION_SESSIONS (config.py,
+default 3) of their last earnings report. New helper
+_sessions_since_earnings() in application\evaluate_signal.py (weekday-
+count approximation, no holiday calendar). New SnapshotDict field
+last_earnings_date (schemas.py). New CLI flag --last-earnings-date on
+fetch-snapshot (cli.py, application\fetch_snapshot.py). New reason code
+RC_POST_EARNINGS_STABILIZATION (domain\council_codes.py). 8 new tests
+across test_council.py (4) and test_evaluate_signal.py (4).
 
-Success criteria: read-only status report, no assertions. Reports
-total rows, per-horizon fill counts (h5/h7/h10/h15/h20), and h20-filled
-broken out by signal_class (BUY/WATCH).
+SUCCESS CRITERIA:
+1. Import smoke check passes -- confirms no circular import / syntax
+   error introduced across the 6 touched files.
+2. Full pytest suite green -- was 210 passed / 4 skipped before this WO
+   (per architecture doc's last recorded baseline); expect 218 passed
+   (210 + 8 new) / 4 skipped, zero regressions elsewhere.
 
-If h20_filled is still 0 or very low: lambda tuning is not yet
-practical -- too few complete outcomes to fit against. Wait for more
-trading days to elapse, or re-run ledger-fill (cli.py ledger-fill) to
-pick up newly-eligible rows first.
+IF IT FAILS:
+- Import error -- most likely a missed import in council.py or
+  evaluate_signal.py (POST_EARNINGS_STABILIZATION_SESSIONS,
+  RC_POST_EARNINGS_STABILIZATION). Check the import blocks at the top of
+  both files first.
+- test_council.py failures -- check macro_vote()'s new
+  sessions_since_earnings branch sits AFTER the existing
+  earnings_in_window/binary_events branch (forward-looking check must
+  still take priority; this WO doesn't change that).
+- test_evaluate_signal.py failures on the new _sessions_since_earnings
+  tests -- these are computed relative to date.today() by design (walk
+  backward N real weekdays), not hardcoded dates, so they should not rot.
+  If one fails, the weekday-walk logic itself likely has an off-by-one.
+- Any failure in a PRE-EXISTING test (not one of the 8 new ones) means a
+  real regression -- do not change existing test assertions to make them
+  pass; report back instead.
+- Do not change test assertions to make them pass. Fix the production
+  code or report back if something genuinely doesn't match expectations.
 
-Do not change test assertions -- there are none; this is a status
-report only. No production code touched.
+Paste the full output back, including the import smoke check section.
