@@ -1,12 +1,15 @@
-﻿"""domain/frontmatter_builder.py — Build YAML frontmatter and .md note content.
+"""domain/frontmatter_builder.py — Build YAML frontmatter and .md note content.
 
 Pure logic only — no I/O.
 
 Required base fields are emitted first in a fixed order (Note Standard v1.1),
-followed by system-specific fields. verdict_history is serialized as a YAML
-block list.
+followed by system-specific fields. write_route_history is serialized as a
+YAML block list.
 
 CHANGELOG:
+  v2.1  2026-07-10  Renamed verdict/verdict_history to write_route/
+                    write_route_history throughout (WO-P400-E2.020). Pure
+                    rename — field order and serialization behavior unchanged.
   v2.0  2026-06-01  Emit required base fields first in defined order.
                     Serialize verdict_history as YAML block list.
   v1.0  2026-05-22  Initial version.
@@ -29,10 +32,10 @@ _BASE_FIELD_ORDER = [
     "run_date",
     "run_ts",
     "ticker",
-    "verdict",
+    "write_route",
     "written_by",
     "note_version",
-    "verdict_history",
+    "write_route_history",
 ]
 
 # Deprecated fields that should not be emitted if signal_date is present
@@ -66,8 +69,8 @@ def build_frontmatter(schema_name: str, data: dict[str, Any]) -> str:
             lines.append(f"source: {schema_name}")
         elif key == "schema_version":
             lines.append(f'schema_version: "{SCHEMA_VERSIONS.get(schema_name, "2.0")}"')
-        elif key == "verdict_history":
-            lines.extend(_format_verdict_history(data.get("verdict_history", [])))
+        elif key == "write_route_history":
+            lines.extend(_format_write_route_history(data.get("write_route_history", [])))
         elif key in data:
             lines.append(_format_field(key, data[key]))
 
@@ -89,7 +92,7 @@ def build_note(schema_name: str, data: dict[str, Any], body: str = "") -> str:
     """Assemble a complete .md note: frontmatter + body header + optional body.
 
     Body header format (Note Standard v1.1 §3.5):
-        # TICKER - VERDICT (source)
+        # TICKER - WRITE_ROUTE (source)
 
     Args:
         schema_name: Used for frontmatter source field and body header.
@@ -102,34 +105,34 @@ def build_note(schema_name: str, data: dict[str, Any], body: str = "") -> str:
     fm = build_frontmatter(schema_name, data)
 
     ticker = data.get("ticker") or data.get("symbol") or "UNKNOWN"
-    verdict = data.get("verdict") or "PASS"
-    header = f"# {ticker.upper()} - {verdict} ({schema_name})"
+    write_route = data.get("write_route") or "PASS"
+    header = f"# {ticker.upper()} - {write_route} ({schema_name})"
 
     if body:
         return f"{fm}\n\n{header}\n\n{body.strip()}\n"
     return f"{fm}\n\n{header}\n"
 
 
-def _format_verdict_history(history: list) -> list[str]:
-    """Serialize verdict_history as a YAML block list.
+def _format_write_route_history(history: list) -> list[str]:
+    """Serialize write_route_history as a YAML block list.
 
-    Empty list → single line: verdict_history: []
+    Empty list → single line: write_route_history: []
     Non-empty  → block list with one entry per history item.
 
     Args:
-        history: List of dicts, each with verdict, run_date, note_version keys.
+        history: List of dicts, each with write_route, run_date, note_version keys.
 
     Returns:
         List of YAML lines (without trailing newline).
     """
     if not history:
-        return ["verdict_history: []"]
-    lines = ["verdict_history:"]
+        return ["write_route_history: []"]
+    lines = ["write_route_history:"]
     for entry in history:
-        v = entry.get("verdict", "")
+        v = entry.get("write_route", "")
         rd = entry.get("run_date", "")
         nv = entry.get("note_version", "")
-        lines.append(f'  - {{verdict: {v}, run_date: {rd}, note_version: {nv}}}')
+        lines.append(f'  - {{write_route: {v}, run_date: {rd}, note_version: {nv}}}')
     return lines
 
 

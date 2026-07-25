@@ -6,7 +6,7 @@
 
 ## Overview
 
-The LM Studio wrapper provides a **status check function** that any Hub project (P_010, P_300, D_130, etc.) can use to verify the local LLM is ready before attempting to use it.
+The LM Studio wrapper provides a **status check function** that any Hub project (P_010, P_300, P_110, etc.) can use to verify the local LLM is ready before attempting to use it.
 
 No code changes required. Just a single status query.
 

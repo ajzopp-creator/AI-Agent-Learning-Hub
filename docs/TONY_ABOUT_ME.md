@@ -24,7 +24,7 @@ My focus split: 70% trading skills and market knowledge, 30% technology tools.
 **Experience level:** 1.5 years self-taught since August 2024.
 
 **Primary markets I trade:**
-- Options Income Launchpad (OIL) (CL) — active setup: TradeTheBounce strategy (D_130)
+- Options Income Launchpad (OIL) (CL) — active setup: TradeTheBounce strategy (P_110)
 - SPY / QQQ — pattern recognition and market posture (P_300, P_010)
 - Equities (BT and CAVP strategies — flag breakouts, technical setups)
 
@@ -43,7 +43,7 @@ My focus split: 70% trading skills and market knowledge, 30% technology tools.
 **Current active strategies:**
 - BT (Big Trends) — flag breakout entries, Sirott cushion 1.5 ATR
 - CAVP (Chaikin Analytics + VantagePoint) — CA ≥5.5/6.5, VP ≥6/8, flag pattern
-- TradeTheBounce OIL (D_130) — bounce entries on oil
+- TradeTheBounce OIL (P_110) — bounce entries on oil
 - Market Posture Weekly Forecasts (P_010) — weekly directional bias
 
 **Platform:** ThinkorSwim (charting + ThinkScript scripting)

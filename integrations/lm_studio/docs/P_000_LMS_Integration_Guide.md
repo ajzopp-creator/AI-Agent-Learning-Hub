@@ -4,7 +4,7 @@
 **Version:** 1.0
 **Date:** 2026-05-29
 **Owner:** P_000 (Python, Claude & Local LLM Learning Hub)
-**Applies To:** All Hub projects (P_010, P_115, P_300, P_400, D_130, and future)
+**Applies To:** All Hub projects (P_010, P_115, P_300, P_400, P_110, and future)
 
 ---
 
@@ -186,7 +186,7 @@ For any new project adding LM Studio support:
 | P_000 | `quick_coding` | OK Health check passing |
 | P_300 | `vantagepoint_analysis` | OK Integration test passing |
 | P_010 | -- | Pending |
-| D_130 | -- | Pending |
+| P_110 | -- | Pending |
 
 ---
 

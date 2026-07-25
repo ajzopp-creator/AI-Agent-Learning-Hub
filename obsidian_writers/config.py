@@ -1,6 +1,18 @@
 """config.py — All paths and constants for the obsidian_writers package.
 
 CHANGELOG:
+  v2.5  2026-07-24  Added APPROVED_WITH_SEVERE_WARNING to VERDICT_MAP -> "BUY"
+                    (WO-P400-E3.011). Gap found live: SEVERE_WARNING verdict tier
+                    added to P_400 council.py 2026-07-20, never propagated here --
+                    defaulted to PASS via the no-mapping fallback until now. Tony
+                    confirmed BUY (treat like plain APPROVED, since RISK-role
+                    SEVERE_WARNING can never actually block a trade). P_800 Ack received 2026-07-24.
+  v2.4  2026-07-10  Comment-only updates: references to the normalized
+                    'verdict' field reworded to 'write_route' following the
+                    WO-P400-E2.020 rename (see write_handler.py, vault_schemas.py,
+                    frontmatter_builder.py, vault_writer.py). VERDICT_MAP itself
+                    (name + mapping values) is unchanged — this file has no
+                    functional change.
   v2.2  2026-06-07  Added SIGNAL_V2 (unified stock+option signal packet) alongside
                     P400SIG: OUTPUT_FORMAT, VAULT_FOLDER_MAP, SCHEMA_VERSIONS, and
                     JSON_FILENAME_SUFFIX (distinct filenames so v1.0 + v2.0 coexist
@@ -52,6 +64,7 @@ VAULT_FOLDER_MAP: dict[str, str] = {
     "P115":     "TradeManagement/P115",
     "P300":     "TradeManagement/P300",
     "P400":     "TradeManagement/P400",
+    "P400_PAPER": "TradeManagement/P400/paper",
     "P400SIG":  "TradeOrderManagement/signals",
     "SIGNAL_V2": "TradeOrderManagement/signals",
     "P020":     "TradeManagement/P020",
@@ -60,12 +73,13 @@ VAULT_FOLDER_MAP: dict[str, str] = {
 
 # ── OUTPUT FORMAT MAP ────────────────────────────────────────────────────────
 # Per-schema write format selected by write_handler.
-#   "md"   → frontmatter note via vault_writer (verdict normalization + provenance)
+#   "md"   → frontmatter note via vault_writer (write_route normalization + provenance)
 #   "json" → raw JSON packet via json_writer (no frontmatter, no provenance)
 OUTPUT_FORMAT: dict[str, str] = {
     "P115":     "md",
     "P300":     "md",
     "P400":     "md",
+    "P400_PAPER": "md",
     "P400SIG":  "json",
     "SIGNAL_V2": "json",
     "P020":     "md",
@@ -84,12 +98,13 @@ JSON_FILENAME_SUFFIX: dict[str, str] = {
 
 # ── SCHEMA VERSIONS ───────────────────────────────────────────────────────────
 # v2.0 — Note Standard v1.1 fields added (signal_date, run_date, run_ts,
-#         verdict, written_by, note_version, verdict_history).
+#         write_route, written_by, note_version, write_route_history).
 # P_400 stays at 0.1 draft until P_400 project schema is locked.
 SCHEMA_VERSIONS: dict[str, str] = {
     "P115":     "2.0",
     "P300":     "2.0",
     "P400":     "0.1",   # draft — evolves with P_400 build
+    "P400_PAPER": "0.1",   # same shape as P400, paper-book routing (WO-P400-E2.019)
     "P400SIG":  "1.0",   # signal packet — locked per P_115_P400_SIGNAL_PACKET_SCHEMA_v1_0
     "SIGNAL_V2": "2.0",  # unified signal packet — P_115_P400_SIGNAL_PACKET_SCHEMA_v2_0
     "P020":     "2.0",
@@ -97,9 +112,9 @@ SCHEMA_VERSIONS: dict[str, str] = {
 }
 
 # ── VERDICT MAP ───────────────────────────────────────────────────────────────
-# Maps each system's native classification value to the normalized verdict.
+# Maps each system's native classification value to the normalized write_route.
 # Sending systems pass their native value; write_handler applies this map.
-# All cross-system Dataview queries target the normalized 'verdict' field only.
+# All cross-system Dataview queries target the normalized 'write_route' field only.
 VERDICT_MAP: dict[str, str] = {
     # P_300 native values (vocabulary already matches normalized set)
     "BUY":                  "BUY",
@@ -110,6 +125,7 @@ VERDICT_MAP: dict[str, str] = {
     # P_400 council verdicts (UPPER_SNAKE — values emitted by P_400 cli.py)
     "APPROVED":             "BUY",
     "APPROVED_WITH_CAUTION": "WATCH",
+    "APPROVED_WITH_SEVERE_WARNING": "BUY",
     "BLOCKED":              "PASS",
     "REVIEWED_NO_TRADE":    "PASS",
     # P_400 legacy Title Case (pre-E2.004 fallback; keep until confirmed retired)

@@ -1,13 +1,27 @@
-﻿"""infrastructure/vault_writer.py — Write .md note files to the Obsidian vault.
+"""infrastructure/vault_writer.py — Write .md note files to the Obsidian vault.
 
 I/O only — no business logic.
 
 On every overwrite, reads the existing frontmatter to extract the current
-verdict and verdict_history, builds a new history entry, and passes the
-updated list back through the data dict before writing. This ensures the
-full verdict progression is preserved (Note Standard v1.1 Decision 6).
+write_route and write_route_history, builds a new history entry, and passes
+the updated list back through the data dict before writing. This ensures the
+full write_route progression is preserved (Note Standard v1.1 Decision 6).
+
+Reads fall back to the legacy verdict/verdict_history keys for notes written
+before the 2026-07-10 rename (WO-P400-E2.020), so their provenance trail is
+carried forward instead of silently reset on next overwrite. No bulk rewrite
+of existing notes — legacy notes transition to write_route on their next
+natural overwrite.
 
 CHANGELOG:
+  v2.1  2026-07-10  Renamed verdict/verdict_history to write_route/
+                    write_route_history throughout (WO-P400-E2.020). Added
+                    legacy-key fallback in _parse_frontmatter_lines and key
+                    normalization in _parse_history so existing vault notes
+                    (still on verdict:) keep their provenance on next
+                    overwrite. Split _read_existing_frontmatter's line-parsing
+                    loop into _parse_frontmatter_lines to stay under the
+                    50-line function limit with the fallback logic added.
   v2.0  2026-06-01  Added _read_existing_frontmatter() and _build_history_entry().
                     write_note() now reads prior verdict + history before overwrite
                     and increments note_version. Overwrite is always True by policy.
@@ -32,8 +46,8 @@ def write_note(
 ) -> bool:
     """Write a markdown note to the vault with provenance tracking.
 
-    Before overwriting an existing note, reads the prior verdict and
-    verdict_history from disk, appends a new history entry, and updates
+    Before overwriting an existing note, reads the prior write_route and
+    write_route_history from disk, appends a new history entry, and updates
     data in-place so frontmatter_builder emits the full history.
 
     Creates any missing parent directories automatically.
@@ -42,7 +56,8 @@ def write_note(
         file_path: Absolute path to the target .md file.
         content:   Full note content including frontmatter (initial build).
         data:      Validated data dict — mutated in-place with updated
-                   note_version and verdict_history before content is rebuilt.
+                   note_version and write_route_history before content is
+                   rebuilt.
         overwrite: If False, skip existing files without error (legacy param;
                    policy is always True per Note Standard v1.1 Decision 6).
 
@@ -89,11 +104,12 @@ def note_exists(file_path: Path) -> bool:
 
 
 def _update_provenance(file_path: Path, data: dict[str, Any]) -> None:
-    """Read existing note, extract verdict + history, update data in-place.
+    """Read existing note, extract write_route + history, update data in-place.
 
-    Reads the prior note_version, verdict, and verdict_history from disk.
-    Appends the current verdict as a new history entry.
-    Increments note_version by 1.
+    Reads the prior note_version, write_route, and write_route_history from
+    disk (falling back to the legacy verdict/verdict_history keys for notes
+    written before the 2026-07-10 rename). Appends the current write_route
+    as a new history entry. Increments note_version by 1.
     Mutates data dict directly — caller rebuilds content after this call.
 
     Args:
@@ -104,20 +120,20 @@ def _update_provenance(file_path: Path, data: dict[str, Any]) -> None:
     if not existing:
         return  # first write or unreadable — leave data as-is
 
-    prior_verdict = existing.get("verdict", "PASS")
+    prior_write_route = existing.get("write_route", "PASS")
     prior_version = int(existing.get("note_version", 1))
-    prior_history = existing.get("verdict_history", [])
+    prior_history = existing.get("write_route_history", [])
     prior_run_date = existing.get("run_date", "")
 
     # Build new history entry from the note about to be replaced
-    new_entry = _build_history_entry(prior_verdict, prior_run_date, prior_version)
+    new_entry = _build_history_entry(prior_write_route, prior_run_date, prior_version)
 
     # Parse existing history if stored as string (YAML inline format from disk)
     parsed_history = _parse_history(prior_history)
     parsed_history.append(new_entry)
 
     data["note_version"] = prior_version + 1
-    data["verdict_history"] = parsed_history
+    data["write_route_history"] = parsed_history
     log.debug(
         "Provenance updated: %s → version %s, history depth %s",
         file_path.name, data["note_version"], len(parsed_history)
@@ -125,17 +141,14 @@ def _update_provenance(file_path: Path, data: dict[str, Any]) -> None:
 
 
 def _read_existing_frontmatter(file_path: Path) -> dict[str, Any]:
-    """Parse key fields from the YAML frontmatter of an existing note.
-
-    Reads only the fields needed for provenance tracking. Does not perform
-    full YAML parsing — uses line-by-line extraction for reliability.
+    """Read an existing note's frontmatter and hand it off for parsing.
 
     Args:
         file_path: Path to the existing .md file.
 
     Returns:
-        Dict with verdict, note_version, run_date, verdict_history keys.
-        Returns empty dict if file cannot be read or has no frontmatter.
+        Dict with write_route, note_version, run_date, write_route_history
+        keys. Returns empty dict if file cannot be read or has no frontmatter.
     """
     try:
         text = file_path.read_text(encoding="utf-8")
@@ -147,17 +160,35 @@ def _read_existing_frontmatter(file_path: Path) -> dict[str, Any]:
     if not lines or lines[0].strip() != "---":
         return {}
 
+    return _parse_frontmatter_lines(lines[1:])
+
+
+def _parse_frontmatter_lines(lines: list[str]) -> dict[str, Any]:
+    """Extract provenance fields from frontmatter lines (no full YAML parse).
+
+    Accepts either write_route/write_route_history (current) or the legacy
+    verdict/verdict_history keys (pre-WO-P400-E2.020 notes) — legacy values
+    are only used when the current key is absent, since a single note never
+    carries both.
+
+    Args:
+        lines: Frontmatter lines, opening '---' already stripped.
+
+    Returns:
+        Dict with write_route, note_version, run_date, write_route_history
+        keys (whichever were found).
+    """
     result: dict[str, Any] = {}
     in_history = False
     history_entries: list[str] = []
 
-    for line in lines[1:]:
+    for line in lines:
         if line.strip() == "---":
             break
-        if line.startswith("verdict_history:"):
+        if line.startswith("write_route_history:") or line.startswith("verdict_history:"):
             val = line.split(":", 1)[1].strip()
             if val == "[]":
-                result["verdict_history"] = []
+                result.setdefault("write_route_history", [])
             else:
                 in_history = True
                 history_entries = []
@@ -167,14 +198,18 @@ def _read_existing_frontmatter(file_path: Path) -> dict[str, Any]:
                 history_entries.append(line.strip()[2:])  # strip "- "
             else:
                 in_history = False
-                result["verdict_history"] = history_entries
+                result.setdefault("write_route_history", history_entries)
         stripped = line.strip()
-        for key in ("verdict", "note_version", "run_date"):
+        if stripped.startswith("write_route:"):
+            result["write_route"] = stripped.split(":", 1)[1].strip()
+        elif stripped.startswith("verdict:"):
+            result.setdefault("write_route", stripped.split(":", 1)[1].strip())
+        for key in ("note_version", "run_date"):
             if stripped.startswith(f"{key}:"):
                 result[key] = stripped.split(":", 1)[1].strip()
 
     if in_history:
-        result["verdict_history"] = history_entries
+        result.setdefault("write_route_history", history_entries)
 
     # Normalize note_version to int
     if "note_version" in result:
@@ -187,48 +222,68 @@ def _read_existing_frontmatter(file_path: Path) -> dict[str, Any]:
 
 
 def _build_history_entry(
-    verdict: str, run_date: str, note_version: int
+    write_route: str, run_date: str, note_version: int
 ) -> dict[str, Any]:
-    """Build a single verdict_history entry dict.
+    """Build a single write_route_history entry dict.
 
     Args:
-        verdict:      The verdict value being replaced.
+        write_route:  The write_route value being replaced.
         run_date:     The run_date of the note being replaced.
         note_version: The note_version of the note being replaced.
 
     Returns:
-        Dict with verdict, run_date, note_version keys.
+        Dict with write_route, run_date, note_version keys.
     """
-    return {"verdict": verdict, "run_date": run_date, "note_version": note_version}
+    return {"write_route": write_route, "run_date": run_date, "note_version": note_version}
 
 
 def _parse_history(history: Any) -> list[dict[str, Any]]:
-    """Normalize verdict_history to a list of dicts.
+    """Normalize write_route_history to a list of dicts with write_route keys.
 
     Handles three cases:
       - Already a list of dicts (freshly built in memory).
-      - List of inline YAML strings from disk read (e.g. '{verdict: BUY, ...}').
+      - List of inline YAML strings from disk read — current format
+        '{write_route: BUY, ...}' or legacy '{verdict: BUY, ...}' from
+        notes written before the 2026-07-10 rename.
       - Empty list.
 
     Args:
-        history: Raw verdict_history value from existing frontmatter.
+        history: Raw write_route_history value from existing frontmatter.
 
     Returns:
-        List of dicts with verdict, run_date, note_version keys.
+        List of dicts with write_route, run_date, note_version keys.
     """
     if not history:
         return []
     result = []
     for entry in history:
         if isinstance(entry, dict):
-            result.append(entry)
+            result.append(_normalize_history_entry(entry))
         elif isinstance(entry, str):
-            # Parse inline YAML: {verdict: BUY, run_date: 2026-05-29, note_version: 1}
+            # Parse inline YAML: {write_route: BUY, run_date: 2026-05-29, note_version: 1}
             import re
             parsed: dict[str, Any] = {}
             for match in re.finditer(r'(\w+):\s*([^,}]+)', entry):
                 k, v = match.group(1).strip(), match.group(2).strip()
                 parsed[k] = int(v) if k == "note_version" and v.isdigit() else v
             if parsed:
-                result.append(parsed)
+                result.append(_normalize_history_entry(parsed))
     return result
+
+
+def _normalize_history_entry(entry: dict[str, Any]) -> dict[str, Any]:
+    """Rename a legacy 'verdict' key to 'write_route' in a history entry.
+
+    No-op if the entry already uses 'write_route' or has neither key.
+    Handles history entries carried forward from notes written before the
+    2026-07-10 rename (WO-P400-E2.020).
+
+    Args:
+        entry: A single history entry dict.
+
+    Returns:
+        The same dict, with 'verdict' renamed to 'write_route' if present.
+    """
+    if "verdict" in entry and "write_route" not in entry:
+        entry["write_route"] = entry.pop("verdict")
+    return entry

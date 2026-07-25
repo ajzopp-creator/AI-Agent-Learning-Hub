@@ -5,6 +5,11 @@ Pure logic only — no I/O.
 md schemas: filename key is signal_date + ticker (Note Standard v1.1 Decision 1):
   One canonical note per signal per symbol. Re-runs overwrite the same file;
   provenance is tracked via note_version and verdict_history in frontmatter.
+  P020 exception (WO-P800-E3.002, 2026-07-21): filename key is signal_date +
+  symbol + trade_id when trade_id is present in the payload, since P020 can
+  have multiple systems close the same symbol the same day (date+symbol alone
+  collided silently). Falls back to signal_date + symbol when trade_id is
+  absent, so legacy callers and pre-fix notes are unaffected.
 
 json schemas (P400SIG, SIGNAL_V2): filename is signal date + symbol + a
   per-schema suffix + ".json", so legacy v1.0 and unified v2.0 packets coexist
@@ -12,6 +17,17 @@ json schemas (P400SIG, SIGNAL_V2): filename is signal date + symbol + a
   signal_timestamp (packets carry no signal_date field).
 
 CHANGELOG:
+  v2.3  2026-07-21  P400_PAPER added to the P300/P400 identifier branch
+                    (WO-P400-E2.019): paper trades now resolve a ticker-based
+                    filename identically to real P400 trades; folder
+                    separation (real vs. paper book) is handled entirely by
+                    VAULT_FOLDER_MAP, no identifier-logic change needed
+                    beyond adding the schema key to the tuple.
+  v2.2  2026-07-21  P020 filename collision fix (WO-P800-E3.002): _get_identifier
+                    now appends trade_id for P020 when present in the payload,
+                    disambiguating same-day same-symbol closes across systems.
+                    Falls back to symbol-only when trade_id absent. P115/P300/
+                    P400/KB identifier logic unchanged.
   v2.1  2026-06-07  Added JSON-schema branch: route P400SIG / SIGNAL_V2 to a
                     ".json" filename with a per-schema suffix; derive date from
                     signal_timestamp. md path unchanged. (WO-P800-E2.001)
@@ -40,8 +56,13 @@ def build_filepath(schema_name: str, data: dict[str, Any]) -> Path:
     """Generate the full vault file path for a record.
 
     md schemas:
-        P115 / P020  →  YYYY-MM-DD_SYMBOL.md
-        P300 / P400  →  YYYY-MM-DD_TICKER.md
+        P115         →  YYYY-MM-DD_SYMBOL.md
+        P020         →  YYYY-MM-DD_SYMBOL_TRADEID.md (or SYMBOL-only if no
+                         trade_id in payload -- WO-P800-E3.002)
+        P300 / P400 / P400_PAPER  →  YYYY-MM-DD_TICKER.md  (paper trades
+                         route to a separate vault folder via
+                         VAULT_FOLDER_MAP, same identifier logic as P400
+                         -- WO-P400-E2.019)
         KB           →  YYYY-MM-DD_SLUG.md  (slug from title)
     json schemas:
         P400SIG      →  YYYY-MM-DD_SYMBOL_signal.json
@@ -151,9 +172,16 @@ def _get_identifier(schema_name: str, data: dict[str, Any]) -> str:
     Returns:
         Clean identifier string safe for use in a filename.
     """
-    if schema_name in ("P115", "P020"):
+    if schema_name == "P020":
+        symbol = data.get("symbol") or "UNKNOWN"
+        trade_id = data.get("trade_id")
+        # trade_id disambiguates same-day same-symbol closes across systems
+        # (WO-P800-E3.002). Falls back to symbol-only when absent so legacy
+        # callers and pre-fix notes keep resolving to the same filename.
+        raw = f"{symbol}_{trade_id}" if trade_id else symbol
+    elif schema_name == "P115":
         raw = data.get("symbol") or "UNKNOWN"
-    elif schema_name in ("P300", "P400"):
+    elif schema_name in ("P300", "P400", "P400_PAPER"):
         raw = data.get("ticker") or "UNKNOWN"
     elif schema_name == "KB":
         title = data.get("title") or "untitled"

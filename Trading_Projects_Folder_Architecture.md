@@ -12,7 +12,7 @@ AI-Agent-Learning-Hub/
 │
 ├── 📁 projects/
 │   ├── 📁 P_300_Vantage_Point_Pattern_Recognition/
-│   ├── 📁 D_130_TradetheBounce_OIL/
+│   ├── 📁 P_110_TradetheBounce_OIL/
 │   └── 📁 P_010_Market_Posture_Weekly_Forecasts/
 │
 ├── 📁 shared_resources/
@@ -68,10 +68,10 @@ P_300_Vantage_Point_Pattern_Recognition/
 └── README.md
 ```
 
-### D_130_TradetheBounce_OIL
+### P_110_TradetheBounce_OIL
 
 ```
-D_130_TradetheBounce_OIL/
+P_110_TradetheBounce_OIL/
 │
 ├── 📁 python/
 │   ├── bounce_detector.py               # Main bounce logic
@@ -220,16 +220,16 @@ $projects = @(
     "projects\P_300_Vantage_Point_Pattern_Recognition\outputs\charts",
     "projects\P_300_Vantage_Point_Pattern_Recognition\outputs\alerts",
     
-    "projects\D_130_TradetheBounce_OIL\python",
-    "projects\D_130_TradetheBounce_OIL\tos_scripts",
-    "projects\D_130_TradetheBounce_OIL\data\xml_exports",
-    "projects\D_130_TradetheBounce_OIL\data\price_data",
-    "projects\D_130_TradetheBounce_OIL\data\correlations",
-    "projects\D_130_TradetheBounce_OIL\strategies\rules",
-    "projects\D_130_TradetheBounce_OIL\strategies\backtests",
-    "projects\D_130_TradetheBounce_OIL\outputs\trade_logs",
-    "projects\D_130_TradetheBounce_OIL\outputs\performance",
-    "projects\D_130_TradetheBounce_OIL\outputs\alerts",
+    "projects\P_110_TradetheBounce_OIL\python",
+    "projects\P_110_TradetheBounce_OIL\tos_scripts",
+    "projects\P_110_TradetheBounce_OIL\data\xml_exports",
+    "projects\P_110_TradetheBounce_OIL\data\price_data",
+    "projects\P_110_TradetheBounce_OIL\data\correlations",
+    "projects\P_110_TradetheBounce_OIL\strategies\rules",
+    "projects\P_110_TradetheBounce_OIL\strategies\backtests",
+    "projects\P_110_TradetheBounce_OIL\outputs\trade_logs",
+    "projects\P_110_TradetheBounce_OIL\outputs\performance",
+    "projects\P_110_TradetheBounce_OIL\outputs\alerts",
     
     "projects\P_010_Market_Posture_Weekly_Forecasts\python",
     "projects\P_010_Market_Posture_Weekly_Forecasts\tos_scripts",
@@ -368,12 +368,12 @@ All projects use a **single shared conda environment** named p140.
 - **Scope:** Shared across P_010, P_020, P_300, and all future projects
 
 **Key packages installed:**
-- pandas, numpy � data analysis
-- pandas_ta � technical analysis indicators
-- numba � performance acceleration
-- python-dotenv � environment variables
-- pyyaml � config file support
-- loguru � logging
+- pandas, numpy � data analysis
+- pandas_ta � technical analysis indicators
+- numba � performance acceleration
+- python-dotenv � environment variables
+- pyyaml � config file support
+- loguru � logging
 - colorama, tqdm, pytz, pytest
 
 ### Why one shared environment?
@@ -383,7 +383,7 @@ Each project does NOT have its own venv. A single conda environment means:
 - All projects stay in sync on package versions
 
 ### How batch files reference it:
-Every .bat file calls Python directly by full path � no activation needed:
+Every .bat file calls Python directly by full path � no activation needed:
 `
 "C:\Users\Trader\.conda\envs\p140\python.exe" "python\your_script.py"
 `

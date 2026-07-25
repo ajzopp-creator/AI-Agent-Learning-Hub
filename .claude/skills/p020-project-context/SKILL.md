@@ -108,6 +108,25 @@ Tag parsing runs only in `paper_import.py` for `account_id='PAPER'`. Live accoun
 | ThinkLog parser validating closed vocabulary | Parser accepts any tag string |
 | Order comments assumed to survive TOS CSV export | They don't — tags are ThinkLog-only |
 | SKILL.md claimed hub-level `integrations\schwab_api\` was canonical Token Manager location | It was dead code from an abandoned 3/14/26 plan — folder deleted 6/21/26; real chain is project-level `python\api\` |
+| `exit_allocator.py` orphaned exits (entry outside current pull batch, e.g. entry from a prior week) were logged then silently dropped — `schwab_mapper.map_pull_file()` discarded them after the warning | `map_pull_file()` now returns orphans; `import_command._resolve_orphans_against_db()` matches against `db_reader.get_open_trade_for_symbol()` (oldest open/partial trade, FIFO) and attaches via `trade_writer.attach_orphan_exit()` |
+| `generate_dashboard.py` headline KPIs (closed count, open count, win rate, expectancy, best/worst) fed the `SYSTEM_ORDER`-filtered/sorted systems list, silently excluding any trade on a system not in the 7-name display list (e.g. TOS_Import) | `compute_kpis()` now takes the unfiltered `raw_systems` list; the filtered/sorted list stays scoped to the per-system breakdown table only |
+| `vault_mapper.build_vault_payload()` passed `trade_id` through as raw int -- P_800's `P020Record.trade_id` is `Optional[str]`, every `--commit` write failed Pydantic validation (201/201, 0 files touched, caught before any write) | Cast with a `_to_str()` helper (None-safe, mirrors existing `_to_int()`) before returning the payload |
+
+---
+
+## Vault Export
+
+- `P020_Performance.base` filters on `file.folder contains
+  "TradeManagement/P020"` -- a **substring** match, not exact. Any
+  archive/cleanup subfolder nested under `TradeManagement/P020`
+  still matches and shows stale duplicates in the Base. Archive
+  outside that path, e.g. `TradeManagement/_archive/P020_.../`.
+- Old filename pattern (`SYMBOL.md`) and new trade_id-disambiguated
+  pattern (`SYMBOL_TRADEID.md`, added WO-P800-E3.002) don't collide.
+  Re-running `write_to_obsidian.py --commit` after a filename-scheme
+  change does not overwrite old-scheme notes -- it leaves them as
+  orphaned duplicates. Check for this after any filename_builder.py
+  change on P_800's side.
 
 ---
 
@@ -133,4 +152,4 @@ Tag parsing runs only in `paper_import.py` for `account_id='PAPER'`. Live accoun
 
 ---
 
-*Skill version: 2.2 | Updated: 2026-06-21 | Schwab Auth section corrected — hub-level path was dead, deleted; this is the real file, not the /mnt/skills/user/ sandbox copy*
+*Skill version: 2.4 | Updated: 2026-07-21 | Added trade_id str-cast bug (WO-P800-E3.002) to bug registry; added Vault Export section (Base folder-filter substring trap, filename-scheme migration leaves orphans)*

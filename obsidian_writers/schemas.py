@@ -43,6 +43,7 @@ SCHEMA_REGISTRY: dict[str, type[BaseModel]] = {
     "P300":      P300Record,
     "P020":      P020Record,
     "P400":      P400Record,
+    "P400_PAPER": P400Record,
     "P400SIG":   P400SignalRecord,
     "SIGNAL_V2": SignalV2,
     "KB":        KBRecord,

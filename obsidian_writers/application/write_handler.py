@@ -4,12 +4,17 @@ Orchestration only — calls domain and infrastructure, no raw logic or I/O.
 
 Two write paths, selected by OUTPUT_FORMAT (config.py):
   "md"   → frontmatter note via vault_writer. Injects run_date, run_ts,
-           written_by, verdict; vault_writer handles note_version /
-           verdict_history by reading the existing note on overwrite.
-  "json" → raw signal packet via json_writer. No verdict normalization, no
+           written_by, write_route; vault_writer handles note_version /
+           write_route_history by reading the existing note on overwrite.
+  "json" → raw signal packet via json_writer. No write_route normalization, no
            provenance, no frontmatter. Used by P400SIG (Enhancement 1).
 
 CHANGELOG:
+  v2.2  2026-07-10  Renamed the routing-only 'verdict' field to 'write_route'
+                    everywhere it is produced (WO-P400-E2.020). Pure rename —
+                    council_verdict (P_400's true disposition) and VERDICT_MAP's
+                    mapping logic are unchanged. _inject_verdict renamed to
+                    _inject_write_route.
   v2.1  2026-06-02  Branch on OUTPUT_FORMAT. Added _handle_json for the
                     P400SIG signal-packet path (validate → build path →
                     json_writer). md path unchanged. Enhancement 1.
@@ -79,7 +84,7 @@ def _handle_md(
     Steps:
       1. Inject run_date / run_ts (wall-clock time of this pipeline run).
       2. Inject source so vault_writer can reference it after rebuild.
-      3. Map native classification to normalized verdict via VERDICT_MAP.
+      3. Map native classification to normalized write_route via VERDICT_MAP.
       4. Validate and normalize via Pydantic.
       5. Build file path.
       6. Build initial note content.
@@ -100,7 +105,7 @@ def _handle_md(
     data.setdefault("run_ts", now_utc.strftime("%Y-%m-%dT%H:%M:%S"))
 
     data["source"] = schema_name
-    _inject_verdict(schema_name, data)
+    _inject_write_route(schema_name, data)
 
     validated = validate(schema_name, data)
     file_path = build_filepath(schema_name, validated)
@@ -123,9 +128,9 @@ def _handle_json(
 ) -> bool:
     """Raw signal-packet path (P400SIG).
 
-    No verdict normalization, no run-timestamp injection, no provenance — a
-    signal packet is an immutable handoff artifact validated against its locked
-    schema and written verbatim.
+    No write_route normalization, no run-timestamp injection, no provenance —
+    a signal packet is an immutable handoff artifact validated against its
+    locked schema and written verbatim.
 
     Steps:
       1. Validate against the packet model (P400SignalRecord).
@@ -148,11 +153,13 @@ def _handle_json(
     return written
 
 
-def _inject_verdict(schema_name: str, data: dict[str, Any]) -> None:
-    """Map the sending system's native classification to the normalized verdict.
+def _inject_write_route(schema_name: str, data: dict[str, Any]) -> None:
+    """Map the sending system's native classification to the normalized
+    write_route field — routing-only, used to file the note into the right
+    Obsidian folder. Not the true disposition (see council_verdict for P_400).
 
     Priority order:
-      1. If 'verdict' already set and valid — leave it.
+      1. If 'write_route' already set and valid — leave it.
       2. Map from native field using VERDICT_MAP.
       3. Default to PASS if no mapping found.
 
@@ -161,13 +168,13 @@ def _inject_verdict(schema_name: str, data: dict[str, Any]) -> None:
       P300 → signal
       P400 → council_verdict
       P020 → outcome (TBD — left as null until P_020 is wired)
-      KB   → no verdict (null)
+      KB   → no write_route (null)
 
     Args:
         schema_name: Schema identifier.
         data:        Data dict to mutate.
     """
-    existing = data.get("verdict")
+    existing = data.get("write_route")
     if existing in ("BUY", "WATCH", "PASS"):
         return  # already normalized — nothing to do
 
@@ -175,17 +182,18 @@ def _inject_verdict(schema_name: str, data: dict[str, Any]) -> None:
         "P115": "step1_verdict",
         "P300": "signal",
         "P400": "council_verdict",
+        "P400_PAPER": "council_verdict",
         "P020": None,   # TBD
         "KB":   None,   # not applicable
     }
     native_field = native_field_map.get(schema_name)
     if not native_field:
-        data["verdict"] = None
+        data["write_route"] = None
         return
 
     native_value = data.get(native_field)
     if native_value is None:
-        data["verdict"] = None
+        data["write_route"] = None
         return
 
     mapped = VERDICT_MAP.get(native_value)
@@ -194,6 +202,6 @@ def _inject_verdict(schema_name: str, data: dict[str, Any]) -> None:
                     native_value, schema_name)
         mapped = "PASS"
 
-    data["verdict"] = mapped
-    log.debug("Verdict mapped: %s.%s=%s → verdict=%s",
+    data["write_route"] = mapped
+    log.debug("Write route mapped: %s.%s=%s → write_route=%s",
               schema_name, native_field, native_value, mapped)

@@ -11,7 +11,7 @@ description: >
 **Version:** 1.1  
 **Created:** May 28, 2026  
 **Updated:** May 28, 2026 (Added API consistency rules)  
-**Applies To:** All trading projects using LM Studio wrapper (P_010, P_020, P_115, P_300, D_130)  
+**Applies To:** All trading projects using LM Studio wrapper (P_010, P_020, P_115, P_300, P_110)  
 **Pairs With:** `LM_Studio_Wrapper_System_Initialization_Prompt_v1.0.md`
 
 ---
