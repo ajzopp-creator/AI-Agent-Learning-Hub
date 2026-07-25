@@ -1,7 +1,7 @@
 """
 FILE: signal_emitter.py
-VERSION: 2.2
-DATE: 2026-06-17
+VERSION: 2.3
+DATE: 2026-07-04
 AUTHOR: Anthony Zoppi + Claude
 LAYER: infrastructure
 DESCRIPTION:
@@ -31,6 +31,16 @@ DESCRIPTION:
     never blocks Pipeline B startup.
 
 CHANGELOG:
+    - 2026-07-04 v2.3: WO-P300-E1.004. Added print() status lines
+      ([OK]/[REJECTED]) alongside the existing logger.info/logger.warning
+      calls. --clean's logging.disable(logging.WARNING) in
+      daily_evaluate_pipeline.py main() spans the whole run, silently
+      swallowing both success and failure logs from this function with no
+      fallback -- same failure shape as the Obsidian writer's M-043 bug.
+      Caught 2026-07-04: a real --clean batch produced 10 vault notes but
+      only 3 signals/ packets with zero trace of what happened to the
+      other 7 (PEH diagnostic later confirmed the emitter itself was fine
+      -- write_to_vault succeeded on replay -- the only bug was visibility).
     - 2026-06-17 v2.2: Target generation now follows architecture 3.5
       (Target Selection Standard) -- WO-P300-E1.002. guideline_target was
       unconditionally entry + 2x ATR, ignoring any VP resistance level
@@ -217,6 +227,12 @@ def emit_signal_packet(
             f"({signal_date}, h={chosen_horizon}) -> P_400 signals/"
         )
         logger.info(msg)
+        # M-043-pattern fix (WO-P300-E1.004): print(), not just logger.info,
+        # so this survives --clean's logging.disable(logging.WARNING) for
+        # the whole run. logger.info alone was silently swallowed under
+        # --clean with no fallback -- identical failure shape to the
+        # Obsidian writer bug M-043 already fixed elsewhere.
+        print(f"[OK] {symbol}: SIGNAL_V2 emitted -> P_400 signals/")
         return True, msg
 
     except Exception as e:  # ValueError (reject) | OSError (disk) | import | other
@@ -225,4 +241,5 @@ def emit_signal_packet(
             f"{type(e).__name__}: {e}"
         )
         logger.warning(msg)
+        print(f"[REJECTED] {symbol}: {type(e).__name__}: {e}")
         return False, msg

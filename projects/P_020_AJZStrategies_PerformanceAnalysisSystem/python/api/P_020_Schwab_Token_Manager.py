@@ -1,5 +1,6 @@
-﻿import schwab
+import schwab
 import json
+import sys
 from pathlib import Path
 
 # -- Paths -- project config is the single source of truth -------------------
@@ -58,5 +59,22 @@ def test_connection():
         return None, None
 
 
+def _main() -> None:
+    """CLI entry point -- exits non-zero on failed token pre-flight check.
+
+    WO-P020-E1.007: weekly update Step 0 calls this script directly and
+    relies on the exit code -- fail loud, don't just print and return, or
+    the calling .bat can't tell success from failure. Split into a plain
+    function so the exit-code contract is unit-testable without spawning
+    a subprocess.
+    """
+    _, accounts = test_connection()
+    if accounts is None:
+        print("[FAIL] Token pre-flight check failed -- reauth required.", flush=True)
+        print("Run: P_020_Schwab_Auth.bat", flush=True)
+        sys.exit(1)
+    sys.exit(0)
+
+
 if __name__ == "__main__":
-    test_connection()
+    _main()

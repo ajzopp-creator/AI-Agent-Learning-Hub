@@ -269,7 +269,7 @@ def replay_all(
     catalog_path = get_latest_catalog()
     with connection_context() as conn:
         all_pids = catalog_reader.get_all_pattern_ids(
-            conn, origin_type=ORIGIN_PATTERN_IDENT)
+            conn, origin_types=(ORIGIN_PATTERN_IDENT,))
         historical_windows = catalog_reader.bulk_load_normalized_windows(conn, all_pids)
         all_labels = catalog_reader.bulk_load_forward_labels(conn, all_pids)
         all_metadata = catalog_reader.bulk_load_pattern_metadata(conn, all_pids)

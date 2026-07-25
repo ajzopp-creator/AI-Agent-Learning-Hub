@@ -1,0 +1,41 @@
+--- per-symbol / per-tier counts ---
+('AAPL', 'RELAXED', 23)
+('AAPL', 'STRICT', 1)
+('ALB', 'RELAXED', 20)
+('ALB', 'STRICT', 4)
+('APD', 'RELAXED', 22)
+('APD', 'STRICT', 2)
+('CF', 'RELAXED', 14)
+('CF', 'STRICT', 6)
+('DE', 'RELAXED', 25)
+('DE', 'STRICT', 3)
+('DOW', 'RELAXED', 20)
+('DOW', 'STRICT', 7)
+('FCX', 'RELAXED', 17)
+('FCX', 'STRICT', 2)
+('MOS', 'RELAXED', 17)
+('MOS', 'STRICT', 6)
+('NEM', 'RELAXED', 16)
+('NEM', 'STRICT', 6)
+('NUE', 'RELAXED', 17)
+('NUE', 'STRICT', 6)
+('SCCO', 'RELAXED', 28)
+('SCCO', 'STRICT', 2)
+('SHW', 'RELAXED', 21)
+('SHW', 'STRICT', 2)
+('SPY', 'RELAXED', 25)
+('SPY', 'STRICT', 1)
+('STLD', 'RELAXED', 15)
+('STLD', 'STRICT', 6)
+
+--- totals ---
+pattern_instances: 334
+('RELAXED', 280)
+('STRICT', 54)
+pattern_bars: 6680
+forward_labels: 1670
+symbols: 14
+source_files: 14
+
+--- hollow check (instances with 0 bars) ---
+hollow_count: 0 

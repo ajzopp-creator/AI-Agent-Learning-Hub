@@ -1,0 +1,156 @@
+#
+# P_400_2A_Analysis_Chart
+# thinkScript study -- ThinkorSwim
+#
+# Purpose: single-glance label block with every value needed for a
+# P_400 Tier-2A technical dossier (Architecture v2.0 Section 4.2, items 1-10).
+# Apply on the DAILY chart for the symbol under evaluation.
+#
+# Setup: TOS > Studies > Edit Studies > New Study > paste this in > OK
+#        Name it P_400_2A_Analysis_Chart when prompted, apply to chart.
+#
+# Note: BID/ASK/MARK are read live off the current forming bar
+# (PriceType.BID / ASK / MARK) -- accurate intraday while market is open;
+# outside market hours they'll show the last available quote, not a fresh one.
+#
+
+declare upper;
+
+# ---------- Core price ----------
+def px = close;
+
+# ---------- Live bid/ask (real-time on the current/forming bar) ----------
+def liveBid = close(priceType = PriceType.BID);
+def liveAsk = close(priceType = PriceType.ASK);
+def liveMark = close(priceType = PriceType.MARK);
+def spreadAbs = liveAsk - liveBid;
+def spreadPct = spreadAbs / liveMark * 100;
+
+# ---------- ATR(14) ----------
+def tr = TrueRange(high, close, low);
+def atr14 = WildersAverage(tr, 14);
+
+# ---------- RSI(14) ----------
+def upChg = if close > close[1] then close - close[1] else 0;
+def downChg = if close < close[1] then close[1] - close else 0;
+def avgUp = WildersAverage(upChg, 14);
+def avgDown = WildersAverage(downChg, 14);
+def rs = avgUp / avgDown;
+def rsi14 = 100 - (100 / (1 + rs));
+
+# ---------- MACD (12,26,9) ----------
+def emaFast = ExpAverage(close, 12);
+def emaSlow = ExpAverage(close, 26);
+def macdLine = emaFast - emaSlow;
+def signalLine = ExpAverage(macdLine, 9);
+def macdHist = macdLine - signalLine;
+def macdBullCross = macdLine crosses above signalLine;
+def macdBearCross = macdLine crosses below signalLine;
+
+# ---------- Moving averages ----------
+def sma20 = Average(close, 20);
+def sma50 = Average(close, 50);
+def sma100 = Average(close, 100);
+def sma200 = Average(close, 200);
+
+# ---------- Bollinger Bands (20, 2) ----------
+def bbMid = Average(close, 20);
+def bbDev = StDev(close, 20);
+def bbUpper = bbMid + 2 * bbDev;
+def bbLower = bbMid - 2 * bbDev;
+def percentB = (close - bbLower) / (bbUpper - bbLower) * 100;
+def bbWidth = (bbUpper - bbLower) / bbMid * 100;
+def bbWidthAvg = Average(bbWidth, 50);
+def squeeze = bbWidth < bbWidthAvg;
+
+# ---------- Volume ----------
+def volAvg20 = Average(volume, 20);
+def volRatio = volume / volAvg20;
+
+# ---------- Support / Resistance ----------
+def hi20 = Highest(high, 20);
+def lo20 = Lowest(low, 20);
+def hi252 = Highest(high, 252);
+def lo252 = Lowest(low, 252);
+
+# ---------- Fibonacci retracement (60-bar swing) ----------
+def fibLookback = 60;
+def swingHigh = Highest(high, fibLookback);
+def swingLow = Lowest(low, fibLookback);
+def fibRange = swingHigh - swingLow;
+def fib236 = swingHigh - fibRange * 0.236;
+def fib382 = swingHigh - fibRange * 0.382;
+def fib500 = swingHigh - fibRange * 0.5;
+def fib618 = swingHigh - fibRange * 0.618;
+def fib786 = swingHigh - fibRange * 0.786;
+
+# ---------- Trend state ----------
+def goldenCross = sma50 > sma200;
+
+# ================= LABELS =================
+
+AddLabel(yes, "PRICE " + AsText(px, NumberFormat.TWO_DECIMAL_PLACES), Color.WHITE);
+
+AddLabel(yes, "BID " + AsText(liveBid, NumberFormat.TWO_DECIMAL_PLACES) +
+    "  ASK " + AsText(liveAsk, NumberFormat.TWO_DECIMAL_PLACES) +
+    "  MARK " + AsText(liveMark, NumberFormat.TWO_DECIMAL_PLACES) +
+    "  SPRD " + AsText(spreadAbs, NumberFormat.TWO_DECIMAL_PLACES) +
+    " (" + AsText(spreadPct, NumberFormat.TWO_DECIMAL_PLACES) + "%)",
+    Color.ORANGE);
+
+AddLabel(yes, "ATR14 " + AsText(atr14, NumberFormat.TWO_DECIMAL_PLACES) +
+    "  (" + AsText(atr14 / px * 100, NumberFormat.TWO_DECIMAL_PLACES) + "%)", Color.YELLOW);
+
+AddLabel(yes, "RSI14 " + AsText(rsi14, NumberFormat.TWO_DECIMAL_PLACES) +
+    (if rsi14 >= 70 then "  OVERBOUGHT" else if rsi14 <= 30 then "  OVERSOLD" else "  NEUTRAL"),
+    if rsi14 >= 70 then Color.RED else if rsi14 <= 30 then Color.GREEN else Color.GRAY);
+
+AddLabel(yes, "MACD " + AsText(macdLine, NumberFormat.TWO_DECIMAL_PLACES) +
+    "  SIG " + AsText(signalLine, NumberFormat.TWO_DECIMAL_PLACES) +
+    "  HIST " + AsText(macdHist, NumberFormat.TWO_DECIMAL_PLACES) +
+    (if macdBullCross then "  BULL CROSS" else if macdBearCross then "  BEAR CROSS" else if macdLine > signalLine then "  ABOVE SIGNAL" else "  BELOW SIGNAL"),
+    if macdLine > signalLine then Color.GREEN else Color.RED);
+
+AddLabel(yes, "SMA20 " + AsText(sma20, NumberFormat.TWO_DECIMAL_PLACES) +
+    (if px > sma20 then " (px above)" else " (px below)"),
+    if px > sma20 then Color.GREEN else Color.RED);
+
+AddLabel(yes, "SMA50 " + AsText(sma50, NumberFormat.TWO_DECIMAL_PLACES) +
+    (if px > sma50 then " (px above)" else " (px below)"),
+    if px > sma50 then Color.GREEN else Color.RED);
+
+AddLabel(yes, "SMA100 " + AsText(sma100, NumberFormat.TWO_DECIMAL_PLACES) +
+    (if px > sma100 then " (px above)" else " (px below)"),
+    if px > sma100 then Color.GREEN else Color.RED);
+
+AddLabel(yes, "SMA200 " + AsText(sma200, NumberFormat.TWO_DECIMAL_PLACES) +
+    (if px > sma200 then " (px above)" else " (px below)"),
+    if px > sma200 then Color.GREEN else Color.RED);
+
+AddLabel(yes, "TREND " + (if goldenCross then "50>200 BULLISH" else "50<200 BEARISH"),
+    if goldenCross then Color.GREEN else Color.RED);
+
+AddLabel(yes, "BB " + AsText(bbLower, NumberFormat.TWO_DECIMAL_PLACES) + " / " +
+    AsText(bbMid, NumberFormat.TWO_DECIMAL_PLACES) + " / " +
+    AsText(bbUpper, NumberFormat.TWO_DECIMAL_PLACES) +
+    "  %B=" + AsText(percentB, NumberFormat.TWO_DECIMAL_PLACES) +
+    (if squeeze then "  SQUEEZE" else "  EXPANDED"), Color.CYAN);
+
+AddLabel(yes, "VOL " + AsText(volume / 1000000, NumberFormat.TWO_DECIMAL_PLACES) + "M  vs AVG20 " +
+    AsText(volAvg20 / 1000000, NumberFormat.TWO_DECIMAL_PLACES) + "M  (" +
+    AsText(volRatio, NumberFormat.TWO_DECIMAL_PLACES) + "x)",
+    if volRatio > 1.5 then Color.YELLOW else Color.GRAY);
+
+AddLabel(yes, "S/R 20D  Hi " + AsText(hi20, NumberFormat.TWO_DECIMAL_PLACES) +
+    "  Lo " + AsText(lo20, NumberFormat.TWO_DECIMAL_PLACES), Color.WHITE);
+
+AddLabel(yes, "S/R 52W  Hi " + AsText(hi252, NumberFormat.TWO_DECIMAL_PLACES) +
+    "  Lo " + AsText(lo252, NumberFormat.TWO_DECIMAL_PLACES), Color.WHITE);
+
+AddLabel(yes, "FIB(60d " + AsText(swingLow, NumberFormat.TWO_DECIMAL_PLACES) + "-" +
+    AsText(swingHigh, NumberFormat.TWO_DECIMAL_PLACES) + ")  .236=" +
+    AsText(fib236, NumberFormat.TWO_DECIMAL_PLACES) + " .382=" +
+    AsText(fib382, NumberFormat.TWO_DECIMAL_PLACES) + " .500=" +
+    AsText(fib500, NumberFormat.TWO_DECIMAL_PLACES) + " .618=" +
+    AsText(fib618, NumberFormat.TWO_DECIMAL_PLACES) + " .786=" +
+    AsText(fib786, NumberFormat.TWO_DECIMAL_PLACES), Color.MAGENTA);

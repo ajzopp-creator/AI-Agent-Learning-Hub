@@ -1,9 +1,9 @@
-# P_300 System Initialization Prompt (SIP) v3.3
+# P_300 System Initialization Prompt (SIP) v3.4
 
 **File:** `docs/P_300_System_Initialization_Prompt_v3_1.md`  
-**Version:** 3.3  
-**Last Updated:** 2026-06-18  
-**Pairs With:** `docs/P_300_System_Architecture_v2.7.md` + `p300-project-context/SKILL.md`
+**Version:** 3.4  
+**Last Updated:** 2026-07-22  
+**Pairs With:** `docs/P_300_System_Architecture_v2.7.md` + `p300-project-context/SKILL.md` + `CLAUDE.md`
 
 ---
 
@@ -51,7 +51,7 @@ Confirm `p300-project-context` active by referencing one rule unprompted. Missin
 Verify `<project>\tasks\lessons.md` and `<project>\tasks\todo.md` exist. Either missing → **HALT**; verify Stage 3 setup.
 
 ### Step 4 — Load Working State
-Read via `windows-mcp:FileSystem`: `tasks/lessons.md` (M-series/O-series) + `tasks/todo.md` (active stage, queue, closures). → Step 5.
+Read via `windows-mcp:FileSystem`: `tasks/lessons.md` (M-series/O-series) + `tasks/todo.md` (active stage, queue, closures) + `CLAUDE.md` if present (architecture snapshot, key paths, Locked Decisions -- WO-P000-E8.001). -> Step 5.
 
 ### Step 5 — Load External Context
 Read `P_000_Account_Parameters_Current.md` (balance, risk budget) + `P_010_RiskConfig.json` (market posture). Missing → note unavailable; do not invent.
@@ -134,6 +134,8 @@ Load full architecture (on demand only), duplicate SKILL content, write code/fil
 | Item | Value |
 | :---- | :---- |
 | Project root | `C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\` |
+| CLAUDE.md | `<project root>\CLAUDE.md` -- architecture + Locked Decisions, read at Step 4 |
+| Working-state archives | `tasks\todo_archive.md`, `tasks\lessons_archive.md` (WO-P000-E8.001) |
 | Python | `C:\Users\Trader\.conda\envs\p140\python.exe` |
 | Catalog | `db_utils.get_latest_catalog()` (glob `*catalog.db`) |
 | Preflight script (operator-run) | `P_300_Preflight.bat` (project root) |
@@ -148,17 +150,25 @@ Load full architecture (on demand only), duplicate SKILL content, write code/fil
 
 *Retention rule: this section keeps only the current + prior version. Older entries live in `docs/P_300_SIP_CHANGELOG_ARCHIVE.md`.*
 
+### v3.4 -- 2026-07-22
+- **WO-P000-E8.001 pilot: working-state doc retention.** `CLAUDE.md` added at
+  project root (architecture snapshot + Locked Decisions, edited in place) --
+  Step 4 now reads it alongside `tasks/lessons.md`/`tasks/todo.md`. Both of
+  those files split live/archive (`tasks/lessons_archive.md`,
+  `tasks/todo_archive.md`) to stay under a size cap after growing large
+  enough to hit real tool-read limits this session.
+- **v3.2 entry moved to `docs/P_300_SIP_CHANGELOG_ARCHIVE.md`** per the
+  two-version retention rule this section already states -- see archive
+  file for that history.
+
 ### v3.3 — 2026-06-18
 - **Decision flags line made real.** Step 5 now actually greps `config.py`; Step 6 template gained the `Decision flags:` line — both were claimed-but-missing since 2026-06-09, caught during a live INIT dry run.
 - **Step 1A added** — non-HALTing preflight freshness reminder right after the session header.
 - **Compression pass:** ~20% shorter (tightened step prose, no rule/path/condition removed). Top RULE line corrected: "Steps 0 through 6" → "Steps 0 through 7" (matches SKILL Must-rule #14 and Step 7's actual gate).
 - **Header separator dropped** (WO-P000-E4.001 v1.1): Hub canonical header no longer requires `--` between date and time, after auditing P_115's older format. Step 1 updated to match.
 
-### v3.2 — 2026-06-18
-- **WO-P000-E4.001 — INIT execution bypass.** Steps 5b/5c read `P_300_preflight_status.json` (written by operator-run `P_300_Preflight.bat`) instead of invoking `python` via PowerShell — removes the ~4-min subprocess timeout from every INIT run. `File:` header path corrected.
-
 ### Pre-v3.2 history
-See `docs/P_300_SIP_CHANGELOG_ARCHIVE.md` (v2.8–v3.1).
+See `docs/P_300_SIP_CHANGELOG_ARCHIVE.md` (v2.8-v3.2).
 
 ---
 
@@ -166,8 +176,8 @@ See `docs/P_300_SIP_CHANGELOG_ARCHIVE.md` (v2.8–v3.1).
 
 **Owner:** Anthony Zoppi (review), Claude (drafting)  
 **Update trigger:** Architecture version bump or INIT sequence change  
-**Pairs with:** `docs/P_300_System_Architecture_v2.7.md` + `p300-project-context/SKILL.md`
+**Pairs with:** `docs/P_300_System_Architecture_v2.7.md` + `p300-project-context/SKILL.md` + `CLAUDE.md`
 
 ---
 
-**End of P_300 System Initialization Prompt v3.3**
+**End of P_300 System Initialization Prompt v3.4**

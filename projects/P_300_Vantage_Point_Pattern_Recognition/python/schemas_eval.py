@@ -1,7 +1,7 @@
 """
 FILE: schemas_eval.py
-VERSION: 1.1
-DATE: 2026-06-28
+VERSION: 1.2
+DATE: 2026-07-19
 AUTHOR: Anthony Zoppi + Claude
 LAYER: schemas
 DESCRIPTION:
@@ -32,8 +32,21 @@ DESCRIPTION:
         applied only inside domain/eval_scoring.py's own gate copy.
       - WalkForwardResult   -- one pattern's walk-forward outcome
       - WalkForwardBatch    -- full-catalog walk-forward run
+      - TopKMatch           -- one ranked entry in a pattern's cached
+        top-K set (WO-P300-E4.006). This is the ONLY model in this
+        file with a real SQLite table behind it (topk_cache, decision
+        #2) -- everything else here stays the transient, read-only
+        contract described above. Added here rather than a new file
+        because it belongs to the same walk-forward domain
+        (TOP_K_MATCHES, decision #4) and this file has headroom.
 
 CHANGELOG:
+    - 2026-07-19 v1.2 (WO-P300-E4.006): Added TopKMatch -- schema
+      required before infrastructure/topk_cache_io.py or
+      domain/topk_cache.py per the project's schema-before-persistent-
+      I/O rule (python-project-architecture skill). Mirrors the
+      topk_cache table columns 1:1 (decision #5's final schema,
+      confirmed 2026-07-19).
     - 2026-06-28 v1.1: Added ThresholdOverrides (BUY_MIN_Z_SCORE
       comparison run, post-N=300-ablation backlog item). WalkForward
       Batch gained threshold_overrides field so a written report is
@@ -146,3 +159,30 @@ class WalkForwardBatch(BaseModel):
     n_degenerate: int
     threshold_overrides: ThresholdOverrides | None = None
     results: list[WalkForwardResult]
+
+
+class TopKMatch(BaseModel):
+    """One ranked entry in a pattern's cached top-K set (WO-P300-E4.006).
+
+    Mirrors the topk_cache table's columns 1:1 -- unlike every other
+    model in this file, this one has a real SQLite table behind it
+    (decision #2: single source of truth, inside catalog.db itself,
+    not a side file). rank is 1-indexed, closest analog first, 1..20
+    (TOP_K_MATCHES, decision #4 -- exact, no headroom). matched_pid is
+    the historical pattern this entry points to; composite_distance is
+    the same DTW composite similarity.rank_by_distance() already
+    computes (this model doesn't redefine the metric, only the
+    persisted shape of its top-20 output).
+
+    No feature_set_id field (decision #5): a feature-version bump
+    invalidates every cached row at once, not selectively, so a full
+    rebuild is the correct response rather than per-row version
+    tracking -- validity is a whole-cache property, not a per-row one.
+    """
+
+    model_config = ConfigDict(frozen=True)
+
+    pattern_instance_id: int
+    rank: int
+    matched_pid: int
+    composite_distance: float

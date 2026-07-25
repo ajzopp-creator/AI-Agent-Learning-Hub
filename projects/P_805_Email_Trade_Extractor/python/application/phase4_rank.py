@@ -16,6 +16,7 @@ from domain.ranker import build_ranked_signals
 from infrastructure.daily_csv_reader import load_signals_csv
 from infrastructure.logging_setup import configure_logging
 from infrastructure.ranked_csv_writer import write_ranked_csv
+from infrastructure.sender_sheet import load_sender_sectors
 
 logger = logging.getLogger("p805")
 
@@ -45,7 +46,10 @@ def run(signals_path: Path | None = None, ranked_path: Path | None = None) -> No
     logger.info(f"Consensus threshold: {config.CONSENSUS_THRESHOLD} sources")
     logger.info("-" * 72)
 
-    ranked = build_ranked_signals(signals, config.CONSENSUS_THRESHOLD)
+    sector_map = load_sender_sectors()
+    logger.info(f"Sector map: {len(sector_map)} senders tagged")
+
+    ranked = build_ranked_signals(signals, config.CONSENSUS_THRESHOLD, sector_map)
 
     direction_counts = {}
     for r in ranked:

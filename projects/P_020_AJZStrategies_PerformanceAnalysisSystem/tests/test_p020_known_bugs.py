@@ -175,7 +175,7 @@ def test_wo_e1001_no_unrecorded_closes():
     sys.path.insert(0, str(root / "python" / "database" / "domain"))
     import schwab_mapper as sm
 
-    _, trade_dicts = sm.map_pull_file(pull)
+    _, trade_dicts, _ = sm.map_pull_file(pull)
     con = sqlite3.connect(root / "data" / "database" / "P_020_trades.db")
     flags = []
     for trade in trade_dicts:
@@ -202,6 +202,97 @@ def test_wo_e1001_no_unrecorded_closes():
             flags.append(f"trade_id={trade_id} missing={sorted(pull_exits - recorded)}")
     con.close()
     check("wo_e1001_no_unrecorded_closes", "BEHAVIOR", len(flags) == 0, "; ".join(flags))
+
+
+def test_wo_e1001_orphans_returned_and_dispositionable():
+    """BEHAVIOR -- WO-P020-E1.008 Option 2.
+
+    E1.001 fixed two things: (a) the qty-aware allocator stopped skipping
+    exits, and (b) orphaned exits started being RETURNED and resolved
+    against the DB instead of logged-then-silently-dropped.
+    test_wo_e1001_no_unrecorded_closes guards (a). This guards (b).
+
+    Invariants, each tied to how import_command._resolve_orphans_against_db
+    actually consumes an orphan:
+
+      1. map_pull_file() returns a 3-tuple whose third element is a list.
+         This is the exact contract whose drift silently killed the
+         sibling guard for weeks (WO-P020-E1.008).
+
+      2. Every orphan carries the keys the resolver keys on. A blank
+         underlying_symbol matches nothing in the DB, degrades to a
+         content-free warning, and reproduces the original silent-drop
+         bug through the back door.
+
+      3. Every orphan is dispositionable -- get_open_trade_for_symbol()
+         returns either None (genuine unresolved: warned, not dropped)
+         or a row the resolver may attach to. attach_orphan_exit()
+         assumes that row is open/partial; a closed row would attach an
+         exit to an already-closed position.
+
+    Uses real asserts, not just check(), so it fails under pytest as well
+    as under main().
+
+    Skips cleanly if the pull file isn't present."""
+    root = Path(r"C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_020_AJZStrategies_PerformanceAnalysisSystem")
+    pull = root / "data" / "api_pulls" / "ajz_strategies" / "P_020_raw_AJZ_Strategies_2026-06-28_to_2026-07-05_20260705_132949.json"
+    if not pull.exists():
+        check("wo_e1001_orphans_returned_and_dispositionable", "BEHAVIOR",
+              True, "SKIPPED -- pull file not present")
+        return
+
+    sys.path.insert(0, str(root / "python" / "database"))
+    sys.path.insert(0, str(root / "python" / "database" / "domain"))
+    import schwab_mapper as sm
+
+    # -- invariant 1: return contract ------------------------------------
+    result = sm.map_pull_file(pull)
+    assert isinstance(result, tuple) and len(result) == 3, (
+        f"map_pull_file must return 3 values (account, trades, orphans); "
+        f"got {len(result) if isinstance(result, tuple) else type(result)}"
+    )
+    _, _, orphans = result
+    assert isinstance(orphans, list), (
+        f"orphans must be a list, got {type(orphans).__name__}"
+    )
+
+    # -- invariant 2: resolver keys present ------------------------------
+    required = ("underlying_symbol", "open_date", "qty")
+    malformed = []
+    for o in orphans:
+        missing = [k for k in required if not o.get(k)]
+        if missing:
+            label = o.get("underlying_symbol") or "<blank symbol>"
+            malformed.append(f"{label} missing {missing}")
+    assert not malformed, (
+        f"orphans missing keys _resolve_orphans_against_db keys on: {malformed}"
+    )
+
+    # -- invariant 3: every orphan dispositionable -----------------------
+    from infrastructure.db_client import get_connection
+    from infrastructure.db_reader import get_open_trade_for_symbol
+
+    conn = get_connection()
+    bad_target = []
+    try:
+        for o in orphans:
+            row = get_open_trade_for_symbol(
+                conn, "AJZ6348", o["underlying_symbol"]
+            )
+            if row is not None and row["status"] not in ("open", "partial"):
+                bad_target.append(
+                    f"{o['underlying_symbol']} -> trade_id={row['trade_id']} "
+                    f"status={row['status']}"
+                )
+    finally:
+        conn.close()
+
+    assert not bad_target, (
+        f"attach target must be open/partial, got: {bad_target}"
+    )
+
+    check("wo_e1001_orphans_returned_and_dispositionable", "BEHAVIOR", True,
+          f"{len(orphans)} orphan(s), all dispositionable")
 
 
 def main():

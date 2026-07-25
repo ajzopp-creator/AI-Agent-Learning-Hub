@@ -85,7 +85,7 @@ def main():
         "r_dist"  : [r for r in read_csv("r_distribution.csv") if r["bucket"] != "TOTAL"],
         "open_pos": read_csv("open_positions.csv"),
     }
-    data["kpis"] = compute_kpis(data["systems"], equity, monthly)
+    data["kpis"] = compute_kpis(raw_systems, equity, monthly)
 
     print("Building dashboard...", flush=True)
     html = build_html(data)

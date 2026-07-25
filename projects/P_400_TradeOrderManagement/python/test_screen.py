@@ -1,12 +1,17 @@
-"""Tests for domain/screen.py — WO-P400-E2.001 verify.
+r"""Tests for domain/screen.py -- WO-P400-E2.001 verify.
 
-Run: C:\\Users\\Trader\\.conda\\envs\\p140\\python.exe -m pytest test_screen.py -v
+Run: C:\Users\Trader\.conda\envs\p140\python.exe -m pytest test_screen.py -v
 
 Covers PASS/FAIL/WARN reason codes against fixture packets.
+HEAT_BREACH/POSITION_COUNT downgraded FAIL -> WARN 2026-07-20 -- see
+domain/screen.py docstring. WARN-never-disposed is covered separately in
+test_dispose_failed.py::test_warn_never_disposed (outcome-based, already
+covers these two reason codes with no changes needed there).
 """
 
 import sys
 import os
+from datetime import datetime, timedelta
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 sys.path.insert(0, os.path.dirname(__file__))
 
@@ -30,6 +35,18 @@ from domain.council_codes import RC_RR_BELOW_MIN
 # Shared helpers
 # ---------------------------------------------------------------------------
 
+def _fresh_signal_date_str(days_ago: int = 1) -> str:
+    """Return an ISO date string `days_ago` calendar days before now.
+
+    Test fixtures use this instead of a hardcoded absolute date so
+    "fresh, not stale" cases stay fresh no matter what day the suite
+    runs (WO-P400-E3.008 -- a hardcoded 2026-07-02 date drifted past
+    the 3-trading-day staleness window within a few calendar days and
+    started failing tests that had nothing to do with the code change
+    under review).
+    """
+    return (datetime.now() - timedelta(days=days_ago)).isoformat()
+
 def _base_context(**overrides):
     ctx = {
         "risk_mode": "STANDARD",
@@ -45,7 +62,9 @@ def _base_context(**overrides):
 
 
 def _screen(symbol="AAPL", entry=50.0, stop=48.0, target=54.0,
-            signal_date_str="2026-06-12T10:00:00", **ctx_overrides):
+            signal_date_str=None, **ctx_overrides):
+    if signal_date_str is None:
+        signal_date_str = _fresh_signal_date_str()
     ctx = _base_context(**ctx_overrides)
     return screen_signal(
         symbol=symbol,
@@ -115,24 +134,29 @@ def test_fail_duplicate_case_insensitive():
 
 
 # ---------------------------------------------------------------------------
-# FAIL: heat breach
+# WARN: heat breach (downgraded from FAIL 2026-07-20)
 # ---------------------------------------------------------------------------
 
-def test_fail_heat_breach():
+def test_warn_heat_breach():
     # current_heat=3800, gate1*risk=245*2=490, projected=4290 > 3920 cap
     r = _screen(current_heat_dollars=3800.0)
-    assert r.outcome == SCREEN_FAIL
+    assert r.outcome == SCREEN_WARN
     assert RC_HEAT_BREACH in r.reason_codes
 
 
 # ---------------------------------------------------------------------------
-# FAIL: position count
+# WARN: position count (downgraded from FAIL 2026-07-20)
 # ---------------------------------------------------------------------------
 
-def test_fail_position_count():
+def test_warn_position_count():
     r = _screen(open_position_count=8)
-    assert r.outcome == SCREEN_FAIL
+    assert r.outcome == SCREEN_WARN
     assert RC_POSITION_COUNT in r.reason_codes
+
+def test_position_count_never_fails():
+    # Exhaustive: no position count, however extreme, should produce FAIL.
+    r = _screen(open_position_count=999)
+    assert r.outcome != SCREEN_FAIL
 
 
 # ---------------------------------------------------------------------------
@@ -150,7 +174,7 @@ def test_fail_zero_shares_off_mode():
     r = screen_signal(
         symbol="TEST", signal_file="test.json",
         entry=100.0, stop=99.0, target=102.0,
-        signal_date_str="2026-06-12T10:00:00",
+        signal_date_str=_fresh_signal_date_str(),
         risk_mode="OFF",
         base_risk_dollars=1.0,
         current_heat_dollars=0.0,
@@ -168,13 +192,14 @@ def test_fail_zero_shares_off_mode():
 # ---------------------------------------------------------------------------
 
 def test_warn_stale_signal():
-    # 2026-01-01 is ~100+ trading days ago
-    r = _screen(signal_date_str="2026-01-01T10:00:00")
+    # ~200 calendar days ago -- always far past the 3-trading-day limit,
+    # regardless of what day this suite runs (WO-P400-E3.008).
+    r = _screen(signal_date_str=_fresh_signal_date_str(200))
     assert r.outcome == SCREEN_WARN
     assert RC_SIGNAL_STALE in r.reason_codes
 
 def test_fresh_signal_no_stale_warn():
-    r = _screen(signal_date_str="2026-06-12T09:00:00")
+    r = _screen(signal_date_str=_fresh_signal_date_str())
     assert RC_SIGNAL_STALE not in r.reason_codes
 
 
@@ -183,11 +208,12 @@ def test_fresh_signal_no_stale_warn():
 # ---------------------------------------------------------------------------
 
 def test_screen_all_pass_first():
+    fresh = _fresh_signal_date_str()
     signals = [
         {"symbol": "BAD", "signal_file": "bad.json", "entry": 50.0, "stop": 48.0,
-         "target": 52.0, "signal_date_str": "2026-06-12T10:00:00"},   # rr=1.0 FAIL
+         "target": 52.0, "signal_date_str": fresh},   # rr=1.0 FAIL
         {"symbol": "GOOD", "signal_file": "good.json", "entry": 50.0, "stop": 48.0,
-         "target": 54.0, "signal_date_str": "2026-06-12T10:00:00"},   # rr=2.0 PASS
+         "target": 54.0, "signal_date_str": fresh},   # rr=2.0 PASS
     ]
     ctx = _base_context()
     results = screen_all(signals, ctx)
@@ -196,13 +222,33 @@ def test_screen_all_pass_first():
     assert results[1].outcome == SCREEN_FAIL
 
 def test_screen_all_ranked_by_rr_within_pass():
+    fresh = _fresh_signal_date_str()
     signals = [
         {"symbol": "A", "signal_file": "a.json", "entry": 50.0, "stop": 48.0,
-         "target": 54.0, "signal_date_str": "2026-06-12T10:00:00"},   # rr=2.0
+         "target": 54.0, "signal_date_str": fresh},   # rr=2.0
         {"symbol": "B", "signal_file": "b.json", "entry": 50.0, "stop": 48.0,
-         "target": 56.0, "signal_date_str": "2026-06-12T10:00:00"},   # rr=3.0
+         "target": 56.0, "signal_date_str": fresh},   # rr=3.0
     ]
     ctx = _base_context()
     results = screen_all(signals, ctx)
     # B has higher RR and should come first
     assert results[0].symbol == "B"
+
+def test_screen_all_warn_ranks_between_pass_and_fail():
+    # All packets share open_position_count=8 in context, so any packet
+    # that would otherwise PASS gets downgraded to WARN (position count),
+    # while a genuine RR FAIL stays FAIL. WARN must rank below PASS-tier
+    # RR ordering but above FAIL regardless of its own RR.
+    fresh = _fresh_signal_date_str()
+    signals = [
+        {"symbol": "ATMAX", "signal_file": "atmax.json", "entry": 50.0, "stop": 48.0,
+         "target": 54.0, "signal_date_str": fresh},   # rr=2.0 -> WARN (position count)
+        {"symbol": "BADRR", "signal_file": "badrr.json", "entry": 50.0, "stop": 48.0,
+         "target": 52.0, "signal_date_str": fresh},   # rr=1.0 -> FAIL (RR, stays FAIL)
+        {"symbol": "CLEAN", "signal_file": "clean.json", "entry": 50.0, "stop": 48.0,
+         "target": 60.0, "signal_date_str": fresh},   # rr=5.0 -> WARN (position count)
+    ]
+    ctx = _base_context(open_position_count=8)
+    results = screen_all(signals, ctx)
+    assert [r.symbol for r in results] == ["CLEAN", "ATMAX", "BADRR"]
+    assert [r.outcome for r in results] == [SCREEN_WARN, SCREEN_WARN, SCREEN_FAIL]

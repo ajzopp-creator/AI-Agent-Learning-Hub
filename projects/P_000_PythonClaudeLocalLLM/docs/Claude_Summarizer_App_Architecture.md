@@ -39,7 +39,7 @@ project-root/
 - app/api/history.py - Retrieves past summaries and logs from storage.
 - app/prompts/summary_v1.txt - General summarization template (version controlled).
 - app/prompts/takeaways_v1.txt - Key-takeaways template for trading articles, research, education.
-- app/utils/claude_client.py - Anthropic API wrapper; centralizes key handling, model selection, error handling.
+- app/utils/claude_client.py - Anthropic API wrapper; centralizes key handling, model selection, error handling. Uses automatic prompt caching: set a single top-level `cache_control` field on the request; Anthropic caches the last cacheable block and moves the breakpoint forward as the prompt/history grows. Covers the system prompt (prompts/summary_v1.txt, takeaways_v1.txt) and any long source document passed in. Minimum cacheable length: 1,024 tokens (Sonnet), 4,096 tokens (Opus/Haiku 4.5) -- short prompts won't cache. Cache write costs 1.25x base input, reads cost 0.1x; 5-min TTL, refreshed per hit. Only applies to the summarizer's Claude API calls -- no other Hub project calls the Claude API directly.
 - app/utils/chunker.py - Splits long documents into token-safe chunks.
 - app/utils/parsers.py - Cleans and structures raw Claude responses.
 - app/models/store.py - SQLite (or in-memory) storage of summaries, timestamps, source references.
@@ -68,4 +68,4 @@ AI-Agent-Learning-Hub\projects\P_000_PythonClaudeLocalLLM\integrations\claude_ap
 - [ ] History retrieval working
 
 ---
-Last Updated: February 25, 2026 (saved to disk 2026-06-05 from Project knowledge)
+Last Updated: July 6, 2026 -- added prompt caching note for claude_client.py (automatic caching, min length, TTL/cost). Prior: February 25, 2026 (saved to disk 2026-06-05 from Project knowledge).

@@ -16,6 +16,7 @@ set "PROJECT_ROOT=C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_P
 set "PYTHON=C:\Users\Trader\.conda\envs\p140\python.exe"
 set "CLI=%PROJECT_ROOT%\python\cli.py"
 set "XLSX=%PROJECT_ROOT%\data\live\History Grid (%SYMBOL%).xlsx"
+set "EXIT_CODE=0"
 
 echo Symbol  : %SYMBOL%
 echo File    : %XLSX%
@@ -27,6 +28,7 @@ echo.
 if errorlevel 1 (
     echo.
     echo [ERROR] daily-evaluate failed.
+    set "EXIT_CODE=1"
     goto :done
 )
 
@@ -37,6 +39,7 @@ echo.
 if errorlevel 1 (
     echo.
     echo [ERROR] archive-eval failed -- XLSX still in data\live\.
+    set "EXIT_CODE=1"
     goto :done
 )
 
@@ -48,3 +51,4 @@ echo =======================================================================
 :done
 echo.
 pause
+exit /b %EXIT_CODE%

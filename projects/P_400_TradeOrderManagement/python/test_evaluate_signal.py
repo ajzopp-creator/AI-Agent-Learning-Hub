@@ -170,5 +170,38 @@ def test_effective_fields_populated_entry_missed_path():
     assert result.effective_stop == 98.0
 
 
+# ---------------------------------------------------------------------------
+# _sessions_since_earnings (WO-P400-E2.023)
+# ---------------------------------------------------------------------------
+
+def test_sessions_since_earnings_none_when_unknown():
+    from application.evaluate_signal import _sessions_since_earnings
+    assert _sessions_since_earnings(None) is None
+
+def test_sessions_since_earnings_none_when_future_date():
+    from application.evaluate_signal import _sessions_since_earnings
+    from datetime import date, timedelta
+    future = (date.today() + timedelta(days=5)).isoformat()
+    assert _sessions_since_earnings(future) is None
+
+def test_sessions_since_earnings_zero_same_day():
+    from application.evaluate_signal import _sessions_since_earnings
+    from datetime import date
+    assert _sessions_since_earnings(date.today().isoformat()) == 0
+
+def test_sessions_since_earnings_weekday_count():
+    """Walk back exactly 5 real weekdays from today and confirm the count matches
+    -- avoids hardcoding a specific date so this doesn't rot as 'today' changes."""
+    from application.evaluate_signal import _sessions_since_earnings
+    from datetime import date, timedelta
+    d = date.today()
+    weekdays_back = 0
+    target = 5
+    while weekdays_back < target:
+        d = d - timedelta(days=1)
+        if d.weekday() < 5:
+            weekdays_back += 1
+    assert _sessions_since_earnings(d.isoformat()) == target
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

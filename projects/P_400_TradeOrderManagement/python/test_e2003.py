@@ -76,7 +76,12 @@ def test_evaluate_returns_result():
 
     assert isinstance(result, EvaluationResult)
     assert result.symbol == packet.symbol
-    assert result.verdict in ("APPROVED", "APPROVED_WITH_CAUTION", "BLOCKED")
+    assert result.verdict in (
+        "APPROVED",
+        "APPROVED_WITH_CAUTION",
+        "APPROVED_WITH_SEVERE_WARNING",
+        "BLOCKED",
+    )
     assert result.sizing is not None
 
 

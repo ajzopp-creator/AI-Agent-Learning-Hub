@@ -1,0 +1,31 @@
+P_020 THINKLOG TAG CARD
+========================
+Format (first line of ThinkLog body):
+MMDD: [WHY] [SIG] optional free text
+Example: 0428: [BTD] [A] tight bounce off 50DMA, RSI 28, 3:1 R:R
+
+WHY -- SYSTEM
+  BTD    P_115  Buy The Dip
+  OIL    P_116  Options Income Launchpad
+  EXT    P_117  External recommendation
+  EZB    P_118  Eddie Z Breakouts
+  VPT    P_300  VantagePoint
+  SNT    P_100  BigTrends / Sunday Night Trader
+  DAY    P_200  Intraday, flat by close
+
+WHY -- SITUATION
+  ASYM     Near-miss BUY signal, needs review
+  IFFY     Setup marginal / didn't fully trigger
+  LEARN    Educational / testing a theory
+  CROWDED  Everyone else is in this
+  FOMO     Be honest with yourself
+  REVENGE  Trying to make back a loss -- review brutally
+
+SIG -- SIGNAL STRENGTH
+  A   High conviction, all signals aligned
+  B   Standard, system fired, no red flags
+  C   Marginal, fired but something feels off
+  X   Counter-signal, taking it anyway, flag for review
+
+Rule: WHY + SIG both required for the tag to parse.
+No brackets = trade imports fine, just untagged (reason/signal_strength = null).

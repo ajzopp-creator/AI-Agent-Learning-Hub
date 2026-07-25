@@ -1,8 +1,11 @@
-"""Tests for domain/council.py ? WO-P400-E2.001 verify.
+r"""Tests for domain/council.py -- WO-P400-E2.001 verify.
 
-Run: C:\\Users\\Trader\\.conda\\envs\\p140\\python.exe -m pytest test_council.py -v
+Run: C:\Users\Trader\.conda\envs\p140\python.exe -m pytest test_council.py -v
 
 Covers every block threshold hit and missed; full verdict table.
+RISK-role unit tests (heat/position/daily-loss/sector/cash) live in
+test_risk_vote.py as of 2026-07-20 -- this file keeps verdict-assembly
+integration tests only, including SEVERE_WARNING priority.
 """
 
 import sys
@@ -18,24 +21,31 @@ from domain.council import (
     council_verdict,
     macro_vote,
     quant_vote,
-    risk_vote,
     tape_vote,
 )
+from domain.risk_vote import risk_vote
 from domain.council_codes import (
     RC_ADVERSE_DRIFT,
     RC_ALL_CLEAR,
-    RC_DAILY_LOSS,
     RC_EARNINGS_IN_WINDOW,
-    RC_HEAT_BREACH,
     RC_MARKET_CLOSED,
     RC_OVERTRADING,
-    RC_POSITION_COUNT,
+    RC_POST_EARNINGS_STABILIZATION,
     RC_PRICE_STALE,
     RC_REVENGE_TRADE,
     RC_RR_BELOW_MIN,
-    RC_SECTOR_CONCENTRATION,
     RC_STOP_TOO_TIGHT,
     RC_STREAK_CHASING,
+)
+
+# Baseline RISK-clean args for verdict-assembly tests below -- cash covers
+# risk, no portfolio thresholds hit. RISK-specific edge cases live in
+# test_risk_vote.py.
+_RISK_CLEAR = dict(
+    new_trade_risk_dollars=490.0, current_heat_dollars=0.0,
+    account_balance=32669.72, open_position_count=0,
+    realized_day_loss_dollars=0.0, new_sector=None, open_sector_counts={},
+    cash_available=1000.0, adjusted_risk_dollars=490.0,
 )
 
 
@@ -80,62 +90,6 @@ def test_quant_passes_when_atr_zero():
 
 
 # ---------------------------------------------------------------------------
-# Risk role
-# ---------------------------------------------------------------------------
-
-def test_risk_pass():
-    v = risk_vote(
-        new_trade_risk_dollars=490.0, current_heat_dollars=0.0,
-        account_balance=32669.72, open_position_count=2,
-        realized_day_loss_dollars=0.0, new_sector="Tech",
-        open_sector_counts={"Tech": 1},
-    )
-    assert v.decision == Decision.PASS
-
-def test_risk_blocks_heat_breach():
-    # heat_cap = 32669 * 0.12 = 3920; current=3800, new=500 -> 4300 > cap
-    v = risk_vote(
-        new_trade_risk_dollars=500.0, current_heat_dollars=3800.0,
-        account_balance=32669.72, open_position_count=2,
-        realized_day_loss_dollars=0.0, new_sector=None,
-        open_sector_counts={},
-    )
-    assert v.decision == Decision.BLOCK
-    assert v.reason_code == RC_HEAT_BREACH
-
-def test_risk_blocks_position_count():
-    v = risk_vote(
-        new_trade_risk_dollars=100.0, current_heat_dollars=0.0,
-        account_balance=32669.72, open_position_count=8,
-        realized_day_loss_dollars=0.0, new_sector=None,
-        open_sector_counts={},
-    )
-    assert v.decision == Decision.BLOCK
-    assert v.reason_code == RC_POSITION_COUNT
-
-def test_risk_blocks_daily_loss():
-    # circuit breaker = 32669 * 0.03 = 980; loss=1000 >= 980
-    v = risk_vote(
-        new_trade_risk_dollars=100.0, current_heat_dollars=0.0,
-        account_balance=32669.72, open_position_count=0,
-        realized_day_loss_dollars=1000.0, new_sector=None,
-        open_sector_counts={},
-    )
-    assert v.decision == Decision.BLOCK
-    assert v.reason_code == RC_DAILY_LOSS
-
-def test_risk_blocks_sector_concentration():
-    v = risk_vote(
-        new_trade_risk_dollars=100.0, current_heat_dollars=0.0,
-        account_balance=32669.72, open_position_count=2,
-        realized_day_loss_dollars=0.0, new_sector="Tech",
-        open_sector_counts={"Tech": 2},
-    )
-    assert v.decision == Decision.BLOCK
-    assert v.reason_code == RC_SECTOR_CONCENTRATION
-
-
-# ---------------------------------------------------------------------------
 # Macro role
 # ---------------------------------------------------------------------------
 
@@ -156,6 +110,29 @@ def test_macro_caution_when_defined_risk_confirmed():
 def test_macro_blocks_binary_event():
     v = macro_vote(earnings_in_window=False, binary_events=["FDA decision 2026-06-20"])
     assert v.decision == Decision.BLOCK
+
+def test_macro_pass_no_recent_earnings():
+    v = macro_vote(earnings_in_window=False, sessions_since_earnings=None)
+    assert v.decision == Decision.PASS
+
+def test_macro_caution_earnings_inside_stabilization_window():
+    # POST_EARNINGS_STABILIZATION_SESSIONS default = 3; at the boundary
+    v = macro_vote(earnings_in_window=False, sessions_since_earnings=3)
+    assert v.decision == Decision.CAUTION
+    assert v.reason_code == RC_POST_EARNINGS_STABILIZATION
+
+def test_macro_pass_earnings_just_outside_stabilization_window():
+    v = macro_vote(earnings_in_window=False, sessions_since_earnings=4)
+    assert v.decision == Decision.PASS
+    assert v.reason_code == RC_ALL_CLEAR
+
+def test_macro_stabilization_never_blocks():
+    # Even same-day (0 sessions) earnings is CAUTION, never BLOCK -- Tony's
+    # call 2026-07-24, this check is categorically different from the
+    # forward-looking earnings_in_window BLOCK.
+    v = macro_vote(earnings_in_window=False, sessions_since_earnings=0)
+    assert v.decision == Decision.CAUTION
+    assert v.can_block is True  # can_block=True is fine -- CAUTION never escalates regardless
 
 
 # ---------------------------------------------------------------------------
@@ -226,7 +203,7 @@ def test_behavioral_streak_chasing():
 def test_verdict_approved_all_pass():
     votes = [
         quant_vote(2.5, 48.0, 50.0, 55.0, 1.5),
-        risk_vote(490.0, 0.0, 32669.72, 0, 0.0, None, {}),
+        risk_vote(**_RISK_CLEAR),
         macro_vote(False),
         tape_vote(30, True, False, 0.0, 2.5),
         behavioral_vote("AAPL"),
@@ -237,7 +214,7 @@ def test_verdict_approved_all_pass():
 def test_verdict_blocked_by_quant():
     votes = [
         quant_vote(1.5, 48.0, 50.0, 53.0, 1.5),  # RR too low -> BLOCK
-        risk_vote(490.0, 0.0, 32669.72, 0, 0.0, None, {}),
+        risk_vote(**_RISK_CLEAR),
         macro_vote(False),
         tape_vote(30, True, False, 0.0, 2.5),
         behavioral_vote("AAPL"),
@@ -249,7 +226,7 @@ def test_verdict_blocked_by_quant():
 def test_verdict_caution_behavioral_only():
     votes = [
         quant_vote(2.5, 48.0, 50.0, 55.0, 1.5),
-        risk_vote(490.0, 0.0, 32669.72, 0, 0.0, None, {}),
+        risk_vote(**_RISK_CLEAR),
         macro_vote(False),
         tape_vote(30, True, False, 0.0, 2.5),
         behavioral_vote("AAPL", recently_stopped_out_symbols=["AAPL"]),
@@ -262,7 +239,7 @@ def test_behavioral_caution_cannot_block():
     # Even with behavioral CAUTION, if all real roles PASS, not BLOCKED
     votes = [
         quant_vote(2.5, 48.0, 50.0, 55.0, 1.5),
-        risk_vote(490.0, 0.0, 32669.72, 0, 0.0, None, {}),
+        risk_vote(**_RISK_CLEAR),
         macro_vote(False),
         tape_vote(30, True, False, 0.0, 2.5),
         behavioral_vote("AAPL", orders_today=20, daily_order_norm=3),
@@ -270,3 +247,52 @@ def test_behavioral_caution_cannot_block():
     r = council_verdict(votes)
     assert r.verdict == "APPROVED_WITH_CAUTION"
     assert "BLOCKED" not in r.verdict
+
+
+# ---------------------------------------------------------------------------
+# SEVERE_WARNING priority (added 2026-07-20 -- RISK role never blocks)
+# ---------------------------------------------------------------------------
+
+def test_verdict_risk_severe_warning_never_blocks():
+    # RISK hits position-count ceiling; nothing else fires. Must NOT be BLOCKED.
+    risk_args = dict(_RISK_CLEAR, open_position_count=8)
+    votes = [
+        quant_vote(2.5, 48.0, 50.0, 55.0, 1.5),
+        risk_vote(**risk_args),
+        macro_vote(False),
+        tape_vote(30, True, False, 0.0, 2.5),
+        behavioral_vote("AAPL"),
+    ]
+    r = council_verdict(votes)
+    assert r.verdict == "APPROVED_WITH_SEVERE_WARNING"
+    assert "BLOCKED" not in r.verdict
+
+def test_verdict_severe_warning_outranks_plain_caution():
+    # RISK SEVERE_WARNING + MACRO CAUTION (earnings, defined-risk confirmed)
+    # present together -> tier name reflects SEVERE_WARNING, not CAUTION.
+    risk_args = dict(_RISK_CLEAR, open_position_count=8)
+    votes = [
+        quant_vote(2.5, 48.0, 50.0, 55.0, 1.5),
+        risk_vote(**risk_args),
+        macro_vote(earnings_in_window=True, defined_risk_confirmed=True),
+        tape_vote(30, True, False, 0.0, 2.5),
+        behavioral_vote("AAPL"),
+    ]
+    r = council_verdict(votes)
+    assert r.verdict == "APPROVED_WITH_SEVERE_WARNING"
+    assert RC_EARNINGS_IN_WINDOW in r.caution_codes  # still surfaced, not dropped
+
+def test_verdict_quant_block_overrides_risk_severe_warning():
+    # QUANT still has block authority -- a real BLOCK wins even if RISK
+    # is simultaneously screaming SEVERE_WARNING.
+    risk_args = dict(_RISK_CLEAR, open_position_count=8)
+    votes = [
+        quant_vote(1.5, 48.0, 50.0, 53.0, 1.5),  # RR too low -> BLOCK
+        risk_vote(**risk_args),
+        macro_vote(False),
+        tape_vote(30, True, False, 0.0, 2.5),
+        behavioral_vote("AAPL"),
+    ]
+    r = council_verdict(votes)
+    assert r.verdict == "BLOCKED"
+    assert RC_RR_BELOW_MIN in r.block_codes

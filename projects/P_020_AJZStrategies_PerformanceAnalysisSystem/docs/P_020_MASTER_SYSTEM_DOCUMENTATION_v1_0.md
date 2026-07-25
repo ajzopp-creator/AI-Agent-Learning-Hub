@@ -598,6 +598,22 @@ Then: test command. Then: expected output. Save path included.
 
 ---
 
+### Error: Orphaned Exits Dropped Instead of Matched Against Open DB Trades
+- **Date:** 2026-07-18 | **Severity:** Medium | **Status:** Resolved
+- **Wrong:** `domain/exit_allocator.py` only matches exits to entries within the current Schwab pull batch. When an entry was opened in a prior week's pull (outside the current batch), its exit came back as an orphan -- `schwab_mapper.map_pull_file()` logged a warning and then discarded it entirely. Real closed trades (e.g. SHEL +$500, AAL -$298 on 2026-07-18) sat permanently `status='open'` in the DB with no exit ever recorded.
+- **Root Cause:** No DB-level fallback after batch-level matching failed -- the pipeline only ever looked at the current pull's own transactions, never checked whether a matching open position already existed in `trades`.
+- **Fix:** `map_pull_file()` now returns orphans instead of discarding them. New `db_reader.get_open_trade_for_symbol()` finds the oldest open/partial DB trade for a symbol (FIFO). New `trade_writer.attach_orphan_exit()` builds and inserts the exit against that trade_id, recomputes status/commissions. Wired in via `import_command._resolve_orphans_against_db()`, called before `run_ingest()` on every import. Released 2026-07-18.
+- **Verify:** Re-running import against a pull file with a known orphan resolves it idempotently (second run finds nothing left to do, no duplicate exit rows). SHEL trade_id 3082 and AAL trade_id 3083 confirmed closed with correct exit_pnl after fix.
+
+### Error: Dashboard Headline KPIs Undercounting Trades Outside Named Systems
+- **Date:** 2026-07-18 | **Severity:** Medium | **Status:** Resolved
+- **Wrong:** `generate_dashboard.py compute_kpis()` was called with the `SYSTEM_ORDER`-filtered, sorted systems list (`sort_systems()` output) -- the same list used to drive the per-system breakdown table. That list only contains the 7 named systems (P_115/116/117/118/300/910/SNT) and drops any row for a system not in that list, including `TOS_Import`. Every headline KPI (closed count, open count, win rate, expectancy, best/worst system) silently excluded those trades. Dashboard showed "64 closed / 2 open" when the DB actually had 71+ closed and 4 open/partial.
+- **Root Cause:** The filtered list was built for display-ordering purposes only (named systems, fixed order, assigned colors) but was reused for KPI aggregation, where it has no business being scoped down.
+- **Fix:** `main()` now passes the unfiltered `raw_systems` into `compute_kpis()`. The filtered/sorted list (`data["systems"]`) remains used only for the per-system breakdown table, which is correctly scoped to named systems. Released 2026-07-18.
+- **Verify:** Dashboard regenerated post-fix showed "72 closed / 3 open", matching DB reality (partial trades with a realized leg count toward closed in stats_export's win/loss logic, which is correct and unrelated to this bug).
+
+---
+
 ## 9. AI WORKFLOWS & PROCESSES
 
 ### 9.1 Weekly Trade Import — Target State (Phase 3C+)

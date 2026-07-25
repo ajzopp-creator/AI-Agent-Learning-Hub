@@ -1,0 +1,54 @@
+{
+  "_comment": "Maps bulk History Grid XLSX columns (<years>[I]_Pattern_<SYMBOL>.xlsx) to BulkBarRaw Pydantic field names defined in schemas_bulk.py. Verified column-by-column against real VP exports (10/5/3/1-year and 6-month SPY/BP, both VP-direct and IntelliScan-routed) before this manifest was written -- see schemas_bulk.py v1.1 changelog. DELIBERATELY SEPARATE from ingest_manifest.json (live catalog manifest, schemas.py): column 14 (row-2 sub-header 'NeuralX') is TEXT here ('up'/'down'), not ignored as categorical the way the live manifest treats it -- bulk detection condition 5 reads this field directly. Predicted High/Low Diff (cols 19-20), which the live manifest treats as 'derivable, not stored', ARE stored here as pred_high_diff/pred_low_diff -- an intentional divergence, not an oversight. Validates against schemas.py IngestManifest (shared with live Pipeline A) -- ColumnMapEntry.type widened to include \"text\" in schemas.py v2.3 specifically to support column 14 here.",
+
+  "manifest_version": "1.0",
+  "manifest_date": "2026-07-08",
+  "pairs_with_schema_version": "schemas_bulk.py v1.1 / schemas.py v2.3",
+  "pairs_with_architecture": "WO-P300-E2.001",
+  "vp_version_note": "Triple Cross sub-header wording ('Short'/'Medium'/'Long' vs 'Triple Cross Short'/'Triple Cross Medium'/'Triple Cross Long') was found to vary across real bulk exports of the SAME symbol at the SAME export time -- not tied to window length, symbol, or VP-direct vs IntelliScan-routed export path (all four ruled out via direct comparison, 2026-07-08). header_sub_alt accepts both forms unconditionally.",
+
+  "source_format": {
+    "vendor": "VantagePoint",
+    "export_type": "Bulk History Grid XLSX",
+    "header_rows": 2,
+    "data_start_row_index": 2,
+    "date_order": "descending",
+    "expected_column_count": 22,
+    "minimum_bars_required": 5
+  },
+
+  "column_mapping": {
+    "0":  { "field": "bar_date",       "type": "date",  "header_top": "Date",                     "header_sub": null                   },
+    "1":  { "field": "stdiff",         "type": "float", "header_top": "Short\nTerm\nDifference",  "header_sub": null                   },
+    "2":  { "field": "mtdiff",         "type": "float", "header_top": "Medium\nTerm\nDifference", "header_sub": null                   },
+    "3":  { "field": "ltdiff",         "type": "float", "header_top": "Long\nTerm\nDifference",   "header_sub": null                   },
+    "4":  { "field": "open",           "type": "float", "header_top": "Open\nPrice",              "header_sub": null                   },
+    "5":  { "field": "high",           "type": "float", "header_top": "High\nPrice",              "header_sub": null                   },
+    "6":  { "field": "low",            "type": "float", "header_top": "Low\nPrice",               "header_sub": null                   },
+    "7":  { "field": "close",          "type": "float", "header_top": "Close\nPrice",             "header_sub": null                   },
+    "8":  { "field": "pred_high",      "type": "float", "header_top": "Predicted\nHigh\nPrice",   "header_sub": null                   },
+    "9":  { "field": "pred_low",       "type": "float", "header_top": "Predicted\nLow\nPrice",    "header_sub": null                   },
+    "10": { "field": "volume",         "type": "float", "header_top": "Volume",                   "header_sub": null                   },
+    "11": { "field": "williams_emai",  "type": "float", "header_top": "Williams\nEMAI",           "header_sub": null                   },
+    "12": { "field": "psi",            "type": "float", "header_top": "Professional Sentiment",   "header_sub": "PSI"                  },
+    "13": { "field": "roc_pct",        "type": "float", "header_top": null,                       "header_sub": "ROC%"                 },
+    "14": { "field": "neural_index",   "type": "text",  "header_top": "Neural Index",             "header_sub": "NeuralX"              },
+    "15": { "field": "neural_x_max",   "type": "float", "header_top": null,                       "header_sub": "NeuralXMax"           },
+    "16": { "field": "tc_short",       "type": "float", "header_top": "Triple Cross",             "header_sub": "Triple Cross Short",  "header_sub_alt": "Short"  },
+    "17": { "field": "tc_medium",      "type": "float", "header_top": null,                       "header_sub": "Triple Cross Medium", "header_sub_alt": "Medium" },
+    "18": { "field": "tc_long",        "type": "float", "header_top": null,                       "header_sub": "Triple Cross Long",   "header_sub_alt": "Long"   },
+    "19": { "field": "pred_high_diff", "type": "float", "header_top": "Predicted\nHigh Diff",     "header_sub": null                   },
+    "20": { "field": "pred_low_diff",  "type": "float", "header_top": "Predicted\nLow Diff",      "header_sub": null                   },
+    "21": { "field": "pred_range",     "type": "float", "header_top": "Predicted\nRange",         "header_sub": null                   }
+  },
+
+  "ignored_columns": {},
+
+  "validation_rules": {
+    "verify_header_text": true,
+    "strict_column_count": true,
+    "raise_on_unmapped_column": false,
+    "raise_on_missing_mapped_column": true,
+    "raise_on_header_mismatch": true
+  }
+}

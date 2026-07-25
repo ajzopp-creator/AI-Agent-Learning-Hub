@@ -2,7 +2,8 @@
 
 Covers: base write_p400_record() field passthrough, write_options_eval_record()
 verdict mapping + OCC symbol construction, write_spread_eval_record() field
-mapping. write_to_vault() is monkeypatched -- no real Obsidian I/O.
+mapping, and (WO-P400-E3.006) order_id/SUBMITTED/MANUAL_DECLINE dispositions.
+write_to_vault() is monkeypatched -- no real Obsidian I/O.
 """
 
 import sys
@@ -19,7 +20,7 @@ from shared_resources.python_utils.signal_schemas import (
     AssetClass, SignalContext, SignalMetadata, SignalV2,
 )
 from application.evaluate_options import OptionsEvalResult
-from application.evaluate_spread import SpreadEvalResult
+from application.evaluate_spread import SpreadCouncilResult, SpreadEvalResult
 import infrastructure.record_writer as rw_module
 from infrastructure.record_writer import (
     write_p400_record, write_options_eval_record, write_spread_eval_record,
@@ -46,10 +47,14 @@ def make_packet(**kwargs) -> SignalV2:
     return SignalV2(**defaults)
 
 
-def make_stock_result():
+def make_stock_result(verdict="APPROVED"):
+    # verdict default "APPROVED" preserves every pre-existing call site
+    # (make_stock_result() with no args) -- WO-P400-E2.022 adds the
+    # stock-level verdict so options/spread field-builders can check it.
     return SimpleNamespace(
         posture=SimpleNamespace(risk_mode="OFF"),
         effective_entry=100.0, effective_stop=95.0,
+        verdict=verdict,
     )
 
 
@@ -94,113 +99,76 @@ def test_vault_write_failure_returns_false(monkeypatch):
 
 
 # ---------------------------------------------------------------------------
-# write_options_eval_record -- verdict mapping + OCC construction
+# WO-P400-E3.006 -- order_id / SUBMITTED / MANUAL_DECLINE
 # ---------------------------------------------------------------------------
 
-def _make_opt_result(verdict, override_required=False, contracts=2):
-    chain = OptionChainInput(
-        symbol="TEST", underlying_price=100.0, expiration="2026-07-17",
-        strike=100.0, option_type="call", bid=4.8, ask=5.2, mid=5.0,
-        delta=0.5, iv=0.30, open_interest=300, spread_pct_of_mid=8.0,
-        data_source="tos", chain_timestamp="2026-06-30T10:00:00Z",
-    )
-    sizing = OptionSizingResult(
-        method="chart_based", contracts=contracts,
-        option_entry=5.0, option_stop=2.5, option_target=10.0,
-        risk_per_contract=250.0, total_risk_dollars=250.0 * contracts,
-        adjusted_risk_budget=245.02, rr_option=2.0, rr_valid=True,
-        override_required=override_required, spread_recommended=False,
-        gate1_contracts=contracts, gate2_contracts=10, gate3_contracts=5,
-        winning_gate="RISK", warning=None, notes=[],
-    )
-    council = OptionsCouncilResult(verdict=verdict, blocks=[], cautions=[])
-    return OptionsEvalResult(symbol="TEST", verdict=verdict, sizing=sizing,
-                             council=council, chain=chain, spec_text="[ignored]")
-
-
-def test_options_pass_maps_to_approved(monkeypatch):
+def test_order_id_present_resolves_submitted(monkeypatch):
     captured = _capture_vault_write(monkeypatch)
-    opt_result = _make_opt_result("PASS")
-    written, verdict = write_options_eval_record(
-        opt_result, make_stock_result(), make_packet(), "REAL", "TEST",
+    write_p400_record(
+        symbol="TEST", verdict="APPROVED", risk_mode="OFF",
+        entry_price=100.0, stop_price=95.0, target_1=115.0,
+        position_size=7, signal_source="P_300", trade_mode_value="REAL",
+        order_id="5365031365",
     )
-    assert written is True
-    assert verdict == "APPROVED"
-    assert captured["data"]["option_contract"] == "TEST260717C100"
+    assert captured["data"]["order_id"] == "5365031365"
+    assert captured["data"]["lifecycle_status"] == "SUBMITTED"
 
 
-def test_options_block_maps_to_blocked_with_drop_reason(monkeypatch):
+def test_no_order_id_stays_pending(monkeypatch):
     captured = _capture_vault_write(monkeypatch)
-    opt_result = _make_opt_result("BLOCK")
-    written, verdict = write_options_eval_record(
-        opt_result, make_stock_result(), make_packet(), "REAL", "TEST",
+    write_p400_record(
+        symbol="TEST", verdict="APPROVED", risk_mode="OFF",
+        entry_price=100.0, stop_price=95.0, target_1=115.0,
+        position_size=7, signal_source="P_300", trade_mode_value="REAL",
     )
-    assert verdict == "BLOCKED"
-    assert captured["data"]["drop_reason"] == "COUNCIL_BLOCK"
+    assert captured["data"]["order_id"] is None
+    assert captured["data"]["lifecycle_status"] == "PENDING"
 
 
-def test_options_override_records_one_contract(monkeypatch):
+def test_manual_decline_resolves_dropped(monkeypatch):
     captured = _capture_vault_write(monkeypatch)
-    opt_result = _make_opt_result("CAUTION", override_required=True, contracts=0)
-    written, verdict = write_options_eval_record(
-        opt_result, make_stock_result(), make_packet(), "REAL", "TEST",
+    write_p400_record(
+        symbol="TEST", verdict="APPROVED", risk_mode="OFF",
+        entry_price=100.0, stop_price=95.0, target_1=115.0,
+        position_size=7, signal_source="P_300", trade_mode_value="REAL",
+        drop_reason="MANUAL_DECLINE",
     )
-    assert verdict == "APPROVED_WITH_CAUTION"
-    assert captured["data"]["option_contracts"] == 1
-    assert captured["data"]["option_override"] is True
+    assert captured["data"]["drop_reason"] == "MANUAL_DECLINE"
+    assert captured["data"]["lifecycle_status"] == "DROPPED"
+
+
+def test_order_id_ignored_on_blocked_verdict(monkeypatch):
+    # order_id should never coexist with BLOCKED in practice, but the
+    # resolver must not mis-mark it SUBMITTED if it somehow does.
+    captured = _capture_vault_write(monkeypatch)
+    write_p400_record(
+        symbol="TEST", verdict="BLOCKED", risk_mode="OFF",
+        entry_price=100.0, stop_price=95.0, target_1=115.0,
+        position_size=0, signal_source="P_300", trade_mode_value="REAL",
+        order_id="999",
+    )
+    assert captured["data"]["lifecycle_status"] == "DROPPED"
 
 
 # ---------------------------------------------------------------------------
-# write_spread_eval_record -- spread field mapping
+# WO-P400-E2.019 -- paper/real book routing
 # ---------------------------------------------------------------------------
 
-def _make_spread_result(override_required=False, contracts=1):
-    long_chain = OptionChainInput(
-        symbol="TEST", underlying_price=100.0, expiration="2026-07-17",
-        strike=100.0, option_type="call", bid=4.8, ask=5.2, mid=5.0,
-        delta=0.5, iv=0.30, open_interest=300, spread_pct_of_mid=8.0,
-        data_source="tos", chain_timestamp="2026-06-30T10:00:00Z",
-    )
-    short_chain = OptionChainInput(
-        symbol="TEST", underlying_price=100.0, expiration="2026-07-17",
-        strike=110.0, option_type="call", bid=1.8, ask=2.1, mid=1.95,
-        delta=0.25, iv=0.28, open_interest=200, spread_pct_of_mid=15.4,
-        data_source="tos", chain_timestamp="2026-06-30T10:00:00Z",
-    )
-    sizing = SpreadSizingResult(
-        long_strike=100.0, short_strike=110.0, spread_width=10.0,
-        debit_per_spread=3.05, max_profit_per_spread=695.0, max_loss_per_spread=305.0,
-        breakeven=103.05, contracts=contracts, total_max_loss=305.0 * contracts,
-        adjusted_risk_budget=245.02, rr_spread=2.28, rr_valid=True,
-        override_required=override_required, gate1_contracts=contracts,
-        gate2_contracts=19, gate3_contracts=5, winning_gate="RISK",
-        warning=None, notes=[],
-    )
-    return SpreadEvalResult(symbol="TEST", sizing=sizing, long_chain=long_chain,
-                            short_chain=short_chain, spec_text="[ignored]")
-
-
-def test_spread_viable_maps_to_approved(monkeypatch):
+def test_real_trade_routes_to_p400_schema(monkeypatch):
     captured = _capture_vault_write(monkeypatch)
-    spread_result = _make_spread_result()
-    written, verdict = write_spread_eval_record(
-        spread_result, make_stock_result(), make_packet(), "REAL",
+    write_p400_record(
+        symbol="TEST", verdict="APPROVED", risk_mode="OFF",
+        entry_price=100.0, stop_price=95.0, target_1=115.0,
+        position_size=3, signal_source="P_300", trade_mode_value="REAL",
     )
-    assert written is True
-    assert verdict == "APPROVED"
-    assert captured["data"]["spread_long_strike"] == 100.0
-    assert captured["data"]["spread_short_strike"] == 110.0
-    assert captured["data"]["spread_debit"] == 3.05
-    assert captured["data"]["spread_max_loss"] == 305.0
-    assert captured["data"]["spread_breakeven"] == 103.05
+    assert captured["schema_name"] == "P400"
 
 
-def test_spread_override_maps_to_caution(monkeypatch):
+def test_paper_trade_routes_to_p400_paper_schema(monkeypatch):
     captured = _capture_vault_write(monkeypatch)
-    spread_result = _make_spread_result(override_required=True, contracts=0)
-    written, verdict = write_spread_eval_record(
-        spread_result, make_stock_result(), make_packet(), "REAL",
+    write_p400_record(
+        symbol="TEST", verdict="APPROVED", risk_mode="OFF",
+        entry_price=100.0, stop_price=95.0, target_1=115.0,
+        position_size=3, signal_source="P_300", trade_mode_value="PAPER",
     )
-    assert verdict == "APPROVED_WITH_CAUTION"
-    assert captured["data"]["option_contracts"] == 1
-    assert captured["data"]["option_override"] is True
+    assert captured["schema_name"] == "P400_PAPER"

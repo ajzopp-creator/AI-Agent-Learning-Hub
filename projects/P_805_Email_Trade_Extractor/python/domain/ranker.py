@@ -22,17 +22,25 @@ def _majority_direction(directions: list[str]) -> str:
 def build_ranked_signals(
     signals: list[TickerSignal],
     consensus_threshold: int = 2,
+    sector_map: Optional[dict[str, str]] = None,
 ) -> list[RankedSignal]:
     """Deduplicate signals by ticker, compute consensus, return ranked list.
 
     Args:
         signals: All TickerSignal rows from today's CSV.
         consensus_threshold: Minimum distinct sources for inclusion.
+        sector_map: lowercased source_address -> sector, from
+            infrastructure.sender_sheet.load_sender_sectors(). Addresses
+            absent from the map are treated as sector 'unknown'. Pass
+            None (default) to skip sector weighting entirely — every
+            ticker then gets sector_count=1.
 
     Returns:
         List of RankedSignal sorted by source_count desc, last_seen desc.
         Only tickers meeting the threshold are included.
     """
+    sector_map = sector_map or {}
+
     # Group signals by ticker (case-normalised)
     by_ticker: dict[str, list[TickerSignal]] = defaultdict(list)
     for sig in signals:
@@ -50,10 +58,16 @@ def build_ranked_signals(
         directions = [s.direction for s in sigs]
         timestamps = [s.timestamp for s in sigs]
 
+        sectors = {
+            sector_map.get(addr.lower(), "unknown") for addr in unique_sources
+        }
+        sector_count = len(sectors)
+
         ranked.append(
             RankedSignal(
                 ticker=ticker,
                 source_count=source_count,
+                sector_count=sector_count,
                 sources="|".join(sorted(unique_sources)),
                 direction=_majority_direction(directions),
                 first_seen=min(timestamps),

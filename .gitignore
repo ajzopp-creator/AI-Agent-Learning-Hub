@@ -17,6 +17,8 @@ credentials.json
 schwab_credentials.txt
 email_passwords.txt
 **/P_020_schwab_token.json
+**/*_schwab_token.json
+**/*_schwab_config.json
 
 # ============================================
 # Python
@@ -188,6 +190,25 @@ projects/P_020_AJZStrategies_PerformanceAnalysisSystem/python/database/P_020_rem
 projects/P_300_Vantage_Point_Pattern_Recognition/outputs/reports/eval/*.txt
 projects/P_300_Vantage_Point_Pattern_Recognition/data/live/P_300_HistoryGrid_IntelliscanEvalParameters.xlsx
 projects/P_300_Vantage_Point_Pattern_Recognition/vault/
+
+# ============================================
+# Verify scratch/log output (peh-handoff working files, regenerated every run)
+# ============================================
+Agentic-Hub-Governance/verify/_scratch_*/
+Agentic-Hub-Governance/verify/*_out_*.txt
+Agentic-Hub-Governance/verify/*_out_*.txt.err
+Agentic-Hub-Governance/verify/run_this_out*.txt
+Agentic-Hub-Governance/verify/run_this_out*.txt.err
+Agentic-Hub-Governance/verify/run_this_std*.txt
+Agentic-Hub-Governance/verify/*_output.txt
+Agentic-Hub-Governance/verify/zip_extract_temp/
+
+# ============================================
+# Generated eval/model caches (large, regeneratable)
+# ============================================
+**/eval_cache/
+projects/P_300_Vantage_Point_Pattern_Recognition/data/historical_patterns/
+*.db.zip
 
 # ============================================
 # NTFS junction alias (04-Shared-Resources -> Agentic-Hub-Governance, set 2026-06-05)

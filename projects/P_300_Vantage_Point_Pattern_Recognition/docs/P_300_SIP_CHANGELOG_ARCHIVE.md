@@ -11,4 +11,9 @@ LM Studio Readiness Check added (v2.8) → Steps 4–5c made an uninterruptible 
 
 ---
 
+### v3.2 -- 2026-06-18
+- **WO-P000-E4.001 -- INIT execution bypass.** Steps 5b/5c read `P_300_preflight_status.json` (written by operator-run `P_300_Preflight.bat`) instead of invoking `python` via PowerShell -- removes the ~4-min subprocess timeout from every INIT run. `File:` header path corrected.
+
+---
+
 **End of P_300 SIP Changelog Archive**

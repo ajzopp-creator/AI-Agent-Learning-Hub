@@ -217,7 +217,7 @@ C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_020_AJZStrategies_PerformanceAn
 - Has its own `python/` folder (not using shared_resources)
 - Has its own `data/` structure
 - Unique to performance tracking
-- Does NOT share with P_300, D_130, or P_010
+- Does NOT share with P_300, P_110, or P_010
 
 ### **Why Independent?**
 - Different purpose (performance analysis vs. strategy testing)
@@ -246,7 +246,7 @@ AI-Agent-Learning-Hub\integrations\automation\
 
 - **D_** = **DEVELOPMENT** (experimental, paper trading)
   - D_020 = Paper trading version of P_020
-  - D_130 = Trade the Bounce OIL (in development)
+  - P_110 = Trade the Bounce OIL (in development)
 
 ---
 
@@ -271,7 +271,7 @@ External paths still exist:
 
 ### **DO NOT:**
 âŒ Move live Excel logs into project folder (they stay in AJZ folder)  
-âŒ Mix P_020 with other projects (P_300, D_130, P_010)  
+âŒ Mix P_020 with other projects (P_300, P_110, P_010)  
 âŒ Share resources with other projects (P_020 is independent)  
 âŒ Delete TOS exports after processing (keep for audit)
 âŒ Use filenames with SPACES (causes batch file issues - use underscores)

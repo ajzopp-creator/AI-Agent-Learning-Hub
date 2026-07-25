@@ -1,0 +1,13 @@
+Minute 1: Prompt 1 (The Multi-Perspective Bounce Trading Scan)
+Prompt to paste:
+Using ONLY the uploaded academic papers, simulate 5 different expert perspectives on the "Trade the Bounce" Swing Trading Strategy:
+
+1. THE PRACTITIONER: Executes bounce trades daily at support/resistance. What macro realities or execution slippage do the academic models ignore?
+2. THE ACADEMIC: Evaluates the empirical, peer-reviewed data. What do the statistical data actually say about the probability of a price "re-bouncing" vs "breaking through" a level?
+3. THE SKEPTIC: Believes in the Efficient Market Hypothesis (EMH). What is their strongest counterargument? Are these bounces just random distributions or a "self-fulfilling prophecy" of retail herd behavior?
+4. THE QUANT / ECONOMIST: Follows the algorithmic money and transaction friction. Who profits from false bounces, and how do market makers exploit these levels to harvest liquidity?
+5. THE HISTORIAN: Looks at market structure evolution. How has the reliability of the "50% rule" or structural price channels changed from legacy floor trading to high-frequency trading (HFT) environments?
+
+For each perspective give me: Their core position in 2 sentences, the strongest academic evidence supporting them, and the one warning they would give me that no other perspective would.
+
+📌 NotebookLM Step: Pin the output as "1. Expert Views on Bounces"

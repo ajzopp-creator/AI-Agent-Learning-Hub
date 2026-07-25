@@ -1,61 +1,53 @@
 """
 FILE: eval_scoring.py
-VERSION: 1.1
-DATE: 2026-06-28
+VERSION: 1.2
+DATE: 2026-07-16
 AUTHOR: Anthony Zoppi + Claude
 LAYER: domain
 DESCRIPTION:
-    Pure walk-forward scoring for the Stage 6 eval loop. For each
-    pattern: build a corpus of every PATTERN_IDENT pattern with a
-    STRICTLY EARLIER anchor_date, run the same similarity/aggregator
-    chain Pipeline B uses live, then classify via an inlined,
-    overridable AND-gate (v1.1) instead of calling signal_classifier.
-    classify_signal directly, to support BUY_MIN_Z_SCORE comparison
-    runs (post-N=300-ablation backlog item) without touching
-    production config.py or signal_classifier.py.
+    Pure walk-forward scoring for the Stage 6 eval loop. Per pattern:
+    corpus = every PATTERN_IDENT pattern with a STRICTLY EARLIER
+    anchor_date, scored via the same similarity/aggregator chain
+    Pipeline B uses live, classified via an inlined overridable
+    AND-gate (v1.1, mirrors utilities/loo_replay.py verbatim) so
+    BUY_MIN_Z_SCORE comparison runs never touch production config.py
+    or signal_classifier.py.
 
-    Mirrors utilities/loo_replay.py's replay_one() call sequence and
-    its _classify_per_horizon_overridable / _classify_signal_
-    overridable gate copy verbatim (field names, fallback logic,
-    cross-horizon arbiter). Same caveat as loo_replay: the CE term
-    (_ce_term_ok in signal_classifier.py) is NOT applied in this gate
-    copy. Harmless today (CE_GATE_ENABLED=False means the real
-    classifier's CE term is a no-op), but if CE_GATE_ENABLED is ever
-    flipped True in production, this harness's overrides=None path
-    will silently stop matching live classify_signal until someone
-    updates both gate copies. Parity at overrides=None is assumed by
-    construction (same threshold constants imported from config.py),
-    confirmed empirically this session by re-running the eval loop
-    with no overrides and diffing signal counts against the v1.0
-    direct-call run (155 BUY / 70 WATCH / 106 PASS, see chat log) --
-    not enforced by an automated test in this delivery.
+    CE-term caveat: the gate copy does NOT apply signal_classifier's
+    CE term. Harmless while CE_GATE_ENABLED=False; if ever flipped
+    True in production, overrides=None here silently stops matching
+    live classify_signal until both gate copies are updated. Parity
+    at overrides=None confirmed empirically 2026-06-28 (155/70/106
+    BUY/WATCH/PASS vs. the v1.0 direct-call run), not test-enforced.
 
-    No minimum-corpus-size floor (operator decision, 2026-06-28):
-    every pattern is scored regardless of corpus_size. The chain
-    handles corpus_size=0 without any special-casing here --
-    similarity.rank_by_distance on an empty corpus dict returns an
-    empty ranked list, aggregator.aggregate_top_k's existing n=0
-    branch zero-fills every horizon, and aggregator.catalog_baseline_
-    win_rates returns 0.0 baselines for an empty label set. The
-    degenerate_corpus flag on WalkForwardResult is set here purely
-    from corpus_size == 0, not from the chain's behavior.
+    No minimum-corpus-size floor (2026-06-28): similarity.rank_by_
+    distance, aggregator.aggregate_top_k, and aggregator.catalog_
+    baseline_win_rates all have existing empty-input branches for
+    corpus_size == 0 (degenerate_corpus).
 
-    Layer rules: no I/O, no DB, no logging. Pure functions consuming
-    pre-loaded dicts (from infrastructure/eval_io.py) and producing
-    schemas_eval.py models.
+    Layer rules: no file/DB/network I/O, no logging. score_one() and
+    run_walk_forward(parallel=False) are unchanged pure functions. The
+    v1.2 parallel path (WO-P300-E4.003, M-096) is process-level
+    fan-out via stdlib concurrent.futures -- CPU dispatch, not I/O --
+    cutting wall-clock with zero change to the math: parallel and
+    serial call the same score_one() and must be byte-identical (see
+    tests/test_eval_scoring.py).
 
 CHANGELOG:
-    - 2026-06-28 v1.1: Replaced the direct signal_classifier.
-      classify_signal() call with an inlined overridable AND-gate
-      (mirrors loo_replay.py) so score_one/run_walk_forward can take
-      an optional ThresholdOverrides for BUY_MIN_Z_SCORE comparison
-      runs. WalkForwardBatch now stamps threshold_overrides for
-      report provenance.
+    - 2026-07-16 v1.2: WO-P300-E4.003 (M-096) -- run_walk_forward()
+      gains parallel/max_workers. parallel=True fans score_one() out
+      via ProcessPoolExecutor; _init_worker sets per-process globals
+      ONCE (not re-pickled per pattern); executor.map preserves
+      ordered_pids order, matching serial output. Serial path
+      unchanged.
+    - 2026-06-28 v1.1: Overridable AND-gate for BUY_MIN_Z_SCORE runs;
+      WalkForwardBatch stamps threshold_overrides.
     - 2026-06-28 v1.0: Initial release. Stage 6 eval loop file #2 of 5.
 """
 from __future__ import annotations
 
 import sys
+from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 
 # sys.path bootstrap for direct invocation / smoke harness.
@@ -65,7 +57,8 @@ if str(_PYTHON_DIR) not in sys.path:
 
 from config import (  # noqa: E402
     BUY_MIN_MATCHES, BUY_MIN_WIN_RATE, BUY_MIN_Z_SCORE, FORWARD_HORIZONS,
-    TOP_K_MATCHES, WATCH_MIN_MATCHES, WATCH_MIN_WIN_RATE, WATCH_MIN_Z_SCORE,
+    TOP_K_MATCHES, WALK_FORWARD_SERIAL_MS_PER_PAIR, WATCH_MIN_MATCHES,
+    WATCH_MIN_WIN_RATE, WATCH_MIN_Z_SCORE,
 )
 from domain import aggregator, similarity  # noqa: E402
 from infrastructure.catalog_reader import PatternMetadata  # noqa: E402
@@ -177,18 +170,10 @@ def score_one(
     threshold_overrides: ThresholdOverrides | None = None,
 ) -> WalkForwardResult:
     """Run one pattern's walk-forward evaluation against its date-
-    filtered corpus.
-
-    Args:
-        pattern_id: the pattern being evaluated.
-        all_metadata: every PATTERN_IDENT pid's PatternMetadata
-            (from catalog_reader.bulk_load_pattern_metadata).
-        historical_windows: every pid's NormalizedBar list
-            (from catalog_reader.bulk_load_normalized_windows).
-        all_labels: every pid's forward labels keyed by horizon_days
-            (from catalog_reader.bulk_load_forward_labels).
-        threshold_overrides: optional AND-gate overrides; None uses
-            config.py defaults via the overridable gate above.
+    filtered corpus. all_metadata/historical_windows/all_labels are
+    every PATTERN_IDENT pid's data (from catalog_reader's bulk_load_*
+    functions), keyed by pattern_instance_id. threshold_overrides:
+    optional AND-gate overrides; None uses config.py defaults.
 
     Returns:
         WalkForwardResult for this pattern. degenerate_corpus=True
@@ -234,30 +219,78 @@ def score_one(
     )
 
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Parallel path -- WO-P300-E4.003 (M-096)
+# ─────────────────────────────────────────────────────────────────────────────
+# _init_worker runs once per worker process, storing that worker's own copy
+# of the three read-only dicts as globals; _score_one_worker then takes just
+# a pattern_id per task -- dicts pickled once per worker, not once per task.
+
+_worker_metadata: dict[int, PatternMetadata] | None = None
+_worker_windows: dict[int, list[NormalizedBar]] | None = None
+_worker_labels: dict[int, dict[int, ForwardLabelLite]] | None = None
+_worker_overrides: ThresholdOverrides | None = None
+
+
+def _init_worker(
+    all_metadata: dict[int, PatternMetadata],
+    historical_windows: dict[int, list[NormalizedBar]],
+    all_labels: dict[int, dict[int, ForwardLabelLite]],
+    threshold_overrides: ThresholdOverrides | None,
+) -> None:
+    """ProcessPoolExecutor initializer -- see module note above."""
+    global _worker_metadata, _worker_windows, _worker_labels, _worker_overrides
+    _worker_metadata = all_metadata
+    _worker_windows = historical_windows
+    _worker_labels = all_labels
+    _worker_overrides = threshold_overrides
+
+
+def _score_one_worker(pattern_id: int) -> WalkForwardResult:
+    """Reads this process's _init_worker globals, scores one pattern.
+    Only valid inside a pool started with initializer=_init_worker."""
+    return score_one(
+        pattern_id, _worker_metadata, _worker_windows, _worker_labels,
+        _worker_overrides,
+    )
+
+
 def run_walk_forward(
     catalog_path: str,
     all_metadata: dict[int, PatternMetadata],
     historical_windows: dict[int, list[NormalizedBar]],
     all_labels: dict[int, dict[int, ForwardLabelLite]],
     threshold_overrides: ThresholdOverrides | None = None,
+    parallel: bool = False,
+    max_workers: int | None = None,
 ) -> WalkForwardBatch:
-    """Score every pid in all_metadata, oldest anchor_date first.
-
-    Sort order doesn't affect scoring (each pattern's corpus is
-    computed independently by date filter, not by loop position) --
-    oldest-first just makes the output table read chronologically.
+    """Score every pid, oldest anchor_date first (sort order doesn't
+    affect scoring -- corpus is date-filtered independently per
+    pattern). parallel=False (default): unchanged serial path.
+    parallel=True: ProcessPoolExecutor fan-out (see module note);
+    executor.map preserves order, matching the serial path exactly.
+    max_workers=None defers to ProcessPoolExecutor's own default.
     """
     ordered_pids = sorted(
         all_metadata.keys(),
         key=lambda pid: all_metadata[pid].anchor_date,
     )
-    results = [
-        score_one(
-            pid, all_metadata, historical_windows, all_labels,
-            threshold_overrides,
-        )
-        for pid in ordered_pids
-    ]
+    if parallel and len(ordered_pids) > 1:
+        with ProcessPoolExecutor(
+            max_workers=max_workers,
+            initializer=_init_worker,
+            initargs=(all_metadata, historical_windows, all_labels,
+                      threshold_overrides),
+        ) as executor:
+            results = list(executor.map(_score_one_worker, ordered_pids))
+    else:
+        results = [
+            score_one(
+                pid, all_metadata, historical_windows, all_labels,
+                threshold_overrides,
+            )
+            for pid in ordered_pids
+        ]
     n_degenerate = sum(1 for r in results if r.degenerate_corpus)
     return WalkForwardBatch(
         catalog_path=catalog_path,
@@ -266,3 +299,32 @@ def run_walk_forward(
         threshold_overrides=threshold_overrides,
         results=results,
     )
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Full-rescore cost estimate -- WO-P300-E5.004
+# ─────────────────────────────────────────────────────────────────────────────
+
+def estimate_full_rescore_seconds(corpus_size: int) -> float:
+    """Estimated wall time for a full, uncached, serial run_walk_forward()
+    over corpus_size patterns (parallel=False -- EVAL_PARALLEL_ENABLED is
+    False, WO-P300-E4.005 Phase 2c).
+
+    Per-pattern cost grows with that pattern's own corpus (every earlier-
+    dated pattern, see _corpus_pids), so scoring N patterns oldest-first
+    costs roughly WALK_FORWARD_SERIAL_MS_PER_PAIR x (0 + 1 + ... + N-1) =
+    WALK_FORWARD_SERIAL_MS_PER_PAIR x N(N-1)/2 -- integrating the measured
+    per-pair rate (config.py, WO-P300-E4.005) over a linearly growing
+    corpus. APPROXIMATION -- see config.py's constant docstring for
+    caveats (not re-measured for this WO, may drift with catalog
+    composition). Used only for the WO-P300-E5.004 confirm-before-rescore
+    gate, not a scheduling guarantee.
+
+    Returns 0.0 for corpus_size <= 1 (nothing to integrate).
+    """
+    if corpus_size <= 1:
+        return 0.0
+    total_ms = (
+        WALK_FORWARD_SERIAL_MS_PER_PAIR * corpus_size * (corpus_size - 1) / 2
+    )
+    return total_ms / 1000.0

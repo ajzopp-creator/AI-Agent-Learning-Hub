@@ -33,9 +33,11 @@ CHANGELOG:
 """
 from __future__ import annotations
 
-import math
 import sys
 from pathlib import Path
+
+import numpy as np
+from numba import njit
 
 # sys.path bootstrap so direct invocation finds config + schemas.
 _PYTHON_DIR = Path(__file__).resolve().parent.parent
@@ -50,12 +52,48 @@ from schemas_pipeline_b import NormalizedBar  # noqa: E402
 # DTW core — single feature column
 # ─────────────────────────────────────────────────────────────────────────────
 
+def _dtw_core(seq_a: np.ndarray, seq_b: np.ndarray) -> float:
+    """Numba-compiled DTW grid -- abs-diff cost, min-of-3 recurrence,
+    rolling-row reduction. Same algorithm and operation order as the
+    pre-JIT pure-Python version: fastmath OFF, no reordering, no
+    behavior change (WO-P300-E4.005 Phase 2a, byte-identity verified
+    against a 39-candidate real-catalog baseline before promote).
+    Not called directly -- see dtw_distance() below.
+    """
+    m = seq_a.shape[0]
+    n = seq_b.shape[0]
+    if n < m:
+        seq_a, seq_b = seq_b, seq_a
+        m, n = n, m
+    prev_row = np.full(n + 1, np.inf)
+    prev_row[0] = 0.0
+    for i in range(1, m + 1):
+        curr_row = np.full(n + 1, np.inf)
+        a_i = seq_a[i - 1]
+        for j in range(1, n + 1):
+            cost = abs(a_i - seq_b[j - 1])
+            curr_row[j] = cost + min(
+                prev_row[j],
+                curr_row[j - 1],
+                prev_row[j - 1],
+            )
+        prev_row = curr_row
+    return prev_row[n]
+
+
+_dtw_core = njit(cache=True, fastmath=False)(_dtw_core)
+
+
 def dtw_distance(seq_a: list[float], seq_b: list[float]) -> float:
     """Dynamic-time-warping distance between two 1-D sequences.
 
     Classic full-grid DTW with abs-difference cost. O(m*n) time,
     O(min(m,n)+1) space via rolling-row reduction. Handles unequal
     lengths natively — pattern windows may be 5–20 bars on either side.
+
+    Grid computation runs through a numba-compiled kernel (_dtw_core)
+    for speed; this wrapper's contract (signature, validation, return
+    value) is unchanged from the pre-JIT version.
 
     Args:
         seq_a: numeric sequence (length m >= 1)
@@ -75,26 +113,9 @@ def dtw_distance(seq_a: list[float], seq_b: list[float]) -> float:
         raise ValueError(
             f"DTW requires non-empty sequences; got len(a)={m}, len(b)={n}"
         )
-    # Roll over the shorter inner dimension for memory efficiency.
-    if n < m:
-        seq_a, seq_b = seq_b, seq_a
-        m, n = n, m
-    # prev_row[j] = best DTW cost to reach grid cell (i-1, j).
-    inf = math.inf
-    prev_row = [inf] * (n + 1)
-    prev_row[0] = 0.0  # only origin from which (1,1) can extend cheaply
-    for i in range(1, m + 1):
-        curr_row = [inf] * (n + 1)
-        a_i = seq_a[i - 1]
-        for j in range(1, n + 1):
-            cost = abs(a_i - seq_b[j - 1])
-            curr_row[j] = cost + min(
-                prev_row[j],        # insertion
-                curr_row[j - 1],    # deletion
-                prev_row[j - 1],    # match
-            )
-        prev_row = curr_row
-    return prev_row[n]
+    arr_a = np.asarray(seq_a, dtype=np.float64)
+    arr_b = np.asarray(seq_b, dtype=np.float64)
+    return float(_dtw_core(arr_a, arr_b))
 
 
 # ─────────────────────────────────────────────────────────────────────────────

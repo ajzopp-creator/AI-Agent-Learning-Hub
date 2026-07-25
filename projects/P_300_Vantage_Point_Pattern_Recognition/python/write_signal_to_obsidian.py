@@ -2,13 +2,34 @@
 """Parse latest report and write signal to Obsidian vault via Hub interface.
 
 FILE:        write_signal_to_obsidian.py
-VERSION:     1.5
-DATE:        2026-06-09
+VERSION:     1.6
+DATE:        2026-07-03
 AUTHOR:      Anthony Zoppi / Claude
 LAYER:       application (P_300 side -- calls Hub vault interface)
 DESCRIPTION: Find latest .txt report for a symbol, parse signal fields,
              write normalized note to Obsidian vault via the Hub interface.
 CHANGELOG:
+  v1.6  2026-07-03  Two bugs fixed (found while checking why every P300
+                    note's h5_win_rate/h5_mean_ret frontmatter came back
+                    null despite the narrative text having real numbers).
+                    (1) stats_pattern was a 7-column regex from before
+                    Enhancement 2 (2026-06-09) added a `ce` (certainty-
+                    equivalent) column to the per-horizon table. The table
+                    has had 8 columns since that day; the regex never
+                    matched a single row since, so h_win_rate/h_mean_ret/
+                    z_score were always None and got stripped before the
+                    vault write -- every note since 2026-06-09 has shipped
+                    with empty per-horizon frontmatter. Regex now accounts
+                    for the ce column.
+                    (2) Even pre-06-09, the code only ever wrote to the
+                    hardcoded h5_win_rate/h5_mean_ret keys, gated on
+                    `if horizon == 5` -- a chosen_horizon=7 signal (e.g.
+                    MCK) wrote nothing. Now every row in the table writes
+                    its own h{N}_win_rate/h{N}_mean_ret/h{N}_z_score/
+                    h{N}_class fields, matching all 5 horizons the schema
+                    already defines. Also fixed a mislabeled top-level
+                    "z_score" key (not a real schema field -- silently
+                    dropped by write_handler) to h{horizon}_z_score.
   v1.5  2026-06-09  WO-P000-E2.003: removed the sys.path side-channel
                     (was line 42: sys.path.insert(0, _SHARED) where
                     _SHARED = .../shared_resources/python_utils). The shared
@@ -50,6 +71,16 @@ from datetime import datetime
 # Resolves via the hub_shared editable install (WO-P000-E2.002); no sys.path
 # side-channel required (WO-P000-E2.003).
 from shared_resources.python_utils.vault_interface import write_to_vault
+
+# Report table columns since Enhancement 2 (2026-06-09, CE gate):
+#   h  n  win_rate  mean_ret  ce  std_ret  z_score  class
+# ce is CARA certainty-equivalent -- observe-only, not parsed here (not a
+# schema field). win_rate is decimal (0.800 = 80%), mean_ret/z_score keep
+# their sign, class is BUY/WATCH/PASS.
+_STATS_PATTERN = (
+    r'^\s+(\d+)\s+(\d+)\s+([\d.]+)\s+([+\-][\d.]+)'
+    r'\s+([+\-][\d.]+)\s+([\d.]+)\s+([+\-][\d.]+)\s+(\w+)$'
+)
 
 
 def parse_report_and_write(symbol: str, reports_dir: Path) -> bool:
@@ -94,32 +125,29 @@ def parse_report_and_write(symbol: str, reports_dir: Path) -> bool:
         # Build note body header
         body_lines = [f"# {symbol} - {signal_class} (h={horizon})", "", "## Per-Horizon Stats", ""]
 
-        # Parse per-horizon stats table
-        # Report columns: h  n  win_rate  mean_ret  std_ret  z_score  class
-        # win_rate is a decimal fraction (0.800 = 80%) -- no /100 needed.
-        # mean_ret is percentage points (+4.81 = 4.81%) -- strip leading +, no /100.
-        stats_pattern = (
-            r'^\s+(\d+)\s+(\d+)\s+([\d.]+)\s+([+\-][\d.]+)'
-            r'\s+([+\-]?[\d.]+)\s+([+\-]?[\d.]+)\s+(\w+)$'
-        )
-        h_win_rate = None
-        h_mean_ret = None
-        z_score = None
+        # Parse every horizon row -- all 5 (5/7/10/15/20), not just the
+        # chosen one. per_horizon holds h{N}_* fields for every row that
+        # matched, keyed by horizon.
+        per_horizon: dict[int, dict[str, float | str]] = {}
 
         for line in content.split('\n'):
-            match = re.match(stats_pattern, line)
-            if match:
-                h_val = int(match.group(1))
-                wr = float(match.group(3))       # already decimal: 0.800 = 80%
-                mr = match.group(4)              # e.g. "+4.81"
-                z = match.group(6)
+            match = re.match(_STATS_PATTERN, line)
+            if not match:
+                continue
+            h_val = int(match.group(1))
+            wr = float(match.group(3))        # decimal: 0.800 = 80%
+            mr = match.group(4)               # e.g. "+9.24"
+            z = match.group(7)
+            cls = match.group(8)
 
-                body_lines.append(f"**h={h_val}** | WR={wr * 100:.1f}% | MR={mr} | Z={z}")
+            body_lines.append(f"**h={h_val}** | WR={wr * 100:.1f}% | MR={mr} | Z={z}")
 
-                if h_val == horizon:
-                    h_win_rate = wr                      # v1.1 fix: was wr / 100
-                    h_mean_ret = float(mr.lstrip('+'))   # v1.1 fix: was float(mr.rstrip('%')) / 100
-                    z_score = float(z)
+            per_horizon[h_val] = {
+                "win_rate": wr,
+                "mean_ret": float(mr.lstrip('+')),
+                "z_score": float(z),
+                "class": cls,
+            }
 
         # Check for volatility divergence flag
         if 'VOLATILITY DIVERGENCE: MILD' in content or 'VOLATILITY DIVERGENCE: STRONG' in content:
@@ -144,20 +172,22 @@ def parse_report_and_write(symbol: str, reports_dir: Path) -> bool:
         # coercion error. 'date' is deprecated in Note Standard v2.0. signal_date
         # carries the date semantics. anchor_date is informational only and is
         # captured in the body text above.
-        trade_data = {
+        trade_data: dict[str, object] = {
             "signal_date": anchor_date,                        # required by Note Standard v2.0
             "written_by": "P_300/daily_evaluate_pipeline",    # required by Note Standard v2.0
             "ticker": symbol,
             "signal": signal_class,
             "signal_horizon": horizon,
-            "z_score": z_score,
             "vol_flag": "NONE",
         }
 
-        if h_win_rate is not None:
-            trade_data["h5_win_rate"] = h_win_rate if horizon == 5 else None
-        if h_mean_ret is not None:
-            trade_data["h5_mean_ret"] = h_mean_ret if horizon == 5 else None
+        # Write every parsed horizon into its own h{N}_* fields -- the
+        # schema already defines h5/h7/h10/h15/h20, not just the chosen one.
+        for h_val, stats in per_horizon.items():
+            trade_data[f"h{h_val}_win_rate"] = stats["win_rate"]
+            trade_data[f"h{h_val}_mean_ret"] = stats["mean_ret"]
+            trade_data[f"h{h_val}_z_score"] = stats["z_score"]
+            trade_data[f"h{h_val}_class"] = stats["class"]
 
         # Remove None values before passing to vault interface
         trade_data = {k: v for k, v in trade_data.items() if v is not None}
@@ -170,7 +200,7 @@ def parse_report_and_write(symbol: str, reports_dir: Path) -> bool:
             overwrite=True,
         )
 
-        print(f"[OK] {symbol} written to vault")
+        print(f"[OK] {symbol} written to vault ({len(per_horizon)} horizons populated)")
         return True
 
     except Exception as e:

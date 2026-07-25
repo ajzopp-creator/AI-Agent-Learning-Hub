@@ -1,0 +1,11 @@
+Minute 2–3: Prompt 2 (The Bounce Market Contradiction Map)
+Prompt to paste:
+Based on the 5 expert perspectives generated from the papers, map the core structural contradictions of bounce trading:
+
+1. Where do the Academic findings on "re-bouncing probability" directly clash with the Quant/Economist perspective on liquidity harvesting?
+2. Which perspective's view of support/resistance areas (precise levels vs. volatile zones) has the strongest empirical evidence in the source text?
+3. What is the single question regarding "timeframe context" (e.g., Weekly vs. Intraday charts) that resolves the biggest contradiction between the Skeptic and the Practitioner?
+4. What foundational truth about price behavior at historical highs and lows do ALL 5 perspectives agree on?
+5. What market anomaly or variable did NONE of the papers or perspectives address (the blind spot)?
+
+📌 NotebookLM Step: Pin the output as "2. Market Contradictions Map"

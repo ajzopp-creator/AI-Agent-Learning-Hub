@@ -61,6 +61,7 @@ def _build_signal(
     raw_from: str,
     subject: str,
     account: str,
+    message_id: str,
 ) -> TickerSignal:
     """Wrap one TickerMatch into a validated TickerSignal."""
     direction = infer_direction(match.context, config.DIRECTION_KEYWORDS)
@@ -76,6 +77,7 @@ def _build_signal(
         subject=subject[:200],
         raw_context=match.context[:config.RAW_CONTEXT_CHARS],
         account=account,
+        message_id=message_id,
     )
 
 
@@ -104,6 +106,7 @@ def scan_account(account: str, enabled: set[str]) -> list[TickerSignal]:
             continue
         approved_count += 1
         subject = decode_header_safe(msg.get("Subject"))
+        message_id = (msg.get("Message-ID") or "").strip()
         body = extract_body(msg)
         text = f"{subject}\n\n{body}"
         matches = find_tickers(
@@ -120,7 +123,7 @@ def scan_account(account: str, enabled: set[str]) -> list[TickerSignal]:
             best = best[:cap]
         for match in best:
             signals.append(_build_signal(
-                match, msg_date, sender_addr, raw_from, subject, account,
+                match, msg_date, sender_addr, raw_from, subject, account, message_id,
             ))
             extracted_count += 1
     logger.info(

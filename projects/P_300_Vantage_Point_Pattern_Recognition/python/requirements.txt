@@ -4,3 +4,4 @@ numpy==1.26.4
 pydantic>=2.5,<3
 openpyxl>=3.1,<4
 requests>=2.31,<3
+numba==0.64.0

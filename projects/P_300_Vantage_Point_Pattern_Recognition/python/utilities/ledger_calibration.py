@@ -1,33 +1,63 @@
 """
-Ledger calibration utility.
+FILE: ledger_calibration.py
+VERSION: 1.1
+DATE: 2026-07-02
+AUTHOR: Anthony Zoppi + Claude
+LAYER: utilities
+DESCRIPTION:
+    Compares predicted (catalog) vs realized (market) forward returns for
+    fired ledger signals, grouped by each signal's own chosen_horizon.
 
-Computes confidence factors by comparing predicted (catalog) vs realized (market) 
-forward returns for all filled ledger rows.
+    Confidence factor = realized_win_rate / predicted_win_rate
+    Values > 1.0 indicate signal edge stronger than predicted.
 
-Confidence factor = realized_win_rate / predicted_win_rate
-Values > 1.0 indicate signal edge stronger than predicted.
+CHANGELOG:
+    - 2026-07-02 v1.1: Two bugs fixed (todo.md open item, M-046 gate).
+      (1) Query required h20_return_pct IS NOT NULL on every row before
+      it counted at all -- with the catalog this young, that limited the
+      report to 2 rows (DE, COHR) regardless of how many signals had
+      their OWN chosen_horizon already filled. Now each row only needs
+      its own chosen_horizon column filled.
+      (2) predicted_win_rate/mean_return are computed by the classifier
+      for a signal's chosen_horizon specifically (one prediction, one
+      horizon -- confirmed in ledger_db.py's insert_fired_signal). The
+      old code paired that single value against realized returns at ALL
+      5 horizon columns, comparing e.g. a 5-day prediction against a
+      20-day realized outcome. Now a row is grouped into exactly one
+      horizon bucket (its own chosen_horizon) and compared only there.
+    - Pre-1.1: Initial version. Filtered on h20_return_pct IS NOT NULL;
+      broadcast every row's prediction across all 5 horizon buckets.
 """
 
 import logging
+import sqlite3
 from dataclasses import dataclass
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
 
 from infrastructure.ledger_db import LedgerDB
 
 logger = logging.getLogger(__name__)
 
+_HORIZON_COLUMNS: Dict[int, str] = {
+    5: "h5_return_pct",
+    7: "h7_return_pct",
+    10: "h10_return_pct",
+    15: "h15_return_pct",
+    20: "h20_return_pct",
+}
+
 
 @dataclass
 class HorizonCalibration:
-    """Per-horizon calibration metrics."""
+    """Per-horizon calibration metrics -- only rows fired AT this horizon."""
     horizon_days: int
     sample_count: int
-    predicted_win_rate: float  # Mean of n_matches predictions (0.0–1.0)
-    realized_win_rate: float   # Fraction of signals with positive return
-    confidence_factor: float   # realized_win_rate / predicted_win_rate
+    predicted_win_rate: float
+    realized_win_rate: float
+    confidence_factor: float
     avg_predicted_return: float
     avg_realized_return: float
-    
+
     def __str__(self) -> str:
         return (
             f"h{self.horizon_days:2d} | "
@@ -43,22 +73,24 @@ class HorizonCalibration:
 class LedgerCalibrationReport:
     """Overall calibration report."""
     total_signals: int
-    total_filled: int
-    filled_pct: float
+    total_usable: int
+    usable_pct: float
     per_horizon: Dict[int, HorizonCalibration]
     overall_confidence: float
-    
+
     def __str__(self) -> str:
         lines = [
-            f"Ledger Calibration Report",
-            f"========================",
+            "Ledger Calibration Report",
+            "========================",
             f"Total signals: {self.total_signals}",
-            f"Filled: {self.total_filled} ({self.filled_pct:.1%})",
-            f"",
-            "Per-Horizon Metrics:",
+            f"Usable (own chosen_horizon filled): {self.total_usable} "
+            f"({self.usable_pct:.1%})",
+            "",
+            "Per-Horizon Metrics (each row compared only at its own",
+            "chosen_horizon -- not broadcast across all 5 columns):",
             "-" * 90,
         ]
-        for h in [5, 7, 10, 15, 20]:
+        for h in (5, 7, 10, 15, 20):
             if h in self.per_horizon:
                 lines.append(str(self.per_horizon[h]))
         lines.extend([
@@ -71,108 +103,93 @@ class LedgerCalibrationReport:
 def calibrate_ledger() -> LedgerCalibrationReport:
     """
     Generate calibration report from ledger.
-    
-    Compares predicted forward returns (catalog) against realized returns (market)
-    for all filled ledger rows. Computes per-horizon and overall confidence factors.
-    
+
+    Each fired signal is compared only against the realized return at its
+    OWN chosen_horizon -- a row with chosen_horizon=5 contributes to the
+    h5 bucket only, using h5_return_pct, regardless of whether h15/h20
+    have filled yet.
+
     Returns:
-        LedgerCalibrationReport with detailed metrics.
+        LedgerCalibrationReport with per-horizon and overall metrics.
     """
     ledger_db = LedgerDB()
-    
-    import sqlite3
+
     with sqlite3.connect(ledger_db.db_path) as conn:
         cursor = conn.cursor()
-        
-        # Get total count.
         cursor.execute("SELECT COUNT(*) FROM fired_signals")
         total_signals = cursor.fetchone()[0]
-        
-        # Get filled count.
-        cursor.execute("SELECT COUNT(*) FROM fired_signals WHERE h20_return_pct IS NOT NULL")
-        total_filled = cursor.fetchone()[0]
-        
-        # Get all filled rows.
+
         cursor.execute("""
-            SELECT 
-                h5_return_pct, h7_return_pct, h10_return_pct, h15_return_pct, h20_return_pct,
-                n_matches, win_rate_pct, mean_return_pct
+            SELECT chosen_horizon, win_rate_pct, mean_return_pct,
+                   h5_return_pct, h7_return_pct, h10_return_pct,
+                   h15_return_pct, h20_return_pct
             FROM fired_signals
-            WHERE h20_return_pct IS NOT NULL
             ORDER BY signal_date ASC
         """)
         rows = cursor.fetchall()
-    
-    if not rows:
-        logger.warning("No filled ledger rows found.")
-        return LedgerCalibrationReport(
-            total_signals=total_signals,
-            total_filled=0,
-            filled_pct=0.0,
-            per_horizon={},
-            overall_confidence=0.0,
-        )
-    
-    # Group by horizon and compute metrics.
-    horizons_data: Dict[int, List[Tuple]] = {5: [], 7: [], 10: [], 15: [], 20: []}
-    all_predictions = []
-    
+
+    horizons_data: Dict[int, List[Tuple[float, float, float]]] = {
+        h: [] for h in _HORIZON_COLUMNS
+    }
+    usable_count = 0
+
     for row in rows:
-        h5_ret, h7_ret, h10_ret, h15_ret, h20_ret, n_matches, win_rate_pct, mean_ret = row
-        
-        all_predictions.append(win_rate_pct / 100.0)  # Convert to fraction
-        
-        horizons_data[5].append((h5_ret, win_rate_pct / 100.0, mean_ret))
-        horizons_data[7].append((h7_ret, win_rate_pct / 100.0, mean_ret))
-        horizons_data[10].append((h10_ret, win_rate_pct / 100.0, mean_ret))
-        horizons_data[15].append((h15_ret, win_rate_pct / 100.0, mean_ret))
-        horizons_data[20].append((h20_ret, win_rate_pct / 100.0, mean_ret))
-    
-    # Compute per-horizon calibration.
-    per_horizon = {}
+        chosen_horizon, win_rate_pct, mean_ret, h5, h7, h10, h15, h20 = row
+        realized_by_col = {5: h5, 7: h7, 10: h10, 15: h15, 20: h20}
+        realized_ret: Optional[float] = realized_by_col.get(chosen_horizon)
+
+        if realized_ret is None or chosen_horizon not in horizons_data:
+            continue  # This signal's own horizon hasn't landed yet.
+
+        usable_count += 1
+        horizons_data[chosen_horizon].append(
+            (realized_ret, win_rate_pct / 100.0, mean_ret)
+        )
+
+    per_horizon: Dict[int, HorizonCalibration] = {}
+    all_predicted_wrs: List[float] = []
+    all_realized_wins: List[int] = []
+
     for horizon, data in horizons_data.items():
         if not data:
             continue
-        
+
         realized_returns = [d[0] for d in data]
         predicted_wrs = [d[1] for d in data]
         predicted_returns = [d[2] for d in data]
-        
-        # Win rate = fraction with positive return.
-        realized_wr = sum(1 for r in realized_returns if r > 0.0) / len(realized_returns)
-        predicted_wr = sum(predicted_wrs) / len(predicted_wrs)  # Average predicted WR
-        
-        # Confidence = realized / predicted (avoid division by zero).
+
+        realized_wr = sum(1 for r in realized_returns if r > 0.0) / len(data)
+        predicted_wr = sum(predicted_wrs) / len(predicted_wrs)
         confidence = realized_wr / predicted_wr if predicted_wr > 0 else 0.0
-        
-        avg_realized = sum(realized_returns) / len(realized_returns)
-        avg_predicted = sum(predicted_returns) / len(predicted_returns)
-        
+
         per_horizon[horizon] = HorizonCalibration(
             horizon_days=horizon,
             sample_count=len(data),
             predicted_win_rate=predicted_wr,
             realized_win_rate=realized_wr,
             confidence_factor=confidence,
-            avg_predicted_return=avg_predicted,
-            avg_realized_return=avg_realized,
+            avg_predicted_return=sum(predicted_returns) / len(predicted_returns),
+            avg_realized_return=sum(realized_returns) / len(realized_returns),
         )
-        
-        logger.info(f"h{horizon}: {per_horizon[horizon]}")
-    
-    # Overall confidence.
-    overall_predicted = sum(all_predictions) / len(all_predictions) if all_predictions else 0.0
-    overall_realized = sum(1 for p in all_predictions if p > 0.0) / len(all_predictions) if all_predictions else 0.0
-    overall_confidence = overall_realized / overall_predicted if overall_predicted > 0 else 0.0
-    
-    filled_pct = total_filled / total_signals if total_signals > 0 else 0.0
-    
-    report = LedgerCalibrationReport(
+        logger.info("h%s: %s", horizon, per_horizon[horizon])
+
+        all_predicted_wrs.extend(predicted_wrs)
+        all_realized_wins.extend(1 if r > 0.0 else 0 for r in realized_returns)
+
+    overall_predicted = (
+        sum(all_predicted_wrs) / len(all_predicted_wrs) if all_predicted_wrs else 0.0
+    )
+    overall_realized = (
+        sum(all_realized_wins) / len(all_realized_wins) if all_realized_wins else 0.0
+    )
+    overall_confidence = (
+        overall_realized / overall_predicted if overall_predicted > 0 else 0.0
+    )
+
+    return LedgerCalibrationReport(
         total_signals=total_signals,
-        total_filled=total_filled,
-        filled_pct=filled_pct,
+        total_usable=usable_count,
+        usable_pct=usable_count / total_signals if total_signals > 0 else 0.0,
         per_horizon=per_horizon,
         overall_confidence=overall_confidence,
     )
-    
-    return report

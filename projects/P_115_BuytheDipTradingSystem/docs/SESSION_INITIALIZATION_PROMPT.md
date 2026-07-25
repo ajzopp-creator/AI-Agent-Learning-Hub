@@ -1,14 +1,14 @@
-# P_115 System Initialization Prompt (SIP) v3.4
+# P_115 System Initialization Prompt (SIP) v3.5
 **File:** `docs/SESSION_INITIALIZATION_PROMPT.md`
-**Version:** 3.4
-**Last Updated:** 2026-06-19
+**Version:** 3.5
+**Last Updated:** 2026-07-24
 **Pairs With:** `docs/P_115_System_Architecture.v1.0.md`
 
 ---
 
 ## Purpose
 
-Bootstraps every new P_115 chat. Loads account state, market posture, and work orders so the AI starts oriented. Domain rules (scoring, sizing, schema, chart patterns) live in the architecture doc — this file is steps only.
+Bootstraps every new P_115 chat. Loads account state, market posture, and work orders so the AI starts oriented. Domain rules (scoring, signal emission, schema, chart patterns) live in the architecture doc — this file is steps only.
 
 ---
 
@@ -78,7 +78,7 @@ Wait for operator confirmation. Do NOT write code or take action until confirmed
 
 ## What This SIP Does NOT Do
 
-Carry domain rules. All scoring (HybridTier, FundamentalsTier, 200-MA penalty, CandleTier), sizing (Three-Gate, 2-Tranche), Fund Verification protocol, chart pattern definitions, schema, and options methodology live in `docs/P_115_System_Architecture.v1.0.md` Sections 2.4, 8.2, 8.4, 8.5, 9.3, and `docs/OPTIONS_RISK_METHODOLOGY.md`.
+Carry domain rules. All scoring (HybridTier, FundamentalsTier, 200-MA penalty, CandleTier), signal emission (Stop Derivation Rule, SIGNAL_V2 packet build), Fund Verification protocol, chart pattern definitions, schema, and options methodology live in `docs/P_115_System_Architecture.v1.0.md` Sections 2.4, 8.2, 8.4, 8.5, 9.3, and `docs/OPTIONS_RISK_METHODOLOGY.md`. Position sizing, R:R validation, stop/target authority, and order formatting are P_400's job (P_400 architecture doc Section 3.1) -- not P_115's, as of 2026-07-24.
 
 ---
 

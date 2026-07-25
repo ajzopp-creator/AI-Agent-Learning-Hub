@@ -8,6 +8,14 @@ Phase 3 (scan + ticker extraction → daily CSV):
     python cli.py --phase 3
     python cli.py --phase 3 --account icloud
 
+Phase 5.3 (move successfully-extracted messages via IMAP; defaults to
+config.MOVE_DRY_RUN=True until flipped):
+    python cli.py --phase 53
+
+IMAP auth check (connect+login+logout only, no search/move; safe any time):
+    python cli.py --check-imap-auth
+    python cli.py --check-imap-auth --account gmail
+
 This file adds its own directory (python/) to sys.path at startup so
 that sibling modules (config, domain/, infrastructure/, application/)
 resolve with bare imports regardless of which directory you run from.
@@ -25,6 +33,8 @@ from application.phase1_scan import run as run_phase1  # noqa: E402
 from application.phase3_extract import run as run_phase3  # noqa: E402
 from application.phase4_rank import run as run_phase4  # noqa: E402
 from application.phase35_enrich import run as run_phase35  # noqa: E402
+from application.phase53_move import run as run_phase53  # noqa: E402
+from application.imap_auth_check import run as run_imap_auth_check  # noqa: E402
 from application.p805_kb_writer import scan_kb_inbox  # noqa: E402
 
 
@@ -34,9 +44,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--phase",
         type=int,
-        choices=[1, 3, 4, 35],
+        choices=[1, 3, 4, 35, 53],
         default=1,
-        help="1 = scan + sender filter (default). 3 = extraction. 35 = LLM direction enrichment. 4 = consensus ranking.",
+        help="1 = scan + sender filter (default). 3 = extraction. 35 = LLM direction enrichment. 4 = consensus ranking. 53 = IMAP move to ExtractedNewsletterFolder.",
     )
     parser.add_argument(
         "--account",
@@ -56,12 +66,19 @@ def parse_args() -> argparse.Namespace:
         default=7,
         help="KB email lookback window in days (default: 7).",
     )
+    parser.add_argument(
+        "--check-imap-auth",
+        action="store_true",
+        help="Connect+login+logout to verify IMAP credentials only. No search, no move.",
+    )
     return parser.parse_args()
 
 
 if __name__ == "__main__":
     args = parse_args()
-    if args.kb_mode:
+    if args.check_imap_auth:
+        run_imap_auth_check(account=args.account)
+    elif args.kb_mode:
         # KB write mode
         kb_mode = args.kb_mode if args.kb_mode else "full"
         scan_kb_inbox(kb_mode=kb_mode, kb_lookback_days=args.kb_lookback)
@@ -73,3 +90,5 @@ if __name__ == "__main__":
         run_phase35()
     elif args.phase == 4:
         run_phase4()
+    elif args.phase == 53:
+        run_phase53()

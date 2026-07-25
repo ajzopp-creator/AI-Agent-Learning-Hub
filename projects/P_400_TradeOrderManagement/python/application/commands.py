@@ -18,6 +18,10 @@ from config import (
     TradeMode,
 )
 from application.read_signals import read_signals
+from application.stock_fields import build_stock_fields
+from infrastructure.eval_cache import write_eval_cache
+from application.spec_commands import cmd_spec  # noqa: F401 -- re-exported for cli.py (WO-P400-E3.009)
+from application.schwab_commands import cmd_schwab_auth  # noqa: F401 -- re-exported for cli.py (WO-P400-E4.001)
 
 
 def _find_packet(symbol: str):
@@ -26,16 +30,32 @@ def _find_packet(symbol: str):
     return matches[0] if matches else None
 
 
+def _print_severe_warnings(result) -> None:
+    """Distinct banner for APPROVED_WITH_SEVERE_WARNING -- RISK role only,
+    never a BLOCK (2026-07-20). reason_detail already carries the open-
+    positions list from risk_vote.py, so this just surfaces it loudly.
+    """
+    from domain.council import Decision
+
+    print("!" * 60)
+    print("  RISK SEVERE WARNING -- review before proceeding to spec:")
+    for v in result.council.votes:
+        if v.decision == Decision.SEVERE_WARNING:
+            print(f"  [{v.reason_code}] {v.reason_detail}")
+    print("!" * 60)
+
+
 # ---------------------------------------------------------------------------
 # screen-all
 # ---------------------------------------------------------------------------
 
-def cmd_screen_all() -> int:
+def cmd_screen_all(trade_mode: TradeMode = TradeMode.REAL) -> int:
     from domain.screen import screen_all
     from infrastructure.book_loader import load_book
     from infrastructure.params_reader import read_params
     from infrastructure.posture_reader import read_posture
     from domain.portfolio import build_portfolio_state
+    from application.dispose_failed import dispose_failed
 
     result = read_signals()
     posture = read_posture()
@@ -64,8 +84,15 @@ def cmd_screen_all() -> int:
     for r in results:
         print(" ", r.summary_line())
     print("=" * 70)
-    return 0
 
+    disposals = dispose_failed(results, result.load.valid, trade_mode)
+    if disposals:
+        print("DISPOSAL SUMMARY (auto -- WO-P400-E2.018)")
+        for d in disposals:
+            print(d.summary_line())
+        print("=" * 70)
+
+    return 0
 
 # ---------------------------------------------------------------------------
 # evaluate
@@ -113,6 +140,9 @@ def cmd_evaluate(symbol: str, snapshot_path: str, cash: float, trade_mode: Trade
     print(result.council.summary())
     print("=" * 60)
 
+    if result.verdict == "APPROVED_WITH_SEVERE_WARNING":
+        _print_severe_warnings(result)
+
     if spread:
         if not chain_path or not chain_short_path:
             print("[ERROR] --spread requires --chain (long leg) and --chain-short (short leg)")
@@ -123,6 +153,10 @@ def cmd_evaluate(symbol: str, snapshot_path: str, cash: float, trade_mode: Trade
             short_chain_path=chain_short_path, cash_available=cash,
         )
         print("=" * 60)
+        print(f"SPREAD COUNCIL: {spread_result.symbol}  |  verdict={spread_result.council.verdict}")
+        for b in spread_result.council.blocks:
+            print(f"  BLOCK: {b}")
+        print("=" * 60)
         print(f"SPREAD SIZING: {spread_result.symbol}  |  contracts={spread_result.sizing.contracts}"
               f"  rr={spread_result.sizing.rr_spread:.2f}  gate={spread_result.sizing.winning_gate}")
         if spread_result.sizing.warning:
@@ -131,9 +165,10 @@ def cmd_evaluate(symbol: str, snapshot_path: str, cash: float, trade_mode: Trade
         print(spread_result.spec_text)
 
         from infrastructure.record_writer import write_spread_eval_record
-        written, sp_verdict = write_spread_eval_record(spread_result, result, packet, trade_mode.value)
+        written, sp_verdict, sp_fields = write_spread_eval_record(spread_result, result, packet, trade_mode.value)
         print(f"P400 record written: {spread_result.symbol}  verdict={sp_verdict}  "
               f"(vault_write={'OK' if written else 'FAILED'})")
+        write_eval_cache(spread_result.symbol, sp_fields)
     elif options:
         if not chain_path:
             print("[ERROR] --options requires --chain chain_SYMBOL.json")
@@ -156,11 +191,30 @@ def cmd_evaluate(symbol: str, snapshot_path: str, cash: float, trade_mode: Trade
             print(f"[NO SPEC -- {symbol}] Options council BLOCKED. No order spec generated.")
 
         from infrastructure.record_writer import write_options_eval_record
-        written, opt_verdict = write_options_eval_record(opt_result, result, packet, trade_mode.value, symbol)
+        written, opt_verdict, opt_fields = write_options_eval_record(opt_result, result, packet, trade_mode.value, symbol)
         print(f"P400 record written: {opt_result.symbol}  verdict={opt_verdict}  "
               f"(vault_write={'OK' if written else 'FAILED'})")
+        write_eval_cache(opt_result.symbol, opt_fields)
+    else:
+        stock_fields = build_stock_fields(result, packet, trade_mode.value)
+        if result.verdict == "APPROVED":
+            from application.build_order_spec import build_spec
+            from application.spec_cache import cache_spec_text
+            spec_text = build_spec(result, packet, snapshot)
+            cache_spec_text(result.symbol, spec_text, stock_fields)
+        else:
+            write_eval_cache(result.symbol, stock_fields)
 
-    if result.verdict == "BLOCKED":
+    if result.verdict == "BLOCKED" and not spread and not options:
+        # WO-P400-E2.022: options/spread branches above already write a
+        # record covering every outcome (including their own BLOCKED
+        # case, and now the stock-level BLOCK per record_writer.py's
+        # _build_options_fields/_build_spread_fields). This blanket
+        # write must never fire for those paths -- it used to fire
+        # unconditionally and silently clobber every option_*/spread_*
+        # field on every options/spread run where the stock-level
+        # Council blocked, which is not an edge case, it was the
+        # default behavior any time that combination occurred.
         from infrastructure.record_writer import write_p400_record
         written = write_p400_record(
             symbol=result.symbol,
@@ -172,6 +226,7 @@ def cmd_evaluate(symbol: str, snapshot_path: str, cash: float, trade_mode: Trade
             position_size=0,
             signal_source=packet.signal_source,
             trade_mode_value=trade_mode.value,
+            drop_reason="COUNCIL_BLOCK",
             signal_date=packet.signal_metadata.session_date,
         )
         print(f"BLOCKED record written: {result.symbol}  (vault_write={'OK' if written else 'FAILED'})")
@@ -183,40 +238,6 @@ def cmd_evaluate(symbol: str, snapshot_path: str, cash: float, trade_mode: Trade
     archive_packet(packet.symbol, packet.signal_metadata.session_date)
 
     return 0
-
-
-# ---------------------------------------------------------------------------
-# spec
-# ---------------------------------------------------------------------------
-
-def cmd_spec(symbol: str, snapshot_path: str, cash: float, trade_mode: TradeMode,
-             target_override: float = None, pre_market: bool = False,
-             qty_override: int = None) -> int:
-    from application.evaluate_signal import evaluate_signal
-    from application.build_order_spec import build_spec
-
-    packet = _find_packet(symbol)
-    if packet is None:
-        print(f"[ERROR] No valid v2 packet found for {symbol} in {SIGNALS_DIR}")
-        return 1
-
-    if target_override is not None:
-        packet = packet.model_copy(update={"guideline_target": target_override})
-
-    snapshot = json.loads(open(snapshot_path, encoding="utf-8").read())
-    if pre_market:
-        snapshot["market_open"] = True
-
-    result = evaluate_signal(packet, snapshot, cash_available=cash,
-                             trade_mode=trade_mode, qty_override=qty_override)
-    print(build_spec(result, packet, snapshot))
-
-    # Archive after spec is rendered (WO-P400-E2.015)
-    from infrastructure.signal_archiver import archive_packet
-    archive_packet(packet.symbol, packet.signal_metadata.session_date)
-
-    return 0
-
 
 # ---------------------------------------------------------------------------
 # compare
@@ -233,6 +254,21 @@ def cmd_compare(symbol: str, snapshot_path: str, chain_path: str,
 
     print(run_comparison(packet, snapshot_path, chain_path, cash))
     return 0
+
+
+# ---------------------------------------------------------------------------
+# record (WO-P400-E3.006)
+# ---------------------------------------------------------------------------
+
+def cmd_record(symbol: str, order_id: str = None, decline: bool = False) -> int:
+    from application.record_commands import cmd_record_submit, cmd_record_decline
+
+    if decline:
+        return cmd_record_decline(symbol)
+    if order_id:
+        return cmd_record_submit(symbol, order_id)
+    print("[ERROR] `record` requires either --order-id ID or --decline")
+    return 1
 
 
 # ---------------------------------------------------------------------------

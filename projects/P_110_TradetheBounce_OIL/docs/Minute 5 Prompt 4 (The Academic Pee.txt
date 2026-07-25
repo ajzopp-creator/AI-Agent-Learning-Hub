@@ -1,0 +1,10 @@
+Minute 5: Prompt 4 (The Academic Peer Review)
+Prompt to paste:
+Now, peer review this briefing against the strict constraints of the provided financial literature:
+
+1. CONFIDENCE SCORES: Rate the 5 key trading findings on a 1–10 scale based purely on the strength of the data in the papers. Explain the score.
+2. THE WEAKEST LINK: Which rule or trading assumption is least supported by the academic evidence? What data gap would a quantitative fund need to verify it?
+3. BIAS CHECK: Did the retail practitioner view or the academic data dominate this synthesis? Highlight any unvetted assumptions.
+4. OVERALL STANFORD GRADE: If the authors of these papers (like Carol Osler) reviewed this trading strategy blueprint, what grade would they give it and what mathematical flaws would they tell me to fix?
+
+📌 NotebookLM Step: Pin the output as "4. Meta-Peer Review".

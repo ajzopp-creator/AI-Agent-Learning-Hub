@@ -1,0 +1,12 @@
+Minute 3–4: Prompt 3 (The Algorithmic Trading Briefing)
+Prompt to paste:
+Synthesize all the expert data and the contradiction map into a strict Research Briefing tailored for an institutional Swing Trader (My Role):
+
+1. THE EXECUTIVE SUMMARY: Explain the validity of the "Trade the Bounce" strategy in 60 seconds, balancing statistical edge with risk realities.
+2. THE 5 KEY FINDINGS: Rank the most reliable attributes of a valid bounce setup (e.g., volume confirmation, number of prior touches, slope of the 200-day MA) backed strictly by the papers.
+3. THE HIDDEN CONNECTION: State the non-obvious link between the age of a price level and its statistical probability of holding.
+4. THE ACTIONABLE INSIGHT: Based on the empirical data, how should I explicitly alter my entry confirmation (e.g., waiting for the retest vs. trading the initial touch) and my stop-loss placement?
+5. THE FRONTIER QUESTION: What is the one unproven variable about bounce trading that if backtested would redefine our trading edge?
+
+📌 NotebookLM Step: Pin the output as "3. Swing Strategy Synthesis".
+

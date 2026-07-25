@@ -1,7 +1,7 @@
 # P_400 Trade Order Management ? System Architecture
 **Project ID:** P_400
-**Version:** 2.0 (Council Evidence Frameworks, Two-Tier Signal Flow, Deterministic Python Core, Guidelines Merged, Systems Lens)
-**Last Updated:** 2026-06-12
+**Version:** 2.4 (Council Evidence Frameworks, Two-Tier Signal Flow, Deterministic Python Core, Guidelines Merged, Systems Lens, Phase E4 Live Data Automation, Post-Earnings Stabilization Check)
+**Last Updated:** 2026-07-24
 **Maintained By:** Anthony Zoppi
 **Status:** Phase E2 CLOSED ? Phase E3 Design Locked
 **Supersedes:** Architecture v1.0 (2026-06-03); P_400_TradeordermanagementGuidelines_v1.1 (merged into Section 3)
@@ -286,15 +286,15 @@ v2.0 upgrades each Council role with an institutional evidence framework adapted
 
 When Tony selects the full dossier, the Quant role's evidence is the complete technical workup:
 
-1. Trend analysis ? primary trend on daily, weekly, monthly timeframes
-2. Support and resistance ? exact price levels, R3/R2/R1 over S1/S2/S3
-3. Moving averages ? 20/50/100/200-day positions and crossover state
-4. RSI (14) ? current value with interpretation, divergence note
-5. MACD ? signal-line cross state, histogram momentum, divergence detection
-6. Bollinger Bands ? position within bands, squeeze/expansion status
-7. Volume ? confirming or contradicting the move; vs average; insider activity noted
-8. Fibonacci retracement ? key levels from the most recent significant swing
-9. Chart pattern identification ? H&S, double top, cup-and-handle, flags; explicit "what it is NOT"
+1. Trend analysis ? primary trend on daily, weekly, monthly timeframes -- COMPUTED (WO-P400-E4.003, cli.py dossier SYMBOL)
+2. Support and resistance ? exact price levels, R3/R2/R1 over S1/S2/S3 -- COMPUTED (pivot S/R, WO-P400-E4.003)
+3. Moving averages ? 20/50/100/200-day positions and crossover state -- COMPUTED (WO-P400-E4.003)
+4. RSI (14) ? current value with interpretation, divergence note -- COMPUTED (Wilder RSI, WO-P400-E4.003); divergence note stays Claude-narrated
+5. MACD ? signal-line cross state, histogram momentum, divergence detection -- COMPUTED (WO-P400-E4.003); divergence detection stays Claude-narrated
+6. Bollinger Bands ? position within bands, squeeze/expansion status -- COMPUTED (WO-P400-E4.003)
+7. Volume ? confirming or contradicting the move; vs average; insider activity noted -- COMPUTED vs 20d avg (WO-P400-E4.003); insider activity stays Claude-narrated
+8. Fibonacci retracement ? key levels from the most recent significant swing -- COMPUTED (WO-P400-E4.003). Corrected 2026-07-24: uses a simple rolling max(high)/min(low) over the lookback window, matching P_400_2A_Analysis_Chart's ThinkScript exactly -- NOT P_300's pivot algorithm, which was tried first and confirmed wrong via live TOS comparison (P_300 solves a different problem: nearest local resistance pivot, not simple window extent)
+9. Chart pattern identification -- CLAUDE-NARRATED ONLY, NEVER AUTO-COMPUTED (WO-P400-E4.003 explicit decision). Geometric pattern shape ID (H&S, double top, cup-and-handle, flags) is a judgment call, not arithmetic -- unreliable even in mature commercial TA software. Claude reasons over the computed items 1-8 table from cli.py dossier, same as before but without the screenshot dependency. A future session must not "fix" this by writing a pattern-shape detector; explicit "what it is NOT" still required.
 10. Trade setup synthesis ? entry zone, stop basis, T1/T2 with realistic-fill R:R
 
 The dossier renders as a structured note with a trade-plan summary block on top. In Tier 2B (straight-to-trade), items 1-9 are skipped; only the live snapshot fields needed by the deterministic core are gathered.
@@ -306,14 +306,17 @@ The dossier renders as a structured note with a trade-plan summary block on top.
 
 ### 4.3 Risk Manager ? Portfolio Risk Framework
 
-Evidence framework adapted from portfolio-level risk practice: position beta vs market regime, correlation to existing holdings, drawdown context, concentration exposure. Beta and correlation **annotate**; the four governance checks **block**:
+Evidence framework adapted from portfolio-level risk practice: position beta vs market regime, correlation to existing holdings, drawdown context, concentration exposure. Beta and correlation **annotate**; as of 2026-07-20 (Tony directive) the five governance checks below **never block** -- they raise **SEVERE_WARNING**, the highest annotation severity, always with the current open-position list attached so Tony can see exactly what is counting against the cap:
 
 - Portfolio heat breach: open dollar risk + new trade risk > 12% of account
 - Max concurrent positions breach: > 8 open
 - Daily-loss circuit-breaker tripped: realized day loss > 3% of account
 - Sector concentration breach: > 2 positions in one sector
+- Cash below risk-per-trade: `--cash` < posture-adjusted risk$ for this trade (new 2026-07-20)
 
 Heat math note: 12% cap / 1.5% base risk = 8 concurrent full-risk positions, consistent by construction.
+
+RISK's ceiling was BLOCK through v2.1; superseded 2026-07-20 (domain/risk_vote.py) -- see Section 4.8 for how SEVERE_WARNING slots into verdict assembly. The matching Tier-1 change lives in domain/screen.py: HEAT_BREACH/POSITION_COUNT there are now WARN, not FAIL, so packets are never silently auto-disposed on these two checks (WO-P400-E2.018's dispose_failed() already skips anything non-FAIL).
 
 ### 4.4 Macro Economist ? Event Risk Framework
 
@@ -338,13 +341,17 @@ Phase E2: pass-through of Tony's instrument choice plus the IV-rank gate ? IV ra
 
 ```
 All roles PASS                          -> APPROVED
-Any CAUTION, no BLOCK                   -> APPROVED_WITH_CAUTION (Tony decides)
-Any deterministic BLOCK                 -> BLOCKED (record written, stop)
+Any CAUTION, no SEVERE_WARNING/BLOCK    -> APPROVED_WITH_CAUTION (Tony decides)
+Any RISK SEVERE_WARNING, no BLOCK       -> APPROVED_WITH_SEVERE_WARNING (Tony decides;
+                                            outranks plain CAUTION; open-position list shown)
+Any deterministic BLOCK (QUANT/MACRO/TAPE only) -> BLOCKED (record written, stop)
 Tony invokes override after BLOCK      -> OVERRIDE_REQUIRED -> APPROVED_BY_OVERRIDE
                                            (exact phrase required, permanent annotation)
 ```
 
-BLOCKED records are always written ? Council vetoes are part of the audit trail.
+Priority: BLOCKED > APPROVED_WITH_SEVERE_WARNING > APPROVED_WITH_CAUTION > APPROVED. RISK never contributes to BLOCKED as of 2026-07-20 -- only QUANT/MACRO/TAPE retain block authority (can_block=True). RISK and BEHAVIORAL are both can_block=False, but RISK's SEVERE_WARNING still outranks an ordinary CAUTION from another role when both fire together.
+
+BLOCKED records are always written -- Council vetoes are part of the audit trail.
 
 ---
 
@@ -357,16 +364,18 @@ BLOCKED records are always written ? Council vetoes are part of the audit trail.
 - STOP_BREAKS_RR: "Quant BLOCK: Target [X] fabrication check — honest confluence only."
 
 **RISK**
-- ALL_CLEAR: "Risk PASS: Heat $[X]/$[Y]. Positions [N]/8."
-- HEAT_BREACH: "Risk BLOCK: Heat $[X] over $[Y] cap."
-- POSITION_COUNT: "Risk BLOCK: [N]/8 — at max."
-- DAILY_LOSS: "Risk BLOCK: Day loss $[X] hit $[Y] circuit breaker (3%)."
-- SECTOR_CONCENTRATION: "Risk BLOCK: [X] sector at [N]/2 max."
+- ALL_CLEAR: "Risk PASS: Heat $[X]/$[Y]. Positions [N]/8. Cash $[X] >= risk $[Y]."
+- HEAT_BREACH: "Risk SEVERE WARNING: Heat $[X] over $[Y] cap. Open ([N]): [symbols]."
+- POSITION_COUNT: "Risk SEVERE WARNING: [N]/8 -- at max. Open ([N]): [symbols]."
+- DAILY_LOSS: "Risk SEVERE WARNING: Day loss $[X] hit $[Y] circuit breaker (3%). Open ([N]): [symbols]."
+- SECTOR_CONCENTRATION: "Risk SEVERE WARNING: [X] sector at [N]/2 max. Open ([N]): [symbols]."
+- CASH_BELOW_RISK: "Risk SEVERE WARNING: Cash $[X] below risk-per-trade $[Y] for this posture. Open ([N]): [symbols]." (new 2026-07-20)
 
 **MACRO**
 - ALL_CLEAR: "Macro PASS: No binary events in holding window."
 - EARNINGS_IN_WINDOW (BLOCK): "Macro BLOCK: Earnings inside hold period. Confirm defined-risk to convert to CAUTION."
 - EARNINGS_IN_WINDOW (CAUTION): "Macro CAUTION: Earnings inside window — defined-risk confirmed."
+- POST_EARNINGS_STABILIZATION (CAUTION, never BLOCK, WO-P400-E2.023): "Macro CAUTION: Earnings [N] session(s) ago — inside stabilization window. Structure/ATR may be stale."
 
 **TAPE**
 - ALL_CLEAR: "Tape PASS: Price fresh ([N]s). No adverse drift."
@@ -457,6 +466,7 @@ snapshot = {
     "avg_volume_20d": float,
     "today_volume": float | None,
     "next_earnings_date": str | None,   # YYYY-MM-DD
+    "last_earnings_date": str | None,    # YYYY-MM-DD, WO-P400-E2.023
     "binary_events": list[str],         # inside hold window
     "sector": str | None,
     "iv_rank": float | None,            # options only
@@ -475,7 +485,7 @@ Never fabricate — use `null` for unknown optional fields.
   "symbol": "SYMBOL", "price": 0.00, "bid": 0.00, "ask": 0.00,
   "price_timestamp": "YYYY-MM-DDTHH:MM:SSZ", "price_delay_seconds": 0,
   "atr_14": 0.00, "avg_volume_20d": 0, "data_source": "web",
-  "today_volume": null, "next_earnings_date": null, "binary_events": [],
+  "today_volume": null, "next_earnings_date": null, "last_earnings_date": null, "binary_events": [],
   "sector": null, "iv_rank": null, "option_chain_ref": null, "market_open": true
 }
 ```
@@ -740,7 +750,7 @@ max_sector_exposure            = 2
 
 # Council
 quant_can_block = true | macro_can_block = true | tape_can_block = true
-risk_can_block  = true | behavioral_can_block = false
+risk_can_block  = false | behavioral_can_block = false   # RISK ceiling changed BLOCK -> SEVERE_WARNING 2026-07-20 (Tony directive); doc-only flag, enforced per-vote in domain/risk_vote.py
 
 # Data & broker
 primary_data_source  = "web"      # Schwab API at Phase 1.5
@@ -763,6 +773,12 @@ overwrite_records       = true
 | 2.0 | 2026-06-12 | Anthony Zoppi / Claude | SIGNAL_V2 reality documented (reader CLOSED, shared schema, shared WO ledger); Claude Desktop primary engine; Guidelines v1.1 merged as Section 3 (superseded); R:R locked at 2:1 T1; Council v2.0 evidence frameworks (technical dossier, portfolio risk, event risk, options structuring) with deterministic blocks unchanged in authority; two-tier signal flow (deterministic screen -> dossier or straight-to-trade); Python deterministic core / Claude world-boundary runtime split with snapshot-dict contract; systems-thinking design lens; Phase E2 implementation plan (WO-P400-E2.001 through E2.004) |
 
 | 2.1 | 2026-06-16 | Anthony Zoppi / Claude | Phase E3 Options Pipeline plan added (WO-P400-E3.001 through E3.003); two entry paths (stock APPROVED + stock zero-sized/R:R blocked); P_115 Hybrid Methodology confirmed as authority; chain template defined; record schema options fields added; Phase E2 status updated to CLOSED |
+
+| 2.2 | 2026-07-20 | Anthony Zoppi / Claude | RISK role never blocks (Tony directive): heat/position-count/daily-loss/sector checks downgraded BLOCK -> SEVERE_WARNING (domain/risk_vote.py, extracted from council.py); new CASH_BELOW_RISK check added; open-position list attached to every RISK annotation; matching Tier-1 change in domain/screen.py (HEAT_BREACH/POSITION_COUNT downgraded FAIL -> WARN, no longer auto-disposed); verdict assembly gains APPROVED_WITH_SEVERE_WARNING tier, outranking plain CAUTION, still subordinate to BLOCKED from QUANT/MACRO/TAPE |
+
+| 2.3 | 2026-07-24 | Anthony Zoppi / Claude | Phase E4 Live Data Automation: WO-P400-E4.001 (shared Schwab API client, shared_resources\python_utils\schwab_auth.py/schwab_client.py, OWNER_DONE, live-verified); WO-P400-E4.002 (automated snapshot/chain fetch, domain\chain_selector.py auto-select at 0.50 delta / 21-45 DTE, OWNER_DONE, live-verified); WO-P400-E4.003 (technical dossier -- SMA/RSI/MACD/Bollinger/pivot-S-R/Fibonacci computed via cli.py dossier, item 9 chart-pattern-ID remains Claude-narrated-only by explicit design, never auto-computed) |
+
+| 2.4 | 2026-07-24 | Anthony Zoppi / Claude | WO-P400-E2.023: backward-looking post-earnings stabilization check added to MACRO role -- CAUTION-only, never BLOCK (Tony's call), config-driven threshold (POST_EARNINGS_STABILIZATION_SESSIONS, default 3, matches P_115 V110.3 precedent). Snapshot Dict Contract (6.2) gains last_earnings_date. Found live same session: SXT (P_115, same-day earnings, BLOCKED on drift) and CLF (P_300, 1-session-old earnings, R:R at the bare 2.0 floor pre-move) both slipped through Tier-1 screen with no deterministic catch. |
 
 **Review Schedule:** after every 5 completed trades, then monthly
 **Next Review:** after 5 Phase-E2 trades

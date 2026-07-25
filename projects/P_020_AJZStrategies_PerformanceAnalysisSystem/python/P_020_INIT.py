@@ -67,7 +67,7 @@ def read_market_posture() -> str:
 def read_last_run() -> str:
     try:
         data = json.loads(LAST_RUN.read_text())
-        return data.get("last_run_date", "UNKNOWN")
+        return data.get("last_run_datetime") or data.get("last_run_date", "UNKNOWN")
     except Exception as e:
         return f"UNKNOWN ({e})"
 

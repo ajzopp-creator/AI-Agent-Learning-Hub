@@ -59,3 +59,33 @@ def load_enabled_senders() -> set[str]:
         f"{len(rows) - enabled_count - skipped} disabled, {skipped} skipped"
     )
     return addresses
+
+
+def load_sender_sectors() -> dict[str, str]:
+    """Return a lowercased email_address -> sector map for enabled senders.
+
+    Senders with a blank/missing sector column are omitted from the map
+    entirely (not mapped to 'unknown' here) — domain.ranker treats any
+    address absent from this map as 'unknown' sector, so a blank CSV
+    cell and a missing row behave the same way downstream.
+
+    Returns an empty dict (and logs an error) if the CSV is missing.
+    """
+    sectors: dict[str, str] = {}
+    if not config.SENDER_SHEET.exists():
+        logger.error(f"Sender sheet not found: {config.SENDER_SHEET}")
+        return sectors
+
+    with open(config.SENDER_SHEET, newline="", encoding="utf-8") as fh:
+        rows = list(csv.DictReader(fh))
+
+    for row in rows:
+        row = _coerce_optional_fields(row)
+        try:
+            sender = ApprovedSender(**row)
+        except Exception:
+            continue  # already logged/counted in load_enabled_senders
+        if sender.enabled and sender.sector:
+            sectors[sender.email_address.strip().lower()] = sender.sector.strip().lower()
+
+    return sectors

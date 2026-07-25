@@ -1,7 +1,7 @@
 # P_115 — System Architecture
 **Project ID:** P_115
-**Version:** 1.2
-**Last Updated:** 2026-06-22
+**Version:** 1.3
+**Last Updated:** 2026-07-24
 **Maintained By:** Anthony Zoppi
 **Status:** Active
 
@@ -493,6 +493,8 @@ STEP 3 [TICKER] [Outcome] [Exit Price] [Realized R:R]
 | V110.3 | May 8, 2026 | Post-earnings auto-flag rule (3-session stabilization window) |
 | INIT v3.1 | May 9, 2026 | STEP 0 environment detection added |
 | Vault v1.1 | May 23, 2026 | PASS vocabulary standardized (replaces "No Signal" going forward) |
+| v1.3 | Jul 24, 2026 | Section 8.2 changed from Position Sizing to Signal Emission -- P_115 no longer sizes/validates R:R/formats orders (P_400 architecture doc Section 3.1 owns all of that); STEP 2 now builds and emits the SIGNAL_V2 packet via cli.py, confirmed to route through the identical P_400 inbox/screen-all path P_300 uses, no P_400-side change needed; schemas.py's unused P400SignalRecord.VALID_SOURCES gate (dead code, only referenced by the retired signal_writer.py) archived so it can't block P_116/P_118/P_910/P_920 source tags if ever reconnected; P_115_ Asset Sizing Requirements.md marked superseded |
+| v1.4 | Jul 24, 2026 | Correction to v1.3 (Tony directive, same day): Section 8.2 Step 3 wrongly had signal_source varying by P_115/P_116/P_118/P_910/P_920. Corrected -- P_115 is the analytical process (V110 scoring engine); P_116/P_118/P_910/P_920 are scan sources/chart-pattern variants that feed candidates INTO that analysis, not separate emitters. signal_source is always P_115. strategy still carries the setup-type distinction; scan/variant provenance belongs in the 27-column tracker, not the P_400 packet |
 
 ---
 
@@ -1043,7 +1045,7 @@ LogEntry is authoritative over Final Verdict bar (display artifact conflicts mus
 5. Verify Claude parses field positions explicitly before scoring
 6. For BUY/ASYM with Fund>=2: confirm Fund auto-verification triggered
 7. Review 27-column row output; verify tab-delimited format
-8. For BUY/ASYM signals only: proceed to STEP 2 with entry/stop/cash
+8. For BUY/ASYM signals only: proceed to STEP 2 to emit the SIGNAL_V2 packet
 
 **Expected Output:**
 - 27-column tab-delimited row per ticker (BUY / ASYM / PASS)
@@ -1052,31 +1054,56 @@ LogEntry is authoritative over Final Verdict bar (display artifact conflicts mus
 
 **Decision Gate:**
 ```
-If Step1Verdict = BUY → proceed to STEP 2
-If Step1Verdict = ASYM → proceed to STEP 2 with reduced sizing
+If Step1Verdict = BUY → proceed to STEP 2, emit signal
+If Step1Verdict = ASYM → proceed to STEP 2, emit signal (same path -- P_400 owns sizing/treatment downstream, architecture v2.0 Section 3.1)
 If Step1Verdict = PASS → log row, no STEP 2 needed
 If Fund verification fails → STOP, hold for user resolution
 If post-earnings flag triggers → default Watch, override only on explicit user direction
 ```
 
-### 8.2 Secondary Workflow: Position Sizing (STEP 2)
+### 8.2 Secondary Workflow: Signal Emission (STEP 2)
 
 **Trigger:** BUY or ASYM verdict from STEP 1
 **Frequency:** Per qualifying signal
-**Time Required:** 3-5 minutes
+**Time Required:** 1-2 minutes
+
+**Changed 2026-07-24 (Tony directive):** P_115 no longer sizes positions,
+validates R:R, checks options viability, or formats orders. P_400 owns
+all order-management decisions (P_400 architecture doc Section 3.1) --
+stock sizing, options sizing, stop methodology, target hierarchy, R:R
+validation, and broker-ready formatting. STEP 2 now does exactly one
+thing: build and emit the SIGNAL_V2 packet to the shared inbox. P_400's
+own pipeline (screen-all -> evaluate -> spec) picks it up from there,
+identically to a P_300 signal -- confirmed live 2026-07-24 (P_400
+screen.py / signal_loader.py are fully source-agnostic; no P_400-side
+change was needed).
+
+The prior version of this section (full three-gate sizing, options gates,
+2-Tranche exit output) is superseded, not deleted from history -- see
+Change Log. `P_115_ Asset Sizing Requirements.md` in this project's docs
+folder is likewise marked superseded, pointing here and to P_400
+architecture doc Section 3.3.
 
 **Steps:**
-1. User provides: Entry price, Stop price (if known), Cash Balance for this trade
-2. If Stop price not provided, derive via Stop Derivation Rule (v1.2, below)
-3. Claude re-reads `P_010_RiskConfig.json` via Windows-MCP — MANDATORY
-4. Apply current risk_mode to all gate calculations
-5. Calculate three gates: Risk-based / Cash availability / Concentration cap
-6. Smallest gate wins
-7. If options selected: verify spread<=10% of mid, OI>=150, options R:R >= stock R:R
-8. Output TP/SL with stock price AND option price translation (if options)
-9. R:R minimum check: 2:1 to T1 or T2 (T2-trail-only acceptable when T1 fails)
+1. Determine `guideline_stop` via the Stop Derivation Rule below --
+   never ask the user, never recompute independently of the chart label.
+   This is signal-level structure, not a sizing decision -- the same
+   role P_300's `atr_adjusted_stop` plays in its own packets.
+2. Determine `guideline_target` from the chart's first major resistance
+   level (structural reference point, not a sizing decision).
+3. `signal_source` is always `P_115` -- P_115 is the analytical process
+   (V110 scoring engine) that produces the verdict and emits the packet,
+   regardless of where the candidate came from. P_116/P_118/P_910/P_920
+   are scan sources / chart-pattern variants that feed candidates INTO
+   this analysis, not separate emitters -- they never go in
+   `signal_source`. Set `strategy` to the setup type the analysis
+   actually found (`dip_buy` / `breakout` / `mean_reversion` /
+   `support_bounce`); provenance (which scan/variant surfaced the
+   candidate) is a 27-column-tracker-level detail, not a P_400 packet field.
+4. Run `cli.py` to emit the packet (command template below). Confirm
+   `Signal written: [path]` in the output before considering STEP 2 done.
 
-**Stop Derivation Rule (v1.2, added 2026-06-22):**
+**Stop Derivation Rule (v1.2, unchanged from prior STEP 2):**
 ```
 Primary:   PA Stop (Structure) — swing low over paStopLookback (default 10) bars
            up to/including the signal bar, minus 0.1x ATR buffer.
@@ -1089,18 +1116,16 @@ Rule:      Always use the chart's displayed PA Stop value as Stop price.
            Never recompute independently of the chart label.
 ```
 
-**Expected Output:**
-- Position size (shares or contracts)
-- TP1 / TP2 levels with stock + option prices
-- SL level with stock + option prices
-- R:R calculation for both stock and option scenarios
-- Posture flag if changed since INIT
+**Emit command:**
+```
+cd C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_115_BuytheDipTradingSystem\python
+C:\Users\Trader\.conda\envs\p140\python.exe cli.py --symbol SYMBOL --session-date YYYY-MM-DD --timestamp YYYY-MM-DDTHH:MM:SSZ --strategy dip_buy --entry ENTRY --stop STOP --target TARGET --horizon "3-5 days" --confidence HIGH --close CLOSE --volume VOLUME --rationale "short thesis" --timeframe 1D --source-link "path/to/audit-note.md" --atm ATR14 --source P_115
+```
+`--source` is always `P_115` -- see Step 3 above. Do not substitute P_116/P_118/P_910/P_920 here.
 
-**2-Tranche Exit Rule (applies to all STEP 2 outputs):**
-- T1 (50%): first resistance level — always show
-- T2 (50%): weekly-ATR trailing stop — always show
-- Zone strength: Strong = 3+ prior touches | Moderate = 2 | Weak = 1
-- R:R minimum 2:1 to T1 OR T2; T2-trail-only acceptable when T1 fails
+**Expected Output:**
+- `Signal written: [path to *_v2.0.json]` confirming inbox delivery
+- Posture flag if changed since INIT
 
 ### 8.3 Review Workflow: Daily Trade Outcome (STEP 3) — P_800 Enforcement
 

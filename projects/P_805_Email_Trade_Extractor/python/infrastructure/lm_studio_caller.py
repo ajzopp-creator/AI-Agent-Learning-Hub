@@ -41,16 +41,31 @@ def _load_gemini_key() -> Optional[str]:
 # ---------------------------------------------------------------------------
 
 def _get_lm_model_id() -> str:
-    """Return the loaded model ID from LM Studio, falling back to config default."""
+    """Return the configured LM Studio model if listed; never blind models[0].
+
+    models[0] is often a thinking model (e.g. deepseek-r1-*) that cannot do
+    single-word classification. Prefer config.LM_STUDIO_MODEL when present.
+    """
+    preferred = config.LM_STUDIO_MODEL
     try:
         response = requests.get(f"{config.LM_STUDIO_URL}/models", timeout=5)
         response.raise_for_status()
         models = response.json().get("data", [])
-        if models:
-            return models[0]["id"]
+        ids = [m.get("id", "") for m in models if m.get("id")]
+        if preferred in ids:
+            return preferred
+        # partial match (LM Studio sometimes suffixes path/quant)
+        for mid in ids:
+            if preferred in mid or mid in preferred:
+                return mid
+        if ids:
+            logger.warning(
+                f"Configured model {preferred!r} not loaded; available={ids}. "
+                f"Using config id anyway (LM Studio will error if missing)."
+            )
     except Exception as e:
         logger.warning(f"Could not fetch LM Studio model ID: {e}")
-    return config.LM_STUDIO_MODEL
+    return preferred
 
 
 def _lm_studio_chat(messages: list, max_tokens: int = 300, temperature: float = 0.0) -> Optional[str]:
@@ -149,18 +164,25 @@ def classify_direction(ticker: str, context: str) -> str:
     def _parse(raw: Optional[str]) -> Optional[str]:
         if not raw:
             return None
-        word = raw.lower().split()[0].rstrip(".,!?") if raw.lower().split() else ""
-        word = synonyms.get(word, word)
-        return word if word in valid else None
+        tokens = [t.rstrip(".,!?:;") for t in raw.lower().split() if t]
+        if not tokens:
+            return None
+        # Prefer first token; if chatty model, scan for a valid label.
+        for word in tokens:
+            mapped = synonyms.get(word, word)
+            if mapped in valid:
+                return mapped
+        return None
 
-    result = _parse(_gemini_generate(prompt, max_tokens=10))
+    # gemini-2.5-flash spends thinking tokens; 10 leaves no room for the answer.
+    result = _parse(_gemini_generate(prompt, max_tokens=64))
     if result:
         logger.debug(f"Gemini classified {ticker} → {result}")
         return result
 
     result = _parse(_lm_studio_chat(
         messages=[{"role": "user", "content": prompt}],
-        max_tokens=10,
+        max_tokens=64,
     ))
     if result:
         logger.debug(f"LM Studio classified {ticker} → {result}")

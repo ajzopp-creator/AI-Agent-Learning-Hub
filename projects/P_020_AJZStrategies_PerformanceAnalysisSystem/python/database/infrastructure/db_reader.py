@@ -92,6 +92,36 @@ def get_open_trades(
            get_all_trades(conn, account_id=account_id, status="partial")
 
 
+def get_open_trade_for_symbol(
+    conn: sqlite3.Connection,
+    account_id: str,
+    symbol: str,
+) -> Optional[sqlite3.Row]:
+    """Fetch the oldest open/partial trade for a symbol -- FIFO match target
+    for orphaned exits whose entry fell outside the current pull window.
+
+    Args:
+        conn: Active SQLite connection.
+        account_id: Account to search within.
+        symbol: Underlying symbol (case-insensitive).
+
+    Returns:
+        Oldest matching open/partial trade row, or None if no open
+        position exists for this symbol.
+    """
+    sql = """
+        SELECT * FROM trades
+         WHERE account_id = ? AND underlying_symbol = ?
+           AND status IN ('open', 'partial')
+         ORDER BY open_date ASC
+         LIMIT 1
+    """
+    row = conn.execute(sql, (account_id, symbol.upper())).fetchone()
+    if row:
+        logger.debug(f"get_open_trade_for_symbol({symbol}) -> trade_id={row['trade_id']}")
+    return row
+
+
 def get_trade_by_symbol_and_date(
     conn: sqlite3.Connection,
     symbol: str,

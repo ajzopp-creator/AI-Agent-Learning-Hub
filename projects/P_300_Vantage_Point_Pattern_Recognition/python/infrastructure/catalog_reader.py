@@ -1,7 +1,7 @@
 """
 FILE: catalog_reader.py
-VERSION: 1.0
-DATE: 2026-05-17
+VERSION: 1.1
+DATE: 2026-07-10
 AUTHOR: Anthony Zoppi + Claude
 LAYER: infrastructure
 DESCRIPTION:
@@ -31,6 +31,12 @@ DESCRIPTION:
     sizes (~5 patterns; broader 14-symbol set still well under).
 
 CHANGELOG:
+    - 2026-07-10 v1.1: get_all_pattern_ids' origin_type param renamed
+      origin_types, now a tuple, query changed to IN (...) (WO-P300-
+      E2.003 file #2 of 7 -- supports BULK_SCAN inclusion for the
+      merge pipeline + eval tool). Default remains PATTERN_IDENT-only,
+      byte-identical behavior to before this change; every existing
+      call site's keyword renamed mechanically, values unchanged.
     - 2026-05-17 v1.0: Initial release. Stage 6 file #3 of 9.
 """
 from __future__ import annotations
@@ -127,23 +133,33 @@ def _build_in_clause(n: int) -> str:
 
 def get_all_pattern_ids(
     conn: sqlite3.Connection,
-    origin_type: str = ORIGIN_PATTERN_IDENT,
+    origin_types: tuple[str, ...] = (ORIGIN_PATTERN_IDENT,),
 ) -> list[int]:
-    """Return every pattern_instance_id with matching data_origin_type.
+    """Return every pattern_instance_id whose data_origin_type is in
+    origin_types.
 
-    Default is PATTERN_IDENT — the historical training set. Pipeline B
-    runs similarity against this set only; EVAL_SET would be transient
-    candidates (none currently persisted, per Stage 6 decision E).
+    Default is (PATTERN_IDENT,) -- the historical curated training set,
+    UNCHANGED behavior from before 2026-07-10. Renamed from the old
+    single-value `origin_type` param (WO-P300-E2.003 file #2 of 7) to
+    support BULK_SCAN inclusion for the merge pipeline and the eval
+    tool -- but this default, and every existing call site's explicit
+    origin_type=ORIGIN_PATTERN_IDENT usage, is preserved as PATTERN_IDENT-
+    only. In particular, application/daily_evaluate_pipeline.py (live
+    production Pipeline B) is DELIBERATELY left calling with a
+    PATTERN_IDENT-only tuple -- switching production to see merged
+    BULK_SCAN rows is a separate, explicit, later action (WO-P300-E2.003
+    decision 2), not a side effect of this signature change.
     """
+    placeholders = _build_in_clause(len(origin_types))
     cur = conn.execute(
-        "SELECT pattern_instance_id FROM pattern_instances "
-        "WHERE data_origin_type = ? ORDER BY pattern_instance_id",
-        (origin_type,),
+        f"SELECT pattern_instance_id FROM pattern_instances "
+        f"WHERE data_origin_type IN ({placeholders}) ORDER BY pattern_instance_id",
+        tuple(origin_types),
     )
     ids = [row[0] for row in cur.fetchall()]
     logger.info(
-        "Loaded %d pattern_instance_ids (origin_type=%s)",
-        len(ids), origin_type,
+        "Loaded %d pattern_instance_ids (origin_types=%s)",
+        len(ids), origin_types,
     )
     return ids
 

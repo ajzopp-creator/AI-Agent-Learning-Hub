@@ -1,7 +1,7 @@
 """
 FILE: add_pattern_pipeline.py
-VERSION: 1.0
-DATE: 2026-05-15
+VERSION: 1.1
+DATE: 2026-07-20
 AUTHOR: Anthony Zoppi + Claude
 LAYER: application
 DESCRIPTION:
@@ -34,6 +34,14 @@ DESCRIPTION:
         - Batch / Stage 5 multi-pattern orchestration comes later
 
 CHANGELOG:
+    - 2026-07-20 v1.1 (WFG/PLTR/BOIL/RRC PATTERN_IDENT-doubles cleanup):
+      added a pre-insert (ticker, anchor_date) collision guard via the
+      shared catalog_writer.pattern_exists_for_ticker_anchor() -- closes
+      the gap that let 4 VP re-exports (same pattern, different xlsx
+      filename/end-date) silently double-insert past EC-023's filename-
+      only check. Raises ValueError before ANY insert on temp DB; master
+      untouched either way (verify_and_promote never reached). No change
+      to any existing successful-ingest behavior.
     - 2026-05-15 v1.0: Stage 4 file #9 of plan. End-to-end ingest entrypoint.
 """
 from __future__ import annotations
@@ -64,6 +72,7 @@ from infrastructure.catalog_writer import (  # noqa: E402
     insert_pattern_bars_batch,
     insert_pattern_instance,
     insert_source_file,
+    pattern_exists_for_ticker_anchor,
 )
 from infrastructure.verify_ingestion import VerificationResult, verify_and_promote  # noqa: E402
 from infrastructure.vp_xlsx_reader import parse_pattern_file  # noqa: E402
@@ -235,6 +244,19 @@ def ingest_pattern_file(
 
     with connection_context(catalog_path=str(temp_db_path)) as conn:
         pre_counts = catalog_checkout(conn)
+
+        if pattern_exists_for_ticker_anchor(conn, parse.metadata.symbol, launch_date):
+            raise ValueError(
+                f"PATTERN_IDENT collision: {parse.metadata.symbol} @ "
+                f"{launch_date} already in catalog. Master untouched -- "
+                f"this looks like a re-export of an already-ingested "
+                f"pattern under a different filename ({xlsx_path.name}) -- "
+                f"EC-023 only blocks an exact filename match, not this. "
+                f"If this really is a new, distinct pattern that happens "
+                f"to share a ticker+anchor_date with an existing one, that "
+                f"needs a deliberate decision, not a guard bypass."
+            )
+
         symbol_was_new = _check_symbol_is_new(conn, parse.metadata.symbol)
 
         symbol_id = get_or_create_symbol(conn, parse.metadata.symbol)

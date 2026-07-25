@@ -60,7 +60,7 @@ P_000 is the **foundation project** for the AI-Agent-Learning-Hub. It serves fiv
 | P_400 | Trade Order Management |
 | P_800 | Automation / Note-Taking (Claude–Obsidian MCP) |
 | P_805 | Email Trade Extractor |
-| D_130 | TradetheBounce OIL analysis |
+| P_110 | TradetheBounce OIL analysis |
 
 ### 1.5 Definitions & Acronyms
 
@@ -272,9 +272,9 @@ The Hub has two distinct shared layers. They are NOT duplicates -- keep them sep
 | Layer | Folder | Holds | Referenced by |
 |---|---|---|---|
 | Code library | `shared_resources\` | python_utils, llm_prompts, tos_scripts, data_exports, hub_mcp_launcher.ps1 | Python imports + initializer skill Protocol C |
-| Governance / ops | `04-Shared-Resources\` (alias `Agentic-Hub-Governance`) | work_orders ledger, governance prompts, config, api-credentials | all project INIT prompts (`$LEDGER`) |
+| Governance / ops | `Agentic-Hub-Governance\` | work_orders ledger, governance prompts, config, api-credentials | all project INIT prompts (`$LEDGER`) |
 
-`Agentic-Hub-Governance` is a directory junction pointing at `04-Shared-Resources`; both paths open the same folder. The `$LEDGER` standard stays `04-Shared-Resources\work_orders`. Numbered top-level folders were retired 2026-06-05: 06-Experiments deleted (empty); 01-Learning-Path -> `_archive\`; 02-Production-Agents -> `docs\project_notes\production_agents\`; 03-Local-LLM (audio system, still working) -> `integrations\local_llm\`; 05-Documentation -> `docs\reference\`.
+`Agentic-Hub-Governance` is a directory junction pointing at `04-Shared-Resources` from 2026-06-05 to 2026-07-11, when the junction was retired and the folder renamed to `Agentic-Hub-Governance` directly. The `$LEDGER` standard is `Agentic-Hub-Governance\work_orders`. Numbered top-level folders were retired 2026-06-05: 06-Experiments deleted (empty); 01-Learning-Path -> `_archive\`; 02-Production-Agents -> `docs\project_notes\production_agents\`; 03-Local-LLM (audio system, still working) -> `integrations\local_llm\`; 05-Documentation -> `docs\reference\`.
 
 ### 3.4 AI Behavior Rules & Constraints
 
@@ -369,6 +369,7 @@ The Hub has two distinct shared layers. They are NOT duplicates -- keep them sep
 | 001 | 2026-03-08 | High | Claude generating incomplete Python scripts | Always plan all files with line counts first; deliver one complete file per code block; pause and wait for "continue" before next file |
 | 002 | 2026-03-08 | High | Claude suggesting new venv creation | NEVER suggest creating a new venv — always use the shared p140 conda environment |
 | 003 | 2026-03-08 | Medium | Claude writing monolithic scripts (everything in main.py) | Always split into domain / infrastructure / application layers; hard limit 300 lines per file |
+| 004 | 2026-06-30 | High | An untraced session added extra="forbid" to P400Record (obsidian_writers\domain\vault_schemas.py) without accounting for write_handler.py's unconditional injected source key -- silently broke every P400 vault write for a ~90min window | Pydantic models backing a shared write path must be tested against the actual writer's injected/derived fields, not just the caller's explicit payload, before adding extra="forbid" |
 
 ---
 
@@ -409,6 +410,11 @@ The Hub has two distinct shared layers. They are NOT duplicates -- keep them sep
 5. Never call the wrapper inside trading loops — startup only
 
 See `P_000_LMS_Integration_Guide.md` for the standard init pattern and full task type list.
+
+
+### 8.4 KB Article Review Convention (added 2026-07-06)
+
+Canonical rule lives in skill `kb-review-convention` (`.claude\skills\kb-review-convention\SKILL.md`) -- Hub-wide, applies from any project session, not just P_115. Do not duplicate the rule here; update the skill file only.
 
 ---
 
@@ -464,8 +470,8 @@ Thumbs.db
 | `P_000_LM_Studio_Wrapper_Architecture_Overview.md` | `docs\lm_studio\` (Hub shared) | Full technical design of the LM Studio wrapper |
 | `P_000_LM_Studio_Wrapper_System_Initialization_Prompt_v1.0.md` | `docs\lm_studio\` (Hub shared) | 6-step bootstrap prompt for Claude sessions |
 | `P_000_Account_Parameters_Current.md` | `config\` (P_000 project) | Current account balance, risk-per-trade, position-sizing gates, and risk-mode adjustments — applies to all trading projects. Manually reviewed monthly by Tony. |
-| `Agentic-Hub-Governance` (junction) | Hub root -> `04-Shared-Resources` | Friendly alias for the governance / work-order-ledger layer. Both paths resolve to the same folder (created 2026-06-05). |
-| Work-order ledger | `04-Shared-Resources\work_orders\` (alias `Agentic-Hub-Governance\work_orders\`) | Single source of truth for all work orders, per HUB_INIT_REFACTOR_AND_WO_GOVERNANCE v1.1. |
+| `Agentic-Hub-Governance` | Hub root | Governance / ops layer -- real folder since 2026-07-11 (formerly `04-Shared-Resources`, accessed via junction 2026-06-05 to 2026-07-11; junction retired, folder renamed). |
+| Work-order ledger | `Agentic-Hub-Governance\work_orders\` | Single source of truth for all work orders, per HUB_INIT_REFACTOR_AND_WO_GOVERNANCE v1.1. |
 
 ---
 
@@ -496,7 +502,7 @@ Thumbs.db
 | Parameter | Value |
 |---|---|
 | prefix_format | P_NNN (e.g., P_000, P_010, P_115, P_300) |
-| demo_prefix | D_NNN (e.g., D_130) |
+| demo_prefix | D_NNN (no active D_NNN projects -- D_130 renamed to P_110 on 2026-06-30) |
 | master_reference | P_000 |
 
 ### 11.4 Parameter Registry (Quick Load — Session Init)

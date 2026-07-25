@@ -1,7 +1,7 @@
 """
 FILE: daily_evaluate_pipeline.py
-VERSION: 1.20
-DATE: 2026-06-17
+VERSION: 1.22
+DATE: 2026-07-21
 AUTHOR: Anthony Zophi + Claude
 LAYER: application
 DESCRIPTION:
@@ -57,6 +57,22 @@ DESCRIPTION:
                 python application/daily_evaluate_pipeline.py --xlsx <path>
 
 CHANGELOG:
+    - 2026-07-21 v1.22 (WO-P300-E4.008): IntelliScan support_1/support_2
+      now sanity-checked against _close (positive AND within 50% of price)
+      before use, not just the SIGNAL_V2 schema's positive-only check.
+      A misaligned manual copy/paste into the IntelliScan grid produced
+      a real wrong-but-positive value (84.88 vs a $31.85 close) that the
+      old check would have missed entirely. Nulled per-field on failure
+      (logged WARNING), not fatal to the whole signal.
+    - 2026-07-04 v1.21: WO-P300-E1.004. Stage 5a emit call was missing the
+      decimal-fraction -> percent scaling on mean_ret that wr already gets
+      (`wr = win_rate * 100`, one line above). mean_return_pct is decimal-
+      space internally (M-020) despite its name; every SIGNAL_V2 packet's
+      rationale string since Enhancement 1 (2026-06-08) has shown a mean
+      return ~100x too small (e.g. "+0.05%" instead of "+4.92%"). Cosmetic
+      only -- guideline_stop/target derive from ATR, not mean_ret -- but
+      wrong in every packet emitted to date. Confirmed via CUBE (report:
+      +4.92% at h=5; packet showed +0.05%) and today's real MSTR packet.
     - 2026-06-17 v1.20: M-043 fix. _obsidian_write() call (Stage 8a) was
       discarding its True/False return -- a clean False (no report file
       found, signal parse failed) logged nothing at all, silently
@@ -294,7 +310,7 @@ def run_daily_evaluate(
     # Stage 2: read-only catalog pass -- one connection for the whole run
     with connection_context() as conn:
         all_pids = catalog_reader.get_all_pattern_ids(
-            conn, origin_type=ORIGIN_PATTERN_IDENT,
+            conn, origin_types=(ORIGIN_PATTERN_IDENT,),
         )
         if not all_pids:
             raise RuntimeError(
@@ -367,6 +383,35 @@ def run_daily_evaluate(
         _close = candidate.bars[-1].close
         _atr = compute_atr_wilder([(b.high, b.low, b.close) for b in candidate.bars])
         _is1, _is2 = get_support_levels(candidate.ticker, _intelliscan)
+        # WO-P300-E4.008: IntelliScan support levels come from a manual
+        # two-step copy/paste (a separate IntelliScan export, pasted into
+        # the grid this pipeline reads) -- a misaligned paste can produce
+        # a wrong-but-still-positive value that the SIGNAL_V2 schema's
+        # positive-only check would never catch (only negatives were
+        # blocked before this). Sanity-check against _close (a DIFFERENT,
+        # trusted source -- the real per-symbol History Grid export, not
+        # the same paste that could itself be misaligned) instead of
+        # trusting the pasted value's own internal consistency. 50% is
+        # deliberately generous -- a real near-term stop/support anchor
+        # this pipeline uses shouldn't reasonably sit that far from price
+        # anyway; a value this far off is far more likely a column-shifted
+        # paste than a legitimate wide support zone. Nulled, not fatal --
+        # both fields stay optional (signal_emitter.py's own contract);
+        # a bad one no longer has to kill the whole signal write.
+        for _label, _val in (("intelliscan_support_1", _is1), ("intelliscan_support_2", _is2)):
+            if _val is None:
+                continue
+            if _val <= 0 or abs(_val - _close) / _close > 0.5:
+                logger.warning(
+                    "%s: %s=%.4f implausible vs close=%.4f (non-positive or "
+                    ">50%% deviation) -- likely a misaligned IntelliScan "
+                    "paste (WO-P300-E4.008); treating as absent, not fatal.",
+                    candidate.ticker, _label, _val, _close,
+                )
+                if _label == "intelliscan_support_1":
+                    _is1 = None
+                else:
+                    _is2 = None
         # atr_adjusted_stop: IntelliScan support_1 only counts as a candidate
         # when it sits below entry -- a valid stop for a long (WO-P300-E1.003;
         # an above-entry level isn't a stop at all). Otherwise the ATR floor
@@ -383,7 +428,7 @@ def run_daily_evaluate(
             chosen_horizon=chosen_horizon,
             n_matches=len(top_matches),
             wr=aggregated_horizon.win_rate * 100,  # 0.0-1.0 -> 0-100
-            mean_ret=aggregated_horizon.mean_return_pct,
+            mean_ret=aggregated_horizon.mean_return_pct * 100,  # decimal frac -> pct (M-020; WO-P300-E1.004)
             z_score=aggregated_horizon.z_score,
             close_at_signal=_close,
             atm_at_signal=_atr,

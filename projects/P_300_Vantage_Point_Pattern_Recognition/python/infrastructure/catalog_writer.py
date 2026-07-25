@@ -1,7 +1,7 @@
 """
 FILE: catalog_writer.py
-VERSION: 1.0.1
-DATE: 2026-05-15
+VERSION: 1.0.3
+DATE: 2026-07-20
 AUTHOR: Anthony Zoppi + Claude
 LAYER: infrastructure
 DESCRIPTION:
@@ -26,6 +26,21 @@ DESCRIPTION:
         - catalog_checkout: asserts PRAGMA foreign_keys = ON (M-012)
 
 CHANGELOG:
+    - 2026-07-20 v1.0.3 (WFG/PLTR/BOIL/RRC PATTERN_IDENT-doubles cleanup):
+      added pattern_exists_for_ticker_anchor() -- lifted from catalog_
+      merge_io.py's private _pattern_already_exists (WO-P300-E2.003
+      decision 4, unchanged query) so Pipeline A's add_pattern_pipeline.py
+      can share the same exact symbol+anchor_date dedup check the bulk
+      path already had. Root cause this closes: EC-023 only blocks an
+      exact filename match, so a VP re-export with a different end date
+      (different filename, same underlying pattern) sailed through
+      Pipeline A's dedup entirely -- confirmed as the cause of 4 real
+      catalog doubles (WFG/PLTR/BOIL/RRC), found via a TopKTieError on
+      2026-07-20's real BulkAddPattern batch.
+    - 2026-07-19 v1.0.2 (WO-P300-E4.006, decision #7): CATALOG_TABLES
+      grows to 8 -- topk_cache added (writes go through infrastructure/
+      topk_cache_io.py, not here). checkout/checkin needed no code
+      change -- both already iterate CATALOG_TABLES generically.
     - 2026-05-15 v1.0.1: Renamed `_CATALOG_TABLES` → `CATALOG_TABLES`
       (public) so verify_ingestion can reuse the canonical 7-table list.
     - 2026-05-15 v1.0: Stage 4 file #6 of plan. Composable insert API
@@ -35,6 +50,7 @@ from __future__ import annotations
 
 import logging
 import sqlite3
+from datetime import date
 import sys
 from pathlib import Path
 
@@ -57,8 +73,10 @@ logger = logging.getLogger(__name__)
 # Module constants
 # ─────────────────────────────────────────────────────────────────────────────
 
-# All 7 catalog tables in dependency order (parent → child). Public so
+# All 8 catalog tables in dependency order (parent → child). Public so
 # verify_ingestion and any other module can reuse the canonical list.
+# topk_cache added 2026-07-19 (WO-P300-E4.006, decision #7) -- grew
+# from 7 to 8; see infrastructure/topk_cache_io.py for its own schema.
 CATALOG_TABLES: tuple[str, ...] = (
     "symbols",
     "source_files",
@@ -67,6 +85,7 @@ CATALOG_TABLES: tuple[str, ...] = (
     "pattern_bars",
     "pattern_features",
     "forward_labels",
+    "topk_cache",
 )
 
 # pattern_bars insert columns in order. Driver for both the SQL string and
@@ -147,6 +166,26 @@ def get_feature_set_id(conn: sqlite3.Connection, feature_version: str) -> int:
             f"Stage 3c bootstrap row may be missing — inspect the catalog."
         )
     return row[0]
+
+
+def pattern_exists_for_ticker_anchor(
+    conn: sqlite3.Connection, ticker: str, anchor_date: date
+) -> bool:
+    """Exact ticker + anchor_date dedup check (WFG/PLTR/BOIL/RRC cleanup,
+    2026-07-20). Lifted unchanged from catalog_merge_io.py's private
+    _pattern_already_exists (WO-P300-E2.003 decision 4) so every ingest
+    path shares one implementation instead of each having its own copy.
+    Query is intentionally exact-match (ticker, anchor_date) -- no
+    fuzzy/near-duplicate detection here; that stays a human decision
+    (Finding 3's own rule, domain/topk_cache.py), not something this
+    function silently attempts."""
+    row = conn.execute(
+        "SELECT 1 FROM pattern_instances pi "
+        "JOIN symbols s ON s.symbol_id = pi.symbol_id "
+        "WHERE s.ticker = ? AND pi.anchor_date = ?",
+        (ticker, anchor_date.isoformat()),
+    ).fetchone()
+    return row is not None
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -244,9 +283,9 @@ def insert_forward_labels_batch(
 # ─────────────────────────────────────────────────────────────────────────────
 
 def catalog_checkout(conn: sqlite3.Connection) -> dict[str, int]:
-    """Snapshot row counts for all 7 catalog tables before a write op.
-    Also asserts PRAGMA foreign_keys = ON (M-012) — the orchestrator's
-    tripwire that the connection came through db_connect."""
+    """Snapshot row counts for all CATALOG_TABLES tables before a write
+    op. Also asserts PRAGMA foreign_keys = ON (M-012) — the
+    orchestrator's tripwire that the connection came through db_connect."""
     fk = conn.execute("PRAGMA foreign_keys;").fetchone()[0]
     if fk != 1:
         raise RuntimeError(

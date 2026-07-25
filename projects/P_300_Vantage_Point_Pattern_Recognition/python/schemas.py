@@ -1,7 +1,7 @@
 """
 FILE: schemas.py
-VERSION: 2.2
-DATE: 2026-05-20
+VERSION: 2.4
+DATE: 2026-07-10
 AUTHOR: Anthony Zoppi + Claude
 LAYER: schemas
 DESCRIPTION:
@@ -29,6 +29,21 @@ DESCRIPTION:
     table empty for the POC.
 
 CHANGELOG:
+    - 2026-07-10 v2.4: Added BULK_SCAN to DataOriginType (WO-P300-E2.003
+      file #1 of 7 -- physical merge of research_catalog.db STRICT-tier
+      patterns into the live catalog). Purely additive -- no existing
+      member changed, no existing row's data_origin_type value affected.
+    - 2026-07-08 v2.3: Widened ColumnMapEntry.type from Literal["date",
+      "float"] to Literal["date", "float", "text"] (WO-P300-E2.001).
+      Purely additive -- every existing manifest entry uses "date" or
+      "float" only, so ingest_manifest.json validates identically.
+      Enables bulk_ingest_manifest.json to declare the bulk export's
+      Neural Index column (text 'up'/'down', not the numeric NeuralXMax
+      value the live manifest maps under the same field name) without a
+      parallel, fully-duplicated manifest schema in schemas_bulk.py.
+      vp_xlsx_reader.py's _coerce_cell has no "text" branch and does not
+      need one today -- no live manifest entry uses it; the bulk reader
+      (infrastructure/bulk_grid_reader.py) adds its own text handling.
     - 2026-05-20 v2.2: Added `header_sub_alt: Optional[str] = None` to
       ColumnMapEntry. Supports VP export format drift where a column's
       sub-header text changes between VP versions (e.g. triple_cross
@@ -58,6 +73,7 @@ from config import (
     FORWARD_HORIZONS,
     MAX_WINDOW_LENGTH,
     MIN_WINDOW_LENGTH,
+    ORIGIN_BULK_SCAN,
     ORIGIN_EVAL_SET,
     ORIGIN_PATTERN_IDENT,
 )
@@ -68,9 +84,19 @@ from config import (
 # ---------------------------------------------------------------------------
 
 class DataOriginType(str, Enum):
-    """Catalog row provenance -- controls similarity-search inclusion."""
+    """Catalog row provenance -- controls similarity-search inclusion.
+    BULK_SCAN added 2026-07-10 (WO-P300-E2.003 file #1 of 7) -- merged
+    research-catalog patterns keep their real provenance (mechanically
+    detected) rather than being relabeled PATTERN_IDENT, which would
+    have erased the audit trail the two-catalog type isolation
+    (schemas_bulk.py's BulkDataOriginType) was built to protect.
+    catalog_reader.py and eval_io.py both updated (files #2-3) to
+    include BULK_SCAN in their similarity-search / eval-load filters --
+    without those changes this new member alone would make merged rows
+    silently invisible everywhere that still hard-filters PATTERN_IDENT."""
     PATTERN_IDENT = ORIGIN_PATTERN_IDENT   # permanent training row
     EVAL_SET = ORIGIN_EVAL_SET             # transient Pipeline B candidate
+    BULK_SCAN = ORIGIN_BULK_SCAN           # merged from research_catalog.db (WO-P300-E2.003)
 
 
 # ---------------------------------------------------------------------------
@@ -97,11 +123,16 @@ class ColumnMapEntry(BaseModel):
     VP version transitions. When set, _verify_header_text accepts either
     header_sub OR header_sub_alt. Primary header_sub should reflect the
     current VP version; alt covers legacy exports still in the queue.
+
+    type "text": added v2.3 for bulk manifest support (WO-P300-E2.001).
+    No live ingest_manifest.json entry uses it today; vp_xlsx_reader.py's
+    _coerce_cell has no "text" branch and doesn't need one unless/until
+    a live manifest entry actually declares type="text".
     """
     model_config = ConfigDict(frozen=True)
 
     field: str = Field(min_length=1)
-    type: Literal["date", "float"]
+    type: Literal["date", "float", "text"]
     header_top: Optional[str] = None      # null on merged-cell continuation
     header_sub: Optional[str] = None      # primary (current VP version)
     header_sub_alt: Optional[str] = None  # alternate (prior VP version)
@@ -374,3 +405,18 @@ class ForwardLabelRecord(BaseModel):
                 f"horizon_days {v} not in allowed set {FORWARD_HORIZONS}"
             )
         return v
+
+
+class PowerGaugeResult(BaseModel):
+    """
+    Chaikin Analytics Power Gauge Rating scrape result for one symbol.
+
+    Read-only external data -- not part of the BUY/WATCH/PASS decision
+    path (NFR-1). Attached to the P300 Obsidian note as supplementary
+    context for P_400, never fed back into signal_classifier.
+    """
+    ticker: str
+    rating: str          # e.g. "Very Bullish", "Bullish", "Neutral", "Bearish", "Very Bearish"
+    rating_score: Optional[float] = None   # numeric score if Chaikin exposes one, else None
+    scraped_at: datetime
+    source_url: str

@@ -215,3 +215,15 @@ class TrackerLookup(BaseModel):
             f"({self.traded_rows} traded / {self.total_rows} total rows) "
             f"from {self.source_file}"
         )
+
+
+# ── Weekly-update state ─────────────────────────────────────────────────────
+
+class LastRunFile(BaseModel):
+    """P_020_last_run.json — tracks the last successful weekly update."""
+
+    last_run_date:     str
+    last_run_datetime: Optional[str] = Field(
+        default=None,
+        description="Full ISO timestamp of last successful run; date-only for legacy files.",
+    )

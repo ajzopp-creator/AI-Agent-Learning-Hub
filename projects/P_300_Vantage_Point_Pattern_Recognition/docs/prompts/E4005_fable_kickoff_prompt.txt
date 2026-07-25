@@ -1,0 +1,68 @@
+PASTE THIS INTO THE FABLE 5 (MAX EFFORT) SESSION AS THE FIRST MESSAGE
+AFTER RUNNING INIT:
+
+---
+
+INIT
+
+Then, after INIT completes:
+
+Task: WO-P300-E4.005 approach review + Phase 1 profiling design. Read
+C:\Users\Trader\AI-Agent-Learning-Hub\Agentic-Hub-Governance\work_orders\WO-P300-E4.005.md
+in full first -- it contains the goal (<15 min post-batch to eval-ready,
+statistically correct, no approximation), all real measured baselines,
+the ranked candidate levers, and the explicit constraint that Phase 1
+(profiling) is the ONLY approved work.
+
+Your job this session, in order:
+
+1. CHALLENGE THE APPROACH. The WO's lever ranking (pairwise DTW cache +
+   parallel-scaling fix as the two primary levers, numba JIT as a
+   multiplier, pre-filter parked, sampling rejected) was drafted by a
+   Sonnet session from outside-the-code reasoning. Verify it against the
+   actual code: domain/similarity.py (DTW), domain/eval_scoring.py
+   (score_one, _corpus_pids, the parallel path), domain/eval_incremental.py,
+   infrastructure/eval_io.py (existing whole-batch cache, M-099
+   content-fingerprint keying). If a better lever exists or a ranked one
+   is wrong, say so with reasoning before designing anything.
+
+2. SANITY-CHECK THE 15-MINUTE TARGET at 1700-symbol scale. The catalog
+   will grow far past 10761 patterns. Corpus size grows with catalog
+   size, so per-pattern cost grows too. Is <15 min sustainable at, say,
+   50k-100k patterns with the proposed levers, or does the target need
+   an honest re-scope (e.g. <15 min holds to N patterns, then X)?
+   Tony needs the true answer, not the pleasing one.
+
+3. DESIGN PHASE 1 PROFILING to the WO's spec: component-level split
+   (DTW proper / corpus dict-rebuild / ranking-aggregation / parallel
+   overhead), real staging catalog (staging_ingest_mined.db, still on
+   disk unpromoted), bounded representative subset (100-200 patterns),
+   NOT a full 3-hour pass. Choose the tool (scalene is a candidate, not
+   mandated). Deliver it as a PEH script per the peh-handoff skill.
+
+4. DO NOT BUILD any production code. Plan-gate applies: after profiling
+   numbers come back, a file plan with line counts needs Tony's approval
+   first. If your approach review changes the WO materially, update the
+   WO file itself (windows-mcp:FileSystem, mtime-verify after write) and
+   log to tasks/todo.md.
+
+Context you'd otherwise have to rediscover:
+- A separate silent exit-1 diagnostic (serial rescore died after pattern
+  ~100, no traceback) is staged at Agentic-Hub-Governance\verify\
+  run_this.py and may have been run by Tony by now -- check todo.md's
+  2026-07-18 entries. If its root cause was perf-related, fold the
+  finding into your review. If that diagnostic is still pending, your
+  profiling script will OVERWRITE run_this.py (fixed PEH path) -- ask
+  Tony whether the diagnostic ran before staging yours.
+- E4.004 v1.2 (reuse-fraction threshold) shipped 2026-07-18, tests 6/6,
+  but was built by the same session that did E4.004's independent
+  review -- that increment still needs its own independent review.
+  Not your job this session; just don't double-build it.
+- Statistical correctness bar = byte-identity (model_dump_json equality)
+  with from-scratch computation. E4.003/E4.004 both regression-test this.
+  Anything that can't meet it (float-order changes from JIT included)
+  gets flagged to Tony, never silently accepted.
+
+Tony's operating style: answer first, terse, no option lists unless
+asked, one recommendation. He catches fabricated numbers immediately --
+every figure you cite must trace to a real run or a real file.

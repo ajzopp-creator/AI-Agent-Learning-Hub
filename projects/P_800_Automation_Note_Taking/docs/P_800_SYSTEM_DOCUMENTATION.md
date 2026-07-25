@@ -4,9 +4,9 @@
 ---
 
 **Project ID:** P_800
-**Version:** 4.0
+**Version:** 4.1
 **Created:** 2026-03-07
-**Last Updated:** 2026-06-07
+**Last Updated:** 2026-07-24
 **Owner:** Tony
 **Status:** Active
 
@@ -17,9 +17,9 @@
 Full architecture pivot on 2026-06-07. The single-stream `Trades/` mirror has been retired. P_800 now owns the **Obsidian Interface Layer** — a unified, multi-project data surface fed by all trading systems. Key shifts:
 
 - **Vault redesign**: TradeManagement/{P115, P300, P400, P020, signals} + TradeOrderManagement/signals + KnowledgeBase + Bases + Dashboard.md (replaces old Trades/ folder pattern)
-- **Python writers**: Consolidated under `python\obsidian_writers\` (renamed from `scripts\` in E3.001); public API via `write_to_vault()` in `shared_resources\python_utils\vault_interface.py`
+- **Python writers**: `obsidian_writers` package lives at Hub root (`C:\Users\Trader\AI-Agent-Learning-Hub\obsidian_writers\`) as of WO-P800-E2.005 (2026-06-16) — the earlier `python\obsidian_writers\` project-folder copy was archived and removed; public API via `write_to_vault()` in `shared_resources\python_utils\vault_interface.py`
 - **Interface docs**: Detailed schemas, bases, and roadmap live in `P_800_Interface_Arch_Part1_Schemas_v1_0.md` and `P_800_Interface_Arch_Part2_Bases_Dashboard_v1_0.md` (canonical reference; not duplicated here)
-- **Phase progress**: E-series cleanup (E1-E3) complete; Interface Layer Phases 5A–5D done; 5E–5H pending (cross-project integrations)
+- **Phase progress**: E-series cleanup (E1-E3) complete; Interface Layer Phases 5A–5F and 5H done (cross-project integrations live: P_300 since 2026-05-18, P_400 since 2026-06-08, P_020 since 2026-07-21); 5G (KB Templater + Web Clipper) remains
 
 **See Section 0 History** (below) for v3.0 and prior changes.
 
@@ -74,7 +74,7 @@ P_800 eliminates manual typing and repetitive setup in Tony's daily workflow. It
 | Dashboard.md | Daily entry point note in vault root; links to all six Base views |
 | Writer Module | Python script (in obsidian_writers/) that normalizes source data → YAML frontmatter `.md` files |
 | write_to_vault() | Public API function in shared_resources\python_utils\vault_interface.py; used by all sending projects |
-| obsidian_writers | Python package at projects\P_800_Automation_Note_Taking\python\obsidian_writers\; owns all vault write logic |
+| obsidian_writers | Python package at Hub root (`C:\Users\Trader\AI-Agent-Learning-Hub\obsidian_writers\`, canonical since WO-P800-E2.005); owns all vault write logic |
 | P400SIG | Schema name for raw JSON signal packets (P_115 → P_400); routed to TradeOrderManagement/signals/ |
 | SIGNALS_DIR | Config constant pointing to TradeOrderManagement/signals/ (raw JSON signal packets, not frontmatter notes) |
 | Frontmatter | YAML metadata block at top of .md file (parsed by Obsidian Bases) |
@@ -181,10 +181,10 @@ Tony's daily routine and automation targets:
 | 5B | Six .base files (P115_Evaluations, P300_Signals, P400_Trades, P020_Performance, Open_Positions, KB_Articles) | ✅ Complete (2026-05-22) |
 | 5C | Dashboard.md — link-only v1.0 | ✅ Complete (2026-05-22) |
 | 5D | Vault interface engine + public API + README | ✅ Complete (2026-05-22) |
-| 5E | P_300 integration — call write_to_vault() from P_300 project | Planned |
+| 5E | P_300 integration — call write_to_vault() from P_300 project | ✅ Complete (live since 2026-05-30, `write_signal_to_obsidian.py` + `signal_emitter.py`; roadmap corrected 2026-07-10) |
 | 5F | P_020 integration — call write_to_vault() from P_020 project | Planned |
 | 5G | KB Templater template + Web Clipper config | Planned |
-| 5H | P_400 integration — after P_400 schema locked | Planned |
+| 5H | P_400 integration — after P_400 schema locked | ✅ Complete (live via `record_writer.py` / `_write_record.py`; roadmap corrected 2026-07-10) |
 | 4 checkpoint | E4.001 — Git + Backup strategy | Planned |
 | 6 | Dataview embedded dashboard (trigger: 2+ projects live) | Planned |
 
@@ -383,30 +383,36 @@ C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\
 ```
 C:\Users\Trader\AI-Agent-Learning-Hub\
 ├── trading_journal\                        <- Obsidian vault (above)
+├── obsidian_writers\                       <- CANONICAL location (WO-P800-E2.005, 2026-06-16)
+│   ├── __init__.py
+│   ├── config.py
+│   ├── schemas.py
+│   ├── test_vault_schemas.py
+│   ├── test_write_route.py
+│   ├── test_filename_builder.py
+│   ├── domain\
+│   │   ├── validator.py
+│   │   ├── vault_schemas.py
+│   │   ├── signal_schemas.py
+│   │   ├── frontmatter_builder.py
+│   │   └── filename_builder.py
+│   ├── infrastructure\
+│   │   ├── vault_writer.py
+│   │   └── json_writer.py
+│   ├── application\
+│   │   └── write_handler.py
+│   └── logger_setup.py
 └── projects\
     └── P_800_Automation_Note_Taking\
         ├── docs\
-        │   ├── P_800_SYSTEM_DOCUMENTATION.md    <- this file (v4.0)
+        │   ├── P_800_SYSTEM_DOCUMENTATION.md    <- this file (v4.1)
         │   ├── P_800_Interface_Arch_Part1_Schemas_v1_0.md
         │   ├── P_800_Interface_Arch_Part2_Bases_Dashboard_v1_0.md
         │   └── backups\
         ├── claude_artifacts\
         ├── espanso\
-        └── python\
-            └── obsidian_writers\
-                ├── __init__.py
-                ├── config.py
-                ├── schemas.py
-                ├── domain\
-                │   ├── validator.py
-                │   ├── frontmatter_builder.py
-                │   └── filename_builder.py
-                ├── infrastructure\
-                │   └── vault_writer.py
-                ├── application\
-                │   └── write_handler.py
-                ├── logger_setup.py
-                └── tests\
+        └── python\                          <- obsidian_writers copy REMOVED here (E2.005);
+            └── tests\                       <- test_signal_v2_e2e.py (gate test) still lives here
 ```
 
 ---
@@ -464,6 +470,7 @@ C:\Users\Trader\AI-Agent-Learning-Hub\
 | 10 | 2026-05-22 | Vault layout Trades/ → Interface Layer (TradeManagement/TradeOrderManagement/KnowledgeBase/Bases) not documented | Architecture pivot completed; detailed docs (Arch Part1 & Part2) created as canonical reference. | High |
 | 11 | 2026-06-06 | Python folder structure `scripts\` → `python\`; E3.001 cleanup completed | Verified E3 work complete; import all modules clean. | Medium |
 | 12 | 2026-06-07 | System doc v3.0 stale (described old Trades/ layout) | Updated to v4.0; reflects live Interface Layer architecture (TradeManagement/TradeOrderManagement/KnowledgeBase/Bases) and Python writer consolidation. | High |
+| 13 | 2026-07-10 | Roadmap (Section 5) showed 5E (P_300) and 5H (P_400) as "Planned" when both had been live in production for weeks (5E since 2026-05-30; 5H via P_400's record_writer.py) -- roadmap never updated after ship. Folder tree (7.2) and Parameter Registry also still pointed at the `python\obsidian_writers\` copy removed by WO-P800-E2.005 (2026-06-16); canonical is Hub root. Nearly triggered duplicate P_300 integration work before a WO-ledger grep caught it. | Corrected roadmap table, folder tree, and Parameter Registry to match live disk state. | Medium |
 
 ---
 
@@ -480,6 +487,8 @@ C:\Users\Trader\AI-Agent-Learning-Hub\
 | 2026-06-04 | E-series cleanup (E1, E2 complete) | Duplicate code purged; dead imports removed |
 | 2026-06-06 | E3.001 complete | Folder structure scripts → python; import test verified clean |
 | 2026-06-07 | System doc v4.0 rewrite | Architecture pivot documented; Interface Arch docs confirmed as canonical reference; legacy folders cleaned |
+| 2026-07-10 | WO-P400-E2.020 (verdict -> write_route rename) executed and closed; P_400 Ack received | Renamed routing field across obsidian_writers with legacy-key fallback read (no bulk vault rewrite); new test_write_route.py added |
+| 2026-07-10 | System doc v4.1 -- roadmap correction | 5E and 5H marked Complete (were already live, doc was stale); folder tree and Parameter Registry corrected to Hub-root obsidian_writers location (WO-P800-E2.005) |
 
 ---
 
@@ -492,8 +501,8 @@ C:\Users\Trader\AI-Agent-Learning-Hub\
 | Hub root | `C:\Users\Trader\AI-Agent-Learning-Hub\` |
 | Project folder | `C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_800_Automation_Note_Taking\` |
 | Docs folder | `...\projects\P_800_Automation_Note_Taking\docs\` |
-| Python folder | `...\projects\P_800_Automation_Note_Taking\python\` |
-| obsidian_writers package | `...\python\obsidian_writers\` |
+| Python folder | `...\projects\P_800_Automation_Note_Taking\python\` (tests only — gate test lives here) |
+| obsidian_writers package | `C:\Users\Trader\AI-Agent-Learning-Hub\obsidian_writers\` (Hub root, canonical since WO-P800-E2.005) |
 | vault_interface.py | `shared_resources\python_utils\vault_interface.py` |
 | Obsidian vault root | `C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\` |
 | Daily note format | `YYYY-MM-DD.md` |
@@ -525,4 +534,4 @@ C:\Users\Trader\AI-Agent-Learning-Hub\
 
 ---
 
-*End of P_800 SYSTEM DOCUMENTATION v4.0 — 2026-06-07*
+*End of P_800 SYSTEM DOCUMENTATION v4.1 — 2026-07-10*

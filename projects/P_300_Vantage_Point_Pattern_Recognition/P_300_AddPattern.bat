@@ -44,16 +44,22 @@ if not defined LATEST (
 
 set "LATEST_DATE=%LATEST:~0,6%"
 
-if "%LATEST_DATE%"=="%TODAYSTAMP%" (
-    echo [BACKUP] Catalog already current for today -- %LATEST%
-) else (
-    set "NEWCATALOG=%TODAYSTAMP%catalog.db"
-    echo [BACKUP] New catalog day -- copying to %NEWCATALOG%
-    echo          Source: %MODELS_DIR%\%LATEST%
-    copy /y "%MODELS_DIR%\%LATEST%" "%MODELS_DIR%\%NEWCATALOG%" >nul
-    echo          Done.
-)
+rem -- M-032: no SETLOCAL ENABLEDELAYEDEXPANSION / !VAR! on this workstation.
+rem -- goto-label pattern instead -- keeps each %VAR% reference in its own
+rem -- top-level statement context so it re-expands correctly after SET.
+if "%LATEST_DATE%"=="%TODAYSTAMP%" goto :catalog_current
 
+set "NEWCATALOG=%TODAYSTAMP%catalog.db"
+echo [BACKUP] New catalog day -- copying to %NEWCATALOG%
+echo          Source: %MODELS_DIR%\%LATEST%
+copy /y "%MODELS_DIR%\%LATEST%" "%MODELS_DIR%\%NEWCATALOG%" >nul
+echo          Done.
+goto :catalog_baseline
+
+:catalog_current
+echo [BACKUP] Catalog already current for today -- %LATEST%
+
+:catalog_baseline
 echo.
 echo [SUMMARY] Catalog baseline for today...
 echo.

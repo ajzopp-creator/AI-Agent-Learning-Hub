@@ -1,0 +1,58 @@
+You are pulling Chaikin Analytics Power Gauge ratings for a batch of
+stock symbols and attaching each one to its P_300 Obsidian note.
+
+Date: {DATE}
+Symbols: {SYMBOLS}
+
+For EACH symbol in the list above, do the following in order:
+
+1. Navigate to https://members.chaikinanalytics.com/pgr/stock/{TICKER}
+   (substitute the real ticker for {TICKER}).
+2. If you land on a login page, pause and tell me -- do not attempt to
+   log in yourself.
+3. Read the Power Gauge rating text (e.g. "Bullish", "Neutral",
+   "Bearish") from the rating widget on the page.
+4. Open the note at:
+   C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeManagement\P300\{DATE}_{TICKER}.md
+   NOTE: {DATE} here means the note's signal_date (the frontmatter
+   signal_date / filename date), NOT necessarily today's run date --
+   P_300 notes are filed under the anchor date of the underlying
+   pattern data, which commonly lags the actual run date by one
+   session. If a note for today's date doesn't exist but one exists
+   for the prior session, use that one and say so when reporting back.
+5. Append a new section at the end of the note body (after the existing
+   Narrative section), exactly in this form:
+
+   ## Chaikin Power Gauge
+   Rating: <rating text, e.g. Bullish>
+   Price: <price and change, e.g. $308.63 (+$14.25 / +4.8%)>
+
+   ### Quick Stats
+   **Fundamentals** -- Market Cap: <> | Revenue: <> | Proj 1Y P/E: <> | Yield: <>
+   **Technicals** (as of <Quick Stats date on page>) -- 21-Day EMA: <> | LT Trend Line: <> | Chaikin Money Flow: <value> (<Strong/Weak>) | Technical Trend: <Strong/Weak>
+   **Performance** -- 52wk High/Low: <> | 52wk Perf: <> | Rel Strength vs SPY: <> | Beta: <>
+   **Earnings** -- EPS (prev FY): <> | EPS ('<next FY>): <> | Annual 5Y EPS Growth: <> | Analyst Revisions: <>
+   **Ratios** -- LT Debt-Equity: <> | Price-Book: <> | 1Y ROE: <> | Price-Sales: <>
+   **Dividends** -- Annual Div (FWD): <> | Payout: <> | Ex-Div Date: <> | Annual 5Y Growth: <>
+
+   ### Summary
+   <the Power Gauge Summary paragraph(s), verbatim from the page>
+
+   Retrieved: <today's actual retrieval date, not necessarily {DATE}>
+
+   NOTE on Financials/Earnings/Technicals/Experts: on this page these
+   render as colored bar gauges (green/red position on a bar), not as
+   text ratings or paragraphs -- there is no per-category rating word
+   or descriptive paragraph to extract for them. Do not try to invent
+   one. The Quick Stats block above is the substantive per-category
+   data that IS available as text. If a ticker has no Chaikin coverage
+   at all (Rating shows "None" and summary shows "Power Gauge summary
+   not available", with no price quote), skip the note entirely --
+   do not append a stub section -- and report it as no-coverage.
+
+6. Save the file. Do not modify any other part of the note --
+   frontmatter, existing headers, and existing text stay untouched.
+
+Move to the next symbol only after the current one's note is saved.
+When all symbols are done, report which succeeded and which failed
+(e.g. login required, page didn't load, note file not found).

@@ -65,7 +65,7 @@ def make_short_chain(**kwargs) -> OptionChainInput:
         strike=110.0, option_type="call",
         bid=1.80, ask=2.10, mid=1.95,
         delta=0.25, iv=0.28,
-        open_interest=200, spread_pct_of_mid=15.4,
+        open_interest=200, spread_pct_of_mid=6.0,
         data_source="tos", chain_timestamp="2026-06-30T10:00:00Z",
     )
     defaults.update(kwargs)

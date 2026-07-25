@@ -19,6 +19,16 @@ echo  %RUNTIME% >> "%LOGFILE%"
 echo ============================================================ >> "%LOGFILE%"
 
 cd /d "%PYDIR%"
+REM Step 0: Schwab token pre-flight check (WO-P020-E1.007 / BACKLOG-3)
+echo. >> "%LOGFILE%"
+echo [0/5] Token pre-flight check... >> "%LOGFILE%"
+"%PYTHON%" ..\api\P_020_Schwab_Token_Manager.py >> "%LOGFILE%" 2>&1
+IF ERRORLEVEL 1 (
+    echo ERROR: Schwab token expired or invalid -- reauth required. >> "%LOGFILE%"
+    echo Run: P_020_Schwab_Auth.bat >> "%LOGFILE%"
+    echo TOKEN_EXPIRED %RUNTIME% > "%STATUS_FILE%"
+    exit /b 2
+)
 
 REM Step 1: Balance snapshot
 echo. >> "%LOGFILE%"

@@ -1,0 +1,149 @@
+2026-07-09 14:39:20,893 [INFO] p400.signal_archiver: Archived 2026-07-08_AETUF_v2.0.json -> 2607_ProcessedJson.zip
+2026-07-09 14:39:20,894 [DEBUG] obsidian_writers.application.write_handler: handle_write called: schema=P400
+2026-07-09 14:39:20,894 [DEBUG] obsidian_writers.application.write_handler: Verdict mapped: P400.council_verdict=REVIEWED_NO_TRADE \u2192 verdict=PASS
+2026-07-09 14:39:20,894 [DEBUG] obsidian_writers.domain.validator: Validated schema=P400 symbol/ticker=AETUF
+2026-07-09 14:39:20,894 [DEBUG] obsidian_writers.domain.filename_builder: Built filepath: C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeManagement\P400\2026-07-07_AETUF.md
+======================================================================
+TIER-1 SCREEN  |  posture=FULL  |  13 packets
+======================================================================
+  PASS | BP     | RR=5.51 | G1_shares=477 | ALL_CLEAR
+  PASS | SHEL   | RR=3.56 | G1_shares=285 | ALL_CLEAR
+  PASS | SONO   | RR=2.28 | G1_shares=735 | ALL_CLEAR
+  FAIL | AETUF  | RR=1.28 | G1_shares=867 | RR_BELOW_MIN
+  FAIL | LPG    | RR=1.13 | G1_shares=256 | RR_BELOW_MIN
+  FAIL | PLD    | RR=0.73 | G1_shares=138 | RR_BELOW_MIN
+  FAIL | COP    | RR=0.69 | G1_shares=155 | RR_BELOW_MIN
+  FAIL | ANET   | RR=0.63 | G1_shares=50 | RR_BELOW_MIN
+  FAIL | WWW    | RR=0.60 | G1_shares=557 | RR_BELOW_MIN
+  FAIL | OXY    | RR=0.56 | G1_shares=296 | RR_BELOW_MIN
+  FAIL | APA    | RR=0.28 | G1_shares=379 | RR_BELOW_MIN
+  FAIL | CNSWF  | RR=0.27 | G1_shares=4 | RR_BELOW_MIN
+  FAIL | CPRI   | RR=0.05 | G1_shares=566 | RR_BELOW_MIN
+======================================================================
+2026-07-09 14:39:20 | INFO     | obsidian_writers.infrastructure.vault_writer | Written: 2026-07-07_AETUF.md (version 1)
+2026-07-09 14:39:20,895 [INFO] obsidian_writers.infrastructure.vault_writer: Written: 2026-07-07_AETUF.md (version 1)
+2026-07-09 14:39:20 | INFO     | obsidian_writers.application.write_handler | OK schema=P400 file=2026-07-07_AETUF.md version=1
+2026-07-09 14:39:20,895 [INFO] obsidian_writers.application.write_handler: OK schema=P400 file=2026-07-07_AETUF.md version=1
+2026-07-09 14:39:20,895 [INFO] p400.record_writer: P400 record written: AETUF verdict=REVIEWED_NO_TRADE status=DROPPED
+2026-07-09 14:39:20,895 [INFO] p400.drop_signal: drop_signal: AETUF drop_reason=RR_BELOW_MIN archived=True written=True
+2026-07-09 14:39:20,895 [INFO] p400.dispose_failed: dispose_failed: AETUF drop_reason=RR_BELOW_MIN ok=True
+2026-07-09 14:39:21,206 [INFO] p400.signal_archiver: Archived 2026-07-08_LPG_v2.0.json -> 2607_ProcessedJson.zip
+2026-07-09 14:39:21,206 [DEBUG] obsidian_writers.application.write_handler: handle_write called: schema=P400
+2026-07-09 14:39:21,206 [DEBUG] obsidian_writers.application.write_handler: Verdict mapped: P400.council_verdict=REVIEWED_NO_TRADE \u2192 verdict=PASS
+2026-07-09 14:39:21,206 [DEBUG] obsidian_writers.domain.validator: Validated schema=P400 symbol/ticker=LPG
+2026-07-09 14:39:21,206 [DEBUG] obsidian_writers.domain.filename_builder: Built filepath: C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeManagement\P400\2026-07-07_LPG.md
+2026-07-09 14:39:21 | INFO     | obsidian_writers.infrastructure.vault_writer | Written: 2026-07-07_LPG.md (version 1)
+2026-07-09 14:39:21,207 [INFO] obsidian_writers.infrastructure.vault_writer: Written: 2026-07-07_LPG.md (version 1)
+2026-07-09 14:39:21 | INFO     | obsidian_writers.application.write_handler | OK schema=P400 file=2026-07-07_LPG.md version=1
+2026-07-09 14:39:21,207 [INFO] obsidian_writers.application.write_handler: OK schema=P400 file=2026-07-07_LPG.md version=1
+2026-07-09 14:39:21,207 [INFO] p400.record_writer: P400 record written: LPG verdict=REVIEWED_NO_TRADE status=DROPPED
+2026-07-09 14:39:21,207 [INFO] p400.drop_signal: drop_signal: LPG drop_reason=RR_BELOW_MIN archived=True written=True
+2026-07-09 14:39:21,207 [INFO] p400.dispose_failed: dispose_failed: LPG drop_reason=RR_BELOW_MIN ok=True
+2026-07-09 14:39:21,518 [INFO] p400.signal_archiver: Archived 2026-07-08_PLD_v2.0.json -> 2607_ProcessedJson.zip
+2026-07-09 14:39:21,518 [DEBUG] obsidian_writers.application.write_handler: handle_write called: schema=P400
+2026-07-09 14:39:21,518 [DEBUG] obsidian_writers.application.write_handler: Verdict mapped: P400.council_verdict=REVIEWED_NO_TRADE \u2192 verdict=PASS
+2026-07-09 14:39:21,518 [DEBUG] obsidian_writers.domain.validator: Validated schema=P400 symbol/ticker=PLD
+2026-07-09 14:39:21,518 [DEBUG] obsidian_writers.domain.filename_builder: Built filepath: C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeManagement\P400\2026-07-07_PLD.md
+2026-07-09 14:39:21 | INFO     | obsidian_writers.infrastructure.vault_writer | Written: 2026-07-07_PLD.md (version 1)
+2026-07-09 14:39:21,518 [INFO] obsidian_writers.infrastructure.vault_writer: Written: 2026-07-07_PLD.md (version 1)
+2026-07-09 14:39:21 | INFO     | obsidian_writers.application.write_handler | OK schema=P400 file=2026-07-07_PLD.md version=1
+2026-07-09 14:39:21,518 [INFO] obsidian_writers.application.write_handler: OK schema=P400 file=2026-07-07_PLD.md version=1
+2026-07-09 14:39:21,520 [INFO] p400.record_writer: P400 record written: PLD verdict=REVIEWED_NO_TRADE status=DROPPED
+2026-07-09 14:39:21,520 [INFO] p400.drop_signal: drop_signal: PLD drop_reason=RR_BELOW_MIN archived=True written=True
+2026-07-09 14:39:21,520 [INFO] p400.dispose_failed: dispose_failed: PLD drop_reason=RR_BELOW_MIN ok=True
+2026-07-09 14:39:21,829 [INFO] p400.signal_archiver: Archived 2026-07-08_COP_v2.0.json -> 2607_ProcessedJson.zip
+2026-07-09 14:39:21,830 [DEBUG] obsidian_writers.application.write_handler: handle_write called: schema=P400
+2026-07-09 14:39:21,830 [DEBUG] obsidian_writers.application.write_handler: Verdict mapped: P400.council_verdict=REVIEWED_NO_TRADE \u2192 verdict=PASS
+2026-07-09 14:39:21,830 [DEBUG] obsidian_writers.domain.validator: Validated schema=P400 symbol/ticker=COP
+2026-07-09 14:39:21,830 [DEBUG] obsidian_writers.domain.filename_builder: Built filepath: C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeManagement\P400\2026-07-07_COP.md
+2026-07-09 14:39:21 | INFO     | obsidian_writers.infrastructure.vault_writer | Written: 2026-07-07_COP.md (version 1)
+2026-07-09 14:39:21,831 [INFO] obsidian_writers.infrastructure.vault_writer: Written: 2026-07-07_COP.md (version 1)
+2026-07-09 14:39:21 | INFO     | obsidian_writers.application.write_handler | OK schema=P400 file=2026-07-07_COP.md version=1
+2026-07-09 14:39:21,831 [INFO] obsidian_writers.application.write_handler: OK schema=P400 file=2026-07-07_COP.md version=1
+2026-07-09 14:39:21,831 [INFO] p400.record_writer: P400 record written: COP verdict=REVIEWED_NO_TRADE status=DROPPED
+2026-07-09 14:39:21,831 [INFO] p400.drop_signal: drop_signal: COP drop_reason=RR_BELOW_MIN archived=True written=True
+2026-07-09 14:39:21,831 [INFO] p400.dispose_failed: dispose_failed: COP drop_reason=RR_BELOW_MIN ok=True
+2026-07-09 14:39:22,141 [INFO] p400.signal_archiver: Archived 2026-07-08_ANET_v2.0.json -> 2607_ProcessedJson.zip
+2026-07-09 14:39:22,141 [DEBUG] obsidian_writers.application.write_handler: handle_write called: schema=P400
+2026-07-09 14:39:22,141 [DEBUG] obsidian_writers.application.write_handler: Verdict mapped: P400.council_verdict=REVIEWED_NO_TRADE \u2192 verdict=PASS
+2026-07-09 14:39:22,142 [DEBUG] obsidian_writers.domain.validator: Validated schema=P400 symbol/ticker=ANET
+2026-07-09 14:39:22,142 [DEBUG] obsidian_writers.domain.filename_builder: Built filepath: C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeManagement\P400\2026-07-07_ANET.md
+2026-07-09 14:39:22 | INFO     | obsidian_writers.infrastructure.vault_writer | Written: 2026-07-07_ANET.md (version 1)
+2026-07-09 14:39:22,142 [INFO] obsidian_writers.infrastructure.vault_writer: Written: 2026-07-07_ANET.md (version 1)
+2026-07-09 14:39:22 | INFO     | obsidian_writers.application.write_handler | OK schema=P400 file=2026-07-07_ANET.md version=1
+2026-07-09 14:39:22,142 [INFO] obsidian_writers.application.write_handler: OK schema=P400 file=2026-07-07_ANET.md version=1
+2026-07-09 14:39:22,142 [INFO] p400.record_writer: P400 record written: ANET verdict=REVIEWED_NO_TRADE status=DROPPED
+2026-07-09 14:39:22,142 [INFO] p400.drop_signal: drop_signal: ANET drop_reason=RR_BELOW_MIN archived=True written=True
+2026-07-09 14:39:22,142 [INFO] p400.dispose_failed: dispose_failed: ANET drop_reason=RR_BELOW_MIN ok=True
+2026-07-09 14:39:22,475 [INFO] p400.signal_archiver: Archived 2026-07-08_WWW_v2.0.json -> 2607_ProcessedJson.zip
+2026-07-09 14:39:22,476 [DEBUG] obsidian_writers.application.write_handler: handle_write called: schema=P400
+2026-07-09 14:39:22,476 [DEBUG] obsidian_writers.application.write_handler: Verdict mapped: P400.council_verdict=REVIEWED_NO_TRADE \u2192 verdict=PASS
+2026-07-09 14:39:22,476 [DEBUG] obsidian_writers.domain.validator: Validated schema=P400 symbol/ticker=WWW
+2026-07-09 14:39:22,476 [DEBUG] obsidian_writers.domain.filename_builder: Built filepath: C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeManagement\P400\2026-07-07_WWW.md
+2026-07-09 14:39:22 | INFO     | obsidian_writers.infrastructure.vault_writer | Written: 2026-07-07_WWW.md (version 1)
+2026-07-09 14:39:22,476 [INFO] obsidian_writers.infrastructure.vault_writer: Written: 2026-07-07_WWW.md (version 1)
+2026-07-09 14:39:22 | INFO     | obsidian_writers.application.write_handler | OK schema=P400 file=2026-07-07_WWW.md version=1
+2026-07-09 14:39:22,476 [INFO] obsidian_writers.application.write_handler: OK schema=P400 file=2026-07-07_WWW.md version=1
+2026-07-09 14:39:22,476 [INFO] p400.record_writer: P400 record written: WWW verdict=REVIEWED_NO_TRADE status=DROPPED
+2026-07-09 14:39:22,477 [INFO] p400.drop_signal: drop_signal: WWW drop_reason=RR_BELOW_MIN archived=True written=True
+2026-07-09 14:39:22,477 [INFO] p400.dispose_failed: dispose_failed: WWW drop_reason=RR_BELOW_MIN ok=True
+2026-07-09 14:39:22,794 [INFO] p400.signal_archiver: Archived 2026-07-08_OXY_v2.0.json -> 2607_ProcessedJson.zip
+2026-07-09 14:39:22,794 [DEBUG] obsidian_writers.application.write_handler: handle_write called: schema=P400
+2026-07-09 14:39:22,794 [DEBUG] obsidian_writers.application.write_handler: Verdict mapped: P400.council_verdict=REVIEWED_NO_TRADE \u2192 verdict=PASS
+2026-07-09 14:39:22,794 [DEBUG] obsidian_writers.domain.validator: Validated schema=P400 symbol/ticker=OXY
+2026-07-09 14:39:22,794 [DEBUG] obsidian_writers.domain.filename_builder: Built filepath: C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeManagement\P400\2026-07-07_OXY.md
+2026-07-09 14:39:22 | INFO     | obsidian_writers.infrastructure.vault_writer | Written: 2026-07-07_OXY.md (version 1)
+2026-07-09 14:39:22,795 [INFO] obsidian_writers.infrastructure.vault_writer: Written: 2026-07-07_OXY.md (version 1)
+2026-07-09 14:39:22 | INFO     | obsidian_writers.application.write_handler | OK schema=P400 file=2026-07-07_OXY.md version=1
+2026-07-09 14:39:22,795 [INFO] obsidian_writers.application.write_handler: OK schema=P400 file=2026-07-07_OXY.md version=1
+2026-07-09 14:39:22,795 [INFO] p400.record_writer: P400 record written: OXY verdict=REVIEWED_NO_TRADE status=DROPPED
+2026-07-09 14:39:22,795 [INFO] p400.drop_signal: drop_signal: OXY drop_reason=RR_BELOW_MIN archived=True written=True
+2026-07-09 14:39:22,795 [INFO] p400.dispose_failed: dispose_failed: OXY drop_reason=RR_BELOW_MIN ok=True
+2026-07-09 14:39:23,107 [INFO] p400.signal_archiver: Archived 2026-07-08_APA_v2.0.json -> 2607_ProcessedJson.zip
+2026-07-09 14:39:23,107 [DEBUG] obsidian_writers.application.write_handler: handle_write called: schema=P400
+2026-07-09 14:39:23,107 [DEBUG] obsidian_writers.application.write_handler: Verdict mapped: P400.council_verdict=REVIEWED_NO_TRADE \u2192 verdict=PASS
+2026-07-09 14:39:23,107 [DEBUG] obsidian_writers.domain.validator: Validated schema=P400 symbol/ticker=APA
+2026-07-09 14:39:23,108 [DEBUG] obsidian_writers.domain.filename_builder: Built filepath: C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeManagement\P400\2026-07-07_APA.md
+2026-07-09 14:39:23 | INFO     | obsidian_writers.infrastructure.vault_writer | Written: 2026-07-07_APA.md (version 1)
+2026-07-09 14:39:23,108 [INFO] obsidian_writers.infrastructure.vault_writer: Written: 2026-07-07_APA.md (version 1)
+2026-07-09 14:39:23 | INFO     | obsidian_writers.application.write_handler | OK schema=P400 file=2026-07-07_APA.md version=1
+2026-07-09 14:39:23,108 [INFO] obsidian_writers.application.write_handler: OK schema=P400 file=2026-07-07_APA.md version=1
+2026-07-09 14:39:23,108 [INFO] p400.record_writer: P400 record written: APA verdict=REVIEWED_NO_TRADE status=DROPPED
+2026-07-09 14:39:23,108 [INFO] p400.drop_signal: drop_signal: APA drop_reason=RR_BELOW_MIN archived=True written=True
+2026-07-09 14:39:23,108 [INFO] p400.dispose_failed: dispose_failed: APA drop_reason=RR_BELOW_MIN ok=True
+2026-07-09 14:39:23,400 [INFO] p400.signal_archiver: Archived 2026-07-08_CNSWF_v2.0.json -> 2607_ProcessedJson.zip
+2026-07-09 14:39:23,400 [DEBUG] obsidian_writers.application.write_handler: handle_write called: schema=P400
+2026-07-09 14:39:23,400 [DEBUG] obsidian_writers.application.write_handler: Verdict mapped: P400.council_verdict=REVIEWED_NO_TRADE \u2192 verdict=PASS
+2026-07-09 14:39:23,400 [DEBUG] obsidian_writers.domain.validator: Validated schema=P400 symbol/ticker=CNSWF
+2026-07-09 14:39:23,401 [DEBUG] obsidian_writers.domain.filename_builder: Built filepath: C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeManagement\P400\2026-07-07_CNSWF.md
+2026-07-09 14:39:23 | INFO     | obsidian_writers.infrastructure.vault_writer | Written: 2026-07-07_CNSWF.md (version 1)
+2026-07-09 14:39:23,401 [INFO] obsidian_writers.infrastructure.vault_writer: Written: 2026-07-07_CNSWF.md (version 1)
+2026-07-09 14:39:23 | INFO     | obsidian_writers.application.write_handler | OK schema=P400 file=2026-07-07_CNSWF.md version=1
+2026-07-09 14:39:23,401 [INFO] obsidian_writers.application.write_handler: OK schema=P400 file=2026-07-07_CNSWF.md version=1
+2026-07-09 14:39:23,401 [INFO] p400.record_writer: P400 record written: CNSWF verdict=REVIEWED_NO_TRADE status=DROPPED
+2026-07-09 14:39:23,401 [INFO] p400.drop_signal: drop_signal: CNSWF drop_reason=RR_BELOW_MIN archived=True written=True
+2026-07-09 14:39:23,401 [INFO] p400.dispose_failed: dispose_failed: CNSWF drop_reason=RR_BELOW_MIN ok=True
+2026-07-09 14:39:23,698 [INFO] p400.signal_archiver: Archived 2026-07-08_CPRI_v2.0.json -> 2607_ProcessedJson.zip
+2026-07-09 14:39:23,698 [DEBUG] obsidian_writers.application.write_handler: handle_write called: schema=P400
+2026-07-09 14:39:23,698 [DEBUG] obsidian_writers.application.write_handler: Verdict mapped: P400.council_verdict=REVIEWED_NO_TRADE \u2192 verdict=PASS
+2026-07-09 14:39:23,698 [DEBUG] obsidian_writers.domain.validator: Validated schema=P400 symbol/ticker=CPRI
+2026-07-09 14:39:23,698 [DEBUG] obsidian_writers.domain.filename_builder: Built filepath: C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeManagement\P400\2026-07-07_CPRI.md
+2026-07-09 14:39:23 | INFO     | obsidian_writers.infrastructure.vault_writer | Written: 2026-07-07_CPRI.md (version 1)
+2026-07-09 14:39:23,699 [INFO] obsidian_writers.infrastructure.vault_writer: Written: 2026-07-07_CPRI.md (version 1)
+2026-07-09 14:39:23 | INFO     | obsidian_writers.application.write_handler | OK schema=P400 file=2026-07-07_CPRI.md version=1
+2026-07-09 14:39:23,699 [INFO] obsidian_writers.application.write_handler: OK schema=P400 file=2026-07-07_CPRI.md version=1
+2026-07-09 14:39:23,699 [INFO] p400.record_writer: P400 record written: CPRI verdict=REVIEWED_NO_TRADE status=DROPPED
+2026-07-09 14:39:23,699 [INFO] p400.drop_signal: drop_signal: CPRI drop_reason=RR_BELOW_MIN archived=True written=True
+2026-07-09 14:39:23,699 [INFO] p400.dispose_failed: dispose_failed: CPRI drop_reason=RR_BELOW_MIN ok=True
+DISPOSAL SUMMARY (auto -- WO-P400-E2.018)
+  DISPOSED | AETUF  | drop_reason=RR_BELOW_MIN | archive=OK | record=OK | OK
+  DISPOSED | LPG    | drop_reason=RR_BELOW_MIN | archive=OK | record=OK | OK
+  DISPOSED | PLD    | drop_reason=RR_BELOW_MIN | archive=OK | record=OK | OK
+  DISPOSED | COP    | drop_reason=RR_BELOW_MIN | archive=OK | record=OK | OK
+  DISPOSED | ANET   | drop_reason=RR_BELOW_MIN | archive=OK | record=OK | OK
+  DISPOSED | WWW    | drop_reason=RR_BELOW_MIN | archive=OK | record=OK | OK
+  DISPOSED | OXY    | drop_reason=RR_BELOW_MIN | archive=OK | record=OK | OK
+  DISPOSED | APA    | drop_reason=RR_BELOW_MIN | archive=OK | record=OK | OK
+  DISPOSED | CNSWF  | drop_reason=RR_BELOW_MIN | archive=OK | record=OK | OK
+  DISPOSED | CPRI   | drop_reason=RR_BELOW_MIN | archive=OK | record=OK | OK
+======================================================================

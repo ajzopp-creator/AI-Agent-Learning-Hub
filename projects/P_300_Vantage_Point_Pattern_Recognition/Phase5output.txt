@@ -1,0 +1,28 @@
+=======================================================================
+       P_300 PHASE 5 -- SECTOR-STRATIFIED RESULT ANALYSIS
+=======================================================================
+
+Backfills symbols.sector from data\reference\sector_map.csv, computes
+win-rate / mean-return / std-dev per sector x tier x horizon, writes
+the sector_stats snapshot to models\research\bulk_research.db, and
+generates a markdown report in outputs\reports\sector_analysis\.
+Never touches the live catalog or Pipeline A/B. Re-runnable -- each
+run replaces the prior sector_stats snapshot (DB backups cover
+history, not row-versioning).
+
+[STEP 1] Running phase5-analysis...
+
+2026-07-10 15:16:39,873 | INFO | infrastructure.sector_backfill_io | Sector backfill complete: 125 updated, 1 unchanged, backup=C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\models\research\bulk_research.db.bak
+2026-07-10 15:16:39,991 | INFO | infrastructure.sector_stats_io | sector_stats snapshot written: 100 rows, backup=C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\models\research\bulk_research.db.bak
+2026-07-10 15:16:39,992 | INFO | application.phase5_analysis | Phase 5 analysis complete: 15555 rows -> 100 sector_stats cells (100 written) -> report C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\outputs\reports\sector_analysis\sector_analysis_20260710_151639.md
+
+PHASE 5 ANALYSIS COMPLETE -- master=C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\models\research\bulk_research.db
+backfill: 125 updated, 1 unchanged
+rows_analyzed=15555  sector_stats_cells=100
+report: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\outputs\reports\sector_analysis\sector_analysis_20260710_151639.md
+
+=======================================================================
+ DONE  --  see summary above for row/cell counts and report path
+=======================================================================
+
+Press any key to continue . . . 

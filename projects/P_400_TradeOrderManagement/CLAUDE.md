@@ -99,12 +99,24 @@ Snapshot files (`snapshot_SYMBOL.json`) are assembled by Tony/Claude from live m
 
 Option chain files (`chain_SYMBOL.json`) are required for `compare` and spread paths. Required fields defined in `OptionChainInput` schema. Source priority: TOS → ChartExchange → Yahoo → Barchart.
 
+## Vault Write Schema
+
+`P400Record` (obsidian_writers\domain\vault_schemas.py, P_800-owned -- P_800 validates
+all P_400 vault writes against this model) gained a `source` field and six
+spread-specific fields (`spread_long_strike`, `spread_short_strike`, `spread_debit`,
+`spread_max_profit`, `spread_max_loss`, `spread_breakeven`) under WO-P400-E3.004.
+`extra="forbid"` on this model briefly broke every P400 write (2026-06-30, narrow
+window, caught same-session) when `write_handler.py` injects an unmodeled `source`
+key -- fixed by adding `source: Optional[str] = None` to the model. P_800
+acknowledged 2026-07-21. A second schema key, `"P400_PAPER"`, was added
+2026-07-21 for paper-trade routing (WO-P400-E2.019) -- see Paper book note below.
+
 ## Key Paths
 
 - Signals inbox: `trading_journal\TradeOrderManagement\signals\`
 - Processed signals archive: `signals\processed\YYMM_ProcessedJson.zip`
 - Open-position book: `trading_journal\TradeManagement\P400\` (`.md` files with YAML frontmatter)
-- Paper book: `trading_journal\TradeOrderManagement\P400\paper\`
+- Paper book: `trading_journal\TradeManagement\P400\paper\` (fixed WO-P400-E2.019, 2026-07-21 -- was TradeOrderManagement, stale since E2.012 moved BOOK_DIR's root)
 - Account params: `projects\P_000_PythonClaudeLocalLLM\config\P_000_Account_Parameters_Current.md`
 - P_010 posture: glob-discovered at `**/P_010_RiskConfig.json`
 
@@ -113,6 +125,7 @@ Option chain files (`chain_SYMBOL.json`) are required for `compare` and spread p
 - Bad signal packets are **rejected and logged, never repaired** (E2 decision #3)
 - `BOOK_DIR` points to `TradeManagement\P400` (not `TradeOrderManagement`) — this was fixed in WO-P400-E2.012 and must not be reverted
 - Risk parameter values must be read live from `P_000_Account_Parameters_Current.md`; never hardcode them in config or domain
+- Paper records write to a separate P_800 schema key, `"P400_PAPER"` (obsidian_writers\schemas.py), not a folder override on the `"P400"` schema -- `write_to_vault()` has no folder parameter (WO-P400-E2.019)
 
 ## Open Work Orders
 

@@ -1,3 +1,21 @@
+"""RETIRED 2026-07-24 -- dead code, do not import.
+
+Only consumer was _archive\signal_writer_RETIRED_2026-06-11.py (already
+retired). The live emit path (application\emit_signal.py ->
+domain\signal_builder.py -> shared_resources.python_utils.write_to_vault)
+never used this module -- it builds a plain dict and validates only
+against the canonical shared SignalV2 schema
+(shared_resources\python_utils\signal_schemas.py), which has no
+signal_source enum restriction.
+
+Retired as dead code -- unused by the live emit path, archived instead
+of left live in python/ root where a future session could mistake it for
+active validation. Its VALID_SOURCES restriction to {"P_115","P_300",
+"manual"} was actually correct (P_116/P_118/P_910/P_920 are scan sources
+analyzed BY P_115, not separate emitters -- they never belong in
+signal_source), a fact this file's original retirement note got wrong.
+See P_115_System_Architecture.v1.0.md v1.3/v1.4 Change Log.
+"""
 """schemas.py — Pydantic models for the P_115 -> P_400 signal packet.
 
 Mirrors P_115_P400_SIGNAL_PACKET_SCHEMA_v1_0.md. Field declaration order

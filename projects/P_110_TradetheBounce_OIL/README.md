@@ -1,4 +1,4 @@
-﻿# D_130 - Trade the Bounce (OIL)
+# P_110 - Trade the Bounce (OIL)
 
 ## Purpose
 Bounce trading strategy focused on oil instruments.

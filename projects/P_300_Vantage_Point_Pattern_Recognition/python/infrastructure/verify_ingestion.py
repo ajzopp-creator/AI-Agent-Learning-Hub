@@ -1,7 +1,7 @@
 """
 FILE: verify_ingestion.py
-VERSION: 1.0
-DATE: 2026-05-15
+VERSION: 1.1
+DATE: 2026-07-19
 AUTHOR: Anthony Zoppi + Claude
 LAYER: infrastructure
 DESCRIPTION:
@@ -10,10 +10,26 @@ DESCRIPTION:
     temp_working.db, verify_ingestion:
 
         1. Confirms the temp DB opens cleanly under db_connect (FK ON).
-        2. Probes row counts on all 7 catalog tables.
+        2. Probes row counts on all catalog tables (CATALOG_TABLES --
+           8 as of decision #7, up from 7; this file iterates the
+           tuple generically and needed no change for that growth).
         3. Compares actual delta vs expected_delta — any mismatch FAILs.
         4. Scans for hollow pattern_instances (missing pattern_bars or
            forward_labels) — the EC-027 / EC-057 protection.
+        4a. Optionally (check_topk_cache=True) also scans for
+            pattern_instances missing topk_cache rows -- the same
+            EC-027/EC-057 class of bug, added for WO-P300-E4.006
+            (decision #7a). NOT unconditional: single-pattern
+            AddPattern (application/add_pattern_pipeline.py) also
+            calls verify_temp_db()/verify_and_promote() and was never
+            scoped to populate topk_cache (decision #6/#7 both scope
+            that population to BulkAddPattern's cycle specifically) --
+            an unconditional check here would fail every real
+            AddPattern run for a table it was never meant to touch.
+            Default False preserves every existing caller's behavior
+            unchanged; application/catalog_merge_pipeline.py's
+            promote_staging_to_live() is the one caller that passes
+            True (decision #10).
         5. On PASS: atomically replaces master with temp (.bak preserved
            for one cycle).
         6. On FAIL: leaves temp in place for forensic inspection; master
@@ -34,6 +50,14 @@ DESCRIPTION:
           promote so only the previous master is retained.
 
 CHANGELOG:
+    - 2026-07-19 v1.1 (WO-P300-E4.006, decision #7a): Added
+      _check_no_hollow_topk() and verify_temp_db()/verify_and_
+      promote()'s check_topk_cache parameter (default False -- opt-in,
+      not unconditional, since not every caller of this shared file
+      populates topk_cache). Docstring's hardcoded "7 catalog tables"
+      references corrected -- CATALOG_TABLES is 8 as of decision #7;
+      _row_counts() needed no code change since it already iterates
+      the tuple generically.
     - 2026-05-15 v1.0: Stage 4 file #8 of plan. verify_temp_db,
       _check_no_hollow_instances, atomic_move, verify_and_promote.
 """
@@ -74,7 +98,7 @@ class VerificationResult:
 # ─────────────────────────────────────────────────────────────────────────────
 
 def _row_counts(conn) -> dict[str, int]:
-    """Probe row counts on all 7 catalog tables."""
+    """Probe row counts on all CATALOG_TABLES tables."""
     return {
         t: conn.execute(f"SELECT COUNT(*) FROM {t}").fetchone()[0]
         for t in CATALOG_TABLES
@@ -104,6 +128,26 @@ def _check_no_hollow_instances(conn) -> tuple[int, list[int]]:
     return len(hollow_ids), hollow_ids
 
 
+def _check_no_hollow_topk(conn) -> tuple[int, list[int]]:
+    """Find any pattern_instances missing topk_cache rows (WO-P300-
+    E4.006, decision #7a). Same EC-027/EC-057 class of bug
+    _check_no_hollow_instances already guards pattern_bars/forward_
+    labels against. Only called when verify_temp_db's check_topk_cache
+    is True -- see that function's docstring for why this isn't
+    unconditional. Returns (count, list_of_pattern_instance_ids)."""
+    sql = """
+        SELECT pi.pattern_instance_id
+          FROM pattern_instances pi
+         WHERE NOT EXISTS (
+                   SELECT 1 FROM topk_cache tc
+                    WHERE tc.pattern_instance_id = pi.pattern_instance_id
+               )
+    """
+    rows = conn.execute(sql).fetchall()
+    hollow_ids = [r[0] for r in rows]
+    return len(hollow_ids), hollow_ids
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Public API
 # ─────────────────────────────────────────────────────────────────────────────
@@ -112,8 +156,18 @@ def verify_temp_db(
     temp_path: Path,
     expected_delta: dict[str, int],
     pre_counts: dict[str, int],
+    check_topk_cache: bool = False,
 ) -> tuple[bool, list[str], dict[str, int]]:
     """Run all integrity checks against temp_working.db.
+
+    check_topk_cache: if True, also scans for pattern_instances
+    missing topk_cache rows (decision #7a). Default False -- most
+    callers of this shared function (e.g. single-pattern AddPattern
+    via application/add_pattern_pipeline.py) don't populate topk_cache
+    and were never scoped to; application/catalog_merge_pipeline.py's
+    promote_staging_to_live() is the one caller that passes True
+    (decision #10), since new-pattern topk population runs inside
+    that same promote cycle.
 
     Returns:
         (all_passed, failure_messages, post_counts)
@@ -144,6 +198,21 @@ def verify_temp_db(
                 f"missing pattern_bars or forward_labels. IDs: {sample}{more}"
             )
 
+        # Hollow topk_cache scan — opt-in, see docstring above
+        if check_topk_cache:
+            hollow_topk_count, hollow_topk_ids = _check_no_hollow_topk(conn)
+            if hollow_topk_count > 0:
+                sample = hollow_topk_ids[:10]
+                more = (
+                    f" (+{hollow_topk_count - 10} more)"
+                    if hollow_topk_count > 10 else ""
+                )
+                failures.append(
+                    f"hollow topk_cache detected: {hollow_topk_count} "
+                    f"pattern_instances missing topk_cache rows. "
+                    f"IDs: {sample}{more}"
+                )
+
     return (len(failures) == 0, failures, post_counts)
 
 
@@ -168,10 +237,13 @@ def verify_and_promote(
     master_path: Path,
     expected_delta: dict[str, int],
     pre_counts: dict[str, int],
+    check_topk_cache: bool = False,
 ) -> VerificationResult:
     """End-of-ingest entrypoint. Verifies temp_working.db, and on PASS
     atomically promotes it to master. On FAIL, temp is left in place
-    and master is untouched."""
+    and master is untouched. check_topk_cache: see verify_temp_db's
+    docstring -- default False, catalog_merge_pipeline.py's promote_
+    staging_to_live() is the one caller that passes True."""
     if not temp_path.exists():
         return VerificationResult(
             passed=False,
@@ -179,7 +251,7 @@ def verify_and_promote(
         )
 
     passed, failures, post_counts = verify_temp_db(
-        temp_path, expected_delta, pre_counts
+        temp_path, expected_delta, pre_counts, check_topk_cache=check_topk_cache,
     )
     if not passed:
         logger.error("verify_temp_db FAILED: %s", failures)

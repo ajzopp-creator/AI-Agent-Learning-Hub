@@ -33,6 +33,15 @@ SIGNAL_ID_PATTERN: str = "P115-{date}-{symbol}-{seq:03d}"
 
 # --- Enumerations -----------------------------------------------------------
 DEFAULT_SOURCE: str = "P_115"
+# UNUSED as of 2026-07-24 -- was only consumed by schemas.py's
+# P400SignalRecord.signal_source validator, now archived
+# (_archive\schemas_RETIRED_2026-07-24.py). The live emit path
+# (emit_signal.py -> signal_builder.py -> write_to_vault) never enforced
+# this and validates only against the shared SignalV2 schema, which has
+# no signal_source restriction. Left here for reference, not enforcement.
+# {P_115, P_300, manual} is correct as-is -- P_116/P_118/P_910/P_920 are
+# scan sources/chart variants analyzed BY P_115, not separate emitters,
+# and should never appear in signal_source (corrected 2026-07-24).
 VALID_SOURCES: frozenset[str] = frozenset({"P_115", "P_300", "manual"})
 VALID_CONFIDENCE: frozenset[str] = frozenset({"HIGH", "MEDIUM", "LOW"})
 KNOWN_STRATEGIES: tuple[str, ...] = (

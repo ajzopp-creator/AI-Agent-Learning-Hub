@@ -12,6 +12,7 @@ is idempotent across repeated runs.
 """
 
 import logging
+from datetime import date
 from typing import Dict, List, Optional, Tuple
 
 from domain.trade_logic import (
@@ -20,6 +21,7 @@ from domain.trade_logic import (
     determine_trade_status,
     get_asset_multiplier,
 )
+from infrastructure.db_reader import get_exits_for_trade
 from infrastructure.db_writer import (
     get_trade_id_by_schwab_id,
     insert_exit,
@@ -110,3 +112,65 @@ def write_trade(conn, raw: Dict, trade, params: Dict) -> Tuple[str, Optional[int
     update_trade_status(conn, trade_id, new_status, trade.total_commissions)
 
     return outcome, trade_id, new_exit_count
+
+
+def attach_orphan_exit(conn, orphan: Dict, open_trade, params: Dict) -> Tuple[str, Optional[int], int]:
+    """Attach an orphaned exit to an already-open trade found in the DB.
+
+    Orphans occur when exit_allocator finds no matching entry within the
+    current pull batch -- typically because the entry was opened in a
+    prior week's pull. This looks up the oldest open/partial DB trade for
+    the symbol and attaches the exit there instead of dropping it.
+
+    Args:
+        conn: Active SQLite connection.
+        orphan: Orphaned exit dict from domain.exit_allocator (underlying_
+                symbol, price, qty, open_date, open_datetime, fees).
+        open_trade: sqlite3.Row for the matched open/partial trade.
+        params: Loaded business parameters.
+
+    Returns:
+        Tuple of (outcome, trade_id, new_exit_count). outcome is 'updated'
+        (exit attached), or 'unchanged' (all 3 exit slots already used).
+    """
+    trade_id = open_trade["trade_id"]
+    existing = get_exits_for_trade(conn, trade_id)
+    next_slot = len(existing) + 1
+
+    if next_slot > 3:
+        logger.warning(
+            f"Cannot attach orphan exit to trade_id={trade_id} -- "
+            f"all 3 exit slots already used."
+        )
+        return "unchanged", trade_id, 0
+
+    exit_leg = {
+        "exit_price": orphan.get("price"),
+        "qty_exited": orphan.get("qty"),
+        "exit_date": orphan.get("open_date"),
+        "exit_datetime": orphan.get("open_datetime"),
+        "exit_commissions": orphan.get("fees", 0.0),
+    }
+    raw = {
+        "entry_price": open_trade["entry_price"],
+        "asset_type": open_trade["asset_type"],
+        "direction": open_trade["direction"],
+        "open_date": date.fromisoformat(open_trade["open_date"]),
+        f"exit_{next_slot}": exit_leg,
+    }
+
+    exits = build_exits(raw, trade_id, params)
+    new_exit_count = sum(1 for e in exits if insert_exit(conn, e) is not None)
+    if new_exit_count == 0:
+        return "unchanged", trade_id, 0
+
+    qty_closed = sum(e["qty_exited"] for e in get_exits_for_trade(conn, trade_id))
+    new_status = determine_trade_status(open_trade["qty"], qty_closed)
+    new_commissions = open_trade["total_commissions"] + exit_leg["exit_commissions"]
+    update_trade_status(conn, trade_id, new_status, new_commissions)
+
+    logger.info(
+        f"Attached orphan exit to trade_id={trade_id} "
+        f"({open_trade['underlying_symbol']}) -- status={new_status}"
+    )
+    return "updated", trade_id, new_exit_count

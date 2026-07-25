@@ -83,7 +83,7 @@ def main() -> int:
         print(f"FAIL: latest pull file not found: {LATEST_PULL}")
         return 1
 
-    _, trade_dicts = map_pull_file(LATEST_PULL)
+    _, trade_dicts, _ = map_pull_file(LATEST_PULL)
     conn = sqlite3.connect(DB_FILE)
 
     flags = []

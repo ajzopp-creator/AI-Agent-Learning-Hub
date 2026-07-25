@@ -1,0 +1,280 @@
+P_300 -- Cleanup + Ingest-Guard Plan
+Four PATTERN_IDENT doubles (WFG/PLTR/BOIL/RRC)
+Date: 2026-07-20
+Status: PLAN ONLY -- nothing executed until Tony approves
+
+================================================================================
+SCOPE (hard boundary)
+================================================================================
+
+IN:
+  - Remove exactly 4 later-import pids from the LIVE catalog
+  - Pipeline A ingest guard: refuse new (ticker, anchor_date) if already present
+  - Repair topk_cache so it stays consistent after those 4 deletes
+  - Staging copy cleanup only if re-running tonight's batch from current staging
+
+OUT:
+  - No broader dedup scan/rewrite of the catalog
+  - No change to bulk/ingest-mined dedup (already present)
+  - No silent tiebreak in domain/topk_cache.py
+  - No schema change, no new SQL UNIQUE constraint (app-level guard only)
+  - No bulk_hit_writer / research-DB rewrite
+  - No deleting keep-pids or "prefer longer xlsx" -- first import wins
+
+ROOT CAUSE of the 4 doubles:
+  Pipeline A only blocks SAME FILENAME (EC-023). Re-export with a different
+  end date -> different xlsx name -> second insert of the same window.
+
+BULK path already has (ticker, anchor_date) skip:
+  catalog_merge_io._pattern_already_exists + mine_audit "catalog collision"
+  Guard work is ADD-PATTERN ONLY.
+
+
+================================================================================
+1. KEEP vs REMOVE (exact)
+================================================================================
+
+Rule for all four: KEEP earlier import / lower pattern_instance_id.
+Content is bar-identical and label-identical; first import is canonical.
+
+Ticker  Anchor        KEEP   REMOVE   KEEP imported      REMOVE imported     REMOVE source file
+------  ------------  -----  -------  -----------------  ------------------  ------------------------------------------
+WFG     2026-01-08       26      437  2026-05-21         2026-07-04          Pattern_20260108_20260128_WFG.xlsx
+PLTR    2025-10-23       17       36  2026-05-19         2026-05-21          Pattern_20251023_20251104_PLTR.xlsx
+BOIL    2026-01-16      449      487  2026-07-07 10:26   2026-07-07 10:47    Pattern_20260116_20260205_BOIL.xlsx
+RRC     2026-03-30      353      405  2026-06-28         2026-06-30          Pattern_20260330_20260417_RRC.xlsx
+
+REMOVE set (hard-coded, only these):  {36, 405, 437, 487}
+KEEP set (never delete):              {17, 26, 353, 449}
+
+Verified on live (071726catalog.db / same content on 071926 / 072026 twins):
+  4 ticker+anchor groups, zero extra groups, all four pairs bar-identical.
+
+NOT "archive-pattern": that CLI only moves xlsx on disk.
+This is a CATALOG ROW PURGE under Lock + Temp-DB + Atomic-Move.
+
+
+================================================================================
+2. CLEANUP PROCEDURE (live catalog)
+================================================================================
+
+--------------------------------------------------------------------------------
+2a. Preconditions (read-only, report before write)
+--------------------------------------------------------------------------------
+1. Resolve live path via get_latest_catalog_path()
+   (do not hardcode which of the dated twins is active).
+2. Confirm still exactly these 4 pairs and remove-pids still present.
+3. Confirm keep-pids present.
+4. If anything differs -> HALT, no write.
+
+--------------------------------------------------------------------------------
+2b. One-shot migration script (only write path)
+--------------------------------------------------------------------------------
+File (proposed):
+  python/migrations/stage_4b_purge_four_pattern_ident_doubles.py
+  (~120-150 lines; PEH wrapper in verify/run_this.py)
+
+Protocol (same family as topk migration):
+1. catalog_checkout on live.
+2. Copy live -> internal temp.
+3. ALL deletes only on temp.
+4. Verify exact deltas.
+5. atomic_move (live -> .bak, temp -> live).
+6. On any mismatch: leave temp, live untouched.
+
+--------------------------------------------------------------------------------
+2c. Deletes on temp (only remove-set)
+--------------------------------------------------------------------------------
+For each pid in {36, 405, 437, 487}:
+
+  Table               Action
+  ------------------  ----------------------------------------------------------
+  pattern_bars        DELETE WHERE pattern_instance_id = pid
+  forward_labels      DELETE WHERE pattern_instance_id = pid
+  pattern_features    DELETE WHERE pattern_instance_id = pid (if any; expect 0)
+  topk_cache          DELETE WHERE pattern_instance_id = pid
+                        OR matched_pid = pid
+  pattern_instances   DELETE WHERE pattern_instance_id = pid
+  source_files        DELETE for that pid's source_file_id ONLY IF no remaining
+                      pattern_instances reference it (each of these four should
+                      be exclusive)
+
+Do not touch keep-pids' instance/bars/labels/own topk rows
+(except removing a dead matched_pid from OTHER patterns' topk -- see 2d).
+
+--------------------------------------------------------------------------------
+2d. topk_cache after delete (required; not optional)
+--------------------------------------------------------------------------------
+Deleting a duplicate is not enough: some live patterns list both twins as
+neighbors (equal distance), e.g.:
+
+  Pair              Patterns that currently list BOTH in topk
+  ----------------  ----------------------------------------------------------
+  26 & 437 (WFG)    pid 43 (ranks 8-9)
+  17 & 36 (PLTR)    pids 2708, 7004
+  353 & 405 (RRC)   pid 2722
+  449 & 487 (BOIL)  none
+
+Also low fan-in as matched_pid only (one or two patterns each).
+After delete, those caches have a hole (19 of 20) or a missing neighbor.
+
+Chosen approach for this WO (safe, scoped, no new ranking code):
+1. After the four purges on temp: DROP and RE-SEED full topk_cache using the
+   existing proven seeder (stage_4a / seed_full_catalog path -- same O(N^2)
+   ~60 min already run successfully).
+2. Expected post-seed:
+   - patterns ~ 10,757 (10,761 - 4)
+   - topk_cache rows ~ 20 x survivors (same thin-corpus shortfall as before)
+   - zero TopKTieError preferred; if a real non-duplicate tie appears, STOP
+     (same Finding-3 rule).
+
+Why full reseed instead of surgical fill-one-slot:
+  Only a handful of references, but surgical fill needs new "next-best
+  neighbor" code and is easy to get subtly wrong on live data.
+  Reseed is already proven.
+
+--------------------------------------------------------------------------------
+2e. Expected deltas (assert exactly)
+--------------------------------------------------------------------------------
+  Metric               Pre (live today)    Post
+  -------------------  ------------------  ------------------------------------
+  pattern_instances    10,761              10,757 (-4)
+  pattern_bars         215,220             215,140 (-80 = 4x20)
+  forward_labels       53,805              53,785 (-20 = 4x5)
+  symbols              328                 328 (unchanged)
+  source_files         572                 568 (-4) if each remove-pid's file
+                                           is exclusive
+  topk_cache           214,952             reseed count (not a fixed formula)
+
+Script refuses promote if any of the instance/bars/labels/source deltas differ.
+
+--------------------------------------------------------------------------------
+2f. Staging / tonight's batch
+--------------------------------------------------------------------------------
+- Live cleanup does NOT auto-fix staging_ingest_mined.db.
+- If you resume tonight's CXW (etc.) batch from that staging file: either
+    A) re-copy cleaned live -> new staging and re-run ingest-mined, or
+    B) run the same 4-pid purge on staging first, then continue.
+- Recommend A after live is clean -- simpler mental model.
+
+
+================================================================================
+3. INGEST-TIME GUARD (Pipeline A only)
+================================================================================
+
+Gap today:
+
+  Path                                         (ticker, anchor_date) guard?
+  -------------------------------------------  ----------------------------
+  catalog_merge_io.merge_one_pattern (bulk)    YES -- skip
+  mine_audit / ingest-mined                    YES -- "catalog collision..."
+  add_pattern_pipeline.ingest_pattern_file     NO  -- only filename (EC-023)
+                                                   <-- THIS IS THE HOLE
+  bulk_hit_writer (research DB)                NO  -- out of scope (not live)
+
+Change (minimal):
+1. Lift _pattern_already_exists from private in catalog_merge_io.py to a
+   SHARED helper on catalog_writer.py (or catalog_reader.py), e.g.
+     pattern_exists_for_ticker_anchor(conn, ticker, anchor_date) -> bool
+   (~15 lines; merge_io calls the shared one -- behavior unchanged).
+
+2. add_pattern_pipeline.py: after parse / before ANY insert on temp DB
+   (or immediately after opening temp, before insert_source_file):
+   - If exists -> raise / return hard fail with message:
+       PATTERN_IDENT collision: {ticker} @ {anchor_date} already in catalog
+       (pid=...)
+   - Master never replaced (verify_and_promote never called).
+
+3. Test: one unit test -- temp DB with one existing WFG@2026-01-08 ->
+   add-pattern of a differently named xlsx with same anchor FAILS and
+   does not insert.
+
+NOT in this WO:
+  DB UNIQUE index on (symbol_id, anchor_date) -- would also block legitimate
+  same-day multi-origin cases if you ever want them; app-level is enough
+  and matches bulk decision 4.
+
+
+================================================================================
+4. FILE PLAN (before any code)
+================================================================================
+
+  #  File                                              Action                         Est. lines
+  -  ------------------------------------------------  -----------------------------  ----------
+  1  infrastructure/catalog_writer.py (or reader)      Add shared exists helper       +15-25
+  2  infrastructure/catalog_merge_io.py                Call shared helper             ~5
+  3  application/add_pattern_pipeline.py               Pre-insert collision fail      +15-25
+  4  migrations/stage_4b_purge_four_pattern_ident_     NEW -- hard-coded 4-pid        ~130-160
+     doubles.py                                        purge + topk reseed + verify
+  5  tests/test_add_pattern_collision.py               NEW -- collision refuses       ~60-80
+  6  verify/run_this.py + context                      PEH: dry-run copy, then live   ephemeral
+
+No topk_cache.py change. No bulk rewrite.
+
+
+================================================================================
+5. EXECUTION ORDER (after Tony says go)
+================================================================================
+
+1. Code + unit test for ingest guard (no live write).
+2. PEH dry-run: migration against a COPY of live (not live).
+   Assert deltas + topk reseed PASS.
+3. PEH live: same migration on real catalog (Tony explicit go).
+   Confirm .bak + post counts.
+4. Optional: re-run tonight's ingest-mined from clean live (or purged staging).
+   Expect CXW path past former WFG double; any NEW true tie still halts (correct).
+5. Log lesson: re-export same anchor with new filename is a known failure mode;
+   guard + four-pid purge.
+
+
+================================================================================
+6. EXPLICIT NON-GOALS
+================================================================================
+
+- No automatic archive of "all" historical re-exports.
+- No full catalog audit beyond re-confirming the 4 pairs at preflight.
+- No tiebreak policy in ranking (separate decision later if a non-duplicate
+  tie appears).
+- No bulk_hit_writer / research-DB rewrite.
+- No deleting keep-pids or "prefer longer xlsx" -- first import wins.
+
+
+================================================================================
+7. RISK SUMMARY
+================================================================================
+
+  Risk                      Mitigation
+  ------------------------  ----------------------------------------------------
+  Wrong pid deleted         Hard-coded remove set + preflight asserts keep still
+                            present and bar-identical to remove
+  Live write corruption     Temp only; exact delta verify; .bak via atomic_move
+  topk holes after delete   Full reseed on temp before promote (~60 min)
+  Broader rewrite creep     Remove set is a frozen 4-int set in the migration;
+                            no "find all dups" loop for delete
+
+
+================================================================================
+CONTEXT (why this exists)
+================================================================================
+
+Tonight's ingest-mined halted on Finding-3 TopKTieError:
+  pid=10960 (CXW 2026-06-03), rank-20 boundary distance=1.8260973544851247
+
+Tied historical matches were NOT different patterns that scored the same:
+  pid 26  WFG 2026-01-08
+  pid 437 WFG 2026-01-08
+  identical 20 bars + identical forward labels
+  two different xlsx re-exports of the same window
+
+Catalog-wide: exactly 4 such ticker+anchor doubles, all bar-identical.
+Spot-check: 0/20 other new patterns hit rank-20 ties (halt isolated;
+underlying issue is catalog contamination).
+
+Do NOT paper over with silent tiebreak in topk_cache.
+Fix upstream: purge the 4 later doubles + guard Pipeline A ingest.
+
+
+================================================================================
+END OF PLAN -- nothing run until explicit approval
+================================================================================
+)

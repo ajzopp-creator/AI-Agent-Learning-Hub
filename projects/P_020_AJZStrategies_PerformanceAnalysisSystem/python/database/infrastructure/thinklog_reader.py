@@ -27,7 +27,7 @@ from typing import Dict, List, Optional, Tuple
 
 # Matches "M/D/YY HH:MM:SS" or "MM/DD/YYYY HH:MM:SS"
 _TIMESTAMP_RE = re.compile(
-    r"^\s*(\d{1,2})/(\d{1,2})/(\d{2,4})\s+(\d{1,2}):(\d{2}):(\d{2})\s*$"
+    r"^\s*(\d{1,2})/(\d{1,2})/(\d{2,4})\s+(\d{1,2}):(\d{2})(?::(\d{2}))?\s*$"
 )
 _SYMBOL_LINE_RE = re.compile(r"^\s*Symbol:\s*(\S+)\s*$", re.IGNORECASE)
 
@@ -36,7 +36,9 @@ def _parse_timestamp(s: str) -> Optional[datetime]:
     m = _TIMESTAMP_RE.match(s)
     if not m:
         return None
-    mo, d, y, hh, mm, ss = (int(g) for g in m.groups())
+    mo, d, y, hh, mm, ss = m.groups()
+    mo, d, y, hh, mm = int(mo), int(d), int(y), int(hh), int(mm)
+    ss = int(ss) if ss else 0
     if y < 100:
         y += 2000
     try:

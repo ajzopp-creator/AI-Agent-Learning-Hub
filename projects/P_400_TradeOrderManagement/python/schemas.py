@@ -75,6 +75,7 @@ class SnapshotDict(BaseModel):
     data_source: str               # "web" | "schwab_api" | "manual"
     today_volume: Optional[float] = None
     next_earnings_date: Optional[str] = None    # YYYY-MM-DD
+    last_earnings_date: Optional[str] = None  # YYYY-MM-DD, WO-P400-E2.023
     binary_events: List[str] = []
     sector: Optional[str] = None
     iv_rank: Optional[float] = None

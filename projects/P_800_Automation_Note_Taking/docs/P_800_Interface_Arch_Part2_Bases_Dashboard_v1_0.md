@@ -2,7 +2,7 @@
 **Companion to:** P_800_Interface_Arch_Part1_Schemas_v1_0.md
 **Version:** 1.2
 **Created:** 2026-05-22
-**Updated:** 2026-05-22 — 5A/5B/5C/5D complete; 5E/5F reframed; README added
+**Updated:** 2026-07-24 — roadmap corrected: 5E/5F/5H marked Done against live vault state (were stale session placeholders). Prior: 2026-05-22 — 5A/5B/5C/5D complete; 5E/5F reframed; README added
 
 ---
 ## 4. BASES CONFIGURATION
@@ -146,10 +146,10 @@ Save path: `C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_800_Automation_Note
 | 5B | Six .base files | ✅ Done 2026-05-22 |
 | 5C | Dashboard.md — link-only v1.0 | ✅ Done 2026-05-22 |
 | 5D | Vault interface engine + public API + README | ✅ Done 2026-05-22 |
-| 5E | P_300 integration — call write_to_vault() from P_300 project | P_300 session |
-| 5F | P_020 integration — call write_to_vault() from P_020 project | P_020 session |
+| 5E | P_300 integration — call write_to_vault() from P_300 project | ✅ Done — live since 2026-05-18 (earliest P300 vault note; 403 notes as of 2026-07-24) |
+| 5F | P_020 integration — call write_to_vault() from P_020 project | ✅ Done 2026-07-21 (WO-P020-E1.005 + WO-P800-E3.002; 201 notes) |
 | 5G | KB Templater template + Web Clipper config | Planned |
-| 5H | P_400 integration — after P_400 schema locked | P_400 session |
+| 5H | P_400 integration — after P_400 schema locked | ✅ Done — live since 2026-06-08 (earliest P400 vault note; 190 notes + paper/ routing per WO-P400-E2.019) |
 | 6 | ⚑ CHECKPOINT — Dataview embedded dashboard | Planned (trigger: 2+ projects live) |
 
 ---

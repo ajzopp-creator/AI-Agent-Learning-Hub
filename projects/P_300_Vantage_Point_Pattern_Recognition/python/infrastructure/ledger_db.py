@@ -4,6 +4,7 @@ Ledger database interface.
 Manages schema initialization, signal capture (insert), and outcome filling (query/update).
 """
 
+import logging
 import sqlite3
 from pathlib import Path
 from datetime import datetime
@@ -11,6 +12,8 @@ from typing import Optional, List, Tuple
 
 from config import BUY_LEDGER_DB, LEDGER_DIR
 from schemas_ledger import FiredSignal, PredictedStat, RealizedOutcome, SignalClass
+
+logger = logging.getLogger(__name__)
 
 
 class LedgerDB:
@@ -27,7 +30,15 @@ class LedgerDB:
         self._init_schema()
 
     def _init_schema(self) -> None:
-        """Create fired_signals table if not present."""
+        """Create fired_signals table and uniqueness index if not present.
+
+        M-059: UNIQUE index on (ticker, signal_date, signal_class,
+        chosen_horizon) prevents insert_fired_signal() from ever writing
+        a duplicate row for the same signal again. Confirmed safe to add
+        2026-07-10 -- pre-flight check found 0 duplicate groups across
+        230 live rows (last data-level dedup was 2026-06-29, 175->142).
+        CREATE INDEX IF NOT EXISTS makes this a no-op on every later init.
+        """
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
             cursor.execute("""
@@ -56,6 +67,10 @@ class LedgerDB:
                     created_at TEXT DEFAULT CURRENT_TIMESTAMP
                 )
             """)
+            cursor.execute("""
+                CREATE UNIQUE INDEX IF NOT EXISTS idx_fired_signals_unique
+                ON fired_signals(ticker, signal_date, signal_class, chosen_horizon)
+            """)
             conn.commit()
 
     def insert_fired_signal(
@@ -66,13 +81,21 @@ class LedgerDB:
         """
         Insert a fired signal + predicted stats snapshot.
         Returns ledger_id for later outcome fill.
-        
+
+        M-059: ON CONFLICT DO NOTHING against the (ticker, signal_date,
+        signal_class, chosen_horizon) unique index means a re-run that
+        covers an already-fired signal no longer inserts a duplicate row.
+        On conflict, logs at INFO and returns the EXISTING row's
+        ledger_id instead -- callers always get a valid ledger_id back,
+        whether the row was just created or already existed.
+
         Args:
             fired_signal: Immutable snapshot at fire time.
             predicted_stat: Predicted stats from catalog.
-        
+
         Returns:
-            ledger_id (auto-incremented).
+            ledger_id -- newly inserted, or the pre-existing row's id
+            if this exact signal already fired.
         """
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
@@ -83,6 +106,8 @@ class LedgerDB:
                     n_matches, win_rate_pct, mean_return_pct, std_return_pct, z_score,
                     fired_at
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ON CONFLICT(ticker, signal_date, signal_class, chosen_horizon)
+                DO NOTHING
             """, (
                 fired_signal.ticker,
                 fired_signal.signal_date,
@@ -99,6 +124,30 @@ class LedgerDB:
                 fired_signal.fired_at.isoformat()
             ))
             conn.commit()
+
+            if cursor.rowcount == 0:
+                # Conflict -- this exact signal already fired. Look up
+                # and return the existing row's ledger_id.
+                logger.info(
+                    "insert_fired_signal: duplicate skipped for %s %s %s h=%d "
+                    "(already in ledger, no new row written)",
+                    fired_signal.ticker,
+                    fired_signal.signal_date,
+                    fired_signal.signal_class.value,
+                    fired_signal.chosen_horizon,
+                )
+                cursor.execute("""
+                    SELECT ledger_id FROM fired_signals
+                    WHERE ticker = ? AND signal_date = ?
+                        AND signal_class = ? AND chosen_horizon = ?
+                """, (
+                    fired_signal.ticker,
+                    fired_signal.signal_date,
+                    fired_signal.signal_class.value,
+                    fired_signal.chosen_horizon,
+                ))
+                return cursor.fetchone()[0]
+
             return cursor.lastrowid
 
     def query_unfilled(self) -> List[Tuple]:

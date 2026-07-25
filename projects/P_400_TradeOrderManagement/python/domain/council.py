@@ -5,6 +5,8 @@ Each role function returns a CouncilVote. Verdict assembled by council_verdict()
 
 Architecture v2.0 Section 4.
 Behavioral role annotates only (can_block = False).
+RISK role annotates only as of 2026-07-20 (can_block = False; SEVERE_WARNING
+ceiling, never BLOCK) -- see domain/risk_vote.py for the RISK role itself.
 """
 
 from __future__ import annotations
@@ -15,28 +17,22 @@ from enum import Enum
 from typing import List, Optional
 
 from config import (
-    DAILY_LOSS_CIRCUIT_BREAKER_PCT,
-    MAX_CONCURRENT_POSITIONS,
-    MAX_SECTOR_EXPOSURE,
     MIN_ACCEPTABLE_RR,
     MIN_STOP_ATR_MULTIPLE,
     STOP_ATR_TOLERANCE,
-    PORTFOLIO_HEAT_MAX_PCT,
     PRICE_STALENESS_THRESHOLD_SEC,
+    POST_EARNINGS_STABILIZATION_SESSIONS,
 )
 from domain.council_codes import (  # noqa: F401
     RC_ADVERSE_DRIFT,
     RC_ALL_CLEAR,
-    RC_DAILY_LOSS,
     RC_EARNINGS_IN_WINDOW,
-    RC_HEAT_BREACH,
     RC_MARKET_CLOSED,
     RC_OVERTRADING,
-    RC_POSITION_COUNT,
+    RC_POST_EARNINGS_STABILIZATION,
     RC_PRICE_STALE,
     RC_REVENGE_TRADE,
     RC_RR_BELOW_MIN,
-    RC_SECTOR_CONCENTRATION,
     RC_STOP_BREAKS_RR,
     RC_STOP_TOO_TIGHT,
     RC_STREAK_CHASING,
@@ -48,6 +44,7 @@ logger = logging.getLogger("p400.council")
 class Decision(str, Enum):
     PASS = "PASS"
     CAUTION = "CAUTION"
+    SEVERE_WARNING = "SEVERE_WARNING"
     BLOCK = "BLOCK"
 
 
@@ -74,6 +71,7 @@ class CouncilResult:
     verdict: str = "PENDING"
     block_codes: List[str] = field(default_factory=list)
     caution_codes: List[str] = field(default_factory=list)
+    severe_warning_codes: List[str] = field(default_factory=list)
 
     def summary(self) -> str:
         lines = [f"Council Verdict: {self.verdict}"]
@@ -123,64 +121,21 @@ def quant_vote(
     )
 
 
-def risk_vote(
-    new_trade_risk_dollars: float,
-    current_heat_dollars: float,
-    account_balance: float,
-    open_position_count: int,
-    realized_day_loss_dollars: float,
-    new_sector: Optional[str],
-    open_sector_counts: dict,
-) -> CouncilVote:
-    """Portfolio-level risk blocks. Section 4.3."""
-    heat_cap = account_balance * (PORTFOLIO_HEAT_MAX_PCT / 100.0)
-    projected_heat = current_heat_dollars + new_trade_risk_dollars
-    if projected_heat > heat_cap:
-        return CouncilVote(
-            role=Role.RISK, decision=Decision.BLOCK,
-            reason_code=RC_HEAT_BREACH,
-            reason_detail=(
-                f"Projected heat ${projected_heat:.2f} > cap ${heat_cap:.2f} "
-                f"({PORTFOLIO_HEAT_MAX_PCT}%)."
-            ),
-        )
-    if open_position_count >= MAX_CONCURRENT_POSITIONS:
-        return CouncilVote(
-            role=Role.RISK, decision=Decision.BLOCK,
-            reason_code=RC_POSITION_COUNT,
-            reason_detail=f"Positions {open_position_count} >= max {MAX_CONCURRENT_POSITIONS}.",
-        )
-    circuit_breaker = account_balance * (DAILY_LOSS_CIRCUIT_BREAKER_PCT / 100.0)
-    if realized_day_loss_dollars >= circuit_breaker:
-        return CouncilVote(
-            role=Role.RISK, decision=Decision.BLOCK,
-            reason_code=RC_DAILY_LOSS,
-            reason_detail=f"Day loss ${realized_day_loss_dollars:.2f} >= breaker ${circuit_breaker:.2f}.",
-        )
-    if new_sector:
-        sector_count = open_sector_counts.get(new_sector, 0)
-        if sector_count >= MAX_SECTOR_EXPOSURE:
-            return CouncilVote(
-                role=Role.RISK, decision=Decision.BLOCK,
-                reason_code=RC_SECTOR_CONCENTRATION,
-                reason_detail=f"Sector '{new_sector}' has {sector_count} open. Max {MAX_SECTOR_EXPOSURE}.",
-            )
-    return CouncilVote(
-        role=Role.RISK, decision=Decision.PASS,
-        reason_code=RC_ALL_CLEAR,
-        reason_detail=(
-            f"Heat ${projected_heat:.2f}/{heat_cap:.2f}. "
-            f"Positions {open_position_count}/{MAX_CONCURRENT_POSITIONS}."
-        ),
-    )
-
-
 def macro_vote(
     earnings_in_window: bool,
     binary_events: Optional[List[str]] = None,
     defined_risk_confirmed: bool = False,
+    sessions_since_earnings: Optional[int] = None,
 ) -> CouncilVote:
-    """Earnings / binary event blocks. Section 4.4."""
+    """Earnings / binary event blocks. Section 4.4.
+
+    sessions_since_earnings (WO-P400-E2.023): backward-looking stabilization
+    check, CAUTION-only -- never escalates to BLOCK. Different kind of risk
+    than the forward-looking earnings_in_window check above (gap-fade,
+    spread/IV settling, invalidated structure vs. unknown future event),
+    and Tony's call 2026-07-24 was CAUTION so he can eyeball the chart
+    rather than get hard-stopped every time.
+    """
     binary_events = binary_events or []
     has_binary = earnings_in_window or bool(binary_events)
     if has_binary:
@@ -198,6 +153,19 @@ def macro_vote(
             role=Role.MACRO, decision=Decision.CAUTION,
             reason_code=RC_EARNINGS_IN_WINDOW,
             reason_detail=f"Binary event ({event_desc}) inside holding period. Defined-risk confirmed.",
+        )
+    if (
+        sessions_since_earnings is not None
+        and sessions_since_earnings <= POST_EARNINGS_STABILIZATION_SESSIONS
+    ):
+        return CouncilVote(
+            role=Role.MACRO, decision=Decision.CAUTION,
+            reason_code=RC_POST_EARNINGS_STABILIZATION,
+            reason_detail=(
+                f"Earnings {sessions_since_earnings} session(s) ago -- inside "
+                f"{POST_EARNINGS_STABILIZATION_SESSIONS}-session stabilization "
+                "window. Structure/ATR may be stale, spreads may still be elevated."
+            ),
         )
     return CouncilVote(
         role=Role.MACRO, decision=Decision.PASS,
@@ -282,13 +250,24 @@ def behavioral_vote(
 
 
 def council_verdict(votes: List[CouncilVote]) -> CouncilResult:
-    """Assemble final verdict per Section 4.8."""
+    """Assemble final verdict per Section 4.8.
+
+    Priority: BLOCKED > APPROVED_WITH_SEVERE_WARNING > APPROVED_WITH_CAUTION
+    > APPROVED. RISK role never blocks (Tony directive 2026-07-20) -- its
+    ceiling is SEVERE_WARNING, which outranks ordinary CAUTION but can never
+    produce BLOCKED. Only QUANT/MACRO/TAPE retain block authority.
+    """
     result = CouncilResult(votes=votes)
     blocks = [v for v in votes if v.decision == Decision.BLOCK and v.can_block]
+    severe_warnings = [v for v in votes if v.decision == Decision.SEVERE_WARNING]
     cautions = [v for v in votes if v.decision == Decision.CAUTION]
     if blocks:
         result.verdict = "BLOCKED"
         result.block_codes = [v.reason_code for v in blocks]
+    elif severe_warnings:
+        result.verdict = "APPROVED_WITH_SEVERE_WARNING"
+        result.severe_warning_codes = [v.reason_code for v in severe_warnings]
+        result.caution_codes = [v.reason_code for v in cautions]
     elif cautions:
         result.verdict = "APPROVED_WITH_CAUTION"
         result.caution_codes = [v.reason_code for v in cautions]

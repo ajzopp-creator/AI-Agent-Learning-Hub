@@ -101,8 +101,8 @@ def load_tos_csv(filepath):
                 'DATE': date_str,
                 'DATETIME': dt,
                 'REF #': row.get('REF #', ''),
-                'Misc Fees': abs(pd.to_numeric(row.get('Misc Fees', 0), errors='coerce') or 0),
-                'Commissions & Fees': abs(pd.to_numeric(row.get('Commissions & Fees', 0), errors='coerce') or 0),
+                'Misc Fees': abs(pd.to_numeric(row.get('Misc Fees', 0), errors='coerce')) if pd.notna(pd.to_numeric(row.get('Misc Fees', 0), errors='coerce')) else 0,
+                'Commissions & Fees': abs(pd.to_numeric(row.get('Commissions & Fees', 0), errors='coerce')) if pd.notna(pd.to_numeric(row.get('Commissions & Fees', 0), errors='coerce')) else 0,
                 **parsed
             })
 

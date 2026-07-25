@@ -1,0 +1,421 @@
+
+================================================================
+P_300 Catalog Summary
+================================================================
+Catalog:  C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\models\072226catalog.db
+Size:     96,956,416 bytes (94684.0 KB)
+Modified: 2026-07-22 10:30:10
+----------------------------------------------------------------
+Row counts
+----------------------------------------------------------------
+  symbols               341
+  source_files          583
+  feature_sets            2  (baseline_v1, bulk_scan_v1)
+  pattern_instances   14812
+  pattern_bars       296240
+  pattern_features        0  (deferred per D2 scope trim)
+  forward_labels      74060
+  topk_cache         295972
+----------------------------------------------------------------
+Symbol distribution
+----------------------------------------------------------------
+  CIFR      688 patterns
+  GWH       491 patterns
+  FOSL      471 patterns
+  GURE      456 patterns
+  TWST      430 patterns
+  LCID      420 patterns
+  LTRX      400 patterns
+  LUMN      394 patterns
+  MOD       331 patterns
+  CPSS      310 patterns
+  BOIL      309 patterns
+  ASTS      303 patterns
+  HMY       297 patterns
+  IVPAF     291 patterns
+  SA        285 patterns
+  NVDA      275 patterns
+  NNDM      270 patterns
+  MSTR      260 patterns
+  AMD       251 patterns
+  ATKR      238 patterns
+  DAN       222 patterns
+  FCX       219 patterns
+  CNK       216 patterns
+  ARDX      212 patterns
+  CRS       204 patterns
+  CRK       203 patterns
+  INTC      193 patterns
+  UI        188 patterns
+  AVGO      180 patterns
+  BURL      174 patterns
+  TECK      174 patterns
+  CIEN      165 patterns
+  VIAV      164 patterns
+  CRM       162 patterns
+  HAL       155 patterns
+  LEVI      155 patterns
+  LPX       153 patterns
+  MOS       152 patterns
+  FLR       151 patterns
+  META      148 patterns
+  DVN       147 patterns
+  AMZN      146 patterns
+  COPX      146 patterns
+  QCOM      143 patterns
+  LEN       141 patterns
+  SW        140 patterns
+  CAT       131 patterns
+  EME       124 patterns
+  ADBE      117 patterns
+  GOOGL     117 patterns
+  NKE       115 patterns
+  GS        113 patterns
+  BHP       110 patterns
+  CRH       103 patterns
+  BAC       101 patterns
+  ALSN       99 patterns
+  FNV        98 patterns
+  CNSWF      95 patterns
+  SHO        95 patterns
+  DE         94 patterns
+  DLR        92 patterns
+  BLK        90 patterns
+  TDC        88 patterns
+  LECO       83 patterns
+  AMX        80 patterns
+  ICE        73 patterns
+  RITM       72 patterns
+  PCAR       70 patterns
+  STZ        69 patterns
+  SHW        67 patterns
+  WY         67 patterns
+  AME        66 patterns
+  XOM        62 patterns
+  ITW        61 patterns
+  CVX        58 patterns
+  LMT        57 patterns
+  CGBD       56 patterns
+  SPY        50 patterns
+  MGA         5 patterns
+  DD          4 patterns
+  HTHT        4 patterns
+  PLTR        4 patterns
+  TEAM        4 patterns
+  WMT         4 patterns
+  ALGN        3 patterns
+  ANET        3 patterns
+  ARRY        3 patterns
+  BF_B        3 patterns
+  GSIT        3 patterns
+  HP          3 patterns
+  KTOS        3 patterns
+  NIO         3 patterns
+  NIU         3 patterns
+  NNE         3 patterns
+  RRC         3 patterns
+  SLDP        3 patterns
+  TTD         3 patterns
+  WDC         3 patterns
+  WIX         3 patterns
+  ZETA        3 patterns
+  ACHR        2 patterns
+  ADT         2 patterns
+  ADTN        2 patterns
+  AEO         2 patterns
+  AETUF       2 patterns
+  AG          2 patterns
+  AGI         2 patterns
+  AJG         2 patterns
+  AKAM        2 patterns
+  ALLE        2 patterns
+  ANF         2 patterns
+  APA         2 patterns
+  APLD        2 patterns
+  APP         2 patterns
+  ARLP        2 patterns
+  AVXL        2 patterns
+  BAM         2 patterns
+  BEAM        2 patterns
+  BEKE        2 patterns
+  BIDU        2 patterns
+  BILI        2 patterns
+  BITO        2 patterns
+  BITX        2 patterns
+  CALM        2 patterns
+  CCJ         2 patterns
+  CHGG        2 patterns
+  CLF         2 patterns
+  COF         2 patterns
+  COHR        2 patterns
+  CPRI        2 patterns
+  CRCL        2 patterns
+  CRML        2 patterns
+  CRPT        2 patterns
+  CVE         2 patterns
+  DINO        2 patterns
+  DLTR        2 patterns
+  DNUT        2 patterns
+  EDVMF       2 patterns
+  EMBJ        2 patterns
+  ENTG        2 patterns
+  ERIC        2 patterns
+  ETSY        2 patterns
+  FICO        2 patterns
+  FUTU        2 patterns
+  GAP         2 patterns
+  GDYN        2 patterns
+  GEV         2 patterns
+  GIB         2 patterns
+  GLAD        2 patterns
+  GPN         2 patterns
+  GRWG        2 patterns
+  GTE         2 patterns
+  HII         2 patterns
+  IMO         2 patterns
+  INDI        2 patterns
+  INMD        2 patterns
+  INSW        2 patterns
+  JCI         2 patterns
+  KNDI        2 patterns
+  LIVE        2 patterns
+  LMND        2 patterns
+  LSAK        2 patterns
+  MORN        2 patterns
+  MPWR        2 patterns
+  MT          2 patterns
+  MTW         2 patterns
+  MU          2 patterns
+  NDAQ        2 patterns
+  NEXA        2 patterns
+  NTR         2 patterns
+  ONON        2 patterns
+  OPEN        2 patterns
+  OSK         2 patterns
+  OTEX        2 patterns
+  PAAS        2 patterns
+  PI          2 patterns
+  PLCE        2 patterns
+  PRMRF       2 patterns
+  PSKY        2 patterns
+  PTON        2 patterns
+  PYPL        2 patterns
+  QS          2 patterns
+  RGTI        2 patterns
+  SATS        2 patterns
+  SBSW        2 patterns
+  SEDG        2 patterns
+  SOHU        2 patterns
+  SSYS        2 patterns
+  TORXF       2 patterns
+  TSLA        2 patterns
+  TT          2 patterns
+  TYL         2 patterns
+  UAMY        2 patterns
+  UVE         2 patterns
+  VFC         2 patterns
+  VMC         2 patterns
+  VOD         2 patterns
+  WFG         2 patterns
+  WRAP        2 patterns
+  WWD         2 patterns
+  ZDGE        2 patterns
+  ZM          2 patterns
+  AAPL        1 pattern
+  AEM         1 pattern
+  AMYZF       1 pattern
+  AOS         1 pattern
+  AXTI        1 pattern
+  BATRA       1 pattern
+  BCPC        1 pattern
+  BKE         1 pattern
+  BL          1 pattern
+  BP          1 pattern
+  BXP         1 pattern
+  CARG        1 pattern
+  CBT         1 pattern
+  CCEP        1 pattern
+  CEG         1 pattern
+  CFG         1 pattern
+  CFPZF       1 pattern
+  CHTR        1 pattern
+  CIGI        1 pattern
+  CLFD        1 pattern
+  CMCSA       1 pattern
+  CMI         1 pattern
+  COTY        1 pattern
+  CR          1 pattern
+  CRL         1 pattern
+  CSGP        1 pattern
+  CSL         1 pattern
+  DECK        1 pattern
+  DIS         1 pattern
+  DNOW        1 pattern
+  DOCU        1 pattern
+  DRD         1 pattern
+  DX          1 pattern
+  EGY         1 pattern
+  ENB         1 pattern
+  EPAM        1 pattern
+  FBIN        1 pattern
+  FHN         1 pattern
+  FIVE        1 pattern
+  FIVN        1 pattern
+  FIX         1 pattern
+  FLNG        1 pattern
+  FLS         1 pattern
+  FMCC        1 pattern
+  FOXA        1 pattern
+  FTI         1 pattern
+  GLP         1 pattern
+  GMED        1 pattern
+  GNW         1 pattern
+  GRAB        1 pattern
+  GRRR        1 pattern
+  GT          1 pattern
+  HCKT        1 pattern
+  HQY         1 pattern
+  HTH         1 pattern
+  HTZ         1 pattern
+  HUBB        1 pattern
+  INSG        1 pattern
+  J           1 pattern
+  JKS         1 pattern
+  JLL         1 pattern
+  JOBY        1 pattern
+  JVA         1 pattern
+  KGC         1 pattern
+  KKR         1 pattern
+  LAC         1 pattern
+  LNC         1 pattern
+  LNG         1 pattern
+  LOPE        1 pattern
+  LULU        1 pattern
+  MAN         1 pattern
+  MGY         1 pattern
+  MLM         1 pattern
+  MNST        1 pattern
+  MSI         1 pattern
+  MTB         1 pattern
+  MTG         1 pattern
+  MTZ         1 pattern
+  MVIS        1 pattern
+  NCTY        1 pattern
+  NET         1 pattern
+  NTIOF       1 pattern
+  NVO         1 pattern
+  NXT         1 pattern
+  O           1 pattern
+  OESX        1 pattern
+  OI          1 pattern
+  OII         1 pattern
+  OXY         1 pattern
+  PARXF       1 pattern
+  PCTY        1 pattern
+  PINS        1 pattern
+  PNC         1 pattern
+  POST        1 pattern
+  PRDO        1 pattern
+  QQQ         1 pattern
+  RDN         1 pattern
+  RH          1 pattern
+  RIOCF       1 pattern
+  RMBS        1 pattern
+  ROIV        1 pattern
+  RPM         1 pattern
+  SANM        1 pattern
+  SBAC        1 pattern
+  SECYF       1 pattern
+  SEIC        1 pattern
+  SFIX        1 pattern
+  SGML        1 pattern
+  SHAK        1 pattern
+  SHEL        1 pattern
+  SHOP        1 pattern
+  SM          1 pattern
+  SQM         1 pattern
+  SSNC        1 pattern
+  SSRM        1 pattern
+  STE         1 pattern
+  STEM        1 pattern
+  STM         1 pattern
+  SYNA        1 pattern
+  TDY         1 pattern
+  TE          1 pattern
+  TM          1 pattern
+  TPL         1 pattern
+  TPR         1 pattern
+  TTMI        1 pattern
+  TWLO        1 pattern
+  UL          1 pattern
+  UUUU        1 pattern
+  VALE        1 pattern
+  VET         1 pattern
+  VIRT        1 pattern
+  VNO         1 pattern
+  VOC         1 pattern
+  VST         1 pattern
+  WBD         1 pattern
+  WELL        1 pattern
+  XLE         1 pattern
+  YELP        1 pattern
+  ZBRA        1 pattern
+----------------------------------------------------------------
+Ghost pattern check (hollow instances)
+----------------------------------------------------------------
+  0 hollow records  [OK]
+----------------------------------------------------------------
+Recent patterns (last 5)
+----------------------------------------------------------------
+  id=14816 VIAV   anchor=2026-06-10  window=20  origin=BULK_SCAN  bars=20  labels=5
+  id=14815 VIAV   anchor=2026-06-09  window=20  origin=BULK_SCAN  bars=20  labels=5
+  id=14814 VIAV   anchor=2026-06-08  window=20  origin=BULK_SCAN  bars=20  labels=5
+  id=14813 VIAV   anchor=2026-06-05  window=20  origin=BULK_SCAN  bars=20  labels=5
+  id=14812 VIAV   anchor=2026-06-01  window=20  origin=BULK_SCAN  bars=20  labels=5
+----------------------------------------------------------------
+Forward-label statistics (all symbols)
+----------------------------------------------------------------
+  + 5d  n=14812  7618/14812 profitable ( 51.4%)  avg return +0.73%
+  + 7d  n=14812  7699/14812 profitable ( 52.0%)  avg return +0.91%
+  +10d  n=14812  7704/14812 profitable ( 52.0%)  avg return +1.19%
+  +15d  n=14812  7670/14812 profitable ( 51.8%)  avg return +1.53%
+  +20d  n=14812  7581/14812 profitable ( 51.2%)  avg return +1.69%
+================================================================
+OVERALL: HEALTHY
+================================================================
+
+2026-07-22 22:29:59,120 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_IP.xlsx
+2026-07-22 22:29:59,120 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-22 22:29:59,619 | INFO | infrastructure.bulk_grid_reader | Parsed 2512 bars from 10_Pattern_IP.xlsx
+2026-07-22 22:30:00,089 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_JCI.xlsx
+2026-07-22 22:30:00,089 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-22 22:30:00,603 | INFO | infrastructure.bulk_grid_reader | Parsed 2512 bars from 10_Pattern_JCI.xlsx
+2026-07-22 22:30:01,059 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_LBTYK.xlsx
+2026-07-22 22:30:01,059 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-22 22:30:01,560 | INFO | infrastructure.bulk_grid_reader | Parsed 2512 bars from 10_Pattern_LBTYK.xlsx
+2026-07-22 22:30:02,038 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_TEX.xlsx
+2026-07-22 22:30:02,038 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-22 22:30:02,544 | INFO | infrastructure.bulk_grid_reader | Parsed 2512 bars from 10_Pattern_TEX.xlsx
+
+MINE PATTERNS COMPLETE -- input=C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\data\bulk\mine
+files scanned=4  candidates=502 (uptrend=263 breakdown=239)
+report=C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\outputs\reports\mine\mine_20260722_223003.md
+csv=C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\outputs\reports\mine\mine_candidates.csv
+2026-07-22 22:30:04,877 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_IP.xlsx
+2026-07-22 22:30:04,878 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-22 22:30:05,373 | INFO | infrastructure.bulk_grid_reader | Parsed 2512 bars from 10_Pattern_IP.xlsx
+2026-07-22 22:30:05,375 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_JCI.xlsx
+2026-07-22 22:30:05,375 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-22 22:30:05,923 | INFO | infrastructure.bulk_grid_reader | Parsed 2512 bars from 10_Pattern_JCI.xlsx
+2026-07-22 22:30:05,925 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_LBTYK.xlsx
+2026-07-22 22:30:05,925 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-22 22:30:06,887 | INFO | infrastructure.bulk_grid_reader | Parsed 2512 bars from 10_Pattern_LBTYK.xlsx
+2026-07-22 22:30:06,890 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_TEX.xlsx
+2026-07-22 22:30:06,890 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-22 22:30:07,868 | INFO | infrastructure.bulk_grid_reader | Parsed 2512 bars from 10_Pattern_TEX.xlsx
+2026-07-22 22:30:10,580 | INFO | infrastructure.catalog_reader | Loaded 14812 pattern_instance_ids (origin_types=('PATTERN_IDENT', 'BULK_SCAN'))
+2026-07-22 22:30:10,638 | INFO | infrastructure.catalog_reader | Bulk-loaded metadata for 14812 patterns (14812 requested)
+2026-07-22 22:30:17,522 | INFO | infrastructure.catalog_reader | Bulk-loaded 14812 normalized windows (14812 requested)
+2026-07-22 22:30:18,122 | INFO | infrastructure.catalog_reader | Bulk-loaded forward labels for 14812 patterns (14812 requested)
+2026-07-22 22:30:18,126 | INFO | infrastructure.eval_io | load_full_catalog: 14812 patterns loaded from C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\models\072226catalog.db
+

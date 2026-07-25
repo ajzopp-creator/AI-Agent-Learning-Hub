@@ -15,6 +15,8 @@ from domain.trade_logic import (
 )
 from infrastructure.db_client import get_connection
 from infrastructure.tracker_reader import load_tracker_lookup
+from infrastructure.vault_system_reader import load_vault_lookup
+from application.system_attribution import apply_system_names
 from domain.matcher import match_system
 from infrastructure.tracker_reader import match_stop_price
 from application.trade_writer import write_trade
@@ -50,47 +52,24 @@ def get_last_run_date() -> Optional[str]:
 
 
 def save_last_run_date(run_date: str) -> None:
-    """Save successful run date to P_020_last_run.json."""
+    """Save successful run date + full timestamp to P_020_last_run.json."""
     try:
+        from schemas import LastRunFile
+        record = LastRunFile(
+            last_run_date=run_date,
+            last_run_datetime=datetime.now().isoformat(timespec="seconds"),
+        )
         LAST_RUN_FILE.parent.mkdir(parents=True, exist_ok=True)
         LAST_RUN_FILE.write_text(
-            json.dumps({"last_run_date": run_date}, indent=2),
+            record.model_dump_json(indent=2),
             encoding="utf-8",
         )
-        logger.info(f"Last run date saved: {run_date}")
+        logger.info(f"Last run saved: {record.last_run_datetime}")
     except Exception as e:
         logger.warning(f"Could not save last run date: {e}")
 
 
 # ── System name matching ─────────────────────────────────────────────────
-
-def _apply_system_names(trades: List[Dict], lookup, default: str) -> None:
-    """Apply Tracker Dashboard system name matching to all trade dicts.
-
-    Works with both TrackerLookup (Pydantic model) and plain dict lookups.
-    Modifies trade dicts in place.
-
-    Args:
-        trades: List of trade dicts — must have 'underlying_symbol' and 'open_date'.
-        lookup: TrackerLookup object or None.
-        default: Fallback system name.
-    """
-    matched = 0
-    for trade in trades:
-        system = match_system(
-            symbol=trade.get("underlying_symbol", ""),
-            open_date=str(trade.get("open_date", "")),
-            lookup=lookup,
-            default=default,
-        )
-        trade["system"] = system
-        if system != default:
-            matched += 1
-
-    logger.info(
-        f"System matching: {matched}/{len(trades)} matched, "
-        f"{len(trades) - matched} defaulted to '{default}'."
-    )
 
 
 # ── Trade building ───────────────────────────────────────────────────────
@@ -197,11 +176,17 @@ def run_ingest(
     params = load_params()
     conn   = get_connection()
     lookup = load_tracker_lookup()
+    vault_lookup = load_vault_lookup()
 
     if lookup:
         audit.append(f"Tracker Dashboard: loaded ({len(lookup.entries)} entries)")
     else:
         audit.append("Tracker Dashboard: unavailable — using TOS_Import default")
+
+    if vault_lookup:
+        audit.append(f"P_400 vault: {vault_lookup.summary()}")
+    else:
+        audit.append("P_400 vault: unavailable — tracker-only matching")
 
     # NOTE: raw_trades arriving from schwab_mapper.map_pull_file() are already
     # entry dicts with exit_1/2/3 attached (direction == 'long' for all of
@@ -226,7 +211,12 @@ def run_ingest(
         )
 
     all_trades = consolidated + [t for t in exits_raw if t not in orphans]
-    _apply_system_names(all_trades, lookup, params["default_system_name"])
+    apply_system_names(
+        all_trades,
+        lookup,
+        params["default_system_name"],
+        vault_lookup=vault_lookup,
+    )
     _apply_stop_prices(all_trades, lookup, account_id)
 
     inserted = updated = skipped = 0

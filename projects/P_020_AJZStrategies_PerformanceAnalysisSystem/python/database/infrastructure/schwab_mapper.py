@@ -250,7 +250,7 @@ def _aggregate_by_order(fills: List[Dict]) -> List[Dict]:
 
 # ── Main public function ───────────────────────────────────────────────────
 
-def map_pull_file(path: Path) -> Tuple[str, List[Dict]]:
+def map_pull_file(path: Path) -> Tuple[str, List[Dict], List[Dict]]:
     """Load and map a Schwab pull JSON file to ingest-ready trade dicts.
 
     This is the main entry point called by the CLI and weekly runner.
@@ -259,7 +259,9 @@ def map_pull_file(path: Path) -> Tuple[str, List[Dict]]:
         path: Path to the raw Schwab pull JSON file.
 
     Returns:
-        Tuple of (account_label, list of trade dicts ready for run_ingest()).
+        Tuple of (account_label, trade dicts ready for run_ingest(),
+        orphaned exit dicts with no matching entry in this batch -- see
+        import_command._resolve_orphans_against_db for DB-level follow-up).
     """
     account_label, raw_transactions = load_pull_file(path)
 
@@ -290,4 +292,4 @@ def map_pull_file(path: Path) -> Tuple[str, List[Dict]]:
     trade_dicts, orphans = allocate_exits(entries, exits)
     logger.info(f"Trade dicts ready for ingest: {len(trade_dicts)}  Orphaned exits: {len(orphans)}")
 
-    return account_label, trade_dicts
+    return account_label, trade_dicts, orphans

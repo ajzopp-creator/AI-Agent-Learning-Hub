@@ -28,9 +28,9 @@ from domain.council import (
     council_verdict,
     macro_vote,
     quant_vote,
-    risk_vote,
     tape_vote,
 )
+from domain.risk_vote import risk_vote
 from domain.portfolio import PortfolioState, build_portfolio_state
 from domain.sizing import SizingResult, realistic_fill_rr, three_gate_size
 from infrastructure.book_loader import load_book
@@ -47,7 +47,7 @@ class EvaluationResult:
     """Full pipeline output for one signal evaluation."""
 
     symbol: str
-    verdict: str                  # APPROVED | APPROVED_WITH_CAUTION | BLOCKED
+    verdict: str                  # APPROVED | APPROVED_WITH_CAUTION | APPROVED_WITH_SEVERE_WARNING | BLOCKED
     council: CouncilResult
     sizing: Optional[SizingResult]
     portfolio_state: PortfolioState
@@ -62,7 +62,9 @@ class EvaluationResult:
     effective_stop: float = 0.0   # guideline_stop or override, actually used in sizing/council
 
     def is_approved(self) -> bool:
-        return self.verdict in ("APPROVED", "APPROVED_WITH_CAUTION")
+        return self.verdict in (
+            "APPROVED", "APPROVED_WITH_CAUTION", "APPROVED_WITH_SEVERE_WARNING",
+        )
 
     def first_block(self) -> Optional[str]:
         return self.council.block_codes[0] if self.council.block_codes else None
@@ -80,6 +82,31 @@ def _earnings_in_window(next_earnings_date: Optional[str]) -> bool:
         return (earnings - date.today()).days <= 14
     except ValueError:
         return False
+
+
+def _sessions_since_earnings(last_earnings_date: Optional[str]) -> Optional[int]:
+    """Weekday count from last_earnings_date to today (WO-P400-E2.023).
+
+    Approximation of trading sessions -- Mon-Fri only, does not account
+    for market holidays. Returns None if last_earnings_date is unknown
+    or in the future (bad data, don't guess).
+    """
+    if not last_earnings_date:
+        return None
+    try:
+        last_earn = date.fromisoformat(last_earnings_date)
+    except ValueError:
+        return None
+    today = date.today()
+    if last_earn > today:
+        return None
+    count = 0
+    d = last_earn
+    while d < today:
+        d = date.fromordinal(d.toordinal() + 1)
+        if d.weekday() < 5:
+            count += 1
+    return count
 
 
 def evaluate_signal(
@@ -213,10 +240,14 @@ def evaluate_signal(
             realized_day_loss_dollars=port_state.realized_day_loss_dollars,
             new_sector=snap.sector,
             open_sector_counts=port_state.open_sector_counts,
+            cash_available=cash_available,
+            adjusted_risk_dollars=sizing.adjusted_risk_dollars,
+            open_symbols=sorted(port_state.open_symbols),
         ),
         macro_vote(
             earnings_in_window=_earnings_in_window(snap.next_earnings_date),
             binary_events=snap.binary_events,
+            sessions_since_earnings=_sessions_since_earnings(snap.last_earnings_date),
         ),
         tape_vote(
             price_delay_seconds=snap.price_delay_seconds,
@@ -251,8 +282,3 @@ def evaluate_signal(
         effective_entry=snap.price,
         effective_stop=effective_stop,
     )
-
-
-
-
-

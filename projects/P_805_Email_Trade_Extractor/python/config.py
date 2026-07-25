@@ -136,8 +136,8 @@ DIRECTION_KEYWORDS: dict[str, list[str]] = {
         "tracking", "keep an eye",
     ],
 }
-DIRECTION_WINDOW_CHARS: int = 120  # Chars before+after ticker to scan
-RAW_CONTEXT_CHARS: int = 80        # Chars stored in TickerSignal.raw_context
+DIRECTION_WINDOW_CHARS: int = 500  # Chars before+after ticker to scan
+RAW_CONTEXT_CHARS: int = 500       # Chars stored in TickerSignal.raw_context
 
 # Per-sender max tickers per email. Applies after _best_per_ticker() in
 # phase3_extract.py. Keyed by full sender address (lowercase). Senders that
@@ -174,17 +174,66 @@ KB_MODE_PATTERN_SUMMARIZE: str = r"--summarize\.eml$"
 
 # LM Studio configuration
 LM_STUDIO_URL: str = "http://127.0.0.1:1234/v1"
-LM_STUDIO_MODEL: str = "deepseek-r1-distill-qwen-14b"
+LM_STUDIO_MODEL: str = "qwen2.5-7b-instruct"
 LM_STUDIO_TEMP: float = 0.3
 LM_STUDIO_MAX_TOKENS: int = 300
 LM_STUDIO_TIMEOUT: int = 60
 
 # ── LLM PRIORITY ──────────────────────────────────────────────────────────────
-LLM_PRIMARY: str = "LM Studio"
-LLM_FALLBACK: str = "Claude API"
+LLM_PRIMARY: str = "Gemini"
+LLM_FALLBACK: str = "LM Studio"
 
 # Gemini configuration
 GEMINI_MODEL: str = "gemini-2.5-flash"
 
 # Phase 4 ranked output filename pattern
 DAILY_RANKED_CSV: str = "{date}_ranked.csv"
+
+# ── IMAP MOVE (Phase 5.3) ─────────────────────────────────────────────────────────────
+# Real server-side move of successfully-extracted messages into
+# EXTRACTED_FOLDER_NAME via IMAP (not local mbox cache surgery — mbox edits
+# don't survive Thunderbird resync and don't move anything on the actual
+# server). Credentials are NEVER stored here — retrieved at runtime via
+# keyring from Windows Credential Manager, keyed by
+# (KEYRING_SERVICE_NAME, account). Set up once per account with:
+#   keyring.set_password(KEYRING_SERVICE_NAME, "<account>", "<app password>")
+KEYRING_SERVICE_NAME: str = "p805_imap"
+
+IMAP_SERVERS: dict[str, tuple[str, int]] = {
+    "icloud":  ("imap.mail.me.com", 993),
+    "gmail":   ("imap.gmail.com", 993),
+    "outlook": ("outlook.office365.com", 993),
+    "yahoo":   ("imap.mail.yahoo.com", 993),
+}
+
+# IMAP login addresses. Not secret (the password is what lives in keyring).
+IMAP_USERNAMES: dict[str, str] = {
+    "icloud":  "tzoppi@icloud.com",
+    "gmail":   "ajzopp@gmail.com",
+    "outlook": "ajzopp@outlook.com",
+    "yahoo":   "ajzopp@yahoo.com",
+}
+
+# Safety default (confirmed with Tony 2026-07-14). True = connect, search,
+# log what would move, move nothing. Flip to False only after reviewing a
+# dry-run log.
+# LIVE as of 2026-07-14 after a clean all-account dry-run (Moved=0 DryRun=18
+# NotFound=1 Failed=0) — confirmed with Tony before flipping.
+MOVE_DRY_RUN: bool = False
+
+IMAP_CONNECT_TIMEOUT: int = 30
+
+# Audit/idempotency log — one row per message actually (or would-be) moved.
+# Read before every move run so already-moved messages are never retried.
+MOVED_LOG_PATH: Path = DATA_DIR / "moved_messages.csv"
+
+# Accounts excluded from Phase 5.3 IMAP move (Entry 011, 2026-07-14).
+# 'outlook' is OAuth2-only in this Microsoft 365 tenant — Basic Auth
+# (plain IMAP LOGIN with an app password) is rejected server-side with a
+# generic 'AUTHENTICATE failed', regardless of credential correctness.
+# Thunderbird itself uses OAuth2 for this account (see its Server Settings).
+# Building OAuth2 support (msal + browser consent + token cache) is real
+# scope, deferred. Outlook mail is still fully scanned/extracted by Phase 3
+# (mbox read, unaffected) — it just never gets auto-filed to
+# ExtractedNewsletterFolder; those messages stay in Inbox.
+MOVE_SKIP_ACCOUNTS: set[str] = {"outlook"}

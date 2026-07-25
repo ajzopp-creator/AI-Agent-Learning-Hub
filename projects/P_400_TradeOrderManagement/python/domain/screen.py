@@ -4,6 +4,14 @@ Fast pass over all inbox signals - no web calls, no live data.
 Receives pre-loaded data; returns a ranked list of ScreenResult objects.
 
 Architecture v2.0 Section 2.1 (Tier-1 screen) and Section 2.3 (C1.5).
+
+HEAT_BREACH and POSITION_COUNT downgraded FAIL -> WARN 2026-07-20 (Tony
+directive, same change as domain/risk_vote.py): portfolio-composition
+checks never disqualify a packet outright, they only warn. WARN packets
+are never auto-disposed (dispose_failed skips anything non-FAIL) and stay
+selectable for Tier-2, where risk_vote() raises the matching SEVERE_WARNING.
+RR_BELOW_MIN, DUPLICATE_OPEN, and SIZING_ZERO_SHARES remain hard FAILs --
+out of scope for this change.
 """
 
 from __future__ import annotations
@@ -119,11 +127,11 @@ def screen_signal(
         open_symbols: List of symbols currently in the open-position book.
 
     Returns:
-        ScreenResult with PASS/FAIL outcome and reason codes.
+        ScreenResult with PASS/WARN/FAIL outcome and reason codes.
     """
     result = ScreenResult(symbol=symbol, signal_file=signal_file, outcome=SCREEN_PASS)
 
-    # --- R:R check ---
+    # --- R:R check (hard FAIL -- out of scope for the 2026-07-20 change) ---
     rr = _packet_rr(entry, stop, target)
     result.packet_rr = rr
     if rr < MIN_ACCEPTABLE_RR:
@@ -133,13 +141,13 @@ def screen_signal(
             f"Packet R:R {rr:.2f} < {MIN_ACCEPTABLE_RR:.1f} minimum."
         )
 
-    # --- Duplicate check ---
+    # --- Duplicate check (hard FAIL -- out of scope) ---
     if symbol.upper() in [s.upper() for s in open_symbols]:
         result.outcome = SCREEN_FAIL
         result.reason_codes.append(RC_DUPLICATE)
         result.reason_details.append(f"{symbol} already open in position book.")
 
-    # --- Heat headroom ---
+    # --- Heat headroom (WARN, not FAIL, as of 2026-07-20) ---
     mult = posture_multiplier(risk_mode)
     adj_risk = base_risk_dollars * mult
     risk_per_share = entry - stop if entry > stop else 1.0
@@ -147,21 +155,23 @@ def screen_signal(
     result.posture_gate_shares = gate1_shares
     projected_heat = current_heat_dollars + (gate1_shares * risk_per_share)
     if projected_heat > heat_cap_dollars:
-        result.outcome = SCREEN_FAIL
+        if result.outcome == SCREEN_PASS:
+            result.outcome = SCREEN_WARN
         result.reason_codes.append(RC_HEAT_BREACH)
         result.reason_details.append(
             f"Projected heat ${projected_heat:.2f} > cap ${heat_cap_dollars:.2f}."
         )
 
-    # --- Position count headroom ---
+    # --- Position count headroom (WARN, not FAIL, as of 2026-07-20) ---
     if open_position_count >= max_positions:
-        result.outcome = SCREEN_FAIL
+        if result.outcome == SCREEN_PASS:
+            result.outcome = SCREEN_WARN
         result.reason_codes.append(RC_POSITION_COUNT)
         result.reason_details.append(
             f"Positions {open_position_count} >= max {max_positions}."
         )
 
-    # --- Posture gate: would sizing produce >= 1 share? ---
+    # --- Posture gate: would sizing produce >= 1 share? (hard FAIL -- mechanical, out of scope) ---
     if gate1_shares < 1:
         result.outcome = SCREEN_FAIL
         result.reason_codes.append(RC_ZERO_SHARES)

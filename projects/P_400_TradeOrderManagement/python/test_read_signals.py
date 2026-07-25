@@ -1,7 +1,8 @@
 """P_400 Signal Reader — standalone tests.
 
-Runs against the live signals folder plus a temp dir with a deliberately
-malformed packet. No pytest dependency required:
+Runs entirely against temp-dir fixtures (WO-P400-E3.008) -- no longer
+depends on what happens to be sitting in the live signals folder at the
+moment this runs. No pytest dependency required:
     python test_read_signals.py
 """
 
@@ -9,7 +10,6 @@ import json
 import tempfile
 from pathlib import Path
 
-from config import SIGNALS_DIR
 from domain.packet_classifier import PacketKind, classify
 from infrastructure.signal_loader import load_v2_signals
 from application.read_signals import read_signals
@@ -22,11 +22,55 @@ def test_classify() -> None:
     print("PASS test_classify")
 
 
-def test_live_packets_parse() -> None:
-    result = load_v2_signals(SIGNALS_DIR)
-    assert result.valid, "expected at least one valid live packet"
-    assert not result.rejected, f"unexpected rejects: {result.rejected}"
-    print(f"PASS test_live_packets_parse ({len(result.valid)} valid)")
+def _valid_v2_packet() -> dict:
+    """One known-good SignalV2 packet, fields confirmed against
+    shared_resources/python_utils/signal_schemas.py (WO-P400-E3.008)."""
+    return {
+        "signal_id": "TEST-2026-07-08-AAA-001",
+        "signal_timestamp": "2026-07-08T10:00:00Z",
+        "signal_source": "manual",
+        "strategy": "dip_buy",
+        "symbol": "AAPL",
+        "asset_class": "stock",
+        "guideline_entry": 50.0,
+        "guideline_stop": 48.0,
+        "guideline_target": 54.0,
+        "signal_horizon": "swing",
+        "confidence_level": "MEDIUM",
+        "position_size": 100,
+        "context": {
+            "close_at_signal": 50.0,
+            "trailing_volume_30d": 1000000.0,
+            "signal_rationale": "Hermetic fixture packet for test_read_signals.py.",
+        },
+        "signal_metadata": {
+            "session_date": "2026-07-08",
+            "chart_timeframe": "1D",
+            "signal_source_link": "test_fixture",
+        },
+    }
+
+
+def test_valid_v2_packet_parses() -> None:
+    """Hermetic replacement for the old live-folder check (WO-P400-E3.008).
+
+    The old version of this test asserted against the live SIGNALS_DIR and
+    only passed when Tony happened to have an unprocessed packet sitting
+    in the vault at the moment pytest ran -- that's a live-state smoke
+    check, not a test of the loader. This seeds a temp dir with one
+    known-good v2 packet instead, so pass/fail depends only on
+    load_v2_signals() behavior, never on what's currently in the vault.
+    """
+    with tempfile.TemporaryDirectory() as tmp:
+        d = Path(tmp)
+        (d / "2026-07-08_AAPL_v2.0.json").write_text(
+            json.dumps(_valid_v2_packet()), encoding="utf-8"
+        )
+        result = load_v2_signals(d)
+        assert len(result.valid) == 1, f"unexpected rejects: {result.rejected}"
+        assert result.valid[0].symbol == "AAPL"
+        assert not result.rejected
+    print("PASS test_valid_v2_packet_parses")
 
 
 def test_malformed_rejected() -> None:
@@ -45,17 +89,21 @@ def test_malformed_rejected() -> None:
 
 
 def test_read_signals_summary() -> None:
-    result = read_signals(SIGNALS_DIR)
-    assert result.valid_count >= 0
-    assert result.rejected_count == 0
-    print(f"PASS test_read_signals_summary "
-          f"(valid={result.valid_count}, legacy={result.legacy_count})")
+    with tempfile.TemporaryDirectory() as tmp:
+        d = Path(tmp)
+        (d / "2026-07-08_AAPL_v2.0.json").write_text(
+            json.dumps(_valid_v2_packet()), encoding="utf-8"
+        )
+        result = read_signals(d)
+        assert result.valid_count == 1
+        assert result.rejected_count == 0
+    print("PASS test_read_signals_summary")
 
 
 def main() -> int:
     tests = [
         test_classify,
-        test_live_packets_parse,
+        test_valid_v2_packet_parses,
         test_malformed_rejected,
         test_read_signals_summary,
     ]

@@ -1,0 +1,33 @@
+[14 / 17] 10_Pattern_LUMN.xlsx
+2026-07-22 00:39:23,314 | INFO | utilities.archive_mined_file | Added to zip: 10_Pattern_LUMN.xlsx
+2026-07-22 00:39:23,316 | INFO | utilities.archive_mined_file | Deleted from data/bulk/mine: 10_Pattern_LUMN.xlsx
+ARCHIVE OK  -- 10_Pattern_LUMN.xlsx
+  zip  : E:\AI-Agent-Learning-Hub_BackupFiles\Jul26BULKPattern.zip
+  entry: 10_Pattern_LUMN.xlsx
+[15 / 17] 10_Pattern_MOD.xlsx
+2026-07-22 00:39:24,540 | INFO | utilities.archive_mined_file | Added to zip: 10_Pattern_MOD.xlsx
+2026-07-22 00:39:24,542 | INFO | utilities.archive_mined_file | Deleted from data/bulk/mine: 10_Pattern_MOD.xlsx
+ARCHIVE OK  -- 10_Pattern_MOD.xlsx
+  zip  : E:\AI-Agent-Learning-Hub_BackupFiles\Jul26BULKPattern.zip
+  entry: 10_Pattern_MOD.xlsx
+[16 / 17] 10_Pattern_SA.xlsx
+2026-07-22 00:39:25,777 | INFO | utilities.archive_mined_file | Added to zip: 10_Pattern_SA.xlsx
+2026-07-22 00:39:25,779 | INFO | utilities.archive_mined_file | Deleted from data/bulk/mine: 10_Pattern_SA.xlsx
+ARCHIVE OK  -- 10_Pattern_SA.xlsx
+  zip  : E:\AI-Agent-Learning-Hub_BackupFiles\Jul26BULKPattern.zip
+  entry: 10_Pattern_SA.xlsx
+[17 / 17] 10_Pattern_VIAV.xlsx
+2026-07-22 00:39:27,027 | INFO | utilities.archive_mined_file | Added to zip: 10_Pattern_VIAV.xlsx
+2026-07-22 00:39:27,029 | INFO | utilities.archive_mined_file | Deleted from data/bulk/mine: 10_Pattern_VIAV.xlsx
+ARCHIVE OK  -- 10_Pattern_VIAV.xlsx
+  zip  : E:\AI-Agent-Learning-Hub_BackupFiles\Jul26BULKPattern.zip
+  entry: 10_Pattern_VIAV.xlsx
+
+=======================================================================
+ DONE -- 17 / 17 files archived.
+ Review both walk-forward reports (printed above by ingest-mined),
+ then promote manually when ready:
+   python cli.py ingest-mined --promote <staging_db_path>
+=======================================================================
+
+Press Enter to close:
