@@ -125,3 +125,62 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+def test_cli_wires_intelliscan_supports_through_to_emit_signal():
+    """BEHAVIOR -- WO-P115-E3.001 (2026-08-03).
+
+    emit_signal() has accepted intelliscan_support_1/2 since v2.2
+    (WO-P115-E2.001), but cli.py never defined the arguments or passed
+    them at the call site. The enrichment was unreachable from the only
+    entry point Tony actually uses, and WO-P115-E2.001 closed with its
+    CLI half unwired. Discovered live on the ZION emission, 2026-08-03.
+
+    Guarantee: the CLI must define --support-1/--support-2 AND forward
+    them to emit_signal as intelliscan_support_1/intelliscan_support_2.
+    """
+    import cli
+
+    captured = {}
+
+    def fake_emit(**kwargs):
+        captured.update(kwargs)
+        return True
+
+    real_emit = cli.emit_signal
+    real_argv = sys.argv
+    cli.emit_signal = fake_emit
+    sys.argv = [
+        "cli.py",
+        "--symbol", "TEST",
+        "--session-date", "2026-08-03",
+        "--timestamp", "2026-08-03T14:00:00Z",
+        "--strategy", "dip_buy",
+        "--entry", "100.0",
+        "--stop", "95.0",
+        "--target", "110.0",
+        "--horizon", "3-5 days",
+        "--confidence", "HIGH",
+        "--close", "100.5",
+        "--volume", "1000000",
+        "--rationale", "wiring test",
+        "--timeframe", "1D",
+        "--source-link", "x.md",
+        "--atm", "2.0",
+        "--support-1", "96.5",
+        "--support-2", "92.0",
+    ]
+    try:
+        cli.main()
+    finally:
+        cli.emit_signal = real_emit
+        sys.argv = real_argv
+
+    assert captured.get("intelliscan_support_1") == 96.5, (
+        "cli.py did not forward --support-1 to emit_signal; got "
+        f"{captured.get('intelliscan_support_1')!r}"
+    )
+    assert captured.get("intelliscan_support_2") == 92.0, (
+        "cli.py did not forward --support-2 to emit_signal; got "
+        f"{captured.get('intelliscan_support_2')!r}"
+    )

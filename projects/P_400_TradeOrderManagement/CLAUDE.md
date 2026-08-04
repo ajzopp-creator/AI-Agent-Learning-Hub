@@ -132,3 +132,21 @@ acknowledged 2026-07-21. A second schema key, `"P400_PAPER"`, was added
 Check `Agentic-Hub-Governance\work_orders\` before signal-ingest or schema work:
 - `WO-P800-E2.001` — signal packet schema v2.0 adoption (affects P_115/P_300/P_400)
 - `WO-P115-E1.001` — P_115 signal emitter feeding P_400
+
+
+## Known Gaps (not yet formal WOs)
+
+- **2026-07-28 — `defined_risk_confirmed` never wired end-to-end.** `domain\council.py`'s
+  `macro_vote()` accepts a `defined_risk_confirmed: bool = False` param that converts an
+  `EARNINGS_IN_WINDOW` MACRO block to CAUTION, per architecture doc Section 3.4/4.4's
+  "Confirm defined-risk to convert to CAUTION" language and the BLOCK message printed
+  by the CLI itself. Grepped the whole `application\` layer and `cli.py` -- the param is
+  referenced nowhere outside `council.py`'s own signature and `test_council.py`'s unit
+  tests. No CLI flag exists to set it (confirmed via `cli.py evaluate --help`); `--options`
+  does not set it either. Net effect: any earnings-in-window MACRO block is currently
+  un-convertible from the CLI -- the documented escape hatch is dead code. Found live on
+  CCEP (2026-07-28), same day NBIX hit the identical block with no attempt to work around
+  it. Needs a real WO: either wire a `--defined-risk-confirmed` flag (and decide what
+  evidence justifies setting it -- an options `--chain` present? an explicit flag?) or a
+  reduced-size equivalent if Tony wants that path added, since today only defined-risk
+  exists in the domain layer at all, and even that isn't reachable from the CLI.

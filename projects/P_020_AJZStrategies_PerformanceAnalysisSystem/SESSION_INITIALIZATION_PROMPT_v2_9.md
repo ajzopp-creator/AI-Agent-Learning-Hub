@@ -38,7 +38,7 @@ Display: `P_020 [Weekday, Month DD, YYYY] [HH:MM ET]`
 Time via: `[System.TimeZoneInfo]::ConvertTimeBySystemTimeZoneId((Get-Date),"Eastern Standard Time")`
 
 ### Step 2 — Run INIT Block
-Use the `Start-Job + cmd /c` command block in `docs\P_020_MASTER_SYSTEM_DOCUMENTATION_v1_0.md` Section 9.6. NEVER use `Start-Process -NoNewWindow`.
+Use the `Start-Process -WindowStyle Hidden` + redirect command block in `docs\P_020_MASTER_SYSTEM_DOCUMENTATION_v1_0.md` Section 9.6. NEVER use `Start-Process -NoNewWindow` or `Start-Job` (WO-P020-E1.012). Never put `Start-Sleep` in an MCP call.
 
 On MCP timeout: give Tony the one-liner for Anaconda Prompt; wait for paste; display the block.
 
@@ -98,6 +98,9 @@ Carry domain rules. ThinkLog vocabulary, monthly review interpretation steps, IN
 ---
 
 ## Changelog
+
+### v3.2 — 2026-08-03
+- Step 2 INIT invocation corrected. `Start-Job` banned (does not survive an isolated MCP call); `Start-Process -WindowStyle Hidden` + redirect is the working pattern. WO-P020-E1.012.
 
 ### v3.1 — 2026-06-18
 - Full rewrite to P_300 SIP pattern. ThinkLog vocabulary, monthly review workflow, INIT command block migrated to system doc Sections 9.4–9.6. Start-Process -NoNewWindow reference removed (banned per ERROR 002). SKILL vocabulary source updated to system doc. SIP is now steps-only.

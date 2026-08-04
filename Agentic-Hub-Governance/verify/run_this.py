@@ -1,55 +1,74 @@
-"""run_this.py -- PEH verification script for WO-P400-E2.023 (backward-
-looking post-earnings stabilization check, MACRO role).
-
-Runs an import smoke check, then the full P_400 pytest suite from
-python\, PYTHONPATH set to hub root (matches Tony's normal invocation
-pattern). Self-contained; never modifies production files.
-
-Ends with 'PASS' on success or 'FAIL: <reason>' + exit(1) on failure.
 """
-import os
+FILE: Agentic-Hub-Governance/verify/run_this.py
+PURPOSE: Independent-review re-run for WO-P300-E5.002 / WO-P300-E5.005
+         closure. This session wrote none of the code or tests below --
+         re-running them fresh is the WO_COMPLETION_GATE Independent
+         Review Requirement, not a repeat of the 2026-07-29/07-30
+         sessions' own claims (M-054: a claim is not evidence).
+
+Runs all 5 test files relevant to these two WOs, each as a subprocess
+via the p140 interpreter, and reports exit codes + tail output.
+Read-only: none of these tests touch the real project catalog (all use
+tempfile.TemporaryDirectory() or synthetic in-memory fixtures per their
+own docstrings).
+
+RUN:
+    C:\\Users\\Trader\\.conda\\envs\\p140\\python.exe run_this.py
+"""
+from __future__ import annotations
+
 import subprocess
 import sys
+from pathlib import Path
 
-HUB_ROOT = r"C:\Users\Trader\AI-Agent-Learning-Hub"
-P400_PYTHON_DIR = HUB_ROOT + r"\projects\P_400_TradeOrderManagement\python"
-PYTHON = r"C:\Users\Trader\.conda\envs\p140\python.exe"
+PY = r"C:\Users\Trader\.conda\envs\p140\python.exe"
+TESTS_DIR = Path(
+    r"C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\python\tests"
+)
 
-env = os.environ.copy()
-env["PYTHONPATH"] = HUB_ROOT
+TEST_FILES = [
+    "test_verify_ingestion.py",       # WO-P300-E5.002/E5.005 shared completion-gate test
+    "test_walkforward_report_io.py",  # WO-P300-E5.005
+    "test_promote_gate.py",           # WO-P300-E5.005
+    "test_promote_marker_io.py",      # WO-P300-E5.005
+    "test_cli_registry_inventory.py", # WO-P300-E5.005 (18 commands / 6 modules)
+]
 
 
-def main() -> None:
-    print("=== IMPORT SMOKE CHECK ===")
-    smoke = subprocess.run(
-        [PYTHON, "-c",
-         "from domain.council import macro_vote; "
-         "from application.evaluate_signal import _sessions_since_earnings; "
-         "from config import POST_EARNINGS_STABILIZATION_SESSIONS; "
-         "from schemas import SnapshotDict; "
-         "print('IMPORTS OK')"],
-        capture_output=True, text=True, cwd=P400_PYTHON_DIR, env=env,
-    )
-    print(smoke.stdout)
-    print(smoke.stderr)
-    if smoke.returncode != 0:
-        print("FAIL: import smoke check failed -- see stderr above")
-        sys.exit(1)
+def main() -> int:
+    print(f"Python: {PY}")
+    overall_ok = True
+    for fname in TEST_FILES:
+        fpath = TESTS_DIR / fname
+        print(f"\n{'=' * 70}")
+        print(f"RUNNING: {fname}")
+        print("=" * 70)
+        if not fpath.exists():
+            print(f"  MISSING: {fpath}")
+            overall_ok = False
+            continue
+        result = subprocess.run(
+            [PY, str(fpath)],
+            capture_output=True,
+            text=True,
+            timeout=120,
+        )
+        print(result.stdout)
+        if result.stderr:
+            print("--- stderr ---")
+            print(result.stderr)
+        print(f"EXIT CODE: {result.returncode}")
+        if result.returncode != 0:
+            overall_ok = False
 
-    print("=== PYTEST (full P_400 suite) ===")
-    result = subprocess.run(
-        [PYTHON, "-m", "pytest", ".", "-v"],
-        capture_output=True, text=True, cwd=P400_PYTHON_DIR, env=env,
-    )
-    print(result.stdout[-10000:])
-    print(result.stderr[-3000:])
-
-    if result.returncode != 0:
-        print("FAIL: pytest reported failures -- see output above")
-        sys.exit(1)
-
-    print("PASS")
+    print(f"\n{'=' * 70}")
+    if overall_ok:
+        print("ALL 5 TEST FILES PASSED (exit 0)")
+    else:
+        print("AT LEAST ONE TEST FILE FAILED -- see above")
+    print("=" * 70)
+    return 0 if overall_ok else 1
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

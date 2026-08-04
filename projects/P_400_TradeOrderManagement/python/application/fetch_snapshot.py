@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Optional
 
 from config import SCHWAB_CONFIG_PATH, SCHWAB_TOKEN_PATH
+from domain.market_hours import is_market_open_now
 from schemas import SnapshotDict
 from shared_resources.python_utils.atr import compute_atr_wilder
 
@@ -68,15 +69,17 @@ def cmd_fetch_snapshot(
             next_earnings_date=earnings_date,
             sector=sector,
             last_earnings_date=last_earnings_date,
+            market_open=is_market_open_now(now),
         )
     except Exception as e:
         print(f"[ERROR] SnapshotDict validation failed for {symbol}: {e}. "
               f"No file written.")
         return 1
 
-    out_path = PYTHON_DIR / f"snapshot_{symbol}.json"
+    safe_symbol = symbol.replace("/", "_")
+    out_path = PYTHON_DIR / f"snapshot_{safe_symbol}.json"
     out_path.write_text(json.dumps(snapshot.model_dump(), indent=2), encoding="utf-8")
-    print(f"[OK] snapshot_{symbol}.json written (data_source=schwab_api): {out_path}")
+    print(f"[OK] snapshot_{safe_symbol}.json written (data_source=schwab_api): {out_path}")
     print(f"  price={snapshot.price}  atr_14={snapshot.atr_14:.2f}  "
           f"avg_volume_20d={snapshot.avg_volume_20d:.0f}")
     return 0

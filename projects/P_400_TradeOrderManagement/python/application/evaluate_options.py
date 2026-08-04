@@ -24,6 +24,8 @@ from typing import Optional
 
 from application.build_option_spec import build_option_spec
 from domain.options_council import OptionsCouncilResult, run_options_council
+from domain.council import Decision, macro_vote
+from domain.earnings_window import earnings_in_window, sessions_since_earnings
 from domain.options_sizer import OptionSizingResult, size_option_chart_based
 from infrastructure.chain_loader import load_chain
 from infrastructure.params_reader import read_params
@@ -51,6 +53,7 @@ def evaluate_options(
     chain_path: str,
     cash_available: float,
     stock_rr: float,
+    is_paper: bool = False,
 ) -> OptionsEvalResult:
     """Run single-leg options sizing + viability gates, render spec if not BLOCKED.
 
@@ -82,6 +85,21 @@ def evaluate_options(
     )
 
     council = run_options_council(chain=chain, sizing=sizing, stock_rr=stock_rr)
+    # WO-P000-E10.001 item 2.2 -- options are inherently defined-risk (long premium)
+    macro = macro_vote(
+        earnings_in_window=earnings_in_window(snap.next_earnings_date),
+        binary_events=snap.binary_events,
+        defined_risk_confirmed=True,  # long single-leg option: max loss = premium paid
+        sessions_since_earnings=sessions_since_earnings(snap.last_earnings_date),
+    )
+    if macro.decision == Decision.BLOCK:
+        council.verdict = "BLOCK"
+        council.blocks.append(macro.reason_detail)
+    elif macro.decision == Decision.CAUTION and council.verdict != "BLOCK":
+        if council.verdict == "PASS":
+            council.verdict = "CAUTION"
+        council.cautions.append(macro.reason_detail)
+
 
     spec_text = None
     if council.verdict != "BLOCK":
@@ -92,6 +110,7 @@ def evaluate_options(
             stock_entry=snap.price,
             stock_stop=packet.guideline_stop,
             stock_target=packet.guideline_target,
+            is_paper=is_paper,
         )
 
     logger.info(

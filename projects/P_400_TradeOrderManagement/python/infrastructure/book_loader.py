@@ -24,6 +24,10 @@ logger = logging.getLogger("p400.book_loader")
 # YAML frontmatter is bounded by triple-dashes at the start of the file.
 _FRONTMATTER_RE = re.compile(r"^---\s*\n(.*?)\n---", re.DOTALL)
 
+# Vault filenames are "YYYY-MM-DD_SYMBOL.md" -- date prefix used as order_date
+# (WO-P000-E10.001; BookRecord itself has no created/order timestamp field).
+_FILENAME_DATE_RE = re.compile(r"^(\d{4}-\d{2}-\d{2})_")
+
 
 def _parse_frontmatter(path: Path) -> dict:
     """Extract and parse YAML frontmatter from a markdown file.
@@ -62,6 +66,9 @@ def load_book(book_dir: Path = BOOK_DIR) -> List[BookRecord]:
                 continue
             fm["symbol"] = fm.pop("ticker", fm.get("symbol"))
             fm["status"] = fm.pop("lifecycle_status", fm.get("status"))
+            date_match = _FILENAME_DATE_RE.match(path.name)
+            if date_match and "order_date" not in fm:
+                fm["order_date"] = date_match.group(1)
             rec = BookRecord(**fm)
             records.append(rec)
         except Exception as exc:

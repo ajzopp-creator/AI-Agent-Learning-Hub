@@ -1,0 +1,221 @@
+scanned 349 production .py files
+========================================================================
+106 function(s) with never-passed optional parameters:
+
+projects\P_000_PythonClaudeLocalLLM\python\infrastructure\lm_studio_api.py:78
+    send_chat_request()  ->  temperature, max_tokens
+projects\P_000_PythonClaudeLocalLLM\python\infrastructure\lm_studio_api.py:178
+    get_wrapper_status()  ->  task_type
+projects\P_010_Current_Market_Posture\python\application\health_runner.py:29
+    run_market_health()  ->  target_path
+projects\P_010_Current_Market_Posture\python\domain\distribution_day.py:50
+    count_distribution_days()  ->  window_days
+projects\P_010_Current_Market_Posture\python\market_health\cli.py:23
+    main()  ->  argv
+projects\P_010_Current_Market_Posture\python\market_health\cli_backtest.py:29
+    main()  ->  argv
+projects\P_020_AJZStrategies_PerformanceAnalysisSystem\docs\P_020_Trade_Import_Enhanced.py:231
+    import_trades()  ->  trade_type, tracker_df
+projects\P_020_AJZStrategies_PerformanceAnalysisSystem\python\analyze_formula_columns.py:4
+    analyze_formulas()  ->  sheet_name
+projects\P_020_AJZStrategies_PerformanceAnalysisSystem\python\database\application\assign_tos_imports_2026.py:38
+    run()  ->  dry_run
+projects\P_020_AJZStrategies_PerformanceAnalysisSystem\python\database\application\paper_writer.py:65
+    write_trades()  ->  db_path
+projects\P_020_AJZStrategies_PerformanceAnalysisSystem\python\database\domain\matcher.py:40
+    match_system()  ->  window_days
+projects\P_020_AJZStrategies_PerformanceAnalysisSystem\python\database\domain\spread_matcher.py:67
+    compute_realized_pnl()  ->  multiplier
+projects\P_020_AJZStrategies_PerformanceAnalysisSystem\python\database\infrastructure\csv_exporter.py:33
+    _rows_to_csv()  ->  fallback_headers
+projects\P_020_AJZStrategies_PerformanceAnalysisSystem\python\database\infrastructure\csv_exporter.py:70
+    export_options()  ->  account_id
+projects\P_020_AJZStrategies_PerformanceAnalysisSystem\python\database\infrastructure\csv_exporter.py:100
+    export_stocks()  ->  account_id
+projects\P_020_AJZStrategies_PerformanceAnalysisSystem\python\database\infrastructure\db_reader.py:12
+    get_all_trades()  ->  system
+projects\P_020_AJZStrategies_PerformanceAnalysisSystem\python\database\infrastructure\db_writer.py:107
+    update_trade_status()  ->  total_commissions
+projects\P_020_AJZStrategies_PerformanceAnalysisSystem\python\database\schemas.py:181
+    get()  ->  default
+projects\P_020_AJZStrategies_PerformanceAnalysisSystem\python\parsers\P_020_Trade_Import_Enhanced.py:155
+    match_system_name()  ->  trade_type
+projects\P_020_AJZStrategies_PerformanceAnalysisSystem\python\parsers\P_020_Trade_Import_Enhanced.py:271
+    import_trades()  ->  trade_type, tracker_df
+projects\P_020_AJZStrategies_PerformanceAnalysisSystem\python\parsers\paper_import.py:69
+    synthetic_id()  ->  suffix
+projects\P_300_Vantage_Point_Pattern_Recognition\python\application\add_pattern_pipeline.py:209
+    ingest_pattern_file()  ->  temp_db_path, window_length
+projects\P_300_Vantage_Point_Pattern_Recognition\python\application\bulk_extract_pipeline.py:92
+    _load_sector_map()  ->  path
+projects\P_300_Vantage_Point_Pattern_Recognition\python\application\catalog_merge_pipeline.py:165
+    build_staging_merge()  ->  live_catalog_path, research_db_path
+projects\P_300_Vantage_Point_Pattern_Recognition\python\application\catalog_merge_pipeline.py:220
+    promote_staging_to_live()  ->  live_catalog_path
+projects\P_300_Vantage_Point_Pattern_Recognition\python\application\daily_evaluate_pipeline.py:535
+    _parse_args()  ->  argv
+projects\P_300_Vantage_Point_Pattern_Recognition\python\application\daily_evaluate_pipeline.py:580
+    main()  ->  argv
+projects\P_300_Vantage_Point_Pattern_Recognition\python\application\incremental_post_batch.py:64
+    run_incremental_post_batch()  ->  threshold_overrides
+projects\P_300_Vantage_Point_Pattern_Recognition\python\application\ingest_mined_pipeline.py:262
+    _run_pre_batch()  ->  confirm_full_rescore
+projects\P_300_Vantage_Point_Pattern_Recognition\python\application\ingest_mined_pipeline.py:326
+    run_ingest_mined()  ->  live_catalog_path, input_dir
+projects\P_300_Vantage_Point_Pattern_Recognition\python\application\reconstruct_pre_batch.py:74
+    reconstruct_pre_batch_from_topk_cache()  ->  threshold_overrides
+projects\P_300_Vantage_Point_Pattern_Recognition\python\application\run_eval_loop.py:71
+    main()  ->  argv
+projects\P_300_Vantage_Point_Pattern_Recognition\python\cli_commands\main.py:101
+    main()  ->  argv
+projects\P_300_Vantage_Point_Pattern_Recognition\python\domain\bulk_labeler.py:71
+    compute_bulk_forward_labels()  ->  horizons
+projects\P_300_Vantage_Point_Pattern_Recognition\python\domain\bulk_windowing.py:148
+    apply_spacing_rule()  ->  min_spacing_bars
+projects\P_300_Vantage_Point_Pattern_Recognition\python\domain\eval_incremental.py:169
+    run_cached_post_batch()  ->  threshold_overrides
+projects\P_300_Vantage_Point_Pattern_Recognition\python\domain\eval_scoring.py:165
+    score_one()  ->  threshold_overrides
+projects\P_300_Vantage_Point_Pattern_Recognition\python\domain\eval_scoring.py:258
+    run_walk_forward()  ->  threshold_overrides
+projects\P_300_Vantage_Point_Pattern_Recognition\python\domain\labeler.py:78
+    compute_forward_labels()  ->  horizons
+projects\P_300_Vantage_Point_Pattern_Recognition\python\domain\normalization.py:108
+    normalize_window()  ->  anchor
+projects\P_300_Vantage_Point_Pattern_Recognition\python\domain\pattern_detector.py:85
+    find_swing_high_resistance()  ->  lookback_bars, pivot_bars
+projects\P_300_Vantage_Point_Pattern_Recognition\python\domain\promote_gate.py:134
+    evaluate_promote_gate()  ->  thresholds
+projects\P_300_Vantage_Point_Pattern_Recognition\python\domain\reconstruct_from_topk.py:88
+    score_one_from_topk_cache()  ->  threshold_overrides
+projects\P_300_Vantage_Point_Pattern_Recognition\python\domain\topk_cache.py:82
+    _corpus_pids_before()  ->  candidate_pool
+projects\P_300_Vantage_Point_Pattern_Recognition\python\domain\utility.py:169
+    _approx()  ->  tol
+projects\P_300_Vantage_Point_Pattern_Recognition\python\infrastructure\bulk_grid_reader.py:270
+    parse_bulk_file()  ->  manifest_path
+projects\P_300_Vantage_Point_Pattern_Recognition\python\infrastructure\eval_io.py:102
+    load_full_catalog()  ->  catalog_path
+projects\P_300_Vantage_Point_Pattern_Recognition\python\infrastructure\eval_io.py:186
+    write_walk_forward_report()  ->  reports_dir
+projects\P_300_Vantage_Point_Pattern_Recognition\python\infrastructure\eval_io.py:259
+    read_cached_walk_forward()  ->  overrides
+projects\P_300_Vantage_Point_Pattern_Recognition\python\infrastructure\ledger_db.py:22
+    __init__()  ->  db_path
+projects\P_300_Vantage_Point_Pattern_Recognition\python\infrastructure\llm_client.py:118
+    call_lm_studio()  ->  base_url, model, timeout_seconds, max_tokens, temperature
+projects\P_300_Vantage_Point_Pattern_Recognition\python\infrastructure\report_writer.py:132
+    _fmt_z()  ->  width
+projects\P_300_Vantage_Point_Pattern_Recognition\python\infrastructure\report_writer.py:424
+    write_signal_report()  ->  reports_dir
+projects\P_300_Vantage_Point_Pattern_Recognition\python\infrastructure\sector_backfill_io.py:59
+    run_sector_backfill()  ->  master_path
+projects\P_300_Vantage_Point_Pattern_Recognition\python\infrastructure\sector_map_loader.py:46
+    load_sector_map()  ->  csv_path
+projects\P_300_Vantage_Point_Pattern_Recognition\python\infrastructure\sector_report_writer.py:66
+    write_sector_stats_report()  ->  target_dir
+projects\P_300_Vantage_Point_Pattern_Recognition\python\infrastructure\sector_stats_io.py:92
+    write_sector_stats()  ->  master_path
+projects\P_300_Vantage_Point_Pattern_Recognition\python\infrastructure\verify_ingestion.py:235
+    verify_and_promote()  ->  check_topk_cache
+projects\P_300_Vantage_Point_Pattern_Recognition\python\infrastructure\vp_xlsx_reader.py:261
+    parse_pattern_file()  ->  manifest_path
+projects\P_300_Vantage_Point_Pattern_Recognition\python\infrastructure\vp_xlsx_reader.py:288
+    parse_live_file()  ->  manifest_path
+projects\P_300_Vantage_Point_Pattern_Recognition\python\migrations\stage_4a_add_topk_cache.py:104
+    run_migration()  ->  live_catalog_path
+projects\P_300_Vantage_Point_Pattern_Recognition\python\migrations\stage_4b_purge_four_pattern_ident_doubles.py:247
+    run_migration()  ->  live_catalog_path
+projects\P_300_Vantage_Point_Pattern_Recognition\python\utilities\catalog_summary.py:178
+    run_summary()  ->  catalog_path
+projects\P_300_Vantage_Point_Pattern_Recognition\python\utilities\check_pattern.py:108
+    run_check()  ->  symbol_arg, catalog_path, live_dir
+projects\P_300_Vantage_Point_Pattern_Recognition\python\utilities\db_connect.py:46
+    get_connection()  ->  catalog_path
+projects\P_300_Vantage_Point_Pattern_Recognition\python\utilities\feature_ablation.py:226
+    _parse_args()  ->  argv
+projects\P_300_Vantage_Point_Pattern_Recognition\python\utilities\feature_ablation.py:237
+    main()  ->  argv
+projects\P_300_Vantage_Point_Pattern_Recognition\python\utilities\inspect_pattern.py:203
+    run_inspect()  ->  catalog_path
+projects\P_300_Vantage_Point_Pattern_Recognition\python\utilities\intelliscan_reader.py:73
+    load_intelliscan()  ->  path
+projects\P_300_Vantage_Point_Pattern_Recognition\python\utilities\threshold_sweep.py:175
+    sweep_buy_thresholds()  ->  buy_n_grid, buy_wr_grid, buy_z_grid
+projects\P_300_Vantage_Point_Pattern_Recognition\python\utilities\threshold_sweep.py:253
+    _parse_args()  ->  argv
+projects\P_300_Vantage_Point_Pattern_Recognition\python\utilities\threshold_sweep.py:262
+    main()  ->  argv
+projects\P_400_TradeOrderManagement\python\application\build_option_spec.py:138
+    build_option_spec()  ->  is_paper
+projects\P_400_TradeOrderManagement\python\application\build_order_spec.py:31
+    _stop_limit_price()  ->  tick
+projects\P_400_TradeOrderManagement\python\application\build_spread_spec.py:32
+    build_spread_spec()  ->  is_paper
+projects\P_400_TradeOrderManagement\python\application\commands.py:52
+    cmd_screen_all()  ->  trade_mode
+projects\P_400_TradeOrderManagement\python\application\read_signals.py:40
+    read_signals()  ->  signals_dir
+projects\P_400_TradeOrderManagement\python\domain\chain_selector.py:44
+    select_optimal_contract()  ->  as_of
+projects\P_400_TradeOrderManagement\python\domain\council.py:124
+    macro_vote()  ->  defined_risk_confirmed
+projects\P_400_TradeOrderManagement\python\domain\council.py:213
+    behavioral_vote()  ->  recently_stopped_out_symbols, orders_today, daily_order_norm, consecutive_wins, win_streak_threshold
+projects\P_400_TradeOrderManagement\python\domain\levels.py:51
+    compute_bollinger()  ->  period, num_std, width_lookback
+projects\P_400_TradeOrderManagement\python\domain\market_hours.py:27
+    is_market_open_now()  ->  now
+projects\P_400_TradeOrderManagement\python\domain\moving_averages.py:73
+    compute_trend()  ->  periods
+projects\P_400_TradeOrderManagement\python\domain\oscillators.py:26
+    compute_rsi()  ->  period
+projects\P_400_TradeOrderManagement\python\domain\oscillators.py:73
+    compute_macd()  ->  fast, slow, signal
+projects\P_400_TradeOrderManagement\python\domain\portfolio.py:41
+    build_portfolio_state()  ->  today
+projects\P_400_TradeOrderManagement\python\domain\vehicle_selector.py:59
+    compare_vehicles()  ->  options_council_result
+projects\P_400_TradeOrderManagement\python\infrastructure\book_loader.py:41
+    load_book()  ->  book_dir
+projects\P_400_TradeOrderManagement\python\infrastructure\params_reader.py:37
+    read_params()  ->  path
+projects\P_400_TradeOrderManagement\python\infrastructure\posture_reader.py:23
+    read_posture()  ->  hub_root
+projects\P_400_TradeOrderManagement\python\infrastructure\record_writer.py:122
+    _resolve_lifecycle_status()  ->  order_id
+projects\P_400_TradeOrderManagement\python\infrastructure\record_writer.py:180
+    write_options_eval_record()  ->  order_id
+projects\P_400_TradeOrderManagement\python\infrastructure\record_writer.py:231
+    write_spread_eval_record()  ->  order_id
+projects\P_400_TradeOrderManagement\python\infrastructure\signal_archiver.py:21
+    _monthly_zip_path()  ->  ref_date
+projects\P_400_TradeOrderManagement\python\infrastructure\signal_loader.py:38
+    list_v2_files()  ->  signals_dir
+projects\P_400_TradeOrderManagement\python\infrastructure\signal_loader.py:69
+    load_v2_signals()  ->  signals_dir
+projects\P_805_Email_Trade_Extractor\python\application\imap_auth_check.py:23
+    run()  ->  account
+projects\P_805_Email_Trade_Extractor\python\application\phase1_scan.py:91
+    run()  ->  account
+projects\P_805_Email_Trade_Extractor\python\application\phase35_enrich.py:68
+    run()  ->  signals_path
+projects\P_805_Email_Trade_Extractor\python\application\phase3_extract.py:149
+    run()  ->  account
+projects\P_805_Email_Trade_Extractor\python\application\phase4_rank.py:24
+    run()  ->  signals_path, ranked_path
+projects\P_805_Email_Trade_Extractor\python\application\phase53_move.py:32
+    run()  ->  signals_path
+projects\P_805_Email_Trade_Extractor\python\domain\ranker.py:22
+    build_ranked_signals()  ->  consensus_threshold, sector_map
+projects\P_805_Email_Trade_Extractor\python\domain\ticker_extractor.py:46
+    find_tickers()  ->  context_chars
+shared_resources\chaikin_enrichment\application\run_chaikin_batch.py:34
+    build_prompt()  ->  template_path
+shared_resources\chaikin_enrichment\infrastructure\vault_scanner.py:29
+    scan_schema()  ->  today
+========================================================================
+1 function(s) EXCLUDED as indeterminate (called somewhere with **dict unpacking, so real usage is invisible to static analysis):
+    write_p400_record()
+========================================================================
+PASS

@@ -1,0 +1,57 @@
+WO-P000-E10.001 Phase 2 -- P_400, items 2.1 and 2.2 (2026-08-04)
+
+Item 2.1 (behavioral_vote inputs):
+- schemas.py: BookRecord gained order_date: Optional[str] = None
+- infrastructure/book_loader.py: extracts order_date from the filename
+  prefix (YYYY-MM-DD_SYMBOL.md) via a new _FILENAME_DATE_RE
+- domain/behavioral_history.py: NEW -- compute_behavioral_inputs()
+  computes recently_stopped_out_symbols, orders_today, consecutive_wins
+  from the same book records portfolio.py already reads. Approximation
+  stated in the module docstring: "stopped out" = "closed at a loss"
+  (no exit-reason field exists to be more precise). Tony confirmed this
+  approximation 2026-08-04.
+- application/evaluate_signal.py: calls compute_behavioral_inputs(records)
+  and threads the result into behavioral_vote() -- previously only
+  symbol= was ever passed, so revenge-trade/overtrading/streak-chasing
+  detection had never fired in production.
+
+Item 2.2 (MACRO council missing from options/spread paths):
+- domain/earnings_window.py: NEW -- earnings_in_window() and
+  sessions_since_earnings() moved here from application/evaluate_signal.py
+  (were private/underscore-prefixed functions there, a pre-existing
+  layer-rule violation that became worth fixing once evaluate_options.py
+  and evaluate_spread.py also needed them). Behavior unchanged -- a move,
+  not a rewrite.
+- domain/spread_council.py: SpreadCouncilResult gained a cautions: list
+  field (previously verdict was strictly PASS|BLOCK with nowhere for a
+  non-blocking MACRO CAUTION to go).
+- application/evaluate_options.py: now calls macro_vote() with
+  defined_risk_confirmed=True (a long single-leg option has defined
+  risk = premium paid) and merges BLOCK/CAUTION into the options council
+  verdict.
+- application/evaluate_spread.py: gained a new snapshot_raw: dict
+  parameter (didn't receive snapshot data before), calls macro_vote()
+  with defined_risk_confirmed=True (a vertical spread has defined risk =
+  net debit paid), merges BLOCK into the spread council verdict (verdict
+  stays PASS/BLOCK only -- CAUTION goes to the new cautions list instead).
+- application/commands.py: passes snapshot_raw=snapshot to the
+  evaluate_spread() call site (snapshot was already in scope there).
+
+Before this fix, evaluate_options.py and evaluate_spread.py never called
+the main 5-role council at all -- only their own narrow liquidity/R:R
+gates. Every option and spread trade skipped the earnings-window check
+entirely, defined-risk or not.
+
+Success criteria: script prints PASS, exit code 0, all existing tests
+(15 from before this session) plus 9 new ones (4 for item 2.1, 5 for
+item 2.2) all show [PASS] -- 24/24 total expected.
+
+If it fails: read the [FAIL] lines -- each names which check failed and
+usually a "got X" detail. Do NOT change any test assertion. Pay special
+attention to any ImportError or AttributeError, since this touched
+imports across 5 files (schemas.py, book_loader.py, evaluate_signal.py,
+evaluate_options.py, evaluate_spread.py, commands.py, spread_council.py) --
+if one is wrong the failure will likely be an import-time crash affecting
+many tests at once, not just the new e10001 ones. If an EXISTING
+(non-e10001) test fails, flag that specifically -- something broke that
+this session didn't intend to touch.

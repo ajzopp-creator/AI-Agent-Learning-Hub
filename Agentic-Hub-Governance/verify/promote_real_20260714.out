@@ -1,0 +1,8 @@
+﻿2026-07-14 20:45:20,875 | INFO | infrastructure.catalog_writer | catalog_checkout: {'symbols': 307, 'source_files': 508, 'feature_sets': 1, 'pattern_instances': 508, 'pattern_bars': 10160, 'pattern_features': 0, 'forward_labels': 2540}
+python.exe : Promotion failed: 'str' object has no attribute 'exists'
+At line:1 char:1
++ & "C:\Users\Trader\.conda\envs\p140\python.exe" cli.py ingest-mined - ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Promotion faile...ribute 'exists':String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 

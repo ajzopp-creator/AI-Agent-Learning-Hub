@@ -21,11 +21,13 @@ from dataclasses import dataclass
 
 from application.build_spread_spec import build_spread_spec
 from domain.spread_council import SpreadCouncilResult, run_spread_council
+from domain.council import Decision, macro_vote
+from domain.earnings_window import earnings_in_window, sessions_since_earnings
 from domain.spread_sizer import SpreadSizingResult, size_vertical_debit_spread
 from infrastructure.chain_loader import load_chain
 from infrastructure.params_reader import read_params
 from infrastructure.posture_reader import read_posture
-from schemas import OptionChainInput, SignalV2
+from schemas import OptionChainInput, SignalV2, SnapshotDict
 
 logger = logging.getLogger("p400.evaluate_spread")
 
@@ -44,14 +46,17 @@ class SpreadEvalResult:
 
 def evaluate_spread(
     packet: SignalV2,
+    snapshot_raw: dict,
     long_chain_path: str,
     short_chain_path: str,
     cash_available: float,
+    is_paper: bool = False,
 ) -> SpreadEvalResult:
     """Run spread liquidity gates, sizing, and Pattern C spec rendering.
 
     Args:
         packet: Validated SignalV2 from the inbox (used for symbol only).
+        snapshot_raw: Raw snapshot dict -- used for earnings/binary-event MACRO check.
         long_chain_path: Path to the long (ATM) leg chain_SYMBOL.json.
         short_chain_path: Path to the short (OTM) leg chain_SYMBOL.json.
         cash_available: Per-trade buying power.
@@ -60,12 +65,26 @@ def evaluate_spread(
         SpreadEvalResult. spec_text is a [NO SPEC] notice when the
         liquidity council BLOCKs; otherwise the full Pattern C spec.
     """
+    snap = SnapshotDict(**snapshot_raw)
     long_chain = load_chain(long_chain_path)
     short_chain = load_chain(short_chain_path)
     posture = read_posture()
     params = read_params()
 
     council = run_spread_council(long_chain, short_chain)
+    # WO-P000-E10.001 item 2.2 -- verdict stays PASS/BLOCK (spread council has no CAUTION state); MACRO CAUTION goes to council.cautions only
+    macro = macro_vote(
+        earnings_in_window=earnings_in_window(snap.next_earnings_date),
+        binary_events=snap.binary_events,
+        defined_risk_confirmed=True,  # vertical spread: max loss = net debit paid
+        sessions_since_earnings=sessions_since_earnings(snap.last_earnings_date),
+    )
+    if macro.decision == Decision.BLOCK:
+        council.verdict = "BLOCK"
+        council.blocks.append(macro.reason_detail)
+    if macro.decision == Decision.CAUTION and council.verdict != "BLOCK":
+        council.cautions.append(macro.reason_detail)
+
 
     sizing = size_vertical_debit_spread(
         long_chain=long_chain,
@@ -87,6 +106,7 @@ def evaluate_spread(
             long_chain=long_chain,
             short_chain=short_chain,
             sizing=sizing,
+            is_paper=is_paper,
         )
 
     logger.info(

@@ -1,7 +1,7 @@
 """
 FILE: catalog_writer.py
-VERSION: 1.0.3
-DATE: 2026-07-20
+VERSION: 1.0.4
+DATE: 2026-07-25
 AUTHOR: Anthony Zoppi + Claude
 LAYER: infrastructure
 DESCRIPTION:
@@ -26,6 +26,13 @@ DESCRIPTION:
         - catalog_checkout: asserts PRAGMA foreign_keys = ON (M-012)
 
 CHANGELOG:
+    - 2026-07-25 v1.0.4 (WO-P300-E5.003, check-pattern CLI): added
+      get_anchor_dates_for_ticker() -- read-only sibling to
+      pattern_exists_for_ticker_anchor(), same exact-match join, lists
+      every anchor_date for a ticker instead of a single boolean. Built
+      for the pre-export lookup tool so Tony can see what's already
+      captured before spending an export/ingest cycle. No change to
+      any existing function.
     - 2026-07-20 v1.0.3 (WFG/PLTR/BOIL/RRC PATTERN_IDENT-doubles cleanup):
       added pattern_exists_for_ticker_anchor() -- lifted from catalog_
       merge_io.py's private _pattern_already_exists (WO-P300-E2.003
@@ -186,6 +193,25 @@ def pattern_exists_for_ticker_anchor(
         (ticker, anchor_date.isoformat()),
     ).fetchone()
     return row is not None
+
+
+def get_anchor_dates_for_ticker(conn: sqlite3.Connection, ticker: str) -> list[str]:
+    """List every anchor_date already captured for a ticker, ascending.
+    Read-only pre-export check (WO-P300-E5.003) -- lets the operator see
+    what's already in the catalog before spending an export/ingest cycle
+    on a symbol. Sibling to pattern_exists_for_ticker_anchor(): same
+    exact-match join, no fuzzy/near-duplicate detection here either
+    (that stays a human decision, same rule as the dedup check above).
+    Returns an empty list for a ticker not yet in the symbols table --
+    not an error, just means nothing captured yet."""
+    rows = conn.execute(
+        "SELECT pi.anchor_date FROM pattern_instances pi "
+        "JOIN symbols s ON s.symbol_id = pi.symbol_id "
+        "WHERE s.ticker = ? "
+        "ORDER BY pi.anchor_date ASC",
+        (ticker,),
+    ).fetchall()
+    return [r[0] for r in rows]
 
 
 # ─────────────────────────────────────────────────────────────────────────────

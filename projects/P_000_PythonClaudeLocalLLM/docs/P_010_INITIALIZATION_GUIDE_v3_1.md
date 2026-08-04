@@ -1,8 +1,8 @@
-# P_010 INITIALIZATION GUIDE v3.1
+# P_010 INITIALIZATION GUIDE v3.2
 
 **Project:** P_010 Current Market Posture  
-**Version:** 3.1  
-**Updated:** 2026-06-04  
+**Version:** 3.2  
+**Updated:** 2026-07-27  
 **Type:** Daily workflow guide (batch + governance)
 
 ---
@@ -13,7 +13,7 @@
 
 **STEP 0.5: Work Order Review**
 
-Query shared work order ledger at `C:\Users\Trader\AI-Agent-Learning-Hub\04-Shared-Resources\work_orders\`:
+Query shared work order ledger at `C:\Users\Trader\AI-Agent-Learning-Hub\Agentic-Hub-Governance\work_orders\`:
 - **Owner=P_010, status not CLOSED** → Display; **HALT** if action required
 - **P_010 in Affects, Ack pending** → Display; **ACTION REQUIRED** post-session to Ack
 
@@ -135,6 +135,9 @@ Position Sizing = MIN(risk_mode, intraday_adjustment)
 
 ## CHANGELOG
 
+### v3.2 -- 2026-07-27
+- Fixed stale work-order ledger path (was 04-Shared-Resources, now Agentic-Hub-Governance) -- ref WO-P000-E7.001 Independent Review.
+
 ### v3.1 — 2026-06-04
 - Added STEP 0.5 Work Order Review (governance).
 - Compressed from 179 → 110 lines: condensed steps, removed verbose output listings, collapsed troubleshooting, simplified checklist.
@@ -145,4 +148,4 @@ Position Sizing = MIN(risk_mode, intraday_adjustment)
 
 ---
 
-**End of P_010 Initialization Guide v3.1**
+**End of P_010 Initialization Guide v3.2**

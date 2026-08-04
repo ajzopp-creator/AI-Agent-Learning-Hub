@@ -1,0 +1,23 @@
+WO-P000-E10.001 Phase 1 follow-up -- datetime.utcnow() deprecation fix (2026-08-04)
+
+What changed: infrastructure/db_writer.py -- update_trade_status() used the
+deprecated datetime.utcnow().isoformat() for the updated_at column (surfaced
+as a DeprecationWarning by the last PEH run, not a failure). Replaced with
+datetime.now(timezone.utc).replace(tzinfo=None).isoformat() -- same exact
+naive-ISO output format as before (no leading '+00:00' offset), just not
+using the deprecated call. Import line changed from
+"from datetime import datetime" to "from datetime import datetime, timezone".
+
+New test added: tests/test_db_writer.py::test_updated_at_stays_naive_iso_format
+-- confirms the updated_at string still has no '+' or 'Z' offset suffix, so a
+future regression back to a tz-aware isoformat() would be caught.
+
+Success criteria: all 5 tests in tests/test_db_writer.py +
+tests/test_spread_matcher.py PASS (2 from db_writer + 1 new + 2 from
+spread_matcher), script prints PASS, exit code 0, and this time NO
+DeprecationWarning about utcnow() in the output.
+
+If it fails: read pytest output above. Do NOT change any test assertion.
+If test_updated_at_stays_naive_iso_format fails specifically, check the
+replace(tzinfo=None) call landed correctly in db_writer.py -- that's the
+line most likely to have a typo.

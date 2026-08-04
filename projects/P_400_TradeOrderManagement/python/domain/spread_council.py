@@ -25,6 +25,7 @@ class SpreadCouncilResult:
 
     verdict: str                        # "PASS" | "BLOCK"
     blocks: list = field(default_factory=list)
+    cautions: list = field(default_factory=list)  # non-blocking annotations (e.g. MACRO earnings CAUTION, WO-P000-E10.001)
 
 
 def _check_leg(chain: OptionChainInput, leg_label: str, result: SpreadCouncilResult) -> None:

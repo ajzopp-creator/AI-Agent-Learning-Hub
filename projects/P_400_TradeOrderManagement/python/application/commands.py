@@ -14,6 +14,7 @@ from config import (
     LOGGER_NAME,
     MAX_CONCURRENT_POSITIONS,
     PORTFOLIO_HEAT_MAX_PCT,
+    SPEC_CACHEABLE_VERDICTS,
     SIGNALS_DIR,
     TradeMode,
 )
@@ -21,7 +22,6 @@ from application.read_signals import read_signals
 from application.stock_fields import build_stock_fields
 from infrastructure.eval_cache import write_eval_cache
 from application.spec_commands import cmd_spec  # noqa: F401 -- re-exported for cli.py (WO-P400-E3.009)
-from application.schwab_commands import cmd_schwab_auth  # noqa: F401 -- re-exported for cli.py (WO-P400-E4.001)
 
 
 def _find_packet(symbol: str):
@@ -149,8 +149,9 @@ def cmd_evaluate(symbol: str, snapshot_path: str, cash: float, trade_mode: Trade
             return 1
         from application.evaluate_spread import evaluate_spread
         spread_result = evaluate_spread(
-            packet=packet, long_chain_path=chain_path,
+            packet=packet, snapshot_raw=snapshot, long_chain_path=chain_path,
             short_chain_path=chain_short_path, cash_available=cash,
+            is_paper=(trade_mode == TradeMode.PAPER),
         )
         print("=" * 60)
         print(f"SPREAD COUNCIL: {spread_result.symbol}  |  verdict={spread_result.council.verdict}")
@@ -177,6 +178,7 @@ def cmd_evaluate(symbol: str, snapshot_path: str, cash: float, trade_mode: Trade
         opt_result = evaluate_options(
             packet=packet, snapshot_raw=snapshot, chain_path=chain_path,
             cash_available=cash, stock_rr=result.rr_after_drift,
+            is_paper=(trade_mode == TradeMode.PAPER),
         )
         print("=" * 60)
         print(f"OPTIONS COUNCIL: {opt_result.symbol}  |  verdict={opt_result.verdict}")
@@ -197,7 +199,7 @@ def cmd_evaluate(symbol: str, snapshot_path: str, cash: float, trade_mode: Trade
         write_eval_cache(opt_result.symbol, opt_fields)
     else:
         stock_fields = build_stock_fields(result, packet, trade_mode.value)
-        if result.verdict == "APPROVED":
+        if result.verdict in SPEC_CACHEABLE_VERDICTS:
             from application.build_order_spec import build_spec
             from application.spec_cache import cache_spec_text
             spec_text = build_spec(result, packet, snapshot)
@@ -260,13 +262,13 @@ def cmd_compare(symbol: str, snapshot_path: str, chain_path: str,
 # record (WO-P400-E3.006)
 # ---------------------------------------------------------------------------
 
-def cmd_record(symbol: str, order_id: str = None, decline: bool = False) -> int:
+def cmd_record(symbol: str, order_id: str = None, decline: bool = False, paper: bool = False) -> int:
     from application.record_commands import cmd_record_submit, cmd_record_decline
 
     if decline:
         return cmd_record_decline(symbol)
     if order_id:
-        return cmd_record_submit(symbol, order_id)
+        return cmd_record_submit(symbol, order_id, paper=paper)
     print("[ERROR] `record` requires either --order-id ID or --decline")
     return 1
 

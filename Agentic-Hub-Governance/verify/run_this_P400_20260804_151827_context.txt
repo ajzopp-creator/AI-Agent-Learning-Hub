@@ -1,0 +1,35 @@
+WO-P000-E10.001 Phase 2 -- P_400, items 2.3/2.4/2.5 (2026-08-04)
+
+Note: this script runs test_p400_known_bugs.py directly (not via pytest) --
+that's P_400's own established convention, a single accreting file with a
+custom check()/main() runner, distinct from P_020's pytest-based tests.
+
+What changed:
+1. evaluate_options.py -- added is_paper: bool = False param, threaded into
+   build_option_spec(is_paper=is_paper).
+2. evaluate_spread.py -- same, threaded into build_spread_spec(is_paper=is_paper).
+3. commands.py -- both call sites now pass
+   is_paper=(trade_mode == TradeMode.PAPER).
+   Fixes item 2.4: paper and live option/spread specs were byte-identical
+   before this (no PAPER TRADE banner ever rendered on those two paths,
+   unlike the stock path which already worked via build_order_spec.py).
+
+Items 2.3 (options_council_result) and 2.5 (trade_mode) were confirmed
+false positives in the original audit -- both are genuinely supplied by
+real callers, just positionally/via CLI flag, which the AST-based audit
+script can't see. No code changed for those two, only regression tests
+added to lock in that they stay wired.
+
+5 new test_e10001_* functions added to tests/test_p400_known_bugs.py, all
+SOURCE-kind (grep-based, matching this file's existing lighter-weight
+convention for structural checks).
+
+Success criteria: script prints PASS, exit code 0, and the printed summary
+line at the bottom shows all tests passing (existing + 5 new), e.g.
+"N/N passed" with N == existing count + 5.
+
+If it fails: read the [FAIL] lines in the printed output -- each names
+which check failed. Do NOT change any test assertion. If an EXISTING
+(non-e10001) test now fails, my edits to evaluate_options.py/
+evaluate_spread.py/commands.py broke something unrelated -- flag that
+specifically, don't just patch the new tests to pass.

@@ -10,7 +10,6 @@ Commands (run from python/ dir, p140 env):
     python cli.py compare SYMBOL --snapshot FILE --chain FILE --cash DOLLARS
     python cli.py record SYMBOL --order-id ID   -- WO-P400-E3.006, after evaluate/spec APPROVED
     python cli.py record SYMBOL --decline       -- WO-P400-E3.006, Tony skipped an APPROVED signal
-    python cli.py schwab-auth                   -- WO-P400-E4.001, re-run Schwab OAuth
     python cli.py fetch-snapshot SYMBOL         -- WO-P400-E4.002, live Schwab snapshot
     python cli.py fetch-chain SYMBOL --type call|put -- WO-P400-E4.002, auto-select or --strike/--expiration
     python cli.py dossier SYMBOL                -- WO-P400-E4.003, computed technical dossier (items 1-8)
@@ -24,17 +23,24 @@ under the 300-line cap).
 """
 
 import argparse
+import datetime
 import logging
 
-from config import TradeMode
+from config import LOG_DIR, TradeMode
 
 
 def _setup_logging() -> None:
+    LOG_DIR.mkdir(parents=True, exist_ok=True)
+    log_path = LOG_DIR / f"P400_{datetime.date.today().isoformat()}.log"
+
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+        handlers=[
+            logging.StreamHandler(),
+            logging.FileHandler(log_path, mode="a", encoding="utf-8"),
+        ],
     )
-
 
 def _resolve_mode(session_paper: bool, trade_paper: bool) -> TradeMode:
     if trade_paper or session_paper:
@@ -83,8 +89,7 @@ def _build_parser() -> argparse.ArgumentParser:
     p_rec.add_argument("symbol")
     p_rec.add_argument("--order-id", dest="order_id", default=None)
     p_rec.add_argument("--decline", action="store_true", default=False)
-
-    sub.add_parser("schwab-auth")
+    p_rec.add_argument("--paper", action="store_true", default=False)
 
     p_fsnap = sub.add_parser("fetch-snapshot")
     p_fsnap.add_argument("symbol")
@@ -140,9 +145,7 @@ def main() -> int:
     if args.cmd == "compare":
         return commands.cmd_compare(args.symbol, args.snapshot, args.chain, args.cash)
     if args.cmd == "record":
-        return commands.cmd_record(args.symbol, order_id=args.order_id, decline=args.decline)
-    if args.cmd == "schwab-auth":
-        return commands.cmd_schwab_auth()
+        return commands.cmd_record(args.symbol, order_id=args.order_id, decline=args.decline, paper=args.paper)
     if args.cmd == "fetch-snapshot":
         from application.fetch_snapshot import cmd_fetch_snapshot
         return cmd_fetch_snapshot(args.symbol, earnings_date=args.earnings_date, sector=args.sector,

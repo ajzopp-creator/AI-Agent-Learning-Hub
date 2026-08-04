@@ -1,9 +1,11 @@
 # HUB INIT REFACTOR + WORK ORDER GOVERNANCE -- Generic Prompt v1.1
 Applies To: ALL AI-Agent-Learning-Hub projects (P_010, P_020, P_115, P_116,
 P_117, P_118, P_300, P_301, P_400, P_800, P_805, P_110, ...). Plain ASCII.
-Last Updated: 2026-06-04
+Last Updated: 2026-07-27
 v1.1 change: governance moved to a single SHARED LEDGER with 1-to-many
 (one Owner, many Affects) work orders + per-consumer Acks.
+v1.1 patch (2026-07-27): corrected 3 stale 04-Shared-Resources path references
+to Agentic-Hub-Governance (ref WO-P000-E7.001 Independent Review).
 
 ================================================================================
 PURPOSE
@@ -16,7 +18,7 @@ same way.
 ================================================================================
 SHARED LEDGER -- single source of truth
 ================================================================================
-LEDGER = C:\Users\Trader\AI-Agent-Learning-Hub\04-Shared-Resources\work_orders
+LEDGER = C:\Users\Trader\AI-Agent-Learning-Hub\Agentic-Hub-Governance\work_orders
   - ONE folder. Every work order lives here once. Status written once.
   - A work order is 1-to-many: one Owner (does the work), many Affects
     (consumers who must adopt). Per-consumer Acks close the loop.
@@ -101,7 +103,7 @@ Do NOT write to disk until user confirms. Then back up original, then write.
 DROP-IN: STANDARD LEDGER REVIEW STEP (paste into every project init)
 ================================================================================
 ### STEP [n]: Work Order Review (shared ledger)
-$LEDGER = "C:\Users\Trader\AI-Agent-Learning-Hub\04-Shared-Resources\work_orders"
+$LEDGER = "C:\Users\Trader\AI-Agent-Learning-Hub\Agentic-Hub-Governance\work_orders"
 Read all WO-*.md. CODE = this project.
   MUST DO   = Owner==CODE & Status!=CLOSED   (OPEN/IN_PROGRESS=work it; OWNER_DONE=await acks)
   WAITING   = CODE in Affects & my Ack=pending & Status!=CLOSED
@@ -136,5 +138,5 @@ Owner-done is NOT loop-done -- each consumer must adopt and Ack before CLOSED.
 
 ================================================================================
 END -- HUB INIT REFACTOR + WORK ORDER GOVERNANCE v1.1
-Save: C:\Users\Trader\AI-Agent-Learning-Hub\04-Shared-Resources\prompts\HUB_INIT_REFACTOR_AND_WO_GOVERNANCE_v1.md
+Save: C:\Users\Trader\AI-Agent-Learning-Hub\Agentic-Hub-Governance\prompts\HUB_INIT_REFACTOR_AND_WO_GOVERNANCE_v1.md
 ================================================================================

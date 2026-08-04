@@ -10,10 +10,23 @@ For EACH symbol in the list above, do the following in order:
    (substitute the real ticker for {TICKER}).
 2. If you land on a login page, pause and tell me -- do not attempt to
    log in yourself.
+2a. If the page errors instead of loading (e.g. "Oops! Something went
+   wrong") rather than showing a rating or a clean "None"/unrated
+   state, do NOT conclude the site is broken yet -- this route does
+   not serve ETFs. Retry once at
+   https://members.chaikinanalytics.com/pgr/etf/{TICKER} -- ETFs load
+   there and show "This ETF is unrated" / Rating: None rather than
+   erroring. If the /etf/ route loads (rated or unrated), treat it as
+   the authoritative page for this symbol and continue from step 3
+   using it, noting in your report that this was an ETF handled via
+   the /etf/ route. If the /etf/ route ALSO errors, this is a genuine
+   failure -- do not guess a reason -- report the symbol as "page
+   error, both /stock/ and /etf/ routes failed" and move to the next
+   symbol.
 3. Read the Power Gauge rating text (e.g. "Bullish", "Neutral",
    "Bearish") from the rating widget on the page.
 4. Open the note at:
-   C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeManagement\P300\{DATE}_{TICKER}.md
+   C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\{DATE}_{TICKER}.md
    NOTE: {DATE} here means the note's signal_date (the frontmatter
    signal_date / filename date), NOT necessarily today's run date --
    P_300 notes are filed under the anchor date of the underlying
@@ -46,9 +59,12 @@ For EACH symbol in the list above, do the following in order:
    or descriptive paragraph to extract for them. Do not try to invent
    one. The Quick Stats block above is the substantive per-category
    data that IS available as text. If a ticker has no Chaikin coverage
-   at all (Rating shows "None" and summary shows "Power Gauge summary
-   not available", with no price quote), skip the note entirely --
-   do not append a stub section -- and report it as no-coverage.
+   at all -- either Rating shows "None" and summary shows "Power Gauge
+   summary not available" with no price quote (from step 1), or it is
+   an ETF confirmed unrated via the /pgr/etf/{TICKER} route (step 2a,
+   "This ETF is unrated" / Rating: None) -- skip the note entirely --
+   do not append a stub section -- and report it as no-coverage,
+   noting which route confirmed it.
 
 6. Save the file. Do not modify any other part of the note --
    frontmatter, existing headers, and existing text stay untouched.

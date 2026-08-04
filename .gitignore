@@ -154,6 +154,7 @@ site/
 *.bak
 *.bak_*
 *.backup
+*.backup_*
 *.swp
 *~
 *_backup_*.md

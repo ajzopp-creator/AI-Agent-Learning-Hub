@@ -70,6 +70,20 @@ class Exit(BaseModel):
     hold_days:        int
 
 
+class SpreadLeg(BaseModel):
+    """One leg of a multi-leg spread trade (WO-P020-E1.002)."""
+
+    leg_id:          Optional[int]                      = None
+    trade_id:        int
+    leg_number:      int                                = Field(ge=1)
+    full_symbol:     str
+    put_call:        Optional[Literal["CALL", "PUT"]]    = None
+    position_effect: str                                = "OPENING"
+    direction:       Literal["long", "short"]
+    qty:             float
+    price:           float
+
+
 # ── Config / params model ──────────────────────────────────────────────────
 
 class TradeParams(BaseModel):

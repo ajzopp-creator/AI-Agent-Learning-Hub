@@ -1,0 +1,137 @@
+P_400 — EXEL Snapshot Thread
+Date: 2026-08-04
+Suggested chat name: P_400 - EXEL Snapshot - 08-04-2026
+Workspace: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_400_TradeOrderManagement\python
+
+================================================================================
+1. USER REQUEST — fetch-snapshot
+================================================================================
+
+Commands requested:
+
+  cd C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_400_TradeOrderManagement\python
+  set PYTHONPATH=C:\Users\Trader\AI-Agent-Learning-Hub
+  C:\Users\Trader\.conda\envs\p140\python.exe cli.py fetch-snapshot EXEL --earnings-date 2026-08-05 --sector Healthcare
+
+--------------------------------------------------------------------------------
+RESULT: FAILED (no file written)
+--------------------------------------------------------------------------------
+
+2026-08-04 08:43:25,945 [INFO] schwab.auth: Loading token from file
+  C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_400_TradeOrderManagement\config\P_400_schwab_token.json
+
+[ERROR] Could not fetch live quote for EXEL. No file written -- fall back to manual/TOS entry.
+
+2026-08-04 08:43:26,673 [INFO] httpx: HTTP Request: POST https://api.schwabapi.com/v1/oauth/token "HTTP/1.1 400 Bad Request"
+2026-08-04 08:43:26,673 [WARNING] p400.schwab_market_data: get_quote_data failed for EXEL: <OAuthError "unsupported_token_type">
+
+Diagnosis:
+  - Schwab token at P_400_schwab_token.json was invalid
+  - Known pattern: OAuthError "unsupported_token_type" even when grant is under 7-day limit
+  - Fix path: re-auth, then re-run fetch-snapshot
+
+Note:
+  - cli.py schwab-auth is NOT on the live CLI (invalid choice)
+  - schwab_commands.py was deleted; only backup remains
+  - Auth must use shared_resources.python_utils.schwab_auth.run_auth()
+
+================================================================================
+2. USER REQUEST — yes (run re-auth)
+================================================================================
+
+Attempted: cli.py schwab-auth
+  → FAILED: argument cmd: invalid choice: 'schwab-auth'
+  → Valid cmds: screen-all, evaluate, spec, compare, record, fetch-snapshot, fetch-chain, dossier, audit-book
+
+Workaround: called shared OAuth directly with P_400 token path and P_020 credentials config:
+
+  PYTHONPATH=C:\Users\Trader\AI-Agent-Learning-Hub
+  python -c "
+    from pathlib import Path
+    from shared_resources.python_utils.schwab_auth import run_auth
+    cfg = Path(r'...\P_020_...\config\P_020_schwab_config.json')
+    tok = Path(r'...\P_400_TradeOrderManagement\config\P_400_schwab_token.json')
+    run_auth(cfg, tok)
+  "
+
+--------------------------------------------------------------------------------
+RESULT: AUTH SUCCESS
+--------------------------------------------------------------------------------
+
+Schwab OAuth -- Re-authentication
+Browser opened automatically.
+Callback captured automatically (UIAutomation).
+
+Authentication successful!
+Token saved to:
+  C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_400_TradeOrderManagement\config\P_400_schwab_token.json
+API test passed -- 2 account(s):
+   ...6348
+   ...9885
+
+================================================================================
+3. RE-RUN fetch-snapshot EXEL
+================================================================================
+
+  cli.py fetch-snapshot EXEL --earnings-date 2026-08-05 --sector Healthcare
+
+--------------------------------------------------------------------------------
+RESULT: OK
+--------------------------------------------------------------------------------
+
+2026-08-04 08:45:12,771 [INFO] schwab.auth: Loading token from file ...P_400_schwab_token.json
+2026-08-04 08:45:13,214 [INFO] httpx: GET .../marketdata/v1/quotes?symbols=EXEL "HTTP/1.1 200 OK"
+[OK] snapshot_EXEL.json written (data_source=schwab_api):
+  C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_400_TradeOrderManagement\python\snapshot_EXEL.json
+  price=55.389  atr_14=1.67  avg_volume_20d=2391726
+
+================================================================================
+4. SNAPSHOT CONTENTS (snapshot_EXEL.json)
+================================================================================
+
+{
+  "symbol": "EXEL",
+  "price": 55.389,
+  "bid": 55.0,
+  "ask": 55.4,
+  "price_timestamp": "2026-08-04T12:45:13Z",
+  "price_delay_seconds": 0,
+  "atr_14": 1.6678255662851316,
+  "avg_volume_20d": 2391726.15,
+  "data_source": "schwab_api",
+  "today_volume": 2239.0,
+  "next_earnings_date": "2026-08-05",
+  "last_earnings_date": null,
+  "binary_events": [],
+  "sector": "Healthcare",
+  "iv_rank": null,
+  "option_chain_ref": null,
+  "market_open": false,
+  "guideline_stop_override": null
+}
+
+Summary table:
+
+  Field              Value
+  -----------------  --------------------
+  price              55.389
+  bid / ask          55.00 / 55.40
+  atr_14             1.67
+  avg_volume_20d     2,391,726
+  today_volume       2,239
+  next_earnings      2026-08-05
+  sector             Healthcare
+  market_open        false (pre-open)
+  data_source        schwab_api
+
+================================================================================
+5. FOLLOW-UP NOTE (from session)
+================================================================================
+
+cli.py schwab-auth is gone from the live CLI (schwab_commands.py deleted).
+Auth for this session used shared run_auth(). Worth restoring the subcommand
+when a one-liner is needed again.
+
+================================================================================
+END OF THREAD
+================================================================================

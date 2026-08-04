@@ -1,0 +1,49 @@
+WO-P300-E4.005 Phase 2a -- JIT regression check (2026-07-18)
+
+WHAT THIS TESTS: recomputes similarity.rank_by_distance for the SAME
+39 candidate patterns captured in jit_baseline_20260718.json, using
+the NOW-MODIFIED domain/similarity.py (numba-jit DTW kernel), and
+asserts exact float equality against that baseline. This is the real
+byte-identity gate for the JIT change -- same standard as E4.003/
+E4.004, no tolerance.
+
+RUN THIS AFTER: (1) domain/similarity.py has the JIT kernel added,
+(2) requirements.txt has numba==0.61.2, (3) tests/test_similarity.py
+already prints PASS on its own (run that one first -- it is faster
+and catches basic breakage before this longer real-catalog check).
+
+SUCCESS CRITERIA:
+1. Loads jit_baseline_20260718.json (39 candidates).
+2. Loads the live catalog, same pattern count as before (8,969).
+3. Prints one "OK" line per candidate -- no "FAIL" lines.
+4. Final line: "All 39 candidates byte-identical to baseline."
+5. Ends with "PASS" on stdout, exit 0.
+
+Runtime estimate: similar to the baseline capture, ~2-3 minutes, PLUS
+a one-time few-second numba compilation pause on the very first
+dtw_distance() call in this process (JIT warm-up -- normal, not a
+hang; cache=True means later runs skip most of this).
+
+IF IT FAILS:
+- Any "FAIL composites_sorted mismatch" or "FAIL top_k_detail
+  mismatch" line -- this means the JIT kernel is NOT byte-identical
+  to the pre-JIT algorithm. Report the traceback/output verbatim.
+  Do NOT adjust the comparison to make it pass (no rounding, no
+  np.isclose) -- that would hide a real correctness break in a file
+  Pipeline B's live path also imports. Ask Claude before changing
+  anything.
+- A numba compilation error (TypingError or similar) on the first
+  call -- report verbatim. Do not simplify _dtw_core's algorithm to
+  work around it; the fix must preserve the exact same operation
+  order, not a different-but-equivalent one.
+- "FAIL: baseline not found" -- jit_baseline_20260718.json is
+  missing; confirm the earlier baseline-capture step actually
+  completed and the file is still on disk before re-running anything.
+
+This is the PRECONDITION for the M-079 walk-forward gate, not M-079
+itself -- a PASS here means "the JIT change is arithmetically
+identical," not yet "safe to promote to the live signal path." The
+walk-forward BUY-precision/PASS-accuracy comparison is a separate
+step after this one, before any promote.
+
+Fix any errors until it prints PASS. Paste full output back to Tony.

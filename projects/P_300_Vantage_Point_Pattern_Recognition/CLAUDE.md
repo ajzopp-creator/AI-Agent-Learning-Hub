@@ -3,9 +3,10 @@
 # Layers ON TOP of global C:\Users\Trader\.claude\CLAUDE.md. Project-specific only.
 # P_300 VantagePoint Pattern Recognition System.
 # Full spec: docs\P_300_System_Architecture_v2.7.md
-# Last updated: 2026-07-22 (WO-P000-E8.001 pilot -- merged 8 Locked Decisions
-# from tasks\lessons.md M-012/023/025/033/049/050/052/078; corrected two
-# stale items found during the merge, see Maintenance)
+# Last updated: 2026-08-04 (SIP version reference corrected v3.3 -> v3.5 --
+# stale since 2026-07-28's Step 0.6 addition; caught during WO-P300-E5.002/
+# E5.005 independent review when this session's own INIT read a stale
+# project-attached v3.3 copy instead of the live v3.5 file, M-015)
 
 ---
 
@@ -197,7 +198,7 @@ Full P_300 WO status: `Agentic-Hub-Governance\work_orders\WO-P300-*.md` -- check
 
 ## INIT Execution (WO-P000-E4.001, 2026-06-18)
 
-INIT no longer calls `python` via `windows-mcp:PowerShell` for catalog/LM-Studio checks -- that call shape reliably hits the ~4-min subprocess ceiling. Operator runs `P_300_Preflight.bat` (project root) before or during a session; it writes `P_300_preflight_status.json` (project root), which INIT reads via `windows-mcp:FileSystem` instead. Current SIP: `docs\P_300_System_Initialization_Prompt_v3_1.md` v3.3.
+INIT no longer calls `python` via `windows-mcp:PowerShell` for catalog/LM-Studio checks -- that call shape reliably hits the ~4-min subprocess ceiling. Operator runs `P_300_Preflight.bat` (project root) before or during a session; it writes `P_300_preflight_status.json` (project root), which INIT reads via `windows-mcp:FileSystem` instead. Current SIP: `docs\P_300_System_Initialization_Prompt_v3_1.md` v3.5.
 
 ---
 
@@ -233,6 +234,11 @@ The moment a file plan gets explicit operator go-ahead, write it to `tasks\todo.
 ## Maintenance
 
 This file is edited in place -- unlike `tasks/todo.md`/`tasks/lessons.md`, it does not accumulate; superseded content is replaced, not appended.
+
+**2026-08-04:** SIP version reference corrected v3.3 -> v3.5 in the INIT
+Execution section -- stale since 2026-07-28 (SIP's own Step 0.6 addition).
+Caught during WO-P300-E5.002/E5.005 independent review, cosmetic-drift
+item flagged there, fixed here per Tony's explicit "fix these" instruction.
 
 **2026-07-22 (WO-P000-E8.001 pilot):** Merged 8 Locked Decisions promoted
 from `tasks/lessons.md` (M-012, M-023, M-025, M-033, M-049, M-050, M-052,

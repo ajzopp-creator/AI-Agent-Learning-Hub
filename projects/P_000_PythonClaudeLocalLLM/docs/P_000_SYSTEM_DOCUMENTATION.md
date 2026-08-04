@@ -7,9 +7,9 @@
 |---|---|
 | **Project ID** | P_000 |
 | **Project Name** | Python, Claude & Local LLM Learning Hub |
-| **Version** | 1.4 |
+| **Version** | 1.6 |
 | **Created** | March 8, 2026 |
-| **Last Updated** | June 3, 2026 |
+| **Last Updated** | 2026-07-29 |
 | **Owner** | Tony (Trader) |
 | **Status** | Active |
 
@@ -259,14 +259,20 @@ shared_resources/
 │   ├── raw/
 │   ├── cleaned/
 │   └── combined/
-└── llm_prompts/
-    ├── analysis/
-    ├── summarization/
-    └── trade_review/
+├── llm_prompts/
+│   ├── analysis/
+│   ├── summarization/
+│   └── trade_review/
+├── chaikin_enrichment/      # P_800 Chaikin Power Gauge enrichment -- application/domain/infrastructure layers + tests (added 2026-07-24)
+├── skills/                  # reserved, empty as of 2026-07-27
+├── tools/                   # reserved, empty as of 2026-07-27
+├── __init__.py
+└── hub_mcp_launcher.ps1
 ```
 
-#### Shared-Layer Boundary (added 2026-06-05)
+*(Section 3.3 refreshed 2026-07-27 -- ref WO-P000-E9.001. Excludes __pycache__/ as a generated cache artifact, not tracked structure.)*
 
+#### Shared-Layer Boundary (added 2026-06-05)
 The Hub has two distinct shared layers. They are NOT duplicates -- keep them separate:
 
 | Layer | Folder | Holds | Referenced by |
@@ -370,6 +376,7 @@ The Hub has two distinct shared layers. They are NOT duplicates -- keep them sep
 | 002 | 2026-03-08 | High | Claude suggesting new venv creation | NEVER suggest creating a new venv — always use the shared p140 conda environment |
 | 003 | 2026-03-08 | Medium | Claude writing monolithic scripts (everything in main.py) | Always split into domain / infrastructure / application layers; hard limit 300 lines per file |
 | 004 | 2026-06-30 | High | An untraced session added extra="forbid" to P400Record (obsidian_writers\domain\vault_schemas.py) without accounting for write_handler.py's unconditional injected source key -- silently broke every P400 vault write for a ~90min window | Pydantic models backing a shared write path must be tested against the actual writer's injected/derived fields, not just the caller's explicit payload, before adding extra="forbid" |
+| 005 | 2026-07-29 | Medium | WOs reaching OWNER_DONE without their Completion Gate checklist block present (WO-P000-E9.001 sat 2 days with none; ledger changelog separately notes ten prior P_300/P_400 WOs did the same) -- INIT's daily check surfaces it but nothing blocks OWNER_DONE from being set without the block already there | Completion Gate block must be copied into the WO in the same edit that sets Status=OWNER_DONE, not backfilled later at Independent Review; see WO_COMPLETION_GATE.md Enforcement section added same day |
 
 ---
 
@@ -472,6 +479,7 @@ Thumbs.db
 | `P_000_Account_Parameters_Current.md` | `config\` (P_000 project) | Current account balance, risk-per-trade, position-sizing gates, and risk-mode adjustments — applies to all trading projects. Manually reviewed monthly by Tony. |
 | `Agentic-Hub-Governance` | Hub root | Governance / ops layer -- real folder since 2026-07-11 (formerly `04-Shared-Resources`, accessed via junction 2026-06-05 to 2026-07-11; junction retired, folder renamed). |
 | Work-order ledger | `Agentic-Hub-Governance\work_orders\` | Single source of truth for all work orders, per HUB_INIT_REFACTOR_AND_WO_GOVERNANCE v1.1. |
+| `CLAUDE_ASSISTANT_INSTRUCTIONS_v2_1_.md` | P_000 docs folder | Hub-wide Claude role/workflow rules across P_115/P_116/P_117/P_118/P_300 (references P_400). Moved from P_115 2026-07-27 -- scope was never P_115-only. Requires Claude.ai Project Knowledge re-attachment (P_115 -> P_000), file move alone does not migrate that. |
 
 ---
 
@@ -526,3 +534,4 @@ Thumbs.db
 *This document is the authoritative reference for P_000. Update Section 6 whenever a new error is identified and corrected. Update Section 11.4 whenever key parameters change.*
 *Version 1.2 — Updated April 29, 2026: Hardware profile corrected to ASUS TUF F16 / Intel Core Ultra 9 275HX 24-core. CPU Threads parameter updated to 20 across all models.*
 *Version 1.4 — Updated June 3, 2026: Section 1.4 reconciled with on-disk projects/ folder — added P_301, P_400, P_800, P_805. Section 10 — added P_000_Account_Parameters_Current.md. Note: P_116/P_117/P_118 referenced in the account-parameters file are strategy buckets, not Hub project folders.*
+*Version 1.6 — Updated July 29, 2026: Section 6 — added EC-005 (Completion Gate checklist backfilled after OWNER_DONE instead of present at time of set). Section 3.3 shared_resources tree refresh (v1.5, WO-P000-E9.001) passed Independent Review same day.*

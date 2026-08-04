@@ -1,19 +1,22 @@
 """
 FILE: cli_commands/utility.py
-VERSION: 1.0
-DATE: 2026-07-20
+VERSION: 1.1
+DATE: 2026-07-25
 AUTHOR: Anthony Zoppi + Claude
 LAYER: cli
 DESCRIPTION:
     Read-only diagnostic + ledger command handlers + argparse
     registration -- catalog-summary, integrity-check, inspect-pattern,
-    ledger-fill, ledger-calibration. None of these have a pipeline role
-    (Pipeline A, B, or bulk) -- they inspect, validate, or report on
-    state that already exists. Split out of the former monolithic
-    cli.py (WO-P300-E4.001, command-registry refactor) -- pure cut-
-    and-paste, no behavior change.
+    check-pattern, ledger-fill, ledger-calibration. None of these have
+    a pipeline role (Pipeline A, B, or bulk) -- they inspect, validate,
+    or report on state that already exists. Split out of the former
+    monolithic cli.py (WO-P300-E4.001, command-registry refactor) --
+    pure cut-and-paste, no behavior change.
 
 CHANGELOG:
+    - 2026-07-25 v1.1 (WO-P300-E5.003): added check-pattern -- pre-
+      export duplicate lookup. Defaults to scanning data/live/; --symbol
+      overrides with an explicit comma-separated ticker list.
     - 2026-07-20 v1.0 (WO-P300-E4.001): split from cli.py v1.14.
 """
 from __future__ import annotations
@@ -24,6 +27,7 @@ from pathlib import Path
 
 from application.ledger_fill import fill_ledger  # noqa: E402
 from utilities.catalog_summary import run_summary  # noqa: E402
+from utilities.check_pattern import run_check  # noqa: E402
 from utilities.inspect_pattern import run_inspect  # noqa: E402
 from utilities.ledger_calibration import calibrate_ledger  # noqa: E402
 from utilities.vp_export_integrity_check import run_integrity_check  # noqa: E402
@@ -52,6 +56,12 @@ def _cmd_inspect_pattern(args: argparse.Namespace) -> int:
     return run_inspect(args.id, catalog)
 
 
+def _cmd_check_pattern(args: argparse.Namespace) -> int:
+    """Pre-export duplicate check. No --symbol -> scans data/live/."""
+    catalog = Path(args.catalog) if args.catalog else None
+    return run_check(args.symbol, catalog)
+
+
 def _cmd_ledger_fill(args: argparse.Namespace) -> int:
     """Fill realized outcomes for unfilled ledger rows."""
     try:
@@ -76,7 +86,7 @@ def _cmd_ledger_calibration(args: argparse.Namespace) -> int:
 
 def register(subparsers: argparse._SubParsersAction) -> None:
     """Registers catalog-summary, integrity-check, inspect-pattern,
-    ledger-fill, ledger-calibration."""
+    check-pattern, ledger-fill, ledger-calibration."""
     p_sum = subparsers.add_parser(
         "catalog-summary", help="Print catalog health summary."
     )
@@ -114,6 +124,21 @@ def register(subparsers: argparse._SubParsersAction) -> None:
         help="Catalog path override; defaults to get_latest_catalog().",
     )
     p_insp.set_defaults(func=_cmd_inspect_pattern)
+
+    p_chk = subparsers.add_parser(
+        "check-pattern",
+        help="Pre-export duplicate check. No --symbol scans data/live/.",
+    )
+    p_chk.add_argument(
+        "--symbol", default=None,
+        help="Comma-separated ticker(s), e.g. AAPL or AAPL,MSFT. "
+             "Omit to scan data/live/ instead.",
+    )
+    p_chk.add_argument(
+        "--catalog", default=None,
+        help="Catalog path override; defaults to get_latest_catalog().",
+    )
+    p_chk.set_defaults(func=_cmd_check_pattern)
 
     p_lfill = subparsers.add_parser(
         "ledger-fill",

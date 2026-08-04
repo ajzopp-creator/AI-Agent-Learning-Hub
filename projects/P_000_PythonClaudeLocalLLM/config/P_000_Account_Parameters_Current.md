@@ -2,8 +2,8 @@
 
 **File:** P_000_Account_Parameters_Current.md
 **Location:** C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_000_PythonClaudeLocalLLM\config\
-**Last Updated:** July 01, 2026
-**Next Review:** August 2026 (monthly) or when balance hits $35,000
+**Last Updated:** August 04, 2026
+**Next Review:** September 2026 (monthly) or when balance hits $35,000
 
 ---
 
@@ -11,10 +11,12 @@
 
 | Parameter | Value |
 |-----------|-------|
-| Account Balance | $32,072.00 |
-| Risk per Trade | 1.5% = $481.08|
-| Max Position (5%) | $1,603.60 |
+| Account Balance | $31,348.39 |
+| Risk per Trade | 1.5% = $470.23|
+| Max Position (5%) | $1,567.42 |
 | Options Rule | Use underlying STOCK price as the management trigger for option positions; execute exits with stop-limit logic and bid-aware option pricing to reduce gap-through risk |
+| Buying Power | $39,296.76 |
+| Cash Available for Trading | N/A |
 
 ---
 
@@ -24,17 +26,18 @@
 
 | Risk Mode | Risk/Trade | Max Position | Notes |
 |-----------|------------|--------------|-------|
-| OFF / CORRECTION | $240.54 (50%) | $801.80 (50%) | avg_posture < -1.0 |
-| HALF | $360.81 (75%) | $1,202.70 (75%) | 25% reduction |
-| STANDARD | $481.08 | $1,603.60 | Base risk |
-| FULL | $481.08 | $1,603.60 | Same as STANDARD |
-| HOT | Tiered up to 5% | Up to $1,603.60 | avg_posture > 1.08 |
+| OFF / CORRECTION | $235.12 (50%) | $783.71 (50%) | avg_posture < -1.0 |
+| HALF | $352.67 (75%) | $1,175.57 (75%) | 25% reduction |
+| STANDARD | $470.23 | $1,567.42 | Base risk |
+| FULL | $470.23 | $1,567.42 | Same as STANDARD |
+| HOT | Tiered up to 5% | Up to $1,567.42 | avg_posture > 1.08 |
 
 ---
 
 ## Critical Rules
 
 ### Cash Balance (Separate Concept)
+**Note (WO-P020-E1.009):** Buying Power and Cash Available for Trading in the table above are broker-reported reference numbers only. P_400's `--cash` flag stays a manual figure Tony types himself -- never auto-read from these fields.
 User provides per-trade available buying power. This is NOT account balance.
 - Do NOT subtract trades from cash balance between gates
 - Do NOT track remaining cash across trades
@@ -42,9 +45,9 @@ User provides per-trade available buying power. This is NOT account balance.
 
 ### Three-Gate Position Sizing
 ```text
-Gate 1 (Risk-Based):    $481.08 / (Entry - Stop)
+Gate 1 (Risk-Based):    $470.23 / (Entry - Stop)
 Gate 2 (Cash Limit):    User-provided per trade
-Gate 3 (Concentration): $1,603.60 max (or premium for options)
+Gate 3 (Concentration): $1,567.42 max (or premium for options)
 
 Final Position Size = SMALLEST of three gates
 ```
@@ -94,6 +97,7 @@ Calculate option prices using delta. Show leverage multiple.
 | May 1, 2026 | $32,812.00 | $492.18 | $1,640.60 | Monthly review -- Net Liq per broker |
 | June 3, 2026 | $32,669.72| $490.04 | $1,633.47 | Monthly review -- Net Liq per broker |
 | July 1, 2026 | $32,072.00 | $481.08 | $1,603.60 | Monthly review -- Net Liq per broker |
+| Aug 4, 2026 | $31,348.39 | $470.23 | $1,567.42 | Monthly review -- Net Liq per broker (live pull) |
 
 ---
 
@@ -101,7 +105,7 @@ Calculate option prices using delta. Show leverage multiple.
 
 | Balance | Risk (1.5%) | Max Position (5%) |
 |---------|-------------|-------------------|
-| $32,072.00 (current) | $481.08 | $1,603.60 |
+| $31,348.39 (current) | $470.23 | $1,567.42 |
 | $35,000 | $525.00 | $1,750.00 |
 | $40,000 | $600.00 | $2,000.00 |
 | $50,000 | $750.00 | $2,500.00 |
@@ -128,4 +132,5 @@ Calculate option prices using delta. Show leverage multiple.
 - June 3, 2026 - Synced derived tables to base $490.04 / $1,633.47 (Risk Mode Adjustments, Three-Gate block, Growth current row) 
 - June 16, 2026 - Added authority rule clarifying JSON risk_mode governs over avg_posture thresholds (WO-P010-E1.001 Option A)
 - July 1, 2026 - Updated Account Balance to $32,072.00 (Net Liq per broker); synced derived tables to base $481.08 / $1,603.60 (Risk Mode Adjustments, Three-Gate block, Growth current row); Next Review moved to August 2026
+- August 4, 2026 - Updated Account Balance to $31,348.39 (Net Liq per broker, live Schwab pull); synced derived tables to base $470.23 / $1,567.42 (Risk Mode Adjustments, Three-Gate block, Growth current row); Next Review moved to September 2026. Buying Power / Cash Available auto-written by the same pull per WO-P020-E1.009.
 

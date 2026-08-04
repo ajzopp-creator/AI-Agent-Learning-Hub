@@ -9,6 +9,36 @@ the top, reference sections below.
 
 ---
 
+**>>> 2026-07-25 WO-P800-E3.003 P_800-side complete (vault rename TradeManagement -> TradeOrderManagement):**
+
+Tony approved P_800's piece only. Archived `obsidian_writers\config.py` ->
+`config_backup_2026-07-25_WO-P800-E3.003.py`, then updated all 5
+VAULT_FOLDER_MAP entries (P115/P300/P400/P400_PAPER/P020) from
+`TradeManagement/...` to `TradeOrderManagement/...`. Merged vault folders via
+`robocopy /E /MOVE` (P115 1483+2, P300 404, P400 191+1 merged cleanly into
+existing `_pre_cutover_archive` with zero collisions, P020 202, `_archive\P020_pre_tradeid_fix` 190).
+Post-move count reconciled exactly: 2473 files moved, 0 lost, old
+`TradeManagement\` left as empty shell. Bases (.base) files grepped clean
+beforehand -- no hardcoded path, no changes needed.
+
+**Not done this session (deferred, outside P_800 boundary):** P_400's
+`python\config.py` (BOOK_DIR/PAPER_BOOK_DIR still point at old path) and
+`python\tests\test_p400_known_bugs.py` (assertion needs to flip); P_300's
+`daily_evaluate_pipeline.py` line 437 (signal_source_link still hardcodes
+old path). WO-P800-E3.003 updated with a "Still Open" list (items 1-3) and
+Acks: P_400 pending, P_300 pending, P_115/P_020 N/A. **Until P_400's config.py
+is fixed, P_400 is reading/writing against a dead folder** -- this should be
+the first thing done in the next P_400 session. Same for P_300's next signal
+write. Full detail in WO-P800-E3.003.md.
+
+Also not done (flagged only, no approval sought): P_800's own test files
+still reference old path (`smoke_test_pbf_2026_01_21.py`, `test_p115_write.py`,
+`test_signal_v2_e2e.py`), chaikin_enrichment test fixtures, and Section 7.1 of
+P_800_SYSTEM_DOCUMENTATION.md (folder tree stale, plus it wrongly still lists a
+`TradeManagement\signals\` legacy folder that doesn't actually exist on disk).
+
+---
+
 **>>> 2026-07-24 (Opus) WO-P800-E3.002 CLOSED (independent review) + WO-P400-E3.011 P_800 Ack + stale-doc corrections:**
 
 **WO-P800-E3.002 OWNER_DONE -> CLOSED.** Independent review session -- this

@@ -61,13 +61,13 @@ P300_REPORTS_DIR = (
 # ── VAULT FOLDER MAP ──────────────────────────────────────────────────────────
 # Maps schema_name → vault subfolder relative to VAULT_ROOT
 VAULT_FOLDER_MAP: dict[str, str] = {
-    "P115":     "TradeManagement/P115",
-    "P300":     "TradeManagement/P300",
-    "P400":     "TradeManagement/P400",
-    "P400_PAPER": "TradeManagement/P400/paper",
+    "P115":     "TradeOrderManagement/P115",
+    "P300":     "TradeOrderManagement/P300",
+    "P400":     "TradeOrderManagement/P400",
+    "P400_PAPER": "TradeOrderManagement/P400/paper",
     "P400SIG":  "TradeOrderManagement/signals",
     "SIGNAL_V2": "TradeOrderManagement/signals",
-    "P020":     "TradeManagement/P020",
+    "P020":     "TradeOrderManagement/P020",
     "KB":       "KnowledgeBase",
 }
 

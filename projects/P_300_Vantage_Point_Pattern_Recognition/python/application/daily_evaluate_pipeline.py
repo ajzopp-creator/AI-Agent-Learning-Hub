@@ -434,7 +434,7 @@ def run_daily_evaluate(
             atm_at_signal=_atr,
             trailing_volume_30d=candidate.bars[-1].volume,
             signal_source_link=(
-                f"trading_journal/TradeManagement/P300/"
+                f"trading_journal/TradeOrderManagement/P300/"
                 f"{anchor_iso}_{candidate.ticker}.md"
             ),
             atr_adjusted_stop=_atr_adjusted_stop,

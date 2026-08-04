@@ -1,0 +1,39 @@
+WO-P300-E4.005 Phase 2a -- JIT baseline capture (2026-07-18)
+
+WHAT THIS TESTS: captures ground-truth output of the REAL, currently-
+unmodified domain/similarity.py (rank_by_distance, which internally
+calls per_feature_distances + composite_distance + dtw_distance) for
+40 real candidate patterns spread evenly by anchor_date across the
+live catalog (071726catalog.db). Writes one JSON file to disk. This is
+NOT a pass/fail correctness check on its own -- it is the "before"
+snapshot. A second script (run_this_jit_regression.py, staged in a
+later message after domain/similarity.py is modified to add a numba
+JIT kernel) will compare against this file for exact byte-identity.
+
+RUN THIS BEFORE touching domain/similarity.py. Do not run it after --
+it would capture post-JIT output as if it were the baseline, which
+defeats the whole check.
+
+SUCCESS CRITERIA:
+1. Loads the live catalog, prints pattern count.
+2. Prints one line per candidate pid with its corpus_size (some early-
+   dated candidates may print corpus_size=0 and get skipped -- that is
+   expected, not a failure).
+3. Writes jit_baseline_20260718.json to
+   Agentic-Hub-Governance\verify\ with a non-zero candidate count.
+4. Ends with "PASS" on stdout, exit 0.
+
+Runtime estimate: ~2-3 minutes (40 candidates, corpus sizes spread
+0 to ~8,969, at the ~0.784ms/pair serial rate measured in Phase 1).
+Short enough to run synchronously -- no need to background it.
+
+IF IT FAILS: report the traceback verbatim. Do not modify
+domain/eval_scoring.py, infrastructure/eval_io.py, or domain/
+similarity.py to make this pass -- this script only READS them; a
+failure here means something about the live catalog or corpus
+definition has changed since Phase 1, not a bug in this script's own
+~90 lines. Ask Tony before guessing a fix.
+
+Fix any errors in THIS script only until it prints PASS. Paste full
+output back to Tony, and confirm jit_baseline_20260718.json exists on
+disk before the next step (modifying similarity.py) proceeds.

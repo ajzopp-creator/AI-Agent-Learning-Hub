@@ -1,0 +1,35 @@
+WO-P000-E10.001 Phase 1 -- P_020 caller-propagation triage (2026-08-04)
+
+What this tests: two new regression test files that lock in confirmed-correct
+behavior for two functions the audit flagged.
+
+1. tests/test_db_writer.py -- update_trade_status() in
+   infrastructure/db_writer.py. total_commissions defaults to None; both real
+   callers (application/trade_writer.py lines 112, 170) always pass it
+   positionally, so the audit's "never passed" finding was a false positive
+   (AST scan doesn't see positional args). Tests confirm: (1) a supplied value
+   gets written, (2) omitting it leaves the prior value untouched -- that's
+   the exact behavior both real callers depend on.
+
+2. tests/test_spread_matcher.py -- compute_realized_pnl() in
+   domain/spread_matcher.py. multiplier defaults to 100 (the correct options
+   contract multiplier), not 1 as the WO's risk framing assumed. Sole caller
+   (application/paper_spread_import.py line 98) relies on the default and
+   gets the right answer. Tests confirm the default matches an explicit
+   multiplier=100 call, both directions (long/short).
+
+Success criteria: both files run clean, all 4 tests PASS, script prints PASS
+and exit code 0.
+
+If it fails: read the pytest output above. Do NOT change any test assertion --
+the assertions encode the confirmed-correct behavior from the WO investigation.
+If a test fails, the bug is in db_writer.py or spread_matcher.py (or in my
+test's DB fixture setup, e.g. a schema mismatch against
+infrastructure/db_client.py's CREATE TABLE statements) -- propose the fix,
+ask Tony to re-run.
+
+Why this needed a handoff: two consecutive python.exe invocations via
+Windows-MCP hit the 4-minute ceiling this session (pytest run.direct call,
+then peh_helper.py) while plain PowerShell stayed fast -- treated as Python
+execution being down for this session per Hub MCP-failure convention, not
+retried a third time.

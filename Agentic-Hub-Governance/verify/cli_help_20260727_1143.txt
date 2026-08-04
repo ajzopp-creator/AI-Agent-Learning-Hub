@@ -1,0 +1,26 @@
+usage: cli.py [-h] --symbol SYMBOL --session-date SESSION_DATE --timestamp
+              TIMESTAMP --strategy STRATEGY --entry ENTRY --stop STOP --target
+              TARGET --horizon HORIZON --confidence CONFIDENCE --close CLOSE
+              --volume VOLUME --rationale RATIONALE --timeframe TIMEFRAME
+              --source-link SOURCE_LINK [--atm ATM] [--source SOURCE]
+
+Emit a P_115 -> P_400 signal packet.
+
+options:
+  -h, --help            show this help message and exit
+  --symbol SYMBOL
+  --session-date SESSION_DATE
+  --timestamp TIMESTAMP
+  --strategy STRATEGY
+  --entry ENTRY
+  --stop STOP
+  --target TARGET
+  --horizon HORIZON
+  --confidence CONFIDENCE
+  --close CLOSE
+  --volume VOLUME
+  --rationale RATIONALE
+  --timeframe TIMEFRAME
+  --source-link SOURCE_LINK
+  --atm ATM
+  --source SOURCE

@@ -501,6 +501,13 @@ Then: test command. Then: expected output. Save path included.
 
 *Errors are never deleted — only marked Resolved.*
 
+### Error: INIT Command Block Used Start-Job — Output File Never Written
+- **Date:** 2026-08-03 | **Severity:** Medium | **Status:** Resolved
+- **Wrong:** Section 9.6 mandated `Start-Job + cmd /c`. Each Windows-MCP PowerShell call is an isolated process; the job is killed when the call returns, before `cmd /c` flushes to disk. `C:\Temp\init_out.txt` was never created. Broken since 2026-06-18, hit every session INIT.
+- **Secondary:** `Start-Sleep` inside the read-back MCP call stalled the relay for the full 4-minute timeout. Never sleep inside an MCP call.
+- **Fix:** Section 9.6 rewritten to `Start-Process -WindowStyle Hidden` with redirected stdout/stderr to uniquely-timestamped files, read back in a separate call. `-WindowStyle Hidden` is NOT the banned `-NoNewWindow`. WO-P020-E1.012.
+- **Verify:** Cold session, run Section 9.6 block, second call returns the INIT output block with no timeout.
+
 ### Error: Multiple Fill Commission Undercounting
 - **Date:** 2026-01-31 | **Severity:** Critical | **Status:** Resolved
 - **Wrong:** Parser counted commission once for multi-fill orders (e.g. $1.32 instead of $2.64)
@@ -676,7 +683,9 @@ Claude does NOT advise trades, interpret opens as signals, or fix data without i
 
 Format: `MMDD: [WHY] [SIG] optional free text` — WHY + SIG required. Vocabulary is open — parser never validates.
 
-**WHY — System:** `BTD`=P_115 | `OIL`=P_116 | `EXT`=P_117 | `EZB`=P_118 | `VPT`=P_300 | `SNT`=BigTrends | `DAY`=intraday-flat
+**WHY — System (Project ID, effective 2026-07-27):** `P_115`=Buy The Dip | `P_116`=Options Income Launchpad | `P_117`=External recs | `P_118`=Eddie Z Breakouts | `P_300`=VantagePoint | `P_910` | `P_920` | `SNT`=BigTrends | `DAY`=intraday-flat
+
+*Pre-2026-07-27 ThinkLog entries may still use the old shorthand (BTD/OIL/EXT/EZB/VPT) — parser is open-vocabulary and accepts either; this table reflects the current standard going forward.*
 
 **WHY — Situation:** `ASYM`=near-miss BUY | `IFFY`=marginal | `LEARN`=educational | `CROWDED`=at-capacity | `FOMO`=honesty | `REVENGE`=loss-chase
 
@@ -684,13 +693,17 @@ Format: `MMDD: [WHY] [SIG] optional free text` — WHY + SIG required. Vocabular
 
 ### 9.6 Session INIT Command Block
 
-**Rule:** NEVER `Start-Process -NoNewWindow` (blocks MCP ~4 min). ALWAYS `Start-Job + cmd /c`.
+**Rule:** NEVER `Start-Process -NoNewWindow` (blocks MCP ~4 min). NEVER `Start-Job` -- each Windows-MCP call is an isolated process, the job is torn down when the call returns and the output file is never written (WO-P020-E1.012). ALWAYS `Start-Process -WindowStyle Hidden` with redirected stdout/stderr, read back in a SEPARATE call.
 
 ```powershell
-$job = Start-Job -ScriptBlock {
-    cmd /c """C:\Users\Trader\.conda\envs\p140\python.exe"" ""C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_020_AJZStrategies_PerformanceAnalysisSystem\python\P_020_INIT.py"" > ""C:\Temp\init_out.txt"" 2>&1"
-}
-# Separate tool call — Start-Sleep 20; Get-Content "C:\Temp\init_out.txt"
+$ts  = Get-Date -Format "HHmmss"
+$out = "C:\Temp\init_$ts.txt"
+$err = "C:\Temp\initerr_$ts.txt"
+Start-Process -FilePath "C:\Users\Trader\.conda\envs\p140\python.exe" `
+  -ArgumentList '"C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_020_AJZStrategies_PerformanceAnalysisSystem\python\P_020_INIT.py"' `
+  -WindowStyle Hidden -RedirectStandardOutput $out -RedirectStandardError $err
+"OUT=$out"; "ERR=$err"
+# Separate tool call -- Get-Content $out -Raw    (NO Start-Sleep: it stalls the relay)
 ```
 
 Fallback: Tony pastes output of one-liner in Anaconda Prompt.

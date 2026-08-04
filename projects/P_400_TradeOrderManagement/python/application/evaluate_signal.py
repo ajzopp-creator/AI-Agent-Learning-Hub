@@ -11,17 +11,18 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from datetime import date
 from typing import Optional
 
 from config import (
     ENTRY_DRIFT_THRESHOLD_PCT,
+    MAX_PLAUSIBLE_SPREAD_PCT,
     MIN_ACCEPTABLE_RR,
     MAX_CONCURRENT_POSITIONS,
     PORTFOLIO_HEAT_MAX_PCT,
     TradeMode,
     DEFAULT_TRADE_MODE,
 )
+from application.tape_block import _tape_block_result
 from domain.council import (
     CouncilResult,
     behavioral_vote,
@@ -30,8 +31,11 @@ from domain.council import (
     quant_vote,
     tape_vote,
 )
+from domain.council_codes import RC_ADVERSE_DRIFT, RC_SPREAD_TOO_WIDE
 from domain.risk_vote import risk_vote
 from domain.portfolio import PortfolioState, build_portfolio_state
+from domain.behavioral_history import compute_behavioral_inputs
+from domain.earnings_window import earnings_in_window, sessions_since_earnings
 from domain.sizing import SizingResult, realistic_fill_rr, three_gate_size
 from infrastructure.book_loader import load_book
 from infrastructure.params_reader import read_params
@@ -73,42 +77,6 @@ class EvaluationResult:
         return self.trade_mode == TradeMode.PAPER
 
 
-def _earnings_in_window(next_earnings_date: Optional[str]) -> bool:
-    """Return True if earnings date is within 14 calendar days (conservative window)."""
-    if not next_earnings_date:
-        return False
-    try:
-        earnings = date.fromisoformat(next_earnings_date)
-        return (earnings - date.today()).days <= 14
-    except ValueError:
-        return False
-
-
-def _sessions_since_earnings(last_earnings_date: Optional[str]) -> Optional[int]:
-    """Weekday count from last_earnings_date to today (WO-P400-E2.023).
-
-    Approximation of trading sessions -- Mon-Fri only, does not account
-    for market holidays. Returns None if last_earnings_date is unknown
-    or in the future (bad data, don't guess).
-    """
-    if not last_earnings_date:
-        return None
-    try:
-        last_earn = date.fromisoformat(last_earnings_date)
-    except ValueError:
-        return None
-    today = date.today()
-    if last_earn > today:
-        return None
-    count = 0
-    d = last_earn
-    while d < today:
-        d = date.fromordinal(d.toordinal() + 1)
-        if d.weekday() < 5:
-            count += 1
-    return count
-
-
 def evaluate_signal(
     packet: SignalV2,
     snapshot: dict,
@@ -138,9 +106,27 @@ def evaluate_signal(
     params = read_params()
     records = load_book()
     port_state = build_portfolio_state(records)
+    behavioral = compute_behavioral_inputs(records)
 
     # -- Reconciliation: entry resolution (Section 6.5) + live R:R --
     half_spread = (snap.ask - snap.bid) / 2.0 if snap.bid and snap.ask else 0.0
+
+    # Spread plausibility gate (WO-P400-E4.004) -- must run before any R:R
+    # math touches half_spread. A wide/bad spread corrupts realistic-fill
+    # R:R silently (found live 2026-07-26: CAE half_spread=$2.34 -> R:R
+    # computed as -1.00 on a setup that was actually >2.0 by naive math).
+    spread_pct = (half_spread / snap.price * 100) if snap.price else 0.0
+    if spread_pct > MAX_PLAUSIBLE_SPREAD_PCT:
+        logger.warning(
+            '%s: spread %.1f%% of price exceeds %.1f%% plausibility threshold. SPREAD_TOO_WIDE.',
+            packet.symbol, spread_pct, MAX_PLAUSIBLE_SPREAD_PCT,
+        )
+        return _tape_block_result(
+            packet, snap, trade_mode, qty_override, effective_stop,
+            reason_code=RC_SPREAD_TOO_WIDE,
+            reason_detail=f'Spread {spread_pct:.1f}% of price exceeds {MAX_PLAUSIBLE_SPREAD_PCT}% plausibility threshold. Fill quality unacceptable.',
+        )
+
     drift_pct = round((snap.price - packet.guideline_entry) / packet.guideline_entry * 100, 3)
 
     # Case 1: favorable pullback ? live below guideline, use live price (R:R improves)
@@ -158,28 +144,14 @@ def evaluate_signal(
                 '%s: entry missed -- drift %.2f%% collapses R:R to %.2f (min %.1f). ENTRY_MISSED.',
                 packet.symbol, drift_pct, rr_check, MIN_ACCEPTABLE_RR,
             )
-            # Return a BLOCKED-equivalent result so caller can write REVIEWED_NO_TRADE
-            from domain.council_codes import RC_ADVERSE_DRIFT
-            from domain.council import CouncilVote, Role, Decision
-            block_vote = CouncilVote(
-                role=Role.TAPE,
-                decision=Decision.BLOCK,
-                reason_code=RC_ADVERSE_DRIFT,
-                reason_detail=f'Entry missed: drift {drift_pct:.2f}% collapses R:R to {rr_check:.2f}. drop_reason=ENTRY_MISSED.',
-            )
-            dummy_council = council_verdict([block_vote])
             # archive_packet() moved to cli.py call sites (WO-P400-E2.015) --
             # archiving must happen after the full pipeline (incl. any
             # vault-record write) completes, not mid-evaluation.
-            return EvaluationResult(
-                symbol=packet.symbol, verdict=dummy_council.verdict,
-                council=dummy_council, sizing=None,
-                portfolio_state=build_portfolio_state(load_book()),
-                posture=read_posture(), params=read_params(),
-                drift_pct=drift_pct, rr_after_drift=rr_check,
-                snapshot_source=snap.data_source, trade_mode=trade_mode,
-                qty_override=qty_override,
-                effective_entry=snap.price, effective_stop=effective_stop,
+            return _tape_block_result(
+                packet, snap, trade_mode, qty_override, effective_stop,
+                reason_code=RC_ADVERSE_DRIFT,
+                reason_detail=f'Entry missed: drift {drift_pct:.2f}% collapses R:R to {rr_check:.2f}. drop_reason=ENTRY_MISSED.',
+                drift_pct=drift_pct, rr_value=rr_check,
             )
         else:
             logger.info(
@@ -245,9 +217,9 @@ def evaluate_signal(
             open_symbols=sorted(port_state.open_symbols),
         ),
         macro_vote(
-            earnings_in_window=_earnings_in_window(snap.next_earnings_date),
+            earnings_in_window=earnings_in_window(snap.next_earnings_date),
             binary_events=snap.binary_events,
-            sessions_since_earnings=_sessions_since_earnings(snap.last_earnings_date),
+            sessions_since_earnings=sessions_since_earnings(snap.last_earnings_date),
         ),
         tape_vote(
             price_delay_seconds=snap.price_delay_seconds,
@@ -256,7 +228,12 @@ def evaluate_signal(
             adverse_drift_pct=adverse_drift,
             rr_after_drift=rr_after_drift,
         ),
-        behavioral_vote(symbol=packet.symbol),
+        behavioral_vote(
+            symbol=packet.symbol,
+            recently_stopped_out_symbols=behavioral.recently_stopped_out_symbols,
+            orders_today=behavioral.orders_today,
+            consecutive_wins=behavioral.consecutive_wins,
+        ),
     ]
     council = council_verdict(votes)
     # archive_packet() moved to cli.py call sites (WO-P400-E2.015)

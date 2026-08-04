@@ -1,4 +1,14 @@
-﻿# Options Risk Management - Hybrid Methodology
+# REFERENCE ONLY 2026-08-03 -- NOT A P_115 SESSION INSTRUCTION
+
+Options viability gates, delta translation, spread/OI screening, premium
+caps, and R:R comparison are P_400's responsibility as of 2026-07-24
+(P_115 architecture v1.3, P_400 architecture doc Section 3.1). This file
+is retained as methodology reference for P_400 and for historical trades.
+Do NOT execute any of it inside a P_115 session -- P_115 STEP 2 is
+signal emission only.
+
+---
+# Options Risk Management - Hybrid Methodology
 
 ## Philosophy
 

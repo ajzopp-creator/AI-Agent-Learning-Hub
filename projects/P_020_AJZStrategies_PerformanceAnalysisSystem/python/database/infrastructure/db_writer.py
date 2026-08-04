@@ -2,10 +2,10 @@
 
 import logging
 import sqlite3
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 
-from schemas import Exit, Trade
+from schemas import Exit, SpreadLeg, Trade
 
 logger = logging.getLogger(__name__)
 
@@ -118,7 +118,7 @@ def update_trade_status(
         status: New status value — 'open', 'partial', or 'closed'.
         total_commissions: Updated commission total if provided.
     """
-    now = datetime.utcnow().isoformat()
+    now = datetime.now(timezone.utc).replace(tzinfo=None).isoformat()
     if total_commissions is not None:
         conn.execute("""
             UPDATE trades
@@ -182,3 +182,55 @@ def insert_exit(conn: sqlite3.Connection, exit_: Exit) -> Optional[int]:
         f"exit_number={exit_.exit_number} pnl={exit_.exit_pnl:.2f}"
     )
     return exit_id
+
+
+def insert_spread_legs(
+    conn: sqlite3.Connection, trade_id: int, legs: list[SpreadLeg]
+) -> list[int]:
+    """Insert spread leg rows for a trade. Skips legs that already exist
+    (dedup on trade_id + leg_number, same pattern as insert_exit).
+
+    Args:
+        conn: Active SQLite connection.
+        trade_id: The parent trade's ID.
+        legs: List of validated SpreadLeg schema objects.
+
+    Returns:
+        List of inserted leg_ids (skipped duplicates omitted).
+    """
+    inserted_ids = []
+    for leg in legs:
+        existing = conn.execute(
+            "SELECT 1 FROM spread_legs WHERE trade_id = ? AND leg_number = ?",
+            (trade_id, leg.leg_number),
+        ).fetchone()
+
+        if existing:
+            logger.debug(
+                f"Skipping duplicate leg: trade_id={trade_id} "
+                f"leg_number={leg.leg_number}"
+            )
+            continue
+
+        cursor = conn.execute("""
+            INSERT INTO spread_legs (
+                trade_id, leg_number, full_symbol, put_call,
+                position_effect, direction, qty, price
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+            trade_id,
+            leg.leg_number,
+            leg.full_symbol,
+            leg.put_call,
+            leg.position_effect,
+            leg.direction,
+            leg.qty,
+            leg.price,
+        ))
+        inserted_ids.append(cursor.lastrowid)
+
+    conn.commit()
+    logger.debug(
+        f"Inserted {len(inserted_ids)} spread leg(s) for trade_id={trade_id}"
+    )
+    return inserted_ids

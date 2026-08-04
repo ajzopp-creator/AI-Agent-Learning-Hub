@@ -1,0 +1,5 @@
+rc=0
+err: DEBUG handle_write called: schema=SIGNAL_V2
+DEBUG Validated schema=SIGNAL_V2 sym
+file: 2026-08-03_BLZE_v2.0.json | sym=BLZE | src=P_115 | conf=MEDIUM
+PASS

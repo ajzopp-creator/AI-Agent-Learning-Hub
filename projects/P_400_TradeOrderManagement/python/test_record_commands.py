@@ -59,6 +59,30 @@ def test_submit_writes_order_id(monkeypatch):
     assert captured["position_size"] == 7
 
 
+def test_submit_paper_override_sets_trade_mode_paper(monkeypatch):
+    _patch_cache(monkeypatch, APPROVED_CACHE)
+    captured = _patch_writer(monkeypatch)
+    result = rc_module.cmd_record_submit("MSTR", "5365031365", paper=True)
+    assert result == 0
+    assert captured["trade_mode_value"] == "PAPER"
+
+
+def test_submit_without_paper_flag_keeps_cached_mode(monkeypatch):
+    _patch_cache(monkeypatch, APPROVED_CACHE)
+    captured = _patch_writer(monkeypatch)
+    result = rc_module.cmd_record_submit("MSTR", "5365031365")
+    assert result == 0
+    assert captured["trade_mode_value"] == "REAL"
+
+
+def test_submit_paper_override_does_not_mutate_eval_cache(monkeypatch):
+    cached = dict(APPROVED_CACHE)
+    _patch_cache(monkeypatch, cached)
+    _patch_writer(monkeypatch)
+    rc_module.cmd_record_submit("MSTR", "5365031365", paper=True)
+    assert cached["trade_mode_value"] == "REAL"
+
+
 def test_decline_no_cache_errors(monkeypatch, capsys):
     _patch_cache(monkeypatch, None)
     result = rc_module.cmd_record_decline("MSTR")

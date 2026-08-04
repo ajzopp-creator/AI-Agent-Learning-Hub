@@ -2,7 +2,9 @@
 # Location: Agentic-Hub-Governance\work_orders\WO_COMPLETION_GATE.md
 # Owner: P_000
 # Loaded by INIT every session. Governs all WO closures Hub-wide.
-# Last updated: 2026-07-06 (Never Touch list added)
+# Last updated: 2026-07-27 (checklist now includes project skill files -- WO-P800-E3.003 renamed a shared vault path and went 2 days undetected in p400-project-context skill, since only CLAUDE.md/P_000 doc were checked)
+# Last updated: 2026-08-03 (added Caller Propagation + Imperative Sweep checks -- WO-P115-E2.001 wired support fields into emit_signal() but never into cli.py, the only entry point, and closed anyway; architecture v1.3 removed P_115 sizing but was logged only in changelogs while 9 imperative rules still commanded sizing. Both closed on "the owning layer is done." Ref WO-P115-E3.001)
+# Last updated: 2026-07-29 (added Enforcement section -- Completion Gate block must exist at time OWNER_DONE is set, not backfilled later; ref EC-005, WO-P000-E9.001)
 
 ---
 
@@ -25,6 +27,16 @@ Copy this block into the WO before marking OWNER_DONE:
 [ ] Any new or changed shared-resource location reflected in:
     - P_000_SYSTEM_DOCUMENTATION.md (Document Index section)
     - Affected project CLAUDE.md files
+    - Affected project skill files (.claude\skills\*\SKILL.md) referencing the changed path
+[ ] CALLER PROPAGATION: for every capability added, changed, or REMOVED,
+    each entry point / caller that must use it has been updated in the same
+    WO -- not just the owning module. Name the callers checked. A parameter
+    the CLI cannot pass is not delivered. (ref WO-P115-E2.001)
+[ ] IMPERATIVE SWEEP: if this WO changed a RULE, the change is reflected in
+    the imperative text that drives behavior -- Musts, Must Nots,
+    anti-patterns, workflow command lines, NEVER VIOLATE blocks, and the
+    claude.ai Project Instructions -- not only in a changelog entry.
+    A changelog is a record, not a rule. (ref WO-P115-E3.001)
 [ ] Downstream projects in Affects: notified (WO comment or session note)
 [ ] No sys.path side-channels introduced (ref WO-P000-E2.003)
 [ ] If schema/signal contract changed: version bumped, consuming projects notified
@@ -46,6 +58,28 @@ P_300 WOs sat OWNER_DONE with an empty Completion Gate checklist for weeks --
 nothing forced a second look before self-certifying done.
 
 This applies Hub-wide, to every project, no exceptions for small WOs.
+
+## Why Caller Propagation and Imperative Sweep Exist
+
+Both were added 2026-08-03 after two failures with the same shape, found in
+one session:
+
+1. **WO-P115-E2.001** built `intelliscan_support_1/2` into `emit_signal()`
+   and closed. `cli.py` -- the only entry point in use -- never defined the
+   arguments or passed them. The feature existed and was unreachable for
+   seven weeks.
+
+2. **Architecture v1.3** removed order management from P_115 and recorded it
+   in three changelogs. Nine imperative rules across four surfaces still
+   instructed P_115 to size positions and run options gates. A live P_116
+   signal (ZION, 2026-08-03) produced a full three-gate block, a fabricated
+   7.09:1 R:R, and an options-chain request -- all P_400's.
+
+Both closed on "the owning layer is done." Neither checked the layer that
+calls it, or the text that commands it. The owning layer is the start of a
+change, not the end.
+
+---
 
 ## Never Touch
 

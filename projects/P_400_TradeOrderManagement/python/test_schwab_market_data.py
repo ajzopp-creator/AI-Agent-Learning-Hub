@@ -25,6 +25,7 @@ def _mock_client(status_code: int, json_body: dict) -> MagicMock:
     resp.status_code = status_code
     resp.json.return_value = json_body
     client.get_quote.return_value = resp
+    client.get_quotes.return_value = resp  # production uses plural (WO-P400-E4.006 session -- BRK/B slash-symbol fix, client.get_quote() can't handle non-alphanumeric symbols)
     client.get_price_history_every_day.return_value = resp
     client.get_option_chain.return_value = resp
     client.Options.ContractType.CALL = "CALL"

@@ -1,0 +1,49 @@
+WO-P300-E4.005 -- Phase 1 profiling (2026-07-18)
+
+WHAT THIS TESTS: component-level timing split of the walk-forward eval
+loop's per-pattern cost, on the real staging catalog
+(staging_ingest_mined.db, still on disk, unpromoted), over a bounded
+150-pattern subset stratified by corpus_size -- NOT a full pass. Splits
+cost into: DTW proper, corpus dict-rebuild, ranking/sort, aggregation,
+plus a 50-pid parallel-vs-serial decomposition, a top-K tie census, and
+a per-pattern (pid, corpus_size, wall_ms) CSV.
+
+Depends on: run_this.py's exit-1 diagnostic finishing or being clearly
+past the pattern range this script also touches -- both scripts run
+against the SAME staging_ingest_mined.db read-only, so no write
+conflict, but do not run both at once if disk I/O contention is a
+concern (ask Tony; not a hard blocker).
+
+SUCCESS CRITERIA:
+1. Self-check passes: instrumented score_one() output is byte-identical
+   (model_dump_json) to the real score_one() on 20 pids.
+2. Component timing summary prints for all 150 subset pids: mean/median
+   total ms, and each of dict_rebuild/dtw_proper/rank_sort/aggregate as
+   both mean ms and % of total.
+3. Tie census line prints (count of exact top-K-boundary ties / subset
+   size).
+4. Parallel decomposition prints for 50 pids: serial_total_s,
+   parallel_total_s, pool_init_s, map_s, byte_identical=True.
+5. CSV block prints one row per subset pid: pid,corpus_size,wall_ms.
+6. Ends with "PASS" on stdout, exit 0.
+
+Script prints via `python run_this_profiling.py 2>&1 | Out-File
+-Encoding utf8 <name>.txt` per the output-piping rule -- more than one
+screen of output. Read the result back via windows-mcp:FileSystem, not
+by asking Tony to paste it.
+
+IF IT FAILS: most likely failure modes --
+- "FAIL: self-check mismatch at pid=X" -- the timing wrapper's control
+  flow diverged from the real rank_by_distance/score_one somewhere.
+  Fix the WRAPPER to match the real functions exactly; never touch
+  domain/similarity.py or domain/eval_scoring.py to make this pass.
+- "FAIL: empty new_pids" -- live and staging catalogs have converged
+  (a promote happened since this was staged). Ask Tony which catalogs
+  to point at now; do not guess a substitute path.
+- ProcessPoolExecutor / pickling error in the (d) section -- report the
+  traceback verbatim; this itself is diagnostic signal for Finding 2
+  in the WO (parallel-scaling investigation), not necessarily a script
+  bug.
+Do not change any success-criteria assertion to make the script pass.
+
+Fix any errors until it prints PASS. Paste full output back to Tony.

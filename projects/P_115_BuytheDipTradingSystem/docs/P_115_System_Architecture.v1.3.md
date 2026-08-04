@@ -131,8 +131,7 @@ P_115 is a systematic swing trading strategy that identifies high-probability di
 | Document | Location | Notes |
 |---|---|---|
 | SESSION_INITIALIZATION_PROMPT.md | Project Knowledge | Current: v3.1 — paste at every session start |
-| CLAUDE_ASSISTANT_INSTRUCTIONS_v2_1_.md | Project Knowledge | Current: v2.5 — role and workflow rules |
-| Quick_Reference_Prompts_v9_4_1.md | Project Knowledge | Daily shorthand commands |
+| CLAUDE_ASSISTANT_INSTRUCTIONS_v2_1_.md | MOVED to P_000 docs\ (2026-07-27) | v2.8 -- Hub-wide role/workflow rules, no longer P_115-only || Quick_Reference_Prompts_v9_4_1.md | Project Knowledge | Daily shorthand commands |
 | Tracker_Log_Schema_v9_4_0_1.md | Project Knowledge | 27-column schema — authoritative |
 | P_115_StrategyGuide_ChangeLog.md | Project Knowledge | Full version history v9.1 → V110.x |
 | STRATEGY_CHANGE_LOG_V110.md | Project Knowledge | V110, V110.1, V110.2, V110.3 detail |
@@ -317,8 +316,7 @@ HybridTier = AnalysisTier + adjustedFundTier
 | Setting | Value |
 |---|---|
 | Project Name | Trading System (P_115 active) |
-| Knowledge Files | SESSION_INITIALIZATION_PROMPT.md, CLAUDE_ASSISTANT_INSTRUCTIONS, Tracker_Log_Schema, strategy guides, change logs |
-| Memory Enabled | Yes |
+| Knowledge Files | SESSION_INITIALIZATION_PROMPT.md, Tracker_Log_Schema, strategy guides, change logs (CLAUDE_ASSISTANT_INSTRUCTIONS moved to P_000, 2026-07-27) |mory Enabled | Yes |
 | Session Init Required | Yes — paste prompt or type "INIT" at start |
 | Primary Model | Claude Opus 4.7 |
 
@@ -1560,8 +1558,7 @@ P_115_STEP 1 AEO 4 3 2 3 0 BUY (submitted)
 | Document | Location | Purpose |
 |---|---|---|
 | SESSION_INITIALIZATION_PROMPT.md (v3.1) | Project Knowledge | Paste at session start; STEP 0 env detection + INIT sequence |
-| CLAUDE_ASSISTANT_INSTRUCTIONS_v2_1_.md (v2.5) | Project Knowledge | Role and workflow rules across strategies |
-| Tracker_Log_Schema_v9_4_0_1.md | Project Knowledge | 27-column schema authoritative reference |
+| CLAUDE_ASSISTANT_INSTRUCTIONS_v2_1_.md | MOVED to P_000 docs\ (2026-07-27), v2.8 |hema_v9_4_0_1.md | Project Knowledge | 27-column schema authoritative reference |
 | P_115_StrategyGuide_ChangeLog.md | Project Knowledge | Full version history v9.1 → V110.x |
 | STRATEGY_CHANGE_LOG_V110.md | Project Knowledge | V110, V110.1, V110.2, V110.3 detail |
 | Quick_Reference_Prompts_v9_4_1.md | Project Knowledge | Daily shorthand commands |

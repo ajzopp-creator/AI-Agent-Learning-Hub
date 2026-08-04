@@ -1,8 +1,8 @@
-# P_000 SYSTEM INITIALIZATION PROMPT v1.0
+# P_000 SYSTEM INITIALIZATION PROMPT v1.1
 
 **Project:** P_000 Python Claude Local LLM  
-**Version:** 1.0  
-**Last Updated:** 2026-06-04  
+**Version:** 1.1  
+**Last Updated:** 2026-07-27  
 **Role:** Foundation configuration layer + INIT prompt governance owner + Work Order ledger administrator
 
 ---
@@ -53,7 +53,7 @@ If missing: note unavailable; proceed with placeholder values.
 
 ### Step 4 — Work Order Review (P_000 as Owner)
 
-Query shared work order ledger: `C:\Users\Trader\AI-Agent-Learning-Hub\04-Shared-Resources\work_orders\`
+Query shared work order ledger: `C:\Users\Trader\AI-Agent-Learning-Hub\Agentic-Hub-Governance\work_orders\`
 
 Display:
 - **Owner=P_000, status not CLOSED** → List all; flag any BLOCKED
@@ -125,7 +125,7 @@ Wait for confirmation. Do NOT propose work until confirmed.
 ## P_000 Standing Responsibilities
 
 1. **INIT Governance:** Monitor all project INIT prompts for version consistency, governance compliance, and operationality
-2. **Work Order Ledger Maintenance:** Administer shared `04-Shared-Resources\work_orders\` — create, update, close all work orders; track Owner/Affects/Acks; enforce governance gates
+2. **Work Order Ledger Maintenance:** Administer shared `Agentic-Hub-Governance\work_orders\` — create, update, close all work orders; track Owner/Affects/Acks; enforce governance gates
 3. **Account Parameters:** Maintain and update P_000_Account_Parameters_Current.md (monthly or at balance milestones)
 4. **Risk Registry:** Hold authoritative risk mode adjustments table (read by all downstream projects)
 5. **LM Studio:** Maintain wrapper, model settings, Python environment documentation
@@ -169,12 +169,15 @@ Wait for confirmation. Do NOT propose work until confirmed.
 | System doc | `docs\P_000_SYSTEM_DOCUMENTATION.md` |
 | Account params | `config\P_000_Account_Parameters_Current.md` |
 | Python env | `C:\Users\Trader\.conda\envs\p140\python.exe` |
-| Work orders | `C:\Users\Trader\AI-Agent-Learning-Hub\04-Shared-Resources\work_orders\` |
+| Work orders | `C:\Users\Trader\AI-Agent-Learning-Hub\Agentic-Hub-Governance\work_orders\` |
 | INIT audit checklist | `docs\P_000_INIT_AUDIT_CHECKLIST.md` (create on demand) |
 
 ---
 
 ## Changelog
+
+### v1.1 -- 2026-07-27
+- Fixed 3 stale work-order ledger path references (were 04-Shared-Resources, now Agentic-Hub-Governance) -- ref WO-P000-E7.001 Independent Review.
 
 ### v1.0 — 2026-06-04
 - Initial release. Establishes P_000 as foundation configuration layer + INIT governance owner + Work Order ledger administrator.
@@ -183,5 +186,5 @@ Wait for confirmation. Do NOT propose work until confirmed.
 
 ---
 
-**End of P_000 System Initialization Prompt v1.0**
+**End of P_000 System Initialization Prompt v1.1**
 **Owner: P_000 (Configuration Foundation + INIT Governance + Work Order Administration)**

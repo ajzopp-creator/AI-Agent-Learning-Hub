@@ -10,7 +10,7 @@ Run from this folder with the p140 interpreter:
         --horizon "3-5 days" --confidence HIGH --close 47.75
         --volume 1850000 --rationale "Dip into 20-day MA after earnings"
         --timeframe 1D --source-link "TradeOrderManagement/P_115/x.md"
-        --atm 1.85
+        --atm 1.85 --support-1 45.20 --support-2 43.10
 """
 
 from __future__ import annotations
@@ -43,6 +43,8 @@ def _parse_args() -> argparse.Namespace:
     p.add_argument("--timeframe", required=True)
     p.add_argument("--source-link", required=True)
     p.add_argument("--atm", type=float, default=None)
+    p.add_argument("--support-1", type=float, default=None)
+    p.add_argument("--support-2", type=float, default=None)
     p.add_argument("--source", default="P_115")
     return p.parse_args()
 
@@ -67,6 +69,8 @@ def main() -> None:
         chart_timeframe=a.timeframe,
         signal_source_link=a.source_link,
         atm_at_signal=a.atm,
+        intelliscan_support_1=a.support_1,
+        intelliscan_support_2=a.support_2,
         signal_source=a.source,
     )
     print(f"Signal written: {path}")

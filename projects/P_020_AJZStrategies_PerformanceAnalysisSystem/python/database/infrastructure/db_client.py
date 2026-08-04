@@ -163,6 +163,25 @@ def _create_exits_table(conn: sqlite3.Connection) -> None:
     """)
 
 
+
+def _create_spread_legs_table(conn: sqlite3.Connection) -> None:
+    """Create the spread_legs normalized child table (WO-P020-E1.002)."""
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS spread_legs (
+            leg_id           INTEGER  PRIMARY KEY AUTOINCREMENT,
+            trade_id         INTEGER  NOT NULL REFERENCES trades(trade_id),
+            leg_number       INTEGER  NOT NULL,
+            full_symbol      TEXT     NOT NULL,
+            put_call         TEXT,
+            position_effect  TEXT     NOT NULL,
+            direction        TEXT     NOT NULL,
+            qty              REAL     NOT NULL,
+            price            REAL     NOT NULL,
+            created_at       DATETIME DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE(trade_id, leg_number)
+        )
+    """)
+
 # ── Orchestration ──────────────────────────────────────────────────────────
 
 
@@ -195,6 +214,7 @@ def create_all_tables(conn: sqlite3.Connection) -> None:
     _create_systems_table(conn)
     _create_trades_table(conn)
     _create_exits_table(conn)
+    _create_spread_legs_table(conn)
     _create_account_balances_table(conn)
     conn.commit()
     logger.info("All tables created.")

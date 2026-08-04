@@ -1,8 +1,8 @@
-# P_300 System Initialization Prompt (SIP) v3.4
+# P_300 System Initialization Prompt (SIP) v3.5
 
 **File:** `docs/P_300_System_Initialization_Prompt_v3_1.md`  
-**Version:** 3.4  
-**Last Updated:** 2026-07-22  
+**Version:** 3.5  
+**Last Updated:** 2026-07-28  
 **Pairs With:** `docs/P_300_System_Architecture_v2.7.md` + `p300-project-context/SKILL.md` + `CLAUDE.md`
 
 ---
@@ -25,6 +25,8 @@ INIT  |  P_300  |  P_300 INIT
 
 **RULE: Complete Steps 0 through 7 before writing code or taking action. Steps 4–5c are uninterruptible.**
 
+> Step order: 0 → 0.5 → 0.6 → 1 → 1A → 2 → 3 → 4 → 5 → 5b → 5c → 6 → 7.
+
 ### Step 0 — Environment Discovery
 Call `tool_search` for `windows-mcp:FileSystem`/`PowerShell`. Available → Step 0.5. Unavailable → skip 5b/5c, warn in Step 6.
 
@@ -34,6 +36,17 @@ Query ledger at `...\Agentic-Hub-Governance\work_orders\`:
 - P_300 in Affects, Ack pending → Display; Ack after session work
 
 Ledger unavailable → proceed with inline note.
+
+### Step 0.6 — Promote Marker Check
+Read `<project root>\P_300_promote_marker.json` (written by `promote-gate`, WO-P300-E5.005). Absent → no output, proceed silently.
+
+Present → display `severity`, `created_at`, `staging_db_path`, `buy_delta_pp`, `pass_delta_pp`, and `next_action` verbatim.
+
+- `severity: "STOP"` → **HALT**. A staged batch was blocked by the quality gate and is still on disk. The next `ingest-mined` run rebuilds staging from live via `shutil.copy2` and **will destroy it**. Resolve before any other work: promote deliberately, or discard and clear the marker.
+- `severity: "WAIVED"` → display, do NOT halt. The batch was promoted, but the sample was below the `min_buy_n` floor so quality was never tested. Informational; nothing is at risk.
+- File present but unparseable → **HALT**. Never treat an unreadable marker as "no problem outstanding."
+
+This step exists because the gate's STOP path otherwise recreates the failure WO-P300-E5.005 was filed to fix: on 2026-07-25 a batch staged at 16:15, sat unpromoted, and was silently overwritten three days later. A log file only helps someone who remembers to open it. INIT runs every session.
 
 ### Step 1 — Session Header
 Display: `P_300 [Day, Month DD, YYYY] [HH:MM] ET`. Time via `windows-mcp:PowerShell` or local system fallback.
@@ -124,6 +137,8 @@ Load full architecture (on demand only), duplicate SKILL content, write code/fil
 | Catalog symbols ≠ todo closure | HALT; reconcile (catalog wins) |
 | Preflight status missing or stale | Warn inline; proceed flagged (catalog authoritative; re-run `P_300_Preflight.bat`) |
 | Preflight status `catalog_overall != HEALTHY` | HALT; reconcile |
+| `P_300_promote_marker.json` severity STOP | HALT; staged batch will be destroyed by next ingest run |
+| `P_300_promote_marker.json` present but unparseable | HALT; never read as "no problem outstanding" |
 | LM Studio not ready (no `--no-narrator`) | HALT; show launcher |
 | Work order blocks session | HALT; resolve first |
 
@@ -140,6 +155,7 @@ Load full architecture (on demand only), duplicate SKILL content, write code/fil
 | Catalog | `db_utils.get_latest_catalog()` (glob `*catalog.db`) |
 | Preflight script (operator-run) | `P_300_Preflight.bat` (project root) |
 | Preflight status (INIT reads) | `<project root>\P_300_preflight_status.json` |
+| Promote marker (INIT reads) | `<project root>\P_300_promote_marker.json` |
 | LM Studio task type | `vantagepoint_analysis` → DeepSeek R1 14B |
 | LM Studio launcher | `integrations\lm_studio\infrastructure\lm_studio_launcher.py` |
 | Work orders | `C:\Users\Trader\AI-Agent-Learning-Hub\Agentic-Hub-Governance\work_orders\` |
@@ -149,6 +165,11 @@ Load full architecture (on demand only), duplicate SKILL content, write code/fil
 ## Recent Changelog
 
 *Retention rule: this section keeps only the current + prior version. Older entries live in `docs/P_300_SIP_CHANGELOG_ARCHIVE.md`.*
+
+### v3.5 — 2026-07-28
+- **Step 0.6 added — Promote Marker Check** (WO-P300-E5.005). Reads `P_300_promote_marker.json`. `STOP` severity HALTs; `WAIVED` displays without halting; present-but-unparseable HALTs. Placed immediately after the work-order review because both answer the same question: is there unresolved work from a previous session that must be handled before anything new begins.
+- **Two fail-fast rows added** for the marker; marker path added to Quick Reference.
+- **Why HALT rather than warn:** a STOP marker means a staged batch is sitting on disk and the next `ingest-mined` run rebuilds staging from live, destroying it. Unlike a stale preflight — recoverable any time by re-running a script — this one has a deadline. Precedent: the 2026-07-25 batch staged at 16:15, was never promoted, and was silently overwritten on 2026-07-28.
 
 ### v3.4 -- 2026-07-22
 - **WO-P000-E8.001 pilot: working-state doc retention.** `CLAUDE.md` added at
@@ -180,4 +201,4 @@ See `docs/P_300_SIP_CHANGELOG_ARCHIVE.md` (v2.8-v3.2).
 
 ---
 
-**End of P_300 System Initialization Prompt v3.4**
+**End of P_300 System Initialization Prompt v3.5**

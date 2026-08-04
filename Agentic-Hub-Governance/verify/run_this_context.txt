@@ -1,41 +1,30 @@
-WO-P400-E2.023 -- Backward-Looking Post-Earnings Proximity Check (MACRO)
-Date: 2026-07-24
+PEH VERIFY -- 2026-08-04 -- Independent review re-run for WO-P300-E5.002 / WO-P300-E5.005 closure
 
-WHAT THIS TESTS:
-New CAUTION-only (never BLOCK) check in domain\council.py macro_vote() --
-flags candidates within POST_EARNINGS_STABILIZATION_SESSIONS (config.py,
-default 3) of their last earnings report. New helper
-_sessions_since_earnings() in application\evaluate_signal.py (weekday-
-count approximation, no holiday calendar). New SnapshotDict field
-last_earnings_date (schemas.py). New CLI flag --last-earnings-date on
-fetch-snapshot (cli.py, application\fetch_snapshot.py). New reason code
-RC_POST_EARNINGS_STABILIZATION (domain\council_codes.py). 8 new tests
-across test_council.py (4) and test_evaluate_signal.py (4).
+WHAT THIS SCRIPT TESTS:
+Re-runs 5 existing test files as subprocesses (p140 interpreter), fresh,
+in a session that wrote none of them -- the WO_COMPLETION_GATE Independent
+Review Requirement. Does not modify any test or production code.
+
+  1. test_verify_ingestion.py -- WO-P300-E5.002/E5.005 shared completion-
+     gate test (verify_and_promote() fail-branch + pass-branch). Already
+     run once for real 2026-07-30 (ALL CHECKS PASSED); this is an
+     independent re-confirmation, not a repeat.
+  2. test_walkforward_report_io.py -- WO-P300-E5.005 gate report parser
+  3. test_promote_gate.py -- WO-P300-E5.005 domain decision logic
+  4. test_promote_marker_io.py -- WO-P300-E5.005 stop-marker read/write
+  5. test_cli_registry_inventory.py -- confirms 18 commands / 6 modules
+     still registered in cli_commands/main.py (no drift since 2026-07-29)
 
 SUCCESS CRITERIA:
-1. Import smoke check passes -- confirms no circular import / syntax
-   error introduced across the 6 touched files.
-2. Full pytest suite green -- was 210 passed / 4 skipped before this WO
-   (per architecture doc's last recorded baseline); expect 218 passed
-   (210 + 8 new) / 4 skipped, zero regressions elsewhere.
+All 5 subprocess calls exit 0. Script prints "ALL 5 TEST FILES PASSED"
+and itself exits 0.
 
 IF IT FAILS:
-- Import error -- most likely a missed import in council.py or
-  evaluate_signal.py (POST_EARNINGS_STABILIZATION_SESSIONS,
-  RC_POST_EARNINGS_STABILIZATION). Check the import blocks at the top of
-  both files first.
-- test_council.py failures -- check macro_vote()'s new
-  sessions_since_earnings branch sits AFTER the existing
-  earnings_in_window/binary_events branch (forward-looking check must
-  still take priority; this WO doesn't change that).
-- test_evaluate_signal.py failures on the new _sessions_since_earnings
-  tests -- these are computed relative to date.today() by design (walk
-  backward N real weekdays), not hardcoded dates, so they should not rot.
-  If one fails, the weekday-walk logic itself likely has an off-by-one.
-- Any failure in a PRE-EXISTING test (not one of the 8 new ones) means a
-  real regression -- do not change existing test assertions to make them
-  pass; report back instead.
-- Do not change test assertions to make them pass. Fix the production
-  code or report back if something genuinely doesn't match expectations.
+- Any single file's non-zero exit -- paste the full output for that file
+  back, do not summarize. This blocks closing WO-P300-E5.002 and/or
+  WO-P300-E5.005 until root-caused.
+- Import errors -- likely a source file changed since 2026-07-29/30;
+  report which import failed, do not guess a fix.
 
-Paste the full output back, including the import smoke check section.
+Do not change test assertions in any of the 5 files. Read-only against
+the real project -- no catalog writes, no file writes outside tempfile.TemporaryDirectory().

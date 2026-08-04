@@ -111,3 +111,28 @@ def load_params() -> dict:
     logger.debug(f"Params loaded from: {PARAMS_FILE}")
     return params
 
+
+
+# -- Schwab OAuth login operator (WO-P020-E1.010) ---------------------
+# P_020 runs the login flow for itself AND P_400 (one app registration,
+# Tony's call 2026-07-24). Each project keeps its OWN token file -- no
+# sharing one file across projects (schwab-py refresh-race risk).
+SCHWAB_TOKEN_FILE = CONFIG_DIR / "P_020_schwab_token.json"
+
+AUTH_TOKEN_PATHS = {
+    "P_020": SCHWAB_TOKEN_FILE,
+    "P_400": (
+        PROJECT_ROOT.parent / "P_400_TradeOrderManagement"
+        / "config" / "P_400_schwab_token.json"
+    ),
+}
+
+
+# -- P_000 Account Parameters (WO-P020-E1.009) -------------------------
+# Owned by P_000, not P_020 -- confirmed path (also referenced by P_400's
+# config.py). P_020 writes two reference rows here after every balance
+# pull; Tony still hand-maintains Account Balance/Risk/Max monthly.
+P000_PARAMS_FILE = (
+    PROJECT_ROOT.parent / "P_000_PythonClaudeLocalLLM"
+    / "config" / "P_000_Account_Parameters_Current.md"
+)

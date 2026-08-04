@@ -30,7 +30,7 @@ def get_quote_data(config_path: Path, token_path: Path, symbol: str) -> Optional
     """
     try:
         client = get_client(config_path, token_path)
-        resp = client.get_quote(symbol)
+        resp = client.get_quotes([symbol])  # plural -- get_quote() breaks on slash symbols like BRK/B (WO pending)
         if resp.status_code != 200:
             logger.warning("get_quote %s: status %s", symbol, resp.status_code)
             return None

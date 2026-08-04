@@ -3,7 +3,7 @@ name: p115-project-context
 description: >
   P_115 Buy The Dip — project-specific operating rules, critical paths, schema
   shorthand, and anti-patterns. Load at the start of ANY session involving P_115
-  work. Triggers on any reference to P_115, Buy The Dip, LogEntry, HybridTier,
+  work. Triggers on any reference to P_115, P_116, P_117, P_118, P_910, P_920, Buy The Dip, STEP 1/2/3, LogEntry, HybridTier,
   AsymmetricSetup, Fund Verification, PA Stop, 27-column tracker, P_920 EOD scan,
   or P_115_buyTheDipChart. Always read BEFORE writing any code or file path.
 ---
@@ -25,7 +25,7 @@ architecture doc, loaded on demand.
 | `Quick_Reference_Prompts_v9_4_1.md` | Shorthand command formats for STEP 1/2/3 + batch |
 | `Tracker_Log_Schema_v9_4_0_1.md` | 27-column locked schema detail |
 | `P_115_ Asset Sizing Requirements.md` | SUPERSEDED 2026-07-24 -- pointer only, sizing is P_400's job now (P_400 architecture doc Section 3.3) |
-| `OPTIONS_RISK_METHODOLOGY.md` | Options gate detail (delta-adjusted risk, spread/OI) |
+| `OPTIONS_RISK_METHODOLOGY.md` | REFERENCE ONLY 2026-07-24 -- options gates belong to P_400; never invoke in a P_115 session |
 | `python-project-architecture` SKILL (Hub) | Layer Boundary Standard — config → schemas → domain → infra → application |
 | `peh-handoff` SKILL (Hub) | 4-minute MCP timeout → Claude Code handoff protocol |
 | **THIS FILE** | Always-active protection rules |
@@ -40,10 +40,10 @@ architecture doc, loaded on demand.
 | Project root | `<Hub>\projects\P_115_BuytheDipTradingSystem\` |
 | Python | `C:\Users\Trader\.conda\envs\p140\python.exe` (shared conda env — never suggest a new venv) |
 | Account params | `<Hub>\projects\P_000_PythonClaudeLocalLLM\config\P_000_Account_Parameters_Current.md` — read live, never hard-code |
-| Risk config | `<Hub>\projects\P_010_Current_Market_Posture\P_010_RiskConfig.json` — re-read fresh before every STEP 2, not just at INIT |
+| Risk config | `<Hub>\projects\P_010_Current_Market_Posture\P_010_RiskConfig.json` — re-read fresh before every packet emission and before writing MarketDirection, not just at INIT |
 | Vault output | `<Hub>\trading_journal\TradeManagement\P115\` |
 | Signal packets (P_400 handoff) | `<Hub>\trading_journal\TradeOrderManagement\signals\*_v2.0.json` |
-| PEH verify dir | `<Hub>\Agentic-Hub-Governance\verify\` — write `run_this.py` + `run_this_context.txt` here BEFORE every MCP Python call |
+| PEH verify dir | `<Hub>\Agentic-Hub-Governance\verify\` — write `run_this_P115_<TS>.py` + `_context.txt` here BEFORE every MCP Python call or file write (peh-handoff v1.4, timestamped names, broadened scope) |
 | ThinkScript source | `P_115_buyTheDipChart_V15.ts` (current) — TOS custom indicator, PA Stop / HybridTier / AsymmetricSetup computed on-chart |
 | Fund verification source | `stockanalysis.com/stocks/[ticker]/financials/ratios/` — never trust TOS Fund on BUY/ASYM without this recheck (TOS confirmed systematically inflated, AEO 4/21 fail case) |
 
@@ -157,9 +157,10 @@ grandfathered pre-5/23/2026 rows only).
 8. **Trusting TOS Fund tier on a BUY/ASYM without the stockanalysis.com
    recheck** — TOS Fund is systematically inflated (AEO 4/21 confirmed fail,
    TOS=4 vs actual=2).
-9. **Using an INIT-snapshot risk_mode for STEP 2 sizing** — posture must be
-   re-read fresh from `P_010_RiskConfig.json` before every STEP 2 call, not
-   just once at INIT.
+9. **Using an INIT-snapshot risk_mode on any P_115 output** -- posture must be
+   re-read fresh from `P_010_RiskConfig.json` before every packet emission and
+   before writing MarketDirection to a tracker row, not just once at INIT.
+   P_115 does not size; sizing-time posture is P_400's concern.
 10. **Reclassifying a P_910-sourced signal as SignalSource=P_117** — P_910
     signals log `SignalSource=P_910` directly (fixed in spreadsheet 7/6/26).
 11. **Treating a mid-session LogEntry/chart mismatch as a data-entry error**
@@ -169,9 +170,13 @@ grandfathered pre-5/23/2026 rows only).
     errors** — that pattern is a regime signal (falling knife / deep bounce),
     not per-ticker noise. Same logic applies to a P_920 scanner output that
     comes back systematically STR=-2.
-13. **Prose-paragraph STEP 2/3 output** — locked compact labeled block format
-    only (see Quick Reference Prompts / SIP for the exact template). Never
-    narrative wrapping.
+13. **Producing a P_115 STEP 2 sizing block at all** -- as of 2026-07-24
+    (architecture v1.3) P_115 STEP 2 is signal emission ONLY: build and emit
+    the SIGNAL_V2 packet, nothing else. No three-gate sizing, no R:R
+    validation, no options viability gates, no TP/SL rendering, no options
+    chain lookup, no premium-cap math. All of it is P_400's (P_400
+    architecture doc Section 3.1). STEP 3 output stays in the locked compact
+    labeled block format -- never prose.
 14. **Asking the user for P_118 PatternType** — read from chart LogEntry or
     chart image; never ask, never default to `--` on a BUY/ASYM row.
 15. **Calling `windows-mcp:PowerShell` for Python and waiting past 4 minutes**
@@ -184,7 +189,7 @@ grandfathered pre-5/23/2026 rows only).
     validation on write. Include all four on every vault-write script, not
     just the display-facing tracker fields.
 
-17. **Delivering STEP 2/3 for a single-ticker BUY/ASYM without the 27-column
+17. **Delivering a single-ticker BUY/ASYM verdict without the 27-column
     tab-delimited tracker row** -- happened on ANET (P_118, 2026-07-08): the
     vault write went out but the Excel-ready row was never output, caught
     only when Tony asked for it after the fact. The tab-delimited row is
@@ -224,24 +229,29 @@ remain in P_115's own files. Never reintroduce one.
    scoring logic (EC-011 guard).
 2. Capture Fund/Anal/Candle/Setup/STR/Verdict the instant they're pasted —
    never claim missing data that exists earlier in the current conversation.
-3. Re-read `P_010_RiskConfig.json` fresh before every STEP 2 calculation.
+3. Re-read `P_010_RiskConfig.json` fresh before every packet emission and before writing MarketDirection -- never carry the INIT snapshot forward.
 4. Trigger the stockanalysis.com Fund recheck on every Fund>=2 BUY/ASYM per
    the active V110.2/V111 scope table.
 5. Read the vault file back after any `write_to_vault()` call to confirm
    fields actually landed — a True/PASS return alone is not proof.
 6. Use snake_case for every vault-write dict key; `traded` as string
    `"Y"`/`"N"`; numeric optionals as `None` not `'--'`.
-7. Write `run_this.py` + `run_this_context.txt` to the PEH verify dir before
-   any MCP Python call; hand off to Claude Code on a 4-minute timeout.
-8. Output STEP 2/3 in the locked compact labeled block format — never prose.
+7. Write `run_this_P115_<TS>.py` + `_context.txt` (timestamped, peh-handoff v1.4)
+   to the PEH verify dir before any MCP Python call or file write; hand off to
+   Claude Code on a 4-minute timeout.
+8. STEP 2 = emit the SIGNAL_V2 packet, full stop (architecture v1.3, 2026-07-24). Output STEP 3 in the locked compact labeled block format -- never prose.
 9. Chart Final Verdict overrides LogEntry BUY/ASYM if they conflict during
    market hours — but flag the divergence, don't silently resolve it.
 
 **Must Not:**
 1. Ask the user for P_118 PatternType — read it from the chart.
 2. Assume STR range is 0/1 or -1 to 2 — valid range is -2 to 2 (corrected 7/8/26; -2 is a legitimate falling-knife/regime reading, not out of range).
-3. Apply the 5% concentration cap to options notional exposure — it applies
-   to premium paid only.
+3. Perform ANY sizing, R:R validation, options-gate check, options chain
+   lookup, or premium-cap calculation inside a P_115 session -- every one of
+   those is P_400's as of 2026-07-24 (architecture v1.3). This includes the
+   5%-cap-applies-to-premium-not-notional rule, which is now P_400's to apply.
+   If a P_115 surface still instructs otherwise, that surface is stale --
+   flag it, do not obey it.
 4. Persist `HOT` to `MarketDirection` in a vault write or tracker row — HOT
    is a derived session state, never a JSON-persisted risk_mode value.
 5. Treat a batch-wide uniform STR=-2 as individual ticker misreads.
@@ -274,7 +284,7 @@ remain in P_115's own files. Never reintroduce one.
 - [ ] Steps 0.5 through 6 are one uninterruptible block — no file writes,
       lesson logs, or actions between them
 - [ ] Confirm current `risk_mode` from `P_010_RiskConfig.json` is re-read
-      live before any STEP 2, not carried over from INIT
+      live before any packet emission, not carried over from INIT
 - [ ] On any LogEntry paste: state the field-position parse explicitly
       before scoring
 
@@ -302,6 +312,19 @@ Do NOT load reflexively — this SKILL covers routine STEP 1/2/3 operation.
   `WO_COMPLETION_GATE.md`)
 
 ## Changelog
+
+### 2026-08-03
+- **Imperative sweep for architecture v1.3/v1.4 (Tony directive).** The
+  7/24 removal of P_115 order management had been recorded in this file's
+  changelog and file table but never propagated into the operative rules.
+  Five live instructions (file-table options row, Anti-Pattern 9, 13, 17,
+  Must 3, Must 8, Must Not 3, session checklist) still directed P_115 to
+  size positions and run options gates. Missed live on ZION 8/3/26: a full
+  three-gate block, a 7.09:1 R:R, and an options-chain request were all
+  produced in a P_115-engine session. Root cause recorded as: a changelog
+  entry is a record, not a rule -- version changes must be swept into
+  Musts, Must Nots, anti-patterns, and workflow command lines, not just
+  logged. Rule added: STEP 2 = emit only.
 
 ### 2026-07-24
 - P_115 Order Management removed (Tony directive). Architecture doc

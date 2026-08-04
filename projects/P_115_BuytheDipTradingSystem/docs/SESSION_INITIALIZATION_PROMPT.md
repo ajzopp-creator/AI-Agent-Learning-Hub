@@ -48,7 +48,7 @@ Read `P_000_Account_Parameters_Current.md` (authoritative source):
 ### Step 3 — Load Market Posture
 Read `P_010_RiskConfig.json`. Extract risk_mode (authoritative), avg_posture, intraday_signal.
 Fail → STANDARD risk, flag.
-**Posture MUST be re-read fresh before every STEP 2 sizing calc — this read is INIT snapshot only.**
+**Posture MUST be re-read fresh before every STEP 2 packet emission (P_115 does no sizing -- v1.3) — this read is INIT snapshot only.**
 
 ### Step 4 — Display Session Summary
 

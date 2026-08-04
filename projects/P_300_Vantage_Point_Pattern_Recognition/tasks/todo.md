@@ -1,5 +1,200 @@
 # P_300 Task Queue
 
+**>>> 2026-07-30 (Sonnet) -- WO-P300-E5.002 status-line self-contradiction resolved, completion-gate fail-path test built and PASSED in production:**
+
+**WO-P300-E5.002 ledger self-contradiction, resolved.** Tony flagged the
+WO's status line reading BUILT while an inline 2026-07-28 note said "this
+status is probably wrong" directly beneath it. Independently re-verified
+against source (not trusting the WO's own prior confirmation note --
+M-054): `catalog_merge_pipeline.py`'s `promote_staging_to_live()` really
+does call `verify_and_promote()` with a real `expected_delta` and raises
+on failure. BUILT was correct; the 2026-07-28 note was the (already-
+answered) trigger for that finding, not live doubt. Tagged RESOLVED
+inline, kept as audit trail. Also found while in `verify_ingestion.py`:
+the stale `check_topk_cache=True` claim the WO already caught once in the
+changelog is duplicated in the module docstring AND `verify_and_promote()`'s
+own function docstring -- 3 copies, same wrong claim, none functionally
+wrong, all doc drift. Logged, not yet fixed.
+
+**Completion-gate fail-path test -- BUILT and PASSED, real production
+run.** `python/tests/test_verify_ingestion.py` (262 lines, 3 checks)
+written this session, targeting `verify_and_promote()` directly (smallest
+input that proves the guarantee -- not the full `promote_staging_to_live()`
+orchestration, which would require real DTW/top-K population for no
+additional coverage). Pre-delivery, run against a verbatim sandbox
+reconstruction of `verify_ingestion.py` with a negative control (gate
+deliberately disabled -> test correctly failed, exit 1; gate restored ->
+exit 0) to confirm the test isn't vacuous. Tony then ran it for real via
+the p140 interpreter against the actual file: **ALL CHECKS PASSED (exit
+0)** -- wrong `expected_delta` blocked (master untouched), hollow
+`pattern_instance` blocked even with correct deltas (master untouched),
+clean data promoted with `.bak` backup preserved. This closes the
+FAIL-branch gap noted below -- both WO-P300-E5.002 and WO-P300-E5.005 now
+have real-run confirmation of success AND failure paths, not just code
+inspection. **Neither WO marked CLOSED** -- WO_COMPLETION_GATE: the
+session that writes the test cannot also close the WO. Needs fresh-session
+independent review.
+
+**>>> 2026-07-29 (Sonnet) -- test-directory consolidation, WO-P300-E5.005/E5.002 closure work, TKO/Chaikin investigations:**
+
+**tests/ (project root) vs python/tests/ -- consolidated, tests/ now empty
+(.gitkeep only).** Root cause: the WO-P300-E5.005 2026-07-26 approved plan
+dropped the `python/` prefix for its two test-file rows only (every
+production-file row had it); the build then added 2 more test files
+following that precedent. Separately, and worse: a 2026-07-20 independent-
+review session checked the WRONG directory and wrongly concluded
+test_similarity.py and test_get_latest_catalog_path_safety.py were "never
+on disk," triggering two unnecessary full rebuilds that sat unreconciled
+in tests/ ever since. Resolved 2026-07-29:
+  - 11 misplaced-but-not-duplicated files moved to python/tests/, each
+    file's _PYTHON_DIR path-bootstrap line fixed for the new location,
+    version bumped, changelog entry added. Verified via PEH from the new
+    location.
+  - test_get_latest_catalog_path_safety.py: the 2026-07-14 original was
+    genuinely OBSOLETE (fails against current code -- tests the M-095
+    wrap pattern that WO-P300-E4.002 superseded with get_latest_catalog_
+    path()). Confirmed via a real side-by-side PEH run (original 2/4 FAIL,
+    2026-07-20 version 6/6 PASS) before deleting the original and
+    promoting the current one into python/tests/.
+  - test_similarity.py: both versions' 6 core checks were functionally
+    equivalent (real coverage, not a stale/current split like the above).
+    Consolidated into one file -- kept this file's assert-based style,
+    adopted the duplicate's structurally-independent full-matrix reference
+    DTW oracle (real improvement: the original's rolling-row reference
+    shared its computational shape with production's own rolling-row
+    dtw_distance(), weaker for exactly that reason), unioned both fixture
+    sets (6 -> 12).
+  - Running the orphaned files surfaced 2 REAL, pre-existing, unrelated
+    staleness bugs (confirmed via source, not guessed) -- both FIXED:
+    smoke_stage6_files_1_and_2.py expected SIMILARITY_FEATURES=10, config.py
+    has been at 9 since v1.4 (volume_zscore removed, confirmed noise via
+    feature ablation); config.py's own changelog says so directly.
+  - **PARKED, not fixed: test_eval_incremental.py.** Imports
+    assemble_incremental_post_batch, which WO-P300-E4.006 REMOVED outright
+    (not renamed) -- the whole reuse-fraction "attempt incremental or skip"
+    decision it tested no longer exists; the cached path (run_cached_post_
+    batch) is unconditional now. application/incremental_post_batch.py
+    ITSELF is fully current (v2.0, correctly wired) -- this is an orphaned
+    test, not a production gap. Real rewrite needed: new fixtures (likely a
+    temp SQLite catalog, since run_incremental_post_batch now opens a real
+    DB connection for existing_cache), and a decision on whether the
+    reuse-fraction tests get retired outright or replaced with coverage of
+    the new unconditional-path guarantee. Tony's call: park for now, revisit
+    as its own plan-gated task later -- do not fold into a quick fix.
+
+**WO-P300-E5.005 -> all 4 REMAINING BEFORE CLOSE items done** (progress
+logging built + verified via real smoke test against live catalog data;
+independent review; PS1 transcript re-verified on a real production run,
+072826->072926catalog.db, +1222 patterns; investigation done). Not CLOSED --
+no one has yet run a deliberately-broken-staging-copy test proving the
+FAIL branch of verify_and_promote() actually blocks a bad promote; success
+path is proven in production, failure path is not.
+
+**WO-P300-E5.002 -> BUILT**, ledger corrected from stale PENDING/DISPUTED
+(M-017 -- code was ground truth, ledger was wrong). Real production
+confirmation same day. Not CLOSED for the same reason as E5.005 above.
+
+**TKO real-run investigation (BulkAddPattern, 2026-07-29 batch):** one bad
+VP-exported pred_range value (-0.30, should never be negative) killed
+parsing for TKO's entire file, not just the one bad row -- bulk_grid_
+reader.py's _extract_bars() has no per-row try/except, confirmed by
+direct PEH read of the pulled-from-zip file. TKO still got a valid signal
+(WATCH) and its full Chaikin enrichment the same day via the DailyEval
+path, which doesn't depend on today's mining success -- the failure was
+scoped to the historical-pattern catalog only, nothing downstream.
+
+**Chaikin per-symbol-miss (WO-P300-E4.009 FOLLOW-UP) -- CLOSED, no code
+built.** Root cause of the CDPYF (2026-07-24) and CNSWF (2026-07-27/29)
+misses confirmed via Tony's own Chaikin UI screenshots: both are OTC
+pink-sheet mirror tickers for TSX-primary Canadian companies (CNSWF=
+Constellation Software/CSU, CDPYF=Canadian Apartment Properties REIT/
+CAR.UN). Chaikin simply doesn't carry them -- permanent, not a retry-able
+failure. Tony's call: no detection code needed for this failure shape.
+
+
+**lessons.md retention pass (2nd):** 28 more entries archived (mechanical,
+header-boundary extraction -- not hand-retyped) + a compression pass on the
+~10 heaviest retained entries (M-085, M-109, M-110, M-075, M-034, M-105,
+M-051, M-094, M-032, plus the retention note itself). File dropped
+138.4KB/1,392 lines -> 62.4KB, under the ~70KB cap for the first time in
+weeks. tasks/lessons_archive.md grew to 115.7KB, nothing lost. Full
+verification pass run after (header count, no duplicates, no truncation,
+archived numbers confirmed absent, retained numbers confirmed present,
+section structure intact) -- clean.
+
+**Independent review, real code check (not just prose) against all 4
+OWNER_DONE/PENDING-review WOs:**
+- **WO-P300-E5.003 -> CLOSED.** All 3 files match the WO's claims exactly
+  (line counts, versions, function signatures). Real PEH already existed
+  (Tony, 5/5 PASS); this review supplies the missing independent-authorship
+  piece.
+- **WO-P300-E4.008/E4.009/E4.010 -> stay OWNER_DONE**, now with independent
+  code-review confirmation. Real 2026-07-25 production data (21-symbol
+  DailyEval batch + a BulkAddPattern run) exercised all three fixes' SUCCESS
+  paths cleanly (0 [ERROR]s, 0 IntelliScan WARNINGs, honest "21/21 complete"
+  branch) -- but none of the three failure-detection paths have fired against
+  a real failure yet. Real execution on an actual failure case remains the
+  owed gate for CLOSED on all three.
+
+**Real finding, not from the log file -- from checking actual vault-note
+artifacts directly (M-054 discipline):** Tony reported "no output" from the
+2026-07-25 evening run. Both runs actually succeeded:
+- **DailyEval (18:10-18:29):** 21/21 clean. Chaikin enrichment succeeded for
+  18/19 actionable symbols (real Power Gauge sections, vault-note mtimes
+  18:30:21-18:36:00) -- but silently missed **CDPYF** (correctly in the
+  actionable list, no error anywhere). WO-P300-E4.009's whole-batch phrase
+  matching was never built to catch a single-symbol miss inside an otherwise-
+  successful batch -- not a defect in that WO. Folded into **WO-P300-E4.009** as a FOLLOW-UP section (Tony's direct call -- same WO, not a standalone one), detection-only design proposed: check vault notes for ## Chaikin Power Gauge per actionable symbol after the batch, loud line + $LOG write on any miss.
+- **BulkAddPattern (~16:15-16:58):** also succeeded -- `staging_ingest_mined.db`
+  grew to 121MB (was 110MB), both walk-forward reports generated,
+  `data\bulk\mine\` emptied by the archive step. Not promoted (by design --
+  manual step). This script has **no log file at all** (100% console-only
+  Write-Host) -- confirmed as the real reason "no output" looked true: there
+  was nothing to check once the console closed, even though the run worked.
+
+**Tony's direct request, same session:** "I see no reason to manually
+promote unless there is an issue." Filed **WO-P300-E5.005** (PENDING,
+design proposal only, NOT built) -- auto-promote `ingest-mined` staging
+batches automatically unless the existing M-079 walk-forward comparison
+flags a regression. Proposed gate (Tony's sign-off owed before build):
+BUY precision drop >3pp OR PASS accuracy drop >3pp vs. pre-batch baseline
+blocks auto-promote and falls back to today's manual-command path; BUY
+volume shift >50% is flagged but not blocking. 3pp chosen with real margin
+below the one confirmed real regression this project has measured
+(WO-P300-E2.003, a 5.2pp precision drop that the same M-079 mechanism
+correctly caught and blocked). Bundled into the same WO: add a $LOG file to
+P_300_RunBulkAddPattern.ps1 (currently has none), same pattern as
+P_300_RunAllDailyEvals.ps1's $LOG. Plan-gate applies -- full file-level plan
+required before any code, per standing practice; this WO is documentation
+only so far, nothing built.
+
+---
+**>>> 2026-07-25 (2nd, Sonnet) WO-P800-E3.003 P_300 Ack DONE -- vault path rename, WO now CLOSED (all sides done):**
+
+P_800's hub-wide `TradeManagement` -> `TradeOrderManagement` vault rename (P_800 + P_400 sides already done). P_300's piece: `application/daily_evaluate_pipeline.py` line 437 -- `signal_source_link` f-string updated from `TradeManagement/P300/` to `TradeOrderManagement/P300/` (new signals were pointing at a now-empty folder since P_800's merge). Single string swap, backed up first.
+
+**Real bug found along the way, not part of the ask:** `test_signal_emitter_dry_run.py` was still calling `emit_signal_packet()` with the old v1.0 signature (`vault_root=...`, no `chosen_horizon`) -- stale since the emitter moved to v2.0/SIGNAL_V2 in June, so this test had been silently broken since then. Fixed same pass: real v2.0 call signature, `write_to_vault` monkeypatched (no live write), validated against the real `SignalV2` schema from `shared_resources`. Added a new assertion on `signal_source_link` itself -- the old test never actually checked that field, only used it as fixture input.
+
+**Real PEH pass, Tony ran it, full output pasted back:** 4/4 steps. Syntax + import clean, exact-string check on the live pipeline file (0 old-path hits, 1 new-path hit), full re-run of the corrected dry-run test -- 7/7 internal steps PASS including the new `signal_source_link` assertion, full JSON packet inspected.
+
+WO-P800-E3.003.md updated (Acks: P_300 done, Still Open items 3-4 struck through, new P_300-Side Implementation section, Status -> CLOSED -- all four Acks now landed, P_800/P_400/P_300 all done).
+
+---
+
+**>>> 2026-07-25 (Sonnet) WO-P300-E5.003 OWNER_DONE -- check-pattern CLI built, real PEH pass 5/5, design changed mid-session to match Tony's real workflow:**
+
+Original plan (per the WO's own RESOLVED interface) was a required `--symbol X` flag. Tony redirected before build: his actual process exports "History Grid (SYMBOL).xlsx" files to `data/live/` manually first, then wants to check all of them at once -- not retype tickers. Revised design, approved before any code written: default mode (no args) scans `config.DATA_LIVE` for `History Grid (SYMBOL).xlsx` files and checks every ticker found; `--symbol` (comma-separated) kept as an explicit override for an ad-hoc check with nothing exported yet.
+
+**Built (3 files):** `infrastructure/catalog_writer.py` v1.0.3->v1.0.4 (+`get_anchor_dates_for_ticker()`, sibling to the existing `pattern_exists_for_ticker_anchor()` boolean guard -- 354 lines, was already over the 300 cap at 328 before this edit, flagged not fixed). `utilities/check_pattern.py` v1.0 NEW (185 lines) -- reuses `vp_xlsx_reader._parse_live_filename()` for the ticker regex (M-082, same parser Pipeline B trusts) and `config.DATA_LIVE` for the path. `cli_commands/utility.py` v1.0->v1.1 (+`check-pattern` subcommand, 157 lines).
+
+**Real PEH pass, Tony ran it, full output pasted back:** 5/5 steps. Syntax + imports clean. `get_anchor_dates_for_ticker()` cross-checked against a real dynamically-selected known-populated ticker (count matched raw SQL exactly) and a real known-absent sentinel (`[]` as expected); cross-checked agreement with the existing boolean guard on the same ticker/date. Both `--symbol` mode and default directory-scan mode ran clean, exit 0. **Real result against the actual `data/live/` folder (21 files):** 20 tickers clear to export, MSI already has 1 pattern captured (anchor_date 2026-02-11), 2 non-matching files correctly named and skipped rather than silently dropped.
+
+**Catalog identity note:** this PEH run resolved to `072326catalog.db` -- newer than the `072226catalog.db` the 2026-07-23 preflight status still reports (14,812/341 as of that stale snapshot). Real pattern count on `072326catalog.db` not yet independently pulled -- preflight re-run still owed, flagged at this session's INIT and still open.
+
+**Cannot self-close** -- this session wrote both the code and the PEH verification script, so Tony's real run proves the code works but isn't an independent review of it (WO_COMPLETION_GATE.md). Needs a fresh session/subagent re-verification before CLOSED. WO-P300-E5.003.md updated with full BUILD RECORD + PEH VERIFICATION sections.
+
+---
+
 **>>> 2026-07-23 (3rd, Sonnet) WO-P300-E5.004 Part A PEH VERIFICATION PASSED -- both parts CLOSED:**
 
 Fresh-session INIT (this chat did not write the Part A code). Reviewed the staged `run_this.py`, then Tony ran it for real and pasted full output. All 5 checks PASS: (1-3) syntax/imports/synthetic-fixture reconstruction test PASS; (4) 25 real pids sampled from the live catalog's date range, real `score_one()` (DTW) vs. `score_one_from_topk_cache()` -- 25/25 exact match, 17.5s; (5) full `reconstruct_pre_batch_from_topk_cache()` against the REAL `072226catalog.db` (14,812 patterns) -- 130.0s wall time, `n_patterns=14812`/`n_degenerate=6` both matching the pre-registered expectation from last session's Part A research exactly.
@@ -434,132 +629,6 @@ Gated on live P_300 trading first. Consumes Aggregator output, produces position
 
 ---
 
-## Closed in Current Session (2026-07-13 -- WO-P300-E3.002 Crossover-Gated Architecture v2.0/v2.1)
-
-- [x] `config.py` v1.15 -- `MINE_XOVER_MAX_BARS=20` + `MINE_IGNITION_MAX_BARS=3`, both measured from a real 66-pick diagnostic
-- [x] `pattern_miner.py` v2.0 -- crossover-gated eligibility (`_bars_since_crossover`, `_is_eligible` rewritten), same-class re-arm (v1.6) removed
-- [x] `pattern_miner.py` v2.1 -- `_find_fresh_crossover()` added, fixing the jump-strides-over-next-crossover bug (6/6 confirmed on real ground truth)
-- [x] `tests/test_pattern_miner.py` rewritten twice this session (v2.0: 14/14, v2.1: 18/18) -- both PASS
-- [x] `tests/mine_ground_truth.py` v1.0 NEW -- permanent, self-verified, 84 anchors/40 symbols, supersedes 3 ad-hoc extractions
-- [x] Two real ground-truth-extraction bugs found and fixed (filename-prefix regex gap affecting 19 symbols; resolve_pick too-narrow search affecting 25/27 of an early invalid bucket)
-- [x] Real validation confirmed: HITS 60/84 (71.4%), 0 real misses, 0 regressions -- after catching and fixing a bug in the validation script itself (bucket-mislabeling, caught via a symbol-identity check)
-- [x] M-085 added to lessons.md (session-close spot-check found the OUTCOME-INVALID bucket is mostly a search-radius artifact, not genuine ground-truth noise -- true HITS likely ~78-80/84)
-- [x] todo.md updated (this entry)
-- NOT DONE: widening resolve_pick + re-running the full validation with the wider search (Backlog + Next Session note above); Phase 1 pipeline build (report writer, mine_patterns_pipeline.py) remains blocked until that's resolved
-
----
-
-## Closed in Current Session (2026-07-09 -- Consumer Non-Cyclical Sector Complete, 60 Files / 4 Sectors Total)
-
-- [x] 15 Consumer Non-Cyclical symbols ingested across two `.bat` passes (11 + 4 makeup), 0 errors
-- [x] DB-verified via PEH, cross-checked independently via Claude Code -- 1476 instances (230 STRICT/1246 RELAXED), 29520 bars, 7380 labels, symbols=60, source_files=60, hollow_count=0
-- [x] WO-P300-E2.001 updated with full Consumer Non-Cyclical closure detail
-- [x] Fresh DB backup taken at session close (see Current State for filename)
-- Catalog now spans 4 full sectors (Basic Materials, Capital Goods, Consumer Cyclical, Consumer Non-Cyclical) + original 3-symbol test set, 60 files total. Still OWNER_DONE, not CLOSED -- well short of eventual ~250-300 file full scope
-
----
-
-## Closed in Current Session (2026-07-09 -- WO-P300-E2.001 First Real Production Run, DB-Verified)
-
-- [x] Operator ran `P_300_BulkExtract.bat` against 3 real files in `data/bulk/` (AAPL/DE/SPY) -- 0 errors, 5 STRICT / 73 RELAXED per console
-- [x] PEH verification staged and re-run after fixing a real bug in the verification script (`s.symbol` -> `s.ticker`) -- DB-confirmed 5 STRICT / 73 RELAXED (78 total), pattern_bars=1560, forward_labels=390, symbols=3, source_files=3, hollow_count=0
-- [x] WO-P300-E2.001.md closure block updated with full run detail + Phase-0 estimate divergence note
-- [x] M-076 added to lessons.md (windows-mcp:PowerShell wedged on a routine sqlite query -- M-030 has no trivial-job exception)
-- [x] Status header correction sub-entry (PENDING -> OWNER_DONE) from earlier in this session, see above
-- Still OWNER_DONE, not CLOSED -- this was 3 files; full scope is ~12-15 symbols/sector (~250-300 files), tracked in Backlog
-
----
-
-## Closed in Current Session (2026-07-09 -- WO-P300-E2.001 Status Header Correction)
-
-- [x] WO-P300-E2.001.md -- Status header PENDING -> OWNER_DONE (matches its own 2026-07-08 closure note); closure block appended (build summary, M-074/M-075 recap, held-not-CLOSED pending real-corpus run)
-- [x] tasks/todo.md updated (this entry)
-- No code, build, or catalog changes this session -- governance/ledger accuracy only
-
----
-
-## Closed in Current Session (2026-07-08 -- WO-P300-E2.001 Bulk Extraction Build Complete)
-
-- [x] `python/infrastructure/research_catalog_io.py` NEW -- bootstrap DDL + row I/O + Lock+Temp-DB+Atomic Move promote; 16/16 PEH PASS (synthetic round-trip + hollow-rejection negative test)
-- [x] `python/domain/bulk_labeler.py` NEW -- forward-label math for BulkBarRaw
-- [x] `python/application/bulk_hit_writer.py` NEW (v1.1 after M-074 fix) -- single-detection persistence, split from bulk_extract_pipeline.py's 309-line v1.0 overage (M-031)
-- [x] `python/application/bulk_extract_pipeline.py` v1.2 -- orchestration-only after split; checkpoint_path parameter added (M-075 fix)
-- [x] `python/cli.py` v1.7 -- +bulk-extract subcommand
-- [x] `P_300_BulkExtract.bat` NEW -- operator launcher
-- [x] Real end-to-end PEH run against `data/processed/5_Pattern_SPY.xlsx` (Tony's request, not synthetic) -- 17/17 real PASS, found + fixed M-074 (expected_delta hardcoded 0) and M-075 (no checkpoint_path override, live-checkpoint pollution risk)
-- [x] M-070 through M-075 added to lessons.md this session (PEH two-file contract, PEH sys.path, infinity value, create_file silent-fail, expected_delta hardcoding, checkpoint test-isolation)
-- [x] todo.md updated (this entry + Current State + Backlog note for the remaining real-corpus run)
-
----
-
-## Closed in Current Session (2026-06-18 -- WO-P000-E4.001 P_300 Pilot)
-
-- [x] `python/schemas_preflight.py` NEW -- `PreflightStatus` Pydantic model
-- [x] `python/utilities/preflight_status.py` NEW -- gathers catalog + LM Studio status, writes JSON
-- [x] `P_300_Preflight.bat` NEW -- operator-run, writes `P_300_preflight_status.json`
-- [x] `docs/P_300_System_Initialization_Prompt_v3_1.md` -- bumped to v3.2; Steps 5b/5c read the JSON instead of invoking python via PowerShell; backup of pre-edit v3.1 saved
-- [x] `.claude/skills/p300-project-context/SKILL.md` -- Critical Paths, Layer Architecture, Session-Start Checklist, Pairs-With path fix, changelog updated to match
-- [x] M-055 added to lessons.md
-- [x] WO-P000-E4.001 Ack appended (P_300 side)
-
----
-
-## Closed in Current Session (2026-06-17 -- Completion Gates)
-
-- [x] WO-P300-E1.002 -- Completion Gate checklist added (7 items, all satisfied); Status header corrected PENDING -> OWNER_DONE; WO remains OWNER_DONE pending P_400 re-run confirmation
-- [x] WO-P300-E1.003 -- Completion Gate checklist added (7 items, all satisfied); Status header corrected PENDING -> OWNER_DONE; WO remains OWNER_DONE pending real-world confirmation
-
----
-
-## Closed in Current Session (2026-06-17 -- M-051 Real Fix)
-
-- [x] report_writer.py v1.8 -- print_signal_report_clean() vault-write line gated on LEDGER_LOG_CLASSES; fabricated [STEP 3]/ARCHIVE OK/2026-05.zip block removed; DONE footer corrected
-- [x] daily_evaluate_pipeline.py v1.20 -- _obsidian_write() False return now logged at WARNING (M-043)
-- [x] PEH verification (run_this.py, 9 checks) -- PASS, confirmed by Tony 2026-06-17
-- [x] M-054 added to lessons.md (closure notes are claims, not evidence)
-- [x] M-051 addendum added to lessons.md noting the real fix date
-- [x] 2026-06-12 false closure corrected in todo.md + lessons.md header lines
-
----
-
-## Closed in Current Session (2026-06-16)
-
-- [x] WO-P300-E1.001 IntelliScan stop integration -- 4 files shipped, smoke PASS
-- [x] M-052 added to lessons.md
-- [x] WO-P115-E2.001 created (OPEN)
-- [x] todo.md + lessons.md updated
-
----
-
-## Closed in Current Session (2026-06-12)
-
-- [x] M-051 added to lessons.md (hardcoded success string anti-pattern)
-- [x] system-doc-initializer SKILL compressed v3.0 + Protocol D Loop F (M-051 global rule)
-- [x] CLAUDE.md updated (WO table, vestigial schema note, last-updated)
-- [x] WO-P300-E1.001 created (BACKLOG -- resistance lookup target formula)
-- [x] print_signal_report_clean() hardcoded status strings fix confirmed via Claude Code (M-051 closure)
-- [x] P_800 Hub interface end-to-end confirmed: 2026-06-12_COF.md written to vault automatically
-
----
-
-## Closed in Current Session (2026-06-11 -- ATR Runtime Check)
-
-- [x] CGBD eval via `P_300_DailyEval_v2.bat` -- BUY h=5, clean exit
-- [x] Signal packet verified: guideline_stop=10.7377, guideline_target=11.4646, atm_at_signal=0.2423
-- [x] Signal class matches NFR-1 replay (n=20, wr=0.90, z=2.55) -- byte-identical
-
----
-
-## Closed in Current Session (2026-06-11 -- Enhancement 2 Prerequisites + Bug Fix)
-
-- [x] `tasks/smoke_report_writer.txt` -- report_writer smoke output (PASS, all 3 scenarios)
-- [x] `tasks/nfr1_determinism_replay.py` -- NFR-1 determinism replay script
-- [x] `tasks/nfr1_replay_out.txt` -- replay output (PASS)
-- [x] `python/application/ledger_record.py` -- M-019 fix
-- [x] `tasks/cleanup_replay_ledger_entries.py` -- junk entry cleanup (40 rows confirmed)
-
----
-
 ## Maintenance
 
 - **Owner:** Anthony Zoppi (review), Claude (architect)
@@ -676,3 +745,66 @@ next cold-"pre"-cache `ingest-mined` run (i.e. the next one after this)
 is the one that will actually exercise Part A's reconstruction path
 against TODAY's new 16,801-pattern baseline; today's own reconstruction
 ran against the prior 14,812 baseline, logged in the entry above.
+
+
+
+
+
+---
+
+**>>> 2026-08-04 (Sonnet) -- APPENDED OUT OF ORDER (filesystem MCP edit tool timed out mid-session, ~4min stall, same relay-failure family as git/python -c; switched to windows-mcp:FileSystem append rather than retry or risk a full-file rewrite on a 102KB file without a safe partial-edit tool):**
+
+**WO-P300-E5.002 and WO-P300-E5.005 -- both CLOSED.** Fresh session,
+INIT'd this chat, wrote none of the underlying code or the 2026-07-30
+completion-gate test. Independent review performed against real source,
+not the ledger's own prior claims (M-054):
+
+- **E5.002:** re-read `catalog_merge_pipeline.py`'s `promote_staging_to_live()`
+  directly -- computes `new_pids`, derives `expected_delta`, calls
+  `verify_and_promote()`, raises on failure. Matches the WO's claim
+  exactly. Confirmed via `grep` across the whole `python/` tree that
+  `promote_staging_to_live()` has exactly 2 real call sites
+  (`cli_commands/bulk_promote.py`'s `merge-research-catalog --promote`
+  and `ingest-mined --promote`), both routing through this one fixed
+  function -- no second, unverified promote path exists anywhere.
+- **E5.005:** builds on the 2026-07-29 independent review already on
+  file. Confirmed the auto-promote call chain end-to-end via direct
+  source read: `P_300_RunBulkAddPattern.ps1` -> `promote-gate` (exit
+  code only, confirmed decide-only, never calls `promote_staging_to_live()`
+  itself) -> on PROMOTE, `ingest-mined --promote` -> the same single
+  verified function. Exactly one path mutates the live catalog.
+- **Fresh PEH re-run, all 5 relevant test files** (`Agentic-Hub-Governance\verify\run_this.py`,
+  Tony ran it, pasted full output): `test_verify_ingestion.py`,
+  `test_walkforward_report_io.py`, `test_promote_gate.py`,
+  `test_promote_marker_io.py`, `test_cli_registry_inventory.py` --
+  **ALL 5 PASSED, exit 0.** Not trusting the 2026-07-30 transcript
+  alone -- this is an independent re-confirmation, matching the
+  precedent the 2026-07-29 E5.005 review already set for this exact
+  closure.
+- **Completion Gate checklist backfilled into both WO files** (neither
+  had one on file; E5.005 predates the rule requiring it at OWNER_DONE
+  time, backfilling now is the honest close-out). Caller Propagation
+  and Imperative Sweep boxes both checked with named evidence, not
+  assumed clean.
+
+**Self-caught mid-session:** this session's own INIT read the
+project-attached SIP (v3.3) instead of the live file on disk (v3.5,
+Step 0.6 -- promote-marker HALT check -- added 2026-07-28). M-015
+violation, caught and corrected same session before it caused any real
+gap (checked `P_300_promote_marker.json` retroactively: absent, no
+HALT owed). Session header format corrected going forward:
+`P_300 [Day, Month DD, YYYY] [HH:MM] ET`, no `--` separator.
+
+**Minor flagged, not fixed this session:** `CLAUDE.md`'s "Current SIP:
+v3.3" note (2026-06-18) is now stale -- real version is v3.5. One-line
+fix, not done here (out of this session's requested scope), logged so
+it surfaces next time someone's in that file. `verify_ingestion.py`
+still carries 3 copies of a stale docstring claim
+(`check_topk_cache=True` passed by `promote_staging_to_live()` -- it
+isn't) -- already logged in WO-P300-E5.002, cosmetic, unfixed.
+`p300-project-context` SKILL doesn't yet name `P_300_promote_marker.json`
+in Critical Paths -- SIP already covers the HALT, so this is a
+nice-to-have.
+
+**Both WOs' full evidence trail (Completion Gate + Independent Review
+sections) is in the WO files themselves**, not just here.

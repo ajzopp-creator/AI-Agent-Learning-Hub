@@ -1,0 +1,73 @@
+======================================================================
+TIER-1 SCREEN  |  posture=OFF  |  22 packets
+======================================================================
+  PASS | AGNC   | RR=12.13 | G1_shares=1603 | ALL_CLEAR
+  PASS | PSA    | RR=3.73 | G1_shares=13 | ALL_CLEAR
+  PASS | CAE    | RR=2.52 | G1_shares=360 | ALL_CLEAR
+  PASS | CDPYF  | RR=2.51 | G1_shares=928 | ALL_CLEAR
+  PASS | SBLK   | RR=2.11 | G1_shares=71 | ALL_CLEAR
+  PASS | CLF    | RR=2.00 | G1_shares=406 | ALL_CLEAR
+  PASS | BRK_B  | RR=2.00 | G1_shares=37 | ALL_CLEAR
+  FAIL | COST   | RR=1.55 | G1_shares=12 | RR_BELOW_MIN
+  FAIL | AVY    | RR=1.14 | G1_shares=57 | RR_BELOW_MIN
+  FAIL | WSM    | RR=1.04 | G1_shares=35 | RR_BELOW_MIN
+  FAIL | PPC    | RR=1.04 | G1_shares=241 | RR_BELOW_MIN
+  FAIL | CPT    | RR=0.95 | G1_shares=119 | RR_BELOW_MIN
+  FAIL | LVS    | RR=0.92 | G1_shares=196 | RR_BELOW_MIN
+  FAIL | LKQ    | RR=0.88 | G1_shares=292 | RR_BELOW_MIN
+  FAIL | CPRT   | RR=0.87 | G1_shares=256 | RR_BELOW_MIN
+  FAIL | BSX    | RR=0.86 | G1_shares=171 | RR_BELOW_MIN
+  FAIL | TSCO   | RR=0.81 | G1_shares=220 | RR_BELOW_MIN
+  FAIL | AAP    | RR=0.78 | G1_shares=82 | RR_BELOW_MIN
+  FAIL | APO    | RR=0.65 | G1_shares=59 | RR_BELOW_MIN
+  FAIL | FISV   | RR=0.64 | G1_shares=126 | RR_BELOW_MIN
+  FAIL | EXP    | RR=0.47 | G1_shares=32 | RR_BELOW_MIN
+  FAIL | MSI    | RR=0.45 | G1_shares=24 | RR_BELOW_MIN
+======================================================================
+2026-07-26 12:26:14 | INFO     | obsidian_writers.infrastructure.vault_writer | Written: 2026-07-24_COST.md (version 1)
+2026-07-26 12:26:14 | INFO     | obsidian_writers.application.write_handler | OK schema=P400 file=2026-07-24_COST.md version=1
+2026-07-26 12:26:14 | INFO     | obsidian_writers.infrastructure.vault_writer | Written: 2026-07-24_AVY.md (version 1)
+2026-07-26 12:26:14 | INFO     | obsidian_writers.application.write_handler | OK schema=P400 file=2026-07-24_AVY.md version=1
+2026-07-26 12:26:15 | INFO     | obsidian_writers.infrastructure.vault_writer | Written: 2026-07-24_WSM.md (version 1)
+2026-07-26 12:26:15 | INFO     | obsidian_writers.application.write_handler | OK schema=P400 file=2026-07-24_WSM.md version=1
+2026-07-26 12:26:15 | INFO     | obsidian_writers.infrastructure.vault_writer | Written: 2026-07-24_PPC.md (version 1)
+2026-07-26 12:26:15 | INFO     | obsidian_writers.application.write_handler | OK schema=P400 file=2026-07-24_PPC.md version=1
+2026-07-26 12:26:15 | INFO     | obsidian_writers.infrastructure.vault_writer | Written: 2026-07-24_CPT.md (version 1)
+2026-07-26 12:26:15 | INFO     | obsidian_writers.application.write_handler | OK schema=P400 file=2026-07-24_CPT.md version=1
+2026-07-26 12:26:16 | INFO     | obsidian_writers.infrastructure.vault_writer | Written: 2026-07-24_LVS.md (version 1)
+2026-07-26 12:26:16 | INFO     | obsidian_writers.application.write_handler | OK schema=P400 file=2026-07-24_LVS.md version=1
+2026-07-26 12:26:16 | INFO     | obsidian_writers.infrastructure.vault_writer | Written: 2026-07-24_LKQ.md (version 1)
+2026-07-26 12:26:16 | INFO     | obsidian_writers.application.write_handler | OK schema=P400 file=2026-07-24_LKQ.md version=1
+2026-07-26 12:26:16 | INFO     | obsidian_writers.infrastructure.vault_writer | Written: 2026-07-24_CPRT.md (version 1)
+2026-07-26 12:26:16 | INFO     | obsidian_writers.application.write_handler | OK schema=P400 file=2026-07-24_CPRT.md version=1
+2026-07-26 12:26:16 | INFO     | obsidian_writers.infrastructure.vault_writer | Written: 2026-07-24_BSX.md (version 1)
+2026-07-26 12:26:16 | INFO     | obsidian_writers.application.write_handler | OK schema=P400 file=2026-07-24_BSX.md version=1
+2026-07-26 12:26:17 | INFO     | obsidian_writers.infrastructure.vault_writer | Written: 2026-07-24_TSCO.md (version 1)
+2026-07-26 12:26:17 | INFO     | obsidian_writers.application.write_handler | OK schema=P400 file=2026-07-24_TSCO.md version=1
+2026-07-26 12:26:17 | INFO     | obsidian_writers.infrastructure.vault_writer | Written: 2026-07-24_AAP.md (version 1)
+2026-07-26 12:26:17 | INFO     | obsidian_writers.application.write_handler | OK schema=P400 file=2026-07-24_AAP.md version=1
+2026-07-26 12:26:17 | INFO     | obsidian_writers.infrastructure.vault_writer | Written: 2026-07-24_APO.md (version 1)
+2026-07-26 12:26:17 | INFO     | obsidian_writers.application.write_handler | OK schema=P400 file=2026-07-24_APO.md version=1
+2026-07-26 12:26:18 | INFO     | obsidian_writers.infrastructure.vault_writer | Written: 2026-07-24_FISV.md (version 1)
+2026-07-26 12:26:18 | INFO     | obsidian_writers.application.write_handler | OK schema=P400 file=2026-07-24_FISV.md version=1
+2026-07-26 12:26:18 | INFO     | obsidian_writers.infrastructure.vault_writer | Written: 2026-07-24_EXP.md (version 1)
+2026-07-26 12:26:18 | INFO     | obsidian_writers.application.write_handler | OK schema=P400 file=2026-07-24_EXP.md version=1
+2026-07-26 12:26:18 | INFO     | obsidian_writers.infrastructure.vault_writer | Written: 2026-07-24_MSI.md (version 1)
+2026-07-26 12:26:18 | INFO     | obsidian_writers.application.write_handler | OK schema=P400 file=2026-07-24_MSI.md version=1
+DISPOSAL SUMMARY (auto -- WO-P400-E2.018)
+  DISPOSED | COST   | drop_reason=RR_BELOW_MIN | archive=OK | record=OK | OK
+  DISPOSED | AVY    | drop_reason=RR_BELOW_MIN | archive=OK | record=OK | OK
+  DISPOSED | WSM    | drop_reason=RR_BELOW_MIN | archive=OK | record=OK | OK
+  DISPOSED | PPC    | drop_reason=RR_BELOW_MIN | archive=OK | record=OK | OK
+  DISPOSED | CPT    | drop_reason=RR_BELOW_MIN | archive=OK | record=OK | OK
+  DISPOSED | LVS    | drop_reason=RR_BELOW_MIN | archive=OK | record=OK | OK
+  DISPOSED | LKQ    | drop_reason=RR_BELOW_MIN | archive=OK | record=OK | OK
+  DISPOSED | CPRT   | drop_reason=RR_BELOW_MIN | archive=OK | record=OK | OK
+  DISPOSED | BSX    | drop_reason=RR_BELOW_MIN | archive=OK | record=OK | OK
+  DISPOSED | TSCO   | drop_reason=RR_BELOW_MIN | archive=OK | record=OK | OK
+  DISPOSED | AAP    | drop_reason=RR_BELOW_MIN | archive=OK | record=OK | OK
+  DISPOSED | APO    | drop_reason=RR_BELOW_MIN | archive=OK | record=OK | OK
+  DISPOSED | FISV   | drop_reason=RR_BELOW_MIN | archive=OK | record=OK | OK
+  DISPOSED | EXP    | drop_reason=RR_BELOW_MIN | archive=OK | record=OK | OK
+  DISPOSED | MSI    | drop_reason=RR_BELOW_MIN | archive=OK | record=OK | OK
+======================================================================

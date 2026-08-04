@@ -190,18 +190,107 @@ def test_sessions_since_earnings_zero_same_day():
     assert _sessions_since_earnings(date.today().isoformat()) == 0
 
 def test_sessions_since_earnings_weekday_count():
-    """Walk back exactly 5 real weekdays from today and confirm the count matches
-    -- avoids hardcoding a specific date so this doesn't rot as 'today' changes."""
+    """Collect the N most recent qualifying weekdays working back from
+    today; confirm the count matches. Avoids hardcoding a date so this
+    doesn't rot as 'today' changes.
+
+    Fixed 2026-07-26 (E4.005): off-by-one walk, verified only on a Sunday.
+    Fixed again 2026-07-27 (E4.006): that fix was itself weekday-of-today
+    dependent -- _sessions_since_earnings() counts today when today is a
+    weekday, and the old walk never accounted for that (silently correct
+    on weekends, off-by-one on weekdays). Surfaced live 2026-07-27, a
+    Monday, via this WO's PEH run (got 6, expected 5). New construction
+    below is correct regardless of today's weekday.
+    """
     from application.evaluate_signal import _sessions_since_earnings
     from datetime import date, timedelta
-    d = date.today()
-    weekdays_back = 0
     target = 5
-    while weekdays_back < target:
-        d = d - timedelta(days=1)
-        if d.weekday() < 5:
-            weekdays_back += 1
-    assert _sessions_since_earnings(d.isoformat()) == target
+    qualifying = []
+    probe = date.today()
+    while len(qualifying) < target:
+        if probe.weekday() < 5:
+            qualifying.append(probe)
+        probe -= timedelta(days=1)
+    last_earn = qualifying[-1] - timedelta(days=1)
+    assert _sessions_since_earnings(last_earn.isoformat()) == target
 
+def test_sessions_since_earnings_skips_holidays():
+    """A last_earnings_date whose window spans real 2026 holidays
+    (Juneteenth 2026-06-19, Independence Day observed 2026-07-03) is
+    counted correctly -- WO-P400-E4.006. Before this fix both were
+    counted as ordinary trading weekdays (WO-P400-E2.023's original
+    limitation, explicitly flagged in that WO as "no holiday calendar").
+
+    Expected count computed independently here (walk from last_earn to
+    today, skip weekends AND market_holidays()) so this doesn't rot as
+    'today' changes -- same principle as the weekday-count test above.
+    Fixed anchor date (not relative to today) because the test needs a
+    window guaranteed to contain real holidays, same accepted pattern as
+    the CAE-fixture spread tests below.
+    """
+    from application.evaluate_signal import _sessions_since_earnings
+    from domain.market_holidays import is_market_holiday
+    from datetime import date, timedelta
+
+    last_earn = date(2026, 6, 1)  # before both Juneteenth and July 4th observed
+    d = last_earn
+    today = date.today()
+    expected = 0
+    while d < today:
+        d = d + timedelta(days=1)
+        if d.weekday() < 5 and not is_market_holiday(d):
+            expected += 1
+
+    assert _sessions_since_earnings(last_earn.isoformat()) == expected
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
+
+
+# ---------------------------------------------------------------------------
+# Spread plausibility gate (WO-P400-E4.004)
+# ---------------------------------------------------------------------------
+
+def test_spread_too_wide_blocks_before_rr_math():
+    """Half-spread > 2.0% of price BLOCKs on SPREAD_TOO_WIDE before any
+    R:R computation runs -- CAE fixture, half_spread=$2.34 on price=$25.20
+    (spread_pct ~9.3%), found live 2026-07-26."""
+    packet = _make_packet(entry=100.0, stop=98.0, target=104.0)  # honest 2.0 R:R
+    snap = _make_snapshot(price=100.0, entry=100.0, stop=98.0)
+    snap["bid"] = 94.0
+    snap["ask"] = 106.0  # half_spread=6.0 -> 6.0% of price, over 2.0% threshold
+
+    posture_mock, params_mock, records_mock = _mock_infra()
+
+    with patch("application.evaluate_signal.read_posture", return_value=posture_mock), \
+         patch("application.evaluate_signal.read_params", return_value=params_mock), \
+         patch("application.evaluate_signal.load_book", return_value=records_mock):
+
+        from application.evaluate_signal import evaluate_signal
+        result = evaluate_signal(packet, snap, cash_available=5000.0)
+
+    assert result.verdict == "BLOCKED"
+    assert any("SPREAD_TOO_WIDE" in str(v.reason_code) for v in result.council.votes)
+    # Confirms the gate fired before R:R math -- rr_after_drift stays the
+    # 0.0 default, never a corrupted negative value from the bad spread.
+    assert result.rr_after_drift == 0.0
+
+
+def test_spread_under_threshold_not_blocked_by_spread_gate():
+    """Half-spread just under 2.0% of price does not trip SPREAD_TOO_WIDE
+    (setup still R:R 2.0 at guideline, so should proceed past this gate)."""
+    packet = _make_packet(entry=100.0, stop=98.0, target=104.0)
+    snap = _make_snapshot(price=100.0, entry=100.0, stop=98.0)
+    snap["bid"] = 98.2
+    snap["ask"] = 101.8  # half_spread=1.8 -> 1.8% of price, under threshold
+
+    posture_mock, params_mock, records_mock = _mock_infra()
+
+    with patch("application.evaluate_signal.read_posture", return_value=posture_mock), \
+         patch("application.evaluate_signal.read_params", return_value=params_mock), \
+         patch("application.evaluate_signal.load_book", return_value=records_mock):
+
+        from application.evaluate_signal import evaluate_signal
+        result = evaluate_signal(packet, snap, cash_available=5000.0)
+
+    spread_blocks = [c for c in result.council.block_codes if "SPREAD" in c]
+    assert spread_blocks == [], f"Unexpected spread block under threshold: {spread_blocks}"

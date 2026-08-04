@@ -1,0 +1,50 @@
+Live catalog: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\models\071726catalog.db
+INFO: Loaded 8969 pattern_instance_ids (origin_types=('PATTERN_IDENT', 'BULK_SCAN'))
+INFO: Bulk-loaded metadata for 8969 patterns (8969 requested)
+INFO: Bulk-loaded 8969 normalized windows (8969 requested)
+INFO: Bulk-loaded forward labels for 8969 patterns (8969 requested)
+INFO: load_full_catalog: 8969 patterns loaded from C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\models\071726catalog.db
+Loaded 8969 patterns
+Baseline candidates: 40
+  [1/40] pid=5283 corpus_size=0 -- skipped
+  [2/40] pid=4957 corpus_size=220
+  [3/40] pid=4224 corpus_size=447
+  [4/40] pid=1872 corpus_size=671
+  [5/40] pid=1781 corpus_size=893
+  [6/40] pid=3273 corpus_size=1120
+  [7/40] pid=670 corpus_size=1344
+  [8/40] pid=8853 corpus_size=1565
+  [9/40] pid=5317 corpus_size=1789
+  [10/40] pid=8859 corpus_size=1997
+  [11/40] pid=8358 corpus_size=2228
+  [12/40] pid=5232 corpus_size=2462
+  [13/40] pid=6484 corpus_size=2684
+  [14/40] pid=5069 corpus_size=2901
+  [15/40] pid=7359 corpus_size=3131
+  [16/40] pid=1973 corpus_size=3359
+  [17/40] pid=6242 corpus_size=3583
+  [18/40] pid=3331 corpus_size=3807
+  [19/40] pid=2632 corpus_size=4031
+  [20/40] pid=4629 corpus_size=4253
+  [21/40] pid=7455 corpus_size=4473
+  [22/40] pid=7823 corpus_size=4696
+  [23/40] pid=1342 corpus_size=4926
+  [24/40] pid=6281 corpus_size=5143
+  [25/40] pid=2651 corpus_size=5371
+  [26/40] pid=4177 corpus_size=5595
+  [27/40] pid=4517 corpus_size=5821
+  [28/40] pid=1701 corpus_size=6046
+  [29/40] pid=7136 corpus_size=6251
+  [30/40] pid=1939 corpus_size=6495
+  [31/40] pid=2692 corpus_size=6720
+  [32/40] pid=3977 corpus_size=6941
+  [33/40] pid=7586 corpus_size=7161
+  [34/40] pid=8410 corpus_size=7384
+  [35/40] pid=6115 corpus_size=7606
+  [36/40] pid=8516 corpus_size=7826
+  [37/40] pid=1532 corpus_size=8059
+  [38/40] pid=7925 corpus_size=8277
+  [39/40] pid=4805 corpus_size=8507
+  [40/40] pid=311 corpus_size=8733
+Baseline written: C:\Users\Trader\AI-Agent-Learning-Hub\Agentic-Hub-Governance\verify\jit_baseline_20260718.json (39 candidates)
+PASS

@@ -513,3 +513,144 @@ Next up (Tony's call): the two carried-forward items above (E4.004 "worth it" th
 2. **Silent exit 1, untraced:** A run died silently at exit 1 somewhere around pattern ~101-200, no traceback, not one of Tony's two intentional early-exits (neither printed). Possible unhandled exception on a specific pattern with output swallowed -- possibly the same mined batch that already surfaced a data-quality edge case (referenced by Tony as "M-102" in the recap, but no such lessons.md entry exists yet -- needs confirming/filing for real, not assumed). Proposed fix: try/except-with-traceback wrapper to identify the failing pattern_instance_id.
 
 Both explicitly deferred -- Tony called it after a long night, picking up fresh next session.
+
+
+---
+
+## Third archive pass: 2026-07-26
+
+Not a size-cap trigger (the top dated-session-log portion was 41.4KB,
+well under its ~100KB cap) -- Tony's direct request to trim anyway.
+Moved all 12 "## Closed in Current Session (...)" reference blocks
+(2026-06-11 through 2026-07-13) out of the live file's Current State
+section -- these are settled, superseded by the WO files themselves and
+by CLAUDE.md's Locked Decisions; nothing deleted, full text below.
+
+---
+## Closed in Current Session (2026-07-13 -- WO-P300-E3.002 Crossover-Gated Architecture v2.0/v2.1)
+
+- [x] `config.py` v1.15 -- `MINE_XOVER_MAX_BARS=20` + `MINE_IGNITION_MAX_BARS=3`, both measured from a real 66-pick diagnostic
+- [x] `pattern_miner.py` v2.0 -- crossover-gated eligibility (`_bars_since_crossover`, `_is_eligible` rewritten), same-class re-arm (v1.6) removed
+- [x] `pattern_miner.py` v2.1 -- `_find_fresh_crossover()` added, fixing the jump-strides-over-next-crossover bug (6/6 confirmed on real ground truth)
+- [x] `tests/test_pattern_miner.py` rewritten twice this session (v2.0: 14/14, v2.1: 18/18) -- both PASS
+- [x] `tests/mine_ground_truth.py` v1.0 NEW -- permanent, self-verified, 84 anchors/40 symbols, supersedes 3 ad-hoc extractions
+- [x] Two real ground-truth-extraction bugs found and fixed (filename-prefix regex gap affecting 19 symbols; resolve_pick too-narrow search affecting 25/27 of an early invalid bucket)
+- [x] Real validation confirmed: HITS 60/84 (71.4%), 0 real misses, 0 regressions -- after catching and fixing a bug in the validation script itself (bucket-mislabeling, caught via a symbol-identity check)
+- [x] M-085 added to lessons.md (session-close spot-check found the OUTCOME-INVALID bucket is mostly a search-radius artifact, not genuine ground-truth noise -- true HITS likely ~78-80/84)
+- [x] todo.md updated (this entry)
+- NOT DONE: widening resolve_pick + re-running the full validation with the wider search (Backlog + Next Session note above); Phase 1 pipeline build (report writer, mine_patterns_pipeline.py) remains blocked until that's resolved
+
+---
+
+## Closed in Current Session (2026-07-09 -- Consumer Non-Cyclical Sector Complete, 60 Files / 4 Sectors Total)
+
+- [x] 15 Consumer Non-Cyclical symbols ingested across two `.bat` passes (11 + 4 makeup), 0 errors
+- [x] DB-verified via PEH, cross-checked independently via Claude Code -- 1476 instances (230 STRICT/1246 RELAXED), 29520 bars, 7380 labels, symbols=60, source_files=60, hollow_count=0
+- [x] WO-P300-E2.001 updated with full Consumer Non-Cyclical closure detail
+- [x] Fresh DB backup taken at session close (see Current State for filename)
+- Catalog now spans 4 full sectors (Basic Materials, Capital Goods, Consumer Cyclical, Consumer Non-Cyclical) + original 3-symbol test set, 60 files total. Still OWNER_DONE, not CLOSED -- well short of eventual ~250-300 file full scope
+
+---
+
+## Closed in Current Session (2026-07-09 -- WO-P300-E2.001 First Real Production Run, DB-Verified)
+
+- [x] Operator ran `P_300_BulkExtract.bat` against 3 real files in `data/bulk/` (AAPL/DE/SPY) -- 0 errors, 5 STRICT / 73 RELAXED per console
+- [x] PEH verification staged and re-run after fixing a real bug in the verification script (`s.symbol` -> `s.ticker`) -- DB-confirmed 5 STRICT / 73 RELAXED (78 total), pattern_bars=1560, forward_labels=390, symbols=3, source_files=3, hollow_count=0
+- [x] WO-P300-E2.001.md closure block updated with full run detail + Phase-0 estimate divergence note
+- [x] M-076 added to lessons.md (windows-mcp:PowerShell wedged on a routine sqlite query -- M-030 has no trivial-job exception)
+- [x] Status header correction sub-entry (PENDING -> OWNER_DONE) from earlier in this session, see above
+- Still OWNER_DONE, not CLOSED -- this was 3 files; full scope is ~12-15 symbols/sector (~250-300 files), tracked in Backlog
+
+---
+
+## Closed in Current Session (2026-07-09 -- WO-P300-E2.001 Status Header Correction)
+
+- [x] WO-P300-E2.001.md -- Status header PENDING -> OWNER_DONE (matches its own 2026-07-08 closure note); closure block appended (build summary, M-074/M-075 recap, held-not-CLOSED pending real-corpus run)
+- [x] tasks/todo.md updated (this entry)
+- No code, build, or catalog changes this session -- governance/ledger accuracy only
+
+---
+
+## Closed in Current Session (2026-07-08 -- WO-P300-E2.001 Bulk Extraction Build Complete)
+
+- [x] `python/infrastructure/research_catalog_io.py` NEW -- bootstrap DDL + row I/O + Lock+Temp-DB+Atomic Move promote; 16/16 PEH PASS (synthetic round-trip + hollow-rejection negative test)
+- [x] `python/domain/bulk_labeler.py` NEW -- forward-label math for BulkBarRaw
+- [x] `python/application/bulk_hit_writer.py` NEW (v1.1 after M-074 fix) -- single-detection persistence, split from bulk_extract_pipeline.py's 309-line v1.0 overage (M-031)
+- [x] `python/application/bulk_extract_pipeline.py` v1.2 -- orchestration-only after split; checkpoint_path parameter added (M-075 fix)
+- [x] `python/cli.py` v1.7 -- +bulk-extract subcommand
+- [x] `P_300_BulkExtract.bat` NEW -- operator launcher
+- [x] Real end-to-end PEH run against `data/processed/5_Pattern_SPY.xlsx` (Tony's request, not synthetic) -- 17/17 real PASS, found + fixed M-074 (expected_delta hardcoded 0) and M-075 (no checkpoint_path override, live-checkpoint pollution risk)
+- [x] M-070 through M-075 added to lessons.md this session (PEH two-file contract, PEH sys.path, infinity value, create_file silent-fail, expected_delta hardcoding, checkpoint test-isolation)
+- [x] todo.md updated (this entry + Current State + Backlog note for the remaining real-corpus run)
+
+---
+
+## Closed in Current Session (2026-06-18 -- WO-P000-E4.001 P_300 Pilot)
+
+- [x] `python/schemas_preflight.py` NEW -- `PreflightStatus` Pydantic model
+- [x] `python/utilities/preflight_status.py` NEW -- gathers catalog + LM Studio status, writes JSON
+- [x] `P_300_Preflight.bat` NEW -- operator-run, writes `P_300_preflight_status.json`
+- [x] `docs/P_300_System_Initialization_Prompt_v3_1.md` -- bumped to v3.2; Steps 5b/5c read the JSON instead of invoking python via PowerShell; backup of pre-edit v3.1 saved
+- [x] `.claude/skills/p300-project-context/SKILL.md` -- Critical Paths, Layer Architecture, Session-Start Checklist, Pairs-With path fix, changelog updated to match
+- [x] M-055 added to lessons.md
+- [x] WO-P000-E4.001 Ack appended (P_300 side)
+
+---
+
+## Closed in Current Session (2026-06-17 -- Completion Gates)
+
+- [x] WO-P300-E1.002 -- Completion Gate checklist added (7 items, all satisfied); Status header corrected PENDING -> OWNER_DONE; WO remains OWNER_DONE pending P_400 re-run confirmation
+- [x] WO-P300-E1.003 -- Completion Gate checklist added (7 items, all satisfied); Status header corrected PENDING -> OWNER_DONE; WO remains OWNER_DONE pending real-world confirmation
+
+---
+
+## Closed in Current Session (2026-06-17 -- M-051 Real Fix)
+
+- [x] report_writer.py v1.8 -- print_signal_report_clean() vault-write line gated on LEDGER_LOG_CLASSES; fabricated [STEP 3]/ARCHIVE OK/2026-05.zip block removed; DONE footer corrected
+- [x] daily_evaluate_pipeline.py v1.20 -- _obsidian_write() False return now logged at WARNING (M-043)
+- [x] PEH verification (run_this.py, 9 checks) -- PASS, confirmed by Tony 2026-06-17
+- [x] M-054 added to lessons.md (closure notes are claims, not evidence)
+- [x] M-051 addendum added to lessons.md noting the real fix date
+- [x] 2026-06-12 false closure corrected in todo.md + lessons.md header lines
+
+---
+
+## Closed in Current Session (2026-06-16)
+
+- [x] WO-P300-E1.001 IntelliScan stop integration -- 4 files shipped, smoke PASS
+- [x] M-052 added to lessons.md
+- [x] WO-P115-E2.001 created (OPEN)
+- [x] todo.md + lessons.md updated
+
+---
+
+## Closed in Current Session (2026-06-12)
+
+- [x] M-051 added to lessons.md (hardcoded success string anti-pattern)
+- [x] system-doc-initializer SKILL compressed v3.0 + Protocol D Loop F (M-051 global rule)
+- [x] CLAUDE.md updated (WO table, vestigial schema note, last-updated)
+- [x] WO-P300-E1.001 created (BACKLOG -- resistance lookup target formula)
+- [x] print_signal_report_clean() hardcoded status strings fix confirmed via Claude Code (M-051 closure)
+- [x] P_800 Hub interface end-to-end confirmed: 2026-06-12_COF.md written to vault automatically
+
+---
+
+## Closed in Current Session (2026-06-11 -- ATR Runtime Check)
+
+- [x] CGBD eval via `P_300_DailyEval_v2.bat` -- BUY h=5, clean exit
+- [x] Signal packet verified: guideline_stop=10.7377, guideline_target=11.4646, atm_at_signal=0.2423
+- [x] Signal class matches NFR-1 replay (n=20, wr=0.90, z=2.55) -- byte-identical
+
+---
+
+## Closed in Current Session (2026-06-11 -- Enhancement 2 Prerequisites + Bug Fix)
+
+- [x] `tasks/smoke_report_writer.txt` -- report_writer smoke output (PASS, all 3 scenarios)
+- [x] `tasks/nfr1_determinism_replay.py` -- NFR-1 determinism replay script
+- [x] `tasks/nfr1_replay_out.txt` -- replay output (PASS)
+- [x] `python/application/ledger_record.py` -- M-019 fix
+- [x] `tasks/cleanup_replay_ledger_entries.py` -- junk entry cleanup (40 rows confirmed)
+
+---
+
+

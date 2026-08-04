@@ -1,6 +1,6 @@
 """
 FILE: application/promote_topk.py
-VERSION: 1.0
+VERSION: 1.1
 DATE: 2026-07-19
 AUTHOR: Anthony Zoppi + Claude
 LAYER: application
@@ -29,6 +29,13 @@ DESCRIPTION:
     assembling the expected_delta.
 
 CHANGELOG:
+    - 2026-07-29 v1.1 (WO-P300-E5.005 item #1): added _log_topk_
+      progress(), passed as update_for_new_batch's new progress_
+      callback param. Logs on item 1, every 500, and the last item, per
+      phase ("new_pids" then "existing_recheck") -- the previous single
+      logger.info() only fired once, after both loops already finished,
+      so a large batch (today's: 21,310 existing_recheck) had zero
+      visibility during the actual hour-plus wait.
     - 2026-07-19 v1.0: WO-P300-E4.006. Initial release.
 """
 from __future__ import annotations
@@ -52,6 +59,16 @@ from infrastructure.topk_cache_io import (  # noqa: E402
 from utilities.db_connect import connection_context  # noqa: E402
 
 logger = logging.getLogger(__name__)
+
+
+def _log_topk_progress(completed: int, total: int, phase: str) -> None:
+    """Progress callback passed to topk_cache.update_for_new_batch
+    (WO-P300-E5.005 item #1). Logs on the first item, every 500 after
+    that, and the last item -- enough visibility for a phase that can
+    run over an hour (existing_recheck, typically the larger of the
+    two) without flooding the log on every single pattern."""
+    if completed == 1 or completed % 500 == 0 or completed == total:
+        logger.info("[%s] %d/%d", phase, completed, total)
 
 
 def populate_topk_for_promote(
@@ -82,6 +99,7 @@ def populate_topk_for_promote(
 
     new_pid_topk, existing_must_check_topk = topk_cache.update_for_new_batch(
         new_pids, staging_meta, staging_win, existing_cache,
+        progress_callback=_log_topk_progress,
     )
 
     old_existing_total = sum(

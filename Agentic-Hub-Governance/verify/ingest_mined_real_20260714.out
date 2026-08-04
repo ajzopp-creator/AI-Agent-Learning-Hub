@@ -1,0 +1,194 @@
+2026-07-14 13:03:46,142 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_ADBE.xlsx
+2026-07-14 13:03:46,143 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 13:03:46,474 | INFO | infrastructure.bulk_grid_reader | Parsed 2513 bars from 10_Pattern_ADBE.xlsx
+2026-07-14 13:03:46,478 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_AMD.xlsx
+2026-07-14 13:03:46,480 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 13:03:46,829 | INFO | infrastructure.bulk_grid_reader | Parsed 2513 bars from 10_Pattern_AMD.xlsx
+2026-07-14 13:03:46,830 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_AME.xlsx
+2026-07-14 13:03:46,830 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 13:03:47,183 | INFO | infrastructure.bulk_grid_reader | Parsed 2512 bars from 10_Pattern_AME.xlsx
+2026-07-14 13:03:47,185 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_AMZN.xlsx
+2026-07-14 13:03:47,185 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 13:03:47,535 | INFO | infrastructure.bulk_grid_reader | Parsed 2512 bars from 10_Pattern_AMZN.xlsx
+2026-07-14 13:03:47,539 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_AVGO.xlsx
+2026-07-14 13:03:47,539 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 13:03:47,881 | INFO | infrastructure.bulk_grid_reader | Parsed 2513 bars from 10_Pattern_AVGO.xlsx
+2026-07-14 13:03:47,884 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_BAC.xlsx
+2026-07-14 13:03:47,885 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 13:03:48,241 | INFO | infrastructure.bulk_grid_reader | Parsed 2513 bars from 10_Pattern_BAC.xlsx
+2026-07-14 13:03:48,243 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_BLK.xlsx
+2026-07-14 13:03:48,244 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 13:03:48,601 | INFO | infrastructure.bulk_grid_reader | Parsed 2513 bars from 10_Pattern_BLK.xlsx
+2026-07-14 13:03:48,603 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_BURL.xlsx
+2026-07-14 13:03:48,603 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 13:03:48,958 | INFO | infrastructure.bulk_grid_reader | Parsed 2513 bars from 10_Pattern_BURL.xlsx
+2026-07-14 13:03:48,960 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_CAT.xlsx
+2026-07-14 13:03:48,960 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 13:03:49,316 | INFO | infrastructure.bulk_grid_reader | Parsed 2512 bars from 10_Pattern_CAT.xlsx
+2026-07-14 13:03:49,320 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_CIEN.xlsx
+2026-07-14 13:03:49,321 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 13:03:49,691 | INFO | infrastructure.bulk_grid_reader | Parsed 2514 bars from 10_Pattern_CIEN.xlsx
+2026-07-14 13:03:49,694 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_CRM.xlsx
+2026-07-14 13:03:49,694 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 13:03:50,050 | INFO | infrastructure.bulk_grid_reader | Parsed 2513 bars from 10_Pattern_CRM.xlsx
+2026-07-14 13:03:50,053 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_CVX.xlsx
+2026-07-14 13:03:50,054 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 13:03:50,421 | INFO | infrastructure.bulk_grid_reader | Parsed 2513 bars from 10_Pattern_CVX.xlsx
+2026-07-14 13:03:50,425 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_DE.xlsx
+2026-07-14 13:03:50,426 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 13:03:50,800 | INFO | infrastructure.bulk_grid_reader | Parsed 2512 bars from 10_Pattern_DE.xlsx
+2026-07-14 13:03:50,802 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_DVN.xlsx
+2026-07-14 13:03:50,802 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 13:03:51,199 | INFO | infrastructure.bulk_grid_reader | Parsed 2513 bars from 10_Pattern_DVN.xlsx
+2026-07-14 13:03:51,201 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_GOOGL.xlsx
+2026-07-14 13:03:51,201 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 13:03:51,581 | INFO | infrastructure.bulk_grid_reader | Parsed 2513 bars from 10_Pattern_GOOGL.xlsx
+2026-07-14 13:03:51,583 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_GS.xlsx
+2026-07-14 13:03:51,584 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 13:03:52,032 | INFO | infrastructure.bulk_grid_reader | Parsed 2513 bars from 10_Pattern_GS.xlsx
+2026-07-14 13:03:52,035 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_HAL.xlsx
+2026-07-14 13:03:52,035 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 13:03:52,418 | INFO | infrastructure.bulk_grid_reader | Parsed 2513 bars from 10_Pattern_HAL.xlsx
+2026-07-14 13:03:52,421 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_ICE.xlsx
+2026-07-14 13:03:52,421 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 13:03:52,801 | INFO | infrastructure.bulk_grid_reader | Parsed 2513 bars from 10_Pattern_ICE.xlsx
+2026-07-14 13:03:52,805 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_INTC.xlsx
+2026-07-14 13:03:52,806 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 13:03:53,186 | INFO | infrastructure.bulk_grid_reader | Parsed 2513 bars from 10_Pattern_INTC.xlsx
+2026-07-14 13:03:53,189 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_ITW.xlsx
+2026-07-14 13:03:53,189 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 13:03:53,579 | INFO | infrastructure.bulk_grid_reader | Parsed 2512 bars from 10_Pattern_ITW.xlsx
+2026-07-14 13:03:53,583 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_LEN.xlsx
+2026-07-14 13:03:53,584 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 13:03:53,974 | INFO | infrastructure.bulk_grid_reader | Parsed 2512 bars from 10_Pattern_LEN.xlsx
+2026-07-14 13:03:53,977 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_LMT.xlsx
+2026-07-14 13:03:53,977 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 13:03:54,369 | INFO | infrastructure.bulk_grid_reader | Parsed 2512 bars from 10_Pattern_LMT.xlsx
+2026-07-14 13:03:54,372 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_META.xlsx
+2026-07-14 13:03:54,373 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 13:03:54,762 | INFO | infrastructure.bulk_grid_reader | Parsed 2513 bars from 10_Pattern_META.xlsx
+2026-07-14 13:03:54,765 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_MOS.xlsx
+2026-07-14 13:03:54,766 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 13:03:55,162 | INFO | infrastructure.bulk_grid_reader | Parsed 2512 bars from 10_Pattern_MOS.xlsx
+2026-07-14 13:03:55,164 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_NKE.xlsx
+2026-07-14 13:03:55,164 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 13:03:55,557 | INFO | infrastructure.bulk_grid_reader | Parsed 2512 bars from 10_Pattern_NKE.xlsx
+2026-07-14 13:03:55,560 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_NVDA.xlsx
+2026-07-14 13:03:55,561 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 13:03:55,945 | INFO | infrastructure.bulk_grid_reader | Parsed 2513 bars from 10_Pattern_NVDA.xlsx
+2026-07-14 13:03:55,949 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_PCAR.xlsx
+2026-07-14 13:03:55,950 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 13:03:56,343 | INFO | infrastructure.bulk_grid_reader | Parsed 2512 bars from 10_Pattern_PCAR.xlsx
+2026-07-14 13:03:56,347 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_QCOM.xlsx
+2026-07-14 13:03:56,349 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 13:03:56,751 | INFO | infrastructure.bulk_grid_reader | Parsed 2513 bars from 10_Pattern_QCOM.xlsx
+2026-07-14 13:03:56,753 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_SHW.xlsx
+2026-07-14 13:03:56,754 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 13:03:57,165 | INFO | infrastructure.bulk_grid_reader | Parsed 2512 bars from 10_Pattern_SHW.xlsx
+2026-07-14 13:03:57,168 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_SPY.xlsx
+2026-07-14 13:03:57,168 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 13:03:57,569 | INFO | infrastructure.bulk_grid_reader | Parsed 2512 bars from 10_Pattern_SPY.xlsx
+2026-07-14 13:03:57,572 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_TECK.xlsx
+2026-07-14 13:03:57,572 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 13:03:57,977 | INFO | infrastructure.bulk_grid_reader | Parsed 2513 bars from 10_Pattern_TECK.xlsx
+2026-07-14 13:03:57,981 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_UI.xlsx
+2026-07-14 13:03:57,982 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 13:03:58,509 | INFO | infrastructure.bulk_grid_reader | Parsed 2513 bars from 10_Pattern_UI.xlsx
+2026-07-14 13:03:58,511 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_WMT.xlsx
+2026-07-14 13:03:58,511 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 13:03:58,530 | INFO | infrastructure.bulk_grid_reader | Parsed 123 bars from 10_Pattern_WMT.xlsx
+2026-07-14 13:03:58,530 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_XOM.xlsx
+2026-07-14 13:03:58,531 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 13:03:58,954 | INFO | infrastructure.bulk_grid_reader | Parsed 2513 bars from 10_Pattern_XOM.xlsx
+2026-07-14 13:03:58,956 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 3_Pattern_ARDX.xlsx
+2026-07-14 13:03:58,956 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 13:03:59,051 | INFO | infrastructure.bulk_grid_reader | Parsed 753 bars from 3_Pattern_ARDX.xlsx
+2026-07-14 13:03:59,053 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 3_Pattern_ASTS.xlsx
+2026-07-14 13:03:59,054 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 13:03:59,142 | INFO | infrastructure.bulk_grid_reader | Parsed 753 bars from 3_Pattern_ASTS.xlsx
+2026-07-14 13:03:59,142 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 3_Pattern_BOIL.xlsx
+2026-07-14 13:03:59,142 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 13:03:59,367 | INFO | infrastructure.bulk_grid_reader | Parsed 753 bars from 3_Pattern_BOIL.xlsx
+2026-07-14 13:03:59,370 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 3_Pattern_CRK.xlsx
+2026-07-14 13:03:59,371 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 13:03:59,463 | INFO | infrastructure.bulk_grid_reader | Parsed 753 bars from 3_Pattern_CRK.xlsx
+2026-07-14 13:03:59,466 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 3_Pattern_MSTR.xlsx
+2026-07-14 13:03:59,466 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 13:03:59,555 | INFO | infrastructure.bulk_grid_reader | Parsed 753 bars from 3_Pattern_MSTR.xlsx
+2026-07-14 13:03:59,557 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 3_Pattern_TDC.xlsx
+2026-07-14 13:03:59,557 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 13:03:59,762 | INFO | infrastructure.bulk_grid_reader | Parsed 753 bars from 3_Pattern_TDC.xlsx
+2026-07-14 13:04:15,953 | INFO | infrastructure.catalog_reader | Loaded 508 pattern_instance_ids (origin_types=('PATTERN_IDENT', 'BULK_SCAN'))
+2026-07-14 13:04:15,955 | INFO | infrastructure.catalog_reader | Bulk-loaded metadata for 508 patterns (508 requested)
+2026-07-14 13:04:16,076 | INFO | infrastructure.catalog_reader | Bulk-loaded 508 normalized windows (508 requested)
+2026-07-14 13:04:16,085 | INFO | infrastructure.catalog_reader | Bulk-loaded forward labels for 508 patterns (508 requested)
+2026-07-14 13:04:16,086 | INFO | infrastructure.eval_io | load_full_catalog: 508 patterns loaded from C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\models\071026catalog.db
+2026-07-14 13:05:53,026 | INFO | infrastructure.eval_io | write_walk_forward_report: 508 patterns x 5 horizons (1 degenerate_corpus, overrides=default) -> C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\outputs\reports\eval\walkforward_071026catalog_default_20260714_130553.txt
+2026-07-14 13:05:53,032 | INFO | infrastructure.catalog_reader | Loaded 6039 pattern_instance_ids (origin_types=('PATTERN_IDENT', 'BULK_SCAN'))
+2026-07-14 13:05:53,049 | INFO | infrastructure.catalog_reader | Bulk-loaded metadata for 6039 patterns (6039 requested)
+2026-07-14 13:05:55,114 | INFO | infrastructure.catalog_reader | Bulk-loaded 6039 normalized windows (6039 requested)
+2026-07-14 13:05:55,203 | INFO | infrastructure.catalog_reader | Bulk-loaded forward labels for 6039 patterns (6039 requested)
+2026-07-14 13:05:55,205 | INFO | infrastructure.eval_io | load_full_catalog: 6039 patterns loaded from C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\models\staging_ingest_mined.db
+2026-07-14 17:02:42,409 | INFO | infrastructure.eval_io | write_walk_forward_report: 6039 patterns x 5 horizons (4 degenerate_corpus, overrides=default) -> C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\outputs\reports\eval\walkforward_staging_ingest_mined_default_20260714_170242.txt
+2026-07-14 17:02:42,412 | INFO | application.ingest_mined_pipeline | Ingest-mined complete: 5531 inserted, 0 skipped (duplicate), 53 audit-failed. Pre n_patterns=508, post n_patterns=6039.
+
+INGEST-MINED COMPLETE -- staging=C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\models\staging_ingest_mined.db
+inserted=5531  skipped_duplicate=0  audit_failed=53  symbols_touched=40
+audit failures (not inserted):
+  - ADBE 2021-08-04 (breakdown): ['window for anchor 2021-08-04 reaches back to 2021-07-08, before MINE_MIN_ANCHOR_DATE (2021-07-14) -- backfilled bars have 0.0 pred_high/pred_low placeholders']
+  - ADBE 2026-03-12 (breakdown): ['catalog collision: (symbol, anchor_date) already present in the live catalog']
+  - AMD 2021-07-27 (uptrend): ['window for anchor 2021-07-27 reaches back to 2021-06-29, before MINE_MIN_ANCHOR_DATE (2021-07-14) -- backfilled bars have 0.0 pred_high/pred_low placeholders']
+  - AMD 2021-08-04 (uptrend): ['window for anchor 2021-08-04 reaches back to 2021-07-08, before MINE_MIN_ANCHOR_DATE (2021-07-14) -- backfilled bars have 0.0 pred_high/pred_low placeholders']
+  - AMD 2025-08-18 (uptrend): ['catalog collision: (symbol, anchor_date) already present in the live catalog']
+  - AMZN 2021-07-30 (breakdown): ['window for anchor 2021-07-30 reaches back to 2021-07-02, before MINE_MIN_ANCHOR_DATE (2021-07-14) -- backfilled bars have 0.0 pred_high/pred_low placeholders']
+  - AMZN 2026-02-03 (breakdown): ['catalog collision: (symbol, anchor_date) already present in the live catalog']
+  - ARDX 2026-03-05 (uptrend): ['catalog collision: (symbol, anchor_date) already present in the live catalog']
+  - ARDX 2026-04-29 (breakdown): ['catalog collision: (symbol, anchor_date) already present in the live catalog']
+  - ASTS 2026-05-11 (uptrend): ['catalog collision: (symbol, anchor_date) already present in the live catalog']
+  - AVGO 2021-07-27 (uptrend): ['window for anchor 2021-07-27 reaches back to 2021-06-29, before MINE_MIN_ANCHOR_DATE (2021-07-14) -- backfilled bars have 0.0 pred_high/pred_low placeholders']
+  - BAC 2021-07-28 (uptrend): ['window for anchor 2021-07-28 reaches back to 2021-06-30, before MINE_MIN_ANCHOR_DATE (2021-07-14) -- backfilled bars have 0.0 pred_high/pred_low placeholders']
+  - BAC 2021-08-06 (uptrend): ['window for anchor 2021-08-06 reaches back to 2021-07-12, before MINE_MIN_ANCHOR_DATE (2021-07-14) -- backfilled bars have 0.0 pred_high/pred_low placeholders']
+  - BLK 2021-07-27 (breakdown): ['window for anchor 2021-07-27 reaches back to 2021-06-29, before MINE_MIN_ANCHOR_DATE (2021-07-14) -- backfilled bars have 0.0 pred_high/pred_low placeholders']
+  - BLK 2021-08-02 (breakdown): ['window for anchor 2021-08-02 reaches back to 2021-07-06, before MINE_MIN_ANCHOR_DATE (2021-07-14) -- backfilled bars have 0.0 pred_high/pred_low placeholders']
+  - BOIL 2026-01-16 (breakdown): ['catalog collision: (symbol, anchor_date) already present in the live catalog']
+  - BOIL 2026-02-02 (uptrend): ['catalog collision: (symbol, anchor_date) already present in the live catalog']
+  - CIEN 2021-07-28 (uptrend): ['window for anchor 2021-07-28 reaches back to 2021-06-30, before MINE_MIN_ANCHOR_DATE (2021-07-14) -- backfilled bars have 0.0 pred_high/pred_low placeholders']
+  - CRK 2026-01-16 (breakdown): ['catalog collision: (symbol, anchor_date) already present in the live catalog']
+  - CRK 2026-02-02 (breakdown): ['catalog collision: (symbol, anchor_date) already present in the live catalog']
+  - CRM 2021-07-27 (uptrend): ['window for anchor 2021-07-27 reaches back to 2021-06-29, before MINE_MIN_ANCHOR_DATE (2021-07-14) -- backfilled bars have 0.0 pred_high/pred_low placeholders']
+  - CRM 2021-07-30 (breakdown): ['window for anchor 2021-07-30 reaches back to 2021-07-02, before MINE_MIN_ANCHOR_DATE (2021-07-14) -- backfilled bars have 0.0 pred_high/pred_low placeholders']
+  - CRM 2021-08-05 (uptrend): ['window for anchor 2021-08-05 reaches back to 2021-07-09, before MINE_MIN_ANCHOR_DATE (2021-07-14) -- backfilled bars have 0.0 pred_high/pred_low placeholders']
+  - CVX 2021-07-27 (uptrend): ['window for anchor 2021-07-27 reaches back to 2021-06-29, before MINE_MIN_ANCHOR_DATE (2021-07-14) -- backfilled bars have 0.0 pred_high/pred_low placeholders']
+  - DE 2021-07-23 (uptrend): ['window for anchor 2021-07-23 reaches back to 2021-06-25, before MINE_MIN_ANCHOR_DATE (2021-07-14) -- backfilled bars have 0.0 pred_high/pred_low placeholders']
+  - DVN 2021-07-28 (uptrend): ['window for anchor 2021-07-28 reaches back to 2021-06-30, before MINE_MIN_ANCHOR_DATE (2021-07-14) -- backfilled bars have 0.0 pred_high/pred_low placeholders']
+  - DVN 2021-08-05 (uptrend): ['window for anchor 2021-08-05 reaches back to 2021-07-09, before MINE_MIN_ANCHOR_DATE (2021-07-14) -- backfilled bars have 0.0 pred_high/pred_low placeholders']
+  - GS 2021-08-04 (breakdown): ['window for anchor 2021-08-04 reaches back to 2021-07-08, before MINE_MIN_ANCHOR_DATE (2021-07-14) -- backfilled bars have 0.0 pred_high/pred_low placeholders']
+  - HAL 2021-07-27 (uptrend): ['window for anchor 2021-07-27 reaches back to 2021-06-29, before MINE_MIN_ANCHOR_DATE (2021-07-14) -- backfilled bars have 0.0 pred_high/pred_low placeholders']
+  - HAL 2021-07-28 (uptrend): ['window for anchor 2021-07-28 reaches back to 2021-06-30, before MINE_MIN_ANCHOR_DATE (2021-07-14) -- backfilled bars have 0.0 pred_high/pred_low placeholders']
+  - HAL 2021-07-29 (uptrend): ['window for anchor 2021-07-29 reaches back to 2021-07-01, before MINE_MIN_ANCHOR_DATE (2021-07-14) -- backfilled bars have 0.0 pred_high/pred_low placeholders']
+  - HAL 2026-03-17 (uptrend): ['catalog collision: (symbol, anchor_date) already present in the live catalog']
+  - ICE 2021-07-27 (uptrend): ['window for anchor 2021-07-27 reaches back to 2021-06-29, before MINE_MIN_ANCHOR_DATE (2021-07-14) -- backfilled bars have 0.0 pred_high/pred_low placeholders']
+  - INTC 2021-07-27 (breakdown): ['window for anchor 2021-07-27 reaches back to 2021-06-29, before MINE_MIN_ANCHOR_DATE (2021-07-14) -- backfilled bars have 0.0 pred_high/pred_low placeholders']
+  - ITW 2026-01-29 (uptrend): ['catalog collision: (symbol, anchor_date) already present in the live catalog']
+  - LEN 2021-07-26 (uptrend): ['window for anchor 2021-07-26 reaches back to 2021-06-28, before MINE_MIN_ANCHOR_DATE (2021-07-14) -- backfilled bars have 0.0 pred_high/pred_low placeholders']
+  - LEN 2021-08-09 (breakdown): ['window for anchor 2021-08-09 reaches back to 2021-07-13, before MINE_MIN_ANCHOR_DATE (2021-07-14) -- backfilled bars have 0.0 pred_high/pred_low placeholders']
+  - META 2021-08-02 (breakdown): ['window for anchor 2021-08-02 reaches back to 2021-07-06, before MINE_MIN_ANCHOR_DATE (2021-07-14) -- backfilled bars have 0.0 pred_high/pred_low placeholders']
+  - MOS 2021-07-27 (uptrend): ['window for anchor 2021-07-27 reaches back to 2021-06-29, before MINE_MIN_ANCHOR_DATE (2021-07-14) -- backfilled bars have 0.0 pred_high/pred_low placeholders']
+  - MSTR 2026-01-21 (breakdown): ['catalog collision: (symbol, anchor_date) already present in the live catalog']
+  - MSTR 2026-04-08 (uptrend): ['catalog collision: (symbol, anchor_date) already present in the live catalog']
+  - NVDA 2021-07-27 (uptrend): ['window for anchor 2021-07-27 reaches back to 2021-06-29, before MINE_MIN_ANCHOR_DATE (2021-07-14) -- backfilled bars have 0.0 pred_high/pred_low placeholders']
+  - NVDA 2021-08-04 (uptrend): ['window for anchor 2021-08-04 reaches back to 2021-07-08, before MINE_MIN_ANCHOR_DATE (2021-07-14) -- backfilled bars have 0.0 pred_high/pred_low placeholders']
+  - NVDA 2025-10-24 (uptrend): ['catalog collision: (symbol, anchor_date) already present in the live catalog']
+  - QCOM 2021-07-27 (uptrend): ['window for anchor 2021-07-27 reaches back to 2021-06-29, before MINE_MIN_ANCHOR_DATE (2021-07-14) -- backfilled bars have 0.0 pred_high/pred_low placeholders']
+  - QCOM 2026-01-12 (breakdown): ['catalog collision: (symbol, anchor_date) already present in the live catalog']
+  - SHW 2021-07-26 (uptrend): ['window for anchor 2021-07-26 reaches back to 2021-06-28, before MINE_MIN_ANCHOR_DATE (2021-07-14) -- backfilled bars have 0.0 pred_high/pred_low placeholders']
+  - TDC 2026-01-29 (breakdown): ['catalog collision: (symbol, anchor_date) already present in the live catalog']
+  - TECK 2021-07-27 (uptrend): ['window for anchor 2021-07-27 reaches back to 2021-06-29, before MINE_MIN_ANCHOR_DATE (2021-07-14) -- backfilled bars have 0.0 pred_high/pred_low placeholders']
+  - TECK 2021-07-29 (uptrend): ['window for anchor 2021-07-29 reaches back to 2021-07-01, before MINE_MIN_ANCHOR_DATE (2021-07-14) -- backfilled bars have 0.0 pred_high/pred_low placeholders']
+  - TECK 2021-07-30 (uptrend): ['window for anchor 2021-07-30 reaches back to 2021-07-02, before MINE_MIN_ANCHOR_DATE (2021-07-14) -- backfilled bars have 0.0 pred_high/pred_low placeholders']
+  - UI 2026-03-31 (breakdown): ['catalog collision: (symbol, anchor_date) already present in the live catalog']
+  - XOM 2021-07-27 (uptrend): ['window for anchor 2021-07-27 reaches back to 2021-06-29, before MINE_MIN_ANCHOR_DATE (2021-07-14) -- backfilled bars have 0.0 pred_high/pred_low placeholders']
+pre-ingest report:  C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\outputs\reports\eval\walkforward_071026catalog_default_20260714_130553.txt
+post-ingest report: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\outputs\reports\eval\walkforward_staging_ingest_mined_default_20260714_170242.txt
+Review both reports, then promote with:
+  python cli.py ingest-mined --promote "C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\models\staging_ingest_mined.db"

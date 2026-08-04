@@ -1,0 +1,36 @@
+WO-P000-E10.001 Phase 3 -- P_300 items 3.1/3.2, P_020 item 3.4 (2026-08-04)
+
+Three separate suites, three different conventions -- read carefully:
+
+1. P_300 tests/test_eval_scoring.py -- P_300's own smoke-test convention
+   (NOT pytest). Prints "  OK  <msg>" per check, "ALL CHECKS PASSED" at
+   the end, exits 1 immediately via fail() on first failure (does not
+   accumulate). New check added: _test_threshold_overrides_reachable_via_cli()
+   -- confirms run_eval_loop.py's --buy-min-z flag builds a real
+   ThresholdOverrides. This closes WO-P000-E10.001 item 3.1, which the
+   WO itself mis-framed as "invoked by none" -- it's a false positive,
+   the CLI wiring already exists (v1.1, 2026-06-28), just invisible to
+   the AST audit because the value is built conditionally, not passed
+   as a literal keyword.
+
+2. P_300 tests/test_promote_gate.py -- same convention. New check:
+   _test_thresholds_reachable_via_cli() -- confirms
+   cli_commands/promote_gate.py builds a real GateThresholds from CLI
+   args and passes it. Closes item 3.2, also a false positive (same
+   AST blind spot -- positional pass this time).
+
+3. P_020 python/database/tests/test_db_reader.py -- pytest, same
+   convention as test_db_writer.py from earlier this session. Closes
+   item 3.4: get_all_trades()'s system filter is a correct default
+   (no filter = all systems), not a caller-propagation gap -- no
+   current workflow needs per-system filtering. Two tests: None
+   returns everything, a real value actually filters.
+
+Success criteria: script prints PASS, exit code 0. Expect "ALL CHECKS
+PASSED" from both P_300 runs and "2 passed" from the P_020 pytest run.
+
+If it fails: read the labeled section for whichever suite failed. Do
+NOT change any test assertion. P_300's test_eval_scoring.py and
+test_promote_gate.py exit on FIRST failure (fail() calls sys.exit(1)
+immediately) -- so if one of those shows a single FAIL line and stops,
+that's expected behavior, not a script that hung; check that one message.

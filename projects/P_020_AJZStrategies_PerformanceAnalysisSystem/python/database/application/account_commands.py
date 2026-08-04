@@ -53,6 +53,13 @@ def run_balance_command(account: str) -> None:
     if balance.get('day_pnl') is not None:
         print(f"  Day P&L       : ${balance['day_pnl']:>12,.2f}")
 
+    if balance.get('buying_power') is not None or balance.get('cash_available') is not None:
+        from infrastructure.p000_params_writer import write_balance_to_p000_params
+        if write_balance_to_p000_params(balance['buying_power'], balance['cash_available']):
+            print("P_000 Account Parameters updated (Buying Power / Cash Available)")
+        else:
+            print("WARNING: Could not update P_000 Account Parameters (see log)")
+
 
 def run_positions_command(account: str) -> None:
     """Pull and display current open positions from Schwab.

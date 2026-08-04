@@ -1,19 +1,19 @@
 @ECHO OFF
 SETLOCAL
 
-:: P_020 Schwab Re-Authentication
-:: Runs the project's own auto-auth script (UIAutomation callback capture,
-:: no copy-paste). Writes the token directly to config\P_020_schwab_token.json
-:: -- the file the rest of P_020 actually reads from.
+:: P_020 Schwab Re-Authentication (WO-P020-E1.010)
+:: Runs the shared login module via cli.py auth --project P_020.
+:: Writes the token directly to config\P_020_schwab_token.json --
+:: the file the rest of P_020 actually reads from. Old standalone script
+:: (P_020_Schwab_Auth.py) is retired -- see python\api\_RETIRED_P_020_Schwab_Auth.py.
 ::
-:: Do NOT use integrations\schwab_api\P_020_Schwab_Auth.bat for this project --
-:: that one is a separate hub-level manual-flow tool that writes to a
-:: different credentials file and requires copy-pasting the redirect URL.
+:: To (re)issue P_400's token instead, run from this same folder:
+::   python\database\cli.py auth --project P_400
 ::
 :: Double-click to run from project root.
 
 SET PYTHON=C:\Users\Trader\.conda\envs\p140\python.exe
-SET SCRIPT=C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_020_AJZStrategies_PerformanceAnalysisSystem\python\api\P_020_Schwab_Auth.py
+SET CLI_DIR=C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_020_AJZStrategies_PerformanceAnalysisSystem\python\database
 
 ECHO.
 ECHO ============================================
@@ -25,9 +25,12 @@ ECHO Log in with your Schwab credentials there.
 ECHO Everything else is automatic -- nothing to copy/paste.
 ECHO.
 
-"%PYTHON%" "%SCRIPT%"
+PUSHD "%CLI_DIR%"
+"%PYTHON%" cli.py auth --project P_020
+SET ERR=%ERRORLEVEL%
+POPD
 
-IF %ERRORLEVEL% NEQ 0 (
+IF %ERR% NEQ 0 (
     ECHO.
     ECHO ERROR: Authentication failed. Check output above.
     PAUSE

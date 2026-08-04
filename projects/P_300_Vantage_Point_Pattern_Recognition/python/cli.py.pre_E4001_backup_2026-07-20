@@ -1,0 +1,852 @@
+"""
+FILE: cli.py
+VERSION: 1.14
+DATE: 2026-07-14
+AUTHOR: Anthony Zophi + Claude
+LAYER: cli
+DESCRIPTION:
+    Unified command-line entry point for the P_300 project. Wraps the
+    eight operator-facing flows behind a single command:
+
+        python cli.py add-pattern --xlsx PATH
+            Ingest one VP Pattern XLSX via add_pattern_pipeline.
+            Exit 0 on successful promotion, 1 on any failure.
+
+        python cli.py archive-pattern --xlsx PATH
+            Post-ingest archive step for Pipeline A. Appends the XLSX
+            to this month's zip in data/processed/ and deletes the
+            original from data/historical_patterns/. Run AFTER
+            add-pattern. Exit 0 on success, 1 on any failure.
+
+        python cli.py catalog-summary [--recent N]
+            Print catalog health summary via utilities/catalog_summary.
+            Exit 0 if no ghost records, 1 otherwise.
+
+        python cli.py integrity-check --xlsx PATH
+            Validate a VP export against ingest_manifest.json via
+            utilities/vp_export_integrity_check. Run after any VP
+            version update before resuming ingest. Exit 0 = safe to
+            ingest, 1 = manifest needs an edit.
+
+        python cli.py inspect-pattern --id N [--catalog PATH]
+            Print one pattern's header, raw bars, normalized bars, and
+            forward labels via utilities/inspect_pattern. Stage 5
+            hand-compare regression helper. Read-only. Exit 0 on
+            success, 1 if --id not found.
+
+        python cli.py daily-evaluate --xlsx PATH [--window-length 20]
+                                     [--top-k 20] [--no-write-file]
+                                     [--reports-dir PATH] [--no-narrator]
+                                     [--clean]
+            Run Pipeline B on one live `History Grid (SYMBOL).xlsx`:
+            parse + normalize + match against catalog + classify +
+            emit BUY/WATCH/PASS report to stdout. Optional file output
+            to config.REPORTS_DIR. Read-only against the catalog
+            (Stage 6 decision E -- EVAL_SET is transient in-memory).
+            Optional Stage 8 narrator pass via LM Studio (default on
+            per config.NARRATOR_ENABLED; --no-narrator forces off).
+            --clean suppresses INFO logging and dense report; emits
+            minimal banner + signal line only (batch-mode output).
+            Exit 0 on success, 1 on any failure.
+
+        python cli.py archive-eval --xlsx PATH
+            Post-eval archive step for Pipeline B. Verifies a report
+            exists for the symbol in REPORTS_DIR, appends the XLSX to
+            this month's zip in data/processed/, and deletes the
+            original from data/live/. Run AFTER daily-evaluate.
+            Exit 0 on success, 1 on any failure.
+
+        python cli.py bulk-extract [--input-dir PATH] [--master-db PATH]
+                                    [--temp-db PATH] [--checkpoint PATH]
+            Run Pipeline A-Bulk (WO-P300-E2.001) over every unprocessed
+            file in data/bulk/ matching <years>[I]_Pattern_<SYMBOL>.xlsx.
+            Writes to models/research/bulk_research.db ONLY -- never
+            touches the live *catalog.db or Pipeline A/B. Checkpoint-
+            resumable: a crash or interrupt picks up at the next
+            unprocessed file, not from zero. All four paths are
+            independently overridable (see M-075 -- master-db/temp-db
+            overrides alone are NOT sufficient test isolation; always
+            override checkpoint too when pointing at scratch paths).
+            Exit 0 always (per-file failures are logged and left for
+            retry, not treated as a CLI-level failure -- a partial run
+            over many files is normal operation, not an error state).
+
+        python cli.py phase5-analysis [--master-db PATH] [--no-backfill]
+            Run WO-P300-E2.002 Phase 5: retroactive sector backfill
+            (skippable via --no-backfill) + sector-stratified stats
+            computation + sector_stats snapshot write + markdown report.
+            Read-heavy against the research catalog; the only write is
+            the backfill's sector column UPDATE (Lock+Temp-DB+Atomic
+            Move) and the sector_stats DELETE+INSERT snapshot (same
+            protocol). Never touches the live *catalog.db or Pipeline
+            A/B. Exit 0 on success, 1 on any failure (unlike
+            bulk-extract, a Phase 5 failure -- e.g. missing sector_map
+            coverage -- IS a CLI-level failure; there's no per-file
+            partial-progress concept here).
+
+        python cli.py merge-research-catalog [--staging-db PATH]
+                                              [--live-db PATH]
+            Run WO-P300-E2.003's staging merge: copies the live catalog,
+            merges every STRICT-tier bulk-scan pattern from
+            models/research/bulk_research.db into the copy, runs the
+            Stage 6 walk-forward eval against BOTH the untouched live
+            catalog and the staging copy, writes both reports. NEVER
+            touches the real live catalog.db -- promotion is a separate
+            command. Exit 0 on success, 1 on failure.
+
+        python cli.py merge-research-catalog --promote STAGING_DB_PATH
+                                              [--live-db PATH]
+            Separate, explicit promotion of a staging copy (built by the
+            command above) to the real live catalog.db via the same
+            Lock+Temp-DB+Atomic Move protocol every other catalog write
+            uses. Only run this after reviewing the walk-forward reports
+            from the build step. Exit 0 on success, 1 on failure.
+
+        python cli.py ingest-mined [--csv PATH] [--input-dir PATH]
+                                    [--staging-db PATH] [--live-db PATH]
+            WO-P300-E3.002 Phase 2: reads an operator-approved
+            mine_candidates.csv (defaults to config.MINE_REPORTS_DIR /
+            config.MINE_CANDIDATES_CSV), re-reads each approved symbol's
+            source grid file fresh from --input-dir (defaults to
+            config.DATA_BULK_MINE -- never trusts Phase 1's in-memory
+            result), audits every row via domain/mine_audit.py, and
+            inserts audit-passed rows into a staging copy of the live
+            catalog via infrastructure/catalog_merge_io.py. Runs the
+            same M-079 staging walk-forward eval comparison merge-
+            research-catalog uses. NEVER touches the real live
+            catalog.db -- promotion is a separate command. Exit 0 on
+            success, 1 on failure.
+
+        python cli.py ingest-mined --promote STAGING_DB_PATH
+                                    [--live-db PATH]
+            Separate, explicit promotion of a staging copy (built by the
+            command above) to the real live catalog.db. Reuses
+            application.catalog_merge_pipeline.promote_staging_to_live
+            unchanged -- same Lock+Temp-DB+Atomic Move promotion
+            mechanics regardless of which pipeline built the staging
+            copy. Only run this after reviewing the walk-forward
+            reports from the build step. Exit 0 on success, 1 on
+            failure.
+
+        python cli.py archive-mined --xlsx PATH
+            Post-ingest archive step for the "BulkAddPattern" process.
+            Appends the XLSX to this month's zip in config.MINE_ARCHIVE_DIR
+            (E:\\ external drive, date-first naming, no per-entry rename)
+            and deletes the original from data/bulk/mine/. Run AFTER
+            ingest-mined completes successfully. Exit 0 on success, 1 on
+            any failure.
+
+    Each subcommand is a thin shim -- the real work lives in the wrapped
+    module. cli.py exists to remove the multi-line `python -c` invocation
+    friction so daily operations are one-liners.
+
+CHANGELOG:
+    - 2026-07-14 v1.14: Added archive-mined subcommand ("BulkAddPattern"
+      process, file #3 of 4), wrapping utilities.archive_mined_file.
+      run_archive. Mirrors archive-pattern's single-file shape exactly.
+    - 2026-07-14 v1.13: Added ingest-mined subcommand (WO-P300-E3.002
+      Phase 2, file #7 of 9), wrapping application.ingest_mined_pipeline.
+      run_ingest_mined for the default build mode and application.
+      catalog_merge_pipeline.promote_staging_to_live (reused unchanged)
+      for --promote -- same default-build/--promote shape as
+      merge-research-catalog. --csv/--input-dir/--staging-db/--live-db
+      all independently overridable, defaulting to config.py's real
+      project paths for normal operator use.
+    - 2026-07-12 v1.12: Added mine-patterns subcommand (WO-P300-E3.002
+      phase 1, partial file #7 of 9 -- ingest-mined subcommand to
+      follow once mine_audit.py is validated), wrapping
+      application.mine_patterns_pipeline.run_mine_patterns.
+      Report-only -- never writes to any catalog.db. --input-dir /
+      --reports-dir overrides, defaulting to config.DATA_BULK_MINE /
+      config.MINE_REPORTS_DIR.
+    - 2026-07-12 v1.11: scanner-loop subcommand gained --reports-dir
+      override, threaded to scanner_loop.run_scanner_loop's new
+      reports_dir parameter (v1.1 fix -- see that file's changelog).
+    - 2026-07-12 v1.10: Added scanner-loop subcommand (WO-P300-E3.001
+      file #4 of 5), wrapping application.scanner_loop.run_scanner_loop.
+      Report-only -- never writes to any catalog.db. --input-dir
+      override, defaulting to config.DATA_BULK_NIGHTLY_SCAN.
+    - 2026-07-10 v1.9: Added merge-research-catalog subcommand
+      (WO-P300-E2.003 file #6 of 7), wrapping application.
+      catalog_merge_pipeline. Two modes: default builds a staging
+      merge + walk-forward comparison (never touches live catalog.db);
+      --promote does the separate, explicit atomic promotion of an
+      already-built staging copy.
+    - 2026-07-10 v1.8: Added phase5-analysis subcommand (WO-P300-E2.002
+      file #10 of 11), wrapping application.phase5_analysis.
+      run_phase5_analysis. --master-db override + --no-backfill flag
+      (skip step 1 for a stats-only re-run).
+    - 2026-07-08 v1.7: Added bulk-extract subcommand (WO-P300-E2.001),
+      wrapping application.bulk_extract_pipeline.run_bulk_extraction.
+      All four paths (input-dir, master-db, temp-db, checkpoint)
+      exposed as overridable flags, defaulting to config.py's real
+      project paths (DATA_BULK, BULK_RESEARCH_DB, BULK_TEMP_DB,
+      BULK_CHECKPOINT_FILE) for normal operator use.
+    - 2026-05-29 v1.6: Added --clean flag to daily-evaluate subcommand.
+      Routes through daily_evaluate_pipeline.main() instead of calling
+      run_daily_evaluate() directly so --clean, LM Studio status check,
+      and print_signal_report_clean() all fire correctly. Fixes
+      P_300_DailyEval_v2.bat which was passing --clean to cli.py but
+      cli.py had no parser support for it.
+    - 2026-05-21 v1.5: Added archive-pattern --xlsx PATH subcommand.
+    - 2026-05-20 v1.4: Added archive-eval --xlsx PATH subcommand.
+    - 2026-05-19 v1.3: Added --no-narrator flag to daily-evaluate.
+    - 2026-05-18 v1.2: Added daily-evaluate subcommand for Pipeline B.
+    - 2026-05-16 v1.1: Added inspect-pattern subcommand.
+    - 2026-05-15 v1.0: Stage 4 closing file.
+"""
+from __future__ import annotations
+
+import argparse
+import logging
+import sys
+from pathlib import Path
+
+_PYTHON_DIR = Path(__file__).resolve().parent
+if str(_PYTHON_DIR) not in sys.path:
+    sys.path.insert(0, str(_PYTHON_DIR))
+
+from application.add_pattern_pipeline import ingest_pattern_file  # noqa: E402
+from config import (  # noqa: E402
+    LOG_FORMAT, LOG_LEVEL, MODELS_DIR, NARRATOR_ENABLED, TOP_K_MATCHES,
+    BULK_CHECKPOINT_FILE, BULK_RESEARCH_DB, BULK_TEMP_DB, DATA_BULK,
+)
+from utilities.archive_live_file import run_archive  # noqa: E402
+from utilities.archive_pattern_file import run_archive as run_archive_pattern  # noqa: E402
+from utilities.catalog_summary import run_summary  # noqa: E402
+from utilities.inspect_pattern import run_inspect  # noqa: E402
+from utilities.vp_export_integrity_check import run_integrity_check  # noqa: E402
+from application.ledger_fill import fill_ledger  # noqa: E402
+from utilities.ledger_calibration import calibrate_ledger  # noqa: E402
+
+
+# ---------------------------------------------------------------------------
+# Subcommand handlers
+# ---------------------------------------------------------------------------
+
+def _cmd_add_pattern(args: argparse.Namespace) -> int:
+    """Run Pipeline A end-to-end on the given XLSX."""
+    from utilities.db_utils import get_latest_catalog
+    xlsx = Path(args.xlsx)
+    master = Path(args.master) if args.master else Path(get_latest_catalog())
+    result = ingest_pattern_file(xlsx, master)
+    if result.passed:
+        print()
+        print(f"INGEST OK  -- master={master}")
+        print(f"backup={result.backup_path}")
+        print(f"post_counts={result.post_counts}")
+        return 0
+    print()
+    print(f"INGEST FAILED -- master untouched")
+    for msg in result.failures:
+        print(f"  - {msg}")
+    return 1
+
+
+def _cmd_archive_pattern(args: argparse.Namespace) -> int:
+    """Archive one ingested Pattern XLSX to the monthly zip in data/processed/."""
+    return run_archive_pattern(Path(args.xlsx))
+
+
+def _cmd_archive_mined(args: argparse.Namespace) -> int:
+    """Archive one mined-corpus XLSX to the monthly zip in MINE_ARCHIVE_DIR
+    (E:\\ external drive). Run AFTER ingest-mined completes successfully --
+    part of the "BulkAddPattern" process."""
+    from utilities.archive_mined_file import run_archive as run_archive_mined
+    return run_archive_mined(Path(args.xlsx))
+
+
+def _cmd_catalog_summary(args: argparse.Namespace) -> int:
+    """Print catalog health summary."""
+    catalog = Path(args.catalog) if args.catalog else None
+    return run_summary(catalog, recent_limit=args.recent)
+
+
+def _cmd_integrity_check(args: argparse.Namespace) -> int:
+    """Validate VP export against manifest. Run after VP updates."""
+    from config import PARAMETERS_DIR
+    xlsx = Path(args.xlsx)
+    manifest = (
+        Path(args.manifest) if args.manifest
+        else PARAMETERS_DIR / "ingest_manifest.json"
+    )
+    return run_integrity_check(xlsx, manifest)
+
+
+def _cmd_inspect_pattern(args: argparse.Namespace) -> int:
+    """Inspect one pattern_instance_id for Stage 5 hand-compare regression."""
+    catalog = Path(args.catalog) if args.catalog else None
+    return run_inspect(args.id, catalog)
+
+
+def _cmd_daily_evaluate(args: argparse.Namespace) -> int:
+    """Run Pipeline B end-to-end on one live History Grid XLSX.
+
+    Routes through daily_evaluate_pipeline.main() so --clean, the LM
+    Studio status check, and print_signal_report_clean() all fire
+    correctly via the same code path as direct invocation.
+    """
+    from application.daily_evaluate_pipeline import main as _pipeline_main
+
+    # Build an argv list that mirrors what the standalone CLI expects.
+    argv = ["--xlsx", args.xlsx]
+    argv += ["--window-length", str(args.window_length)]
+    argv += ["--top-k", str(args.top_k)]
+    if args.no_write_file:
+        argv.append("--no-write-file")
+    if args.reports_dir:
+        argv += ["--reports-dir", args.reports_dir]
+    if args.no_narrator:
+        argv.append("--no-narrator")
+    if args.clean:
+        argv.append("--clean")
+
+    return _pipeline_main(argv)
+
+
+def _cmd_archive_eval(args: argparse.Namespace) -> int:
+    """Archive one evaluated live XLSX to the monthly zip in data/processed/."""
+    return run_archive(Path(args.xlsx))
+
+
+def _cmd_ledger_fill(args: argparse.Namespace) -> int:
+    """Fill realized outcomes for unfilled ledger rows."""
+    try:
+        fill_ledger(dry_run=args.dry_run)
+        print("Ledger fill completed.")
+        return 0
+    except Exception as e:
+        print(f"Ledger fill failed: {e}", file=sys.stderr)
+        return 1
+
+
+def _cmd_ledger_calibration(args: argparse.Namespace) -> int:
+    """Generate calibration report comparing predicted vs realized returns."""
+    try:
+        report = calibrate_ledger()
+        print(report)
+        return 0
+    except Exception as e:
+        print(f"Calibration failed: {e}", file=sys.stderr)
+        return 1
+
+
+def _cmd_bulk_extract(args: argparse.Namespace) -> int:
+    """Run Pipeline A-Bulk end-to-end (WO-P300-E2.001).
+
+    Always returns 0 -- per-file failures are captured in the returned
+    checkpoint's last_error and left for retry on the next run, not
+    treated as a CLI-level failure (a research pipeline processing many
+    files is expected to have partial-progress runs as normal
+    operation)."""
+    from application.bulk_extract_pipeline import run_bulk_extraction
+
+    input_dir = Path(args.input_dir) if args.input_dir else DATA_BULK
+    master_db = Path(args.master_db) if args.master_db else BULK_RESEARCH_DB
+    temp_db = Path(args.temp_db) if args.temp_db else BULK_TEMP_DB
+    checkpoint_path = (
+        Path(args.checkpoint) if args.checkpoint else BULK_CHECKPOINT_FILE
+    )
+
+    checkpoint = run_bulk_extraction(
+        input_dir=input_dir,
+        master_db=master_db,
+        temp_db=temp_db,
+        checkpoint_path=checkpoint_path,
+    )
+    print()
+    print(f"BULK EXTRACT COMPLETE -- master={master_db}")
+    print(f"files queued={checkpoint.total_files_queued}  "
+          f"completed={len(checkpoint.completed_filenames)}")
+    print(f"STRICT={checkpoint.strict_detections_total}  "
+          f"RELAXED={checkpoint.relaxed_detections_total}")
+    if checkpoint.last_error:
+        print(f"last_error (will retry next run): {checkpoint.last_error}")
+    return 0
+
+
+def _cmd_mine_patterns(args: argparse.Namespace) -> int:
+    """Run Phase 1 of the Outcome-First Pattern Miner (WO-P300-E3.002).
+    Report-only -- never touches any catalog.db."""
+    from application.mine_patterns_pipeline import run_mine_patterns
+    from config import DATA_BULK_MINE
+
+    input_dir = Path(args.input_dir) if args.input_dir else DATA_BULK_MINE
+    reports_dir = Path(args.reports_dir) if args.reports_dir else None
+
+    result = run_mine_patterns(input_dir=input_dir, reports_dir=reports_dir)
+    print()
+    print(f"MINE PATTERNS COMPLETE -- input={input_dir}")
+    print(f"files scanned={result.files_scanned}  candidates={result.candidates_found} "
+          f"(uptrend={result.uptrend_count} breakdown={result.breakdown_count})")
+    print(f"report={result.report_path}")
+    print(f"csv={result.csv_path}")
+    if result.parse_failures:
+        print(f"parse failures: {result.parse_failures}")
+    return 0
+
+
+def _cmd_scanner_loop(args: argparse.Namespace) -> int:
+    """Run the Scanner Loop end-to-end (WO-P300-E3.001). Report-only --
+    never touches any catalog.db. Always returns 0 (per-file parse
+    failures are logged and left for operator inspection, not treated
+    as a CLI-level failure -- same posture as bulk-extract)."""
+    from application.scanner_loop import run_scanner_loop
+    from config import DATA_BULK_NIGHTLY_SCAN
+
+    input_dir = Path(args.input_dir) if args.input_dir else DATA_BULK_NIGHTLY_SCAN
+    reports_dir = Path(args.reports_dir) if args.reports_dir else None
+
+    result = run_scanner_loop(input_dir=input_dir, reports_dir=reports_dir)
+    print()
+    print(f"SCANNER LOOP COMPLETE -- input={input_dir}")
+    print(f"files scanned={result.files_scanned}  STRICT hits={result.strict_hits}")
+    print(f"report={result.report_path}")
+    if result.parse_failures:
+        print(f"parse failures (left in place, not archived): {result.parse_failures}")
+    if result.archive_failures:
+        print(f"archive failures (see log above): {result.archive_failures}")
+    return 0
+
+
+def _cmd_phase5_analysis(args: argparse.Namespace) -> int:
+    """Run WO-P300-E2.002 Phase 5 end-to-end. Unlike bulk-extract,
+    returns 1 on failure -- a missing sector_map entry or a verification
+    mismatch is a real stop, not a per-file retry case."""
+    from application.phase5_analysis import run_phase5_analysis
+
+    master_db = Path(args.master_db) if args.master_db else BULK_RESEARCH_DB
+    try:
+        result = run_phase5_analysis(
+            master_path=master_db, run_backfill=not args.no_backfill
+        )
+    except Exception as e:
+        print(f"Phase 5 analysis failed: {e}", file=sys.stderr)
+        return 1
+
+    print()
+    print(f"PHASE 5 ANALYSIS COMPLETE -- master={master_db}")
+    if result.backfill is not None:
+        print(f"backfill: {result.backfill.rows_updated} updated, "
+              f"{result.backfill.rows_unchanged} unchanged")
+    print(f"rows_analyzed={result.rows_analyzed}  "
+          f"sector_stats_cells={result.cells_computed}")
+    print(f"report: {result.report_path}")
+    return 0
+
+
+def _cmd_merge_research_catalog(args: argparse.Namespace) -> int:
+    """WO-P300-E2.003. Two modes based on --promote: build a staging
+    merge + eval comparison (default), or promote an already-built
+    staging copy to the real live catalog.db (explicit, separate)."""
+    from application.catalog_merge_pipeline import (
+        build_staging_merge, promote_staging_to_live,
+    )
+
+    live_db = Path(args.live_db) if args.live_db else None
+
+    if args.promote:
+        staging_path = Path(args.promote)
+        if not staging_path.exists():
+            print(f"Staging DB not found: {staging_path}", file=sys.stderr)
+            return 1
+        try:
+            promoted_path = promote_staging_to_live(staging_path, live_db)
+        except Exception as e:
+            print(f"Promotion failed: {e}", file=sys.stderr)
+            return 1
+        print()
+        print(f"PROMOTED -- staging={staging_path} -> live={promoted_path}")
+        return 0
+
+    staging_path = (
+        Path(args.staging_db) if args.staging_db
+        else MODELS_DIR / "staging_merge_catalog.db"
+    )
+    try:
+        result = build_staging_merge(staging_path, live_db)
+    except Exception as e:
+        print(f"Merge build failed: {e}", file=sys.stderr)
+        return 1
+
+    print()
+    print(f"STAGING MERGE COMPLETE -- staging={result.staging_path}")
+    print(f"inserted={result.merge.inserted_count}  "
+          f"skipped_duplicate={result.merge.skipped_duplicate_count}  "
+          f"symbols_touched={len(result.merge.symbols_touched)}")
+    print(f"pre-merge report:  {result.pre_report_path}")
+    print(f"post-merge report: {result.post_report_path}")
+    print("Review both reports, then promote with:")
+    print(f"  python cli.py merge-research-catalog --promote \"{staging_path}\"")
+    return 0
+
+
+def _cmd_ingest_mined(args: argparse.Namespace) -> int:
+    """WO-P300-E3.002 Phase 2 (file #7). Two modes based on --promote:
+    build a staging insert of operator-approved mine_candidates.csv rows
+    + M-079 eval comparison (default), or promote an already-built
+    staging copy to the real live catalog.db (explicit, separate --
+    reuses catalog_merge_pipeline.promote_staging_to_live unchanged,
+    same promotion mechanics regardless of which pipeline built the
+    staging copy)."""
+    from application.catalog_merge_pipeline import promote_staging_to_live
+    from application.ingest_mined_pipeline import run_ingest_mined
+    from config import DATA_BULK_MINE, MINE_CANDIDATES_CSV, MINE_REPORTS_DIR
+
+    live_db = Path(args.live_db) if args.live_db else None
+
+    if args.promote:
+        staging_path = Path(args.promote)
+        if not staging_path.exists():
+            print(f"Staging DB not found: {staging_path}", file=sys.stderr)
+            return 1
+        try:
+            promoted_path = promote_staging_to_live(staging_path, live_db)
+        except Exception as e:
+            print(f"Promotion failed: {e}", file=sys.stderr)
+            return 1
+        print()
+        print(f"PROMOTED -- staging={staging_path} -> live={promoted_path}")
+        return 0
+
+    csv_path = Path(args.csv) if args.csv else MINE_REPORTS_DIR / MINE_CANDIDATES_CSV
+    if not csv_path.exists():
+        print(f"Approved candidates CSV not found: {csv_path}", file=sys.stderr)
+        return 1
+    staging_path = (
+        Path(args.staging_db) if args.staging_db
+        else MODELS_DIR / "staging_ingest_mined.db"
+    )
+    input_dir = Path(args.input_dir) if args.input_dir else DATA_BULK_MINE
+
+    try:
+        result = run_ingest_mined(csv_path, staging_path, live_db, input_dir)
+    except Exception as e:
+        print(f"Ingest-mined build failed: {e}", file=sys.stderr)
+        return 1
+
+    print()
+    print(f"INGEST-MINED COMPLETE -- staging={result.staging_path}")
+    print(f"inserted={result.inserted_count}  "
+          f"skipped_duplicate={result.skipped_duplicate_count}  "
+          f"audit_failed={len(result.audit_failed)}  "
+          f"symbols_touched={len(result.symbols_touched)}")
+    if result.audit_failed:
+        print("audit failures (not inserted):")
+        for r in result.audit_failed:
+            print(f"  - {r.symbol} {r.anchor_date} ({r.pattern_class}): {r.reasons}")
+    print(f"pre-ingest report:  {result.pre_report_path}")
+    print(f"post-ingest report: {result.post_report_path}")
+    print("Review both reports, then promote with:")
+    print(f"  python cli.py ingest-mined --promote \"{staging_path}\"")
+    return 0
+
+
+# ---------------------------------------------------------------------------
+# Parser construction
+# ---------------------------------------------------------------------------
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        prog="cli.py",
+        description="P_300 command-line entry point.",
+    )
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    # add-pattern
+    p_add = subparsers.add_parser(
+        "add-pattern", help="Ingest one VP Pattern XLSX via Pipeline A."
+    )
+    p_add.add_argument("--xlsx", required=True, help="Path to Pattern XLSX.")
+    p_add.add_argument(
+        "--master", default=None,
+        help="Catalog master path override; defaults to get_latest_catalog().",
+    )
+    p_add.set_defaults(func=_cmd_add_pattern)
+
+    # archive-pattern
+    p_arch_pat = subparsers.add_parser(
+        "archive-pattern",
+        help="Archive an ingested Pattern XLSX to the monthly zip in data/processed/.",
+    )
+    p_arch_pat.add_argument(
+        "--xlsx", required=True,
+        help="Path to the Pattern_YYYYMMDD_YYYYMMDD_SYMBOL.xlsx to archive.",
+    )
+    p_arch_pat.set_defaults(func=_cmd_archive_pattern)
+
+    # archive-mined ("BulkAddPattern" process)
+    p_arch_mine = subparsers.add_parser(
+        "archive-mined",
+        help="Archive a mined-corpus XLSX to the monthly zip in "
+             "config.MINE_ARCHIVE_DIR. Run AFTER ingest-mined.",
+    )
+    p_arch_mine.add_argument(
+        "--xlsx", required=True,
+        help="Path to the <years>[I]_Pattern_<SYMBOL>.xlsx to archive.",
+    )
+    p_arch_mine.set_defaults(func=_cmd_archive_mined)
+
+    # catalog-summary
+    p_sum = subparsers.add_parser(
+        "catalog-summary", help="Print catalog health summary."
+    )
+    p_sum.add_argument(
+        "--catalog", default=None,
+        help="Catalog path override; defaults to get_latest_catalog().",
+    )
+    p_sum.add_argument(
+        "--recent", type=int, default=5,
+        help="Number of most-recent patterns to show (default: 5).",
+    )
+    p_sum.set_defaults(func=_cmd_catalog_summary)
+
+    # integrity-check
+    p_int = subparsers.add_parser(
+        "integrity-check",
+        help="Validate a VP export against ingest_manifest.json.",
+    )
+    p_int.add_argument("--xlsx", required=True, help="Path to VP XLSX to check.")
+    p_int.add_argument(
+        "--manifest", default=None,
+        help="Manifest path override; defaults to parameters/ingest_manifest.json.",
+    )
+    p_int.set_defaults(func=_cmd_integrity_check)
+
+    # inspect-pattern
+    p_insp = subparsers.add_parser(
+        "inspect-pattern",
+        help="Print one pattern's bars + forward labels for hand-compare.",
+    )
+    p_insp.add_argument(
+        "--id", type=int, required=True,
+        help="pattern_instance_id to inspect (e.g., --id 1).",
+    )
+    p_insp.add_argument(
+        "--catalog", default=None,
+        help="Catalog path override; defaults to get_latest_catalog().",
+    )
+    p_insp.set_defaults(func=_cmd_inspect_pattern)
+
+    # daily-evaluate (Pipeline B)
+    p_eval = subparsers.add_parser(
+        "daily-evaluate",
+        help="Run Pipeline B on one live History Grid XLSX.",
+    )
+    p_eval.add_argument(
+        "--xlsx", required=True,
+        help="Path to History Grid (SYMBOL).xlsx",
+    )
+    p_eval.add_argument(
+        "--window-length", type=int, default=20,
+        help="Candidate window size in bars (default 20).",
+    )
+    p_eval.add_argument(
+        "--top-k", type=int, default=TOP_K_MATCHES,
+        help=f"Top-K matches to surface (default {TOP_K_MATCHES}).",
+    )
+    p_eval.add_argument(
+        "--no-write-file", action="store_true",
+        help="Skip persisting the report to disk; print to terminal only.",
+    )
+    p_eval.add_argument(
+        "--reports-dir", default=None,
+        help="Override target directory for the written report.",
+    )
+    p_eval.add_argument(
+        "--no-narrator", action="store_true",
+        help=(
+            "Skip the Stage 8 LM Studio narration call. Faster for testing "
+            "or when LM Studio is down. Signal class unaffected (NFR-1)."
+        ),
+    )
+    p_eval.add_argument(
+        "--clean", action="store_true",
+        help=(
+            "Use clean console output (minimal banner + signal + status). "
+            "Designed for batch multi-symbol evaluation. "
+            "Details suppressed from console."
+        ),
+    )
+    p_eval.set_defaults(func=_cmd_daily_evaluate)
+
+    # archive-eval
+    p_arch = subparsers.add_parser(
+        "archive-eval",
+        help="Archive an evaluated live XLSX to the monthly zip in data/processed/.",
+    )
+    p_arch.add_argument(
+        "--xlsx", required=True,
+        help="Path to the History Grid (SYMBOL).xlsx to archive.",
+    )
+    p_arch.set_defaults(func=_cmd_archive_eval)
+
+    # ledger-fill
+    p_lfill = subparsers.add_parser(
+        "ledger-fill",
+        help="Fill realized outcomes for unfilled ledger rows.",
+    )
+    p_lfill.add_argument(
+        "--dry-run", action="store_true",
+        help="Log fills but don't write to DB.",
+    )
+    p_lfill.set_defaults(func=_cmd_ledger_fill)
+
+    # ledger-calibration
+    p_lcal = subparsers.add_parser(
+        "ledger-calibration",
+        help="Generate calibration report (predicted vs realized returns).",
+    )
+    p_lcal.set_defaults(func=_cmd_ledger_calibration)
+
+    # bulk-extract (Pipeline A-Bulk, WO-P300-E2.001)
+    p_bulk = subparsers.add_parser(
+        "bulk-extract",
+        help="Run Pipeline A-Bulk over data/bulk/ into the research catalog.",
+    )
+    p_bulk.add_argument(
+        "--input-dir", default=None,
+        help="Bulk XLSX input dir override; defaults to config.DATA_BULK.",
+    )
+    p_bulk.add_argument(
+        "--master-db", default=None,
+        help="Research catalog master path override; defaults to "
+             "config.BULK_RESEARCH_DB.",
+    )
+    p_bulk.add_argument(
+        "--temp-db", default=None,
+        help="Temp working DB override; defaults to config.BULK_TEMP_DB.",
+    )
+    p_bulk.add_argument(
+        "--checkpoint", default=None,
+        help="Checkpoint file override; defaults to config.BULK_CHECKPOINT_FILE. "
+             "ALWAYS override this alongside --master-db/--temp-db when testing "
+             "against scratch paths (M-075).",
+    )
+    p_bulk.set_defaults(func=_cmd_bulk_extract)
+
+    # scanner-loop (WO-P300-E3.001)
+    p_scan = subparsers.add_parser(
+        "scanner-loop",
+        help="Run the nightly Scanner Loop over data/bulk/nightly_scan/. "
+             "Report-only -- never writes to any catalog.db.",
+    )
+    p_scan.add_argument(
+        "--input-dir", default=None,
+        help="Nightly-scan XLSX input dir override; defaults to "
+             "config.DATA_BULK_NIGHTLY_SCAN.",
+    )
+    p_scan.add_argument(
+        "--reports-dir", default=None,
+        help="Report output dir override; defaults to "
+             "config.SCANNER_REPORTS_DIR.",
+    )
+    p_scan.set_defaults(func=_cmd_scanner_loop)
+
+    # mine-patterns (WO-P300-E3.002 phase 1)
+    p_mine = subparsers.add_parser(
+        "mine-patterns",
+        help="Phase 1 of the Outcome-First Pattern Miner: scan "
+             "data/bulk/mine/ for >=15% forward moves. Report-only.",
+    )
+    p_mine.add_argument(
+        "--input-dir", default=None,
+        help="Mine XLSX input dir override; defaults to "
+             "config.DATA_BULK_MINE.",
+    )
+    p_mine.add_argument(
+        "--reports-dir", default=None,
+        help="Report/CSV output dir override; defaults to "
+             "config.MINE_REPORTS_DIR.",
+    )
+    p_mine.set_defaults(func=_cmd_mine_patterns)
+
+    # phase5-analysis (WO-P300-E2.002)
+    p_p5 = subparsers.add_parser(
+        "phase5-analysis",
+        help="Run WO-P300-E2.002 Phase 5 sector-stratified analysis.",
+    )
+    p_p5.add_argument(
+        "--master-db", default=None,
+        help="Research catalog master path override; defaults to "
+             "config.BULK_RESEARCH_DB.",
+    )
+    p_p5.add_argument(
+        "--no-backfill", action="store_true",
+        help="Skip the sector backfill step (stats-only re-run against "
+             "an already-backfilled catalog).",
+    )
+    p_p5.set_defaults(func=_cmd_phase5_analysis)
+
+    # merge-research-catalog (WO-P300-E2.003)
+    p_merge = subparsers.add_parser(
+        "merge-research-catalog",
+        help="WO-P300-E2.003: staging merge of STRICT bulk patterns into "
+             "the live catalog, or promote an already-built staging copy.",
+    )
+    p_merge.add_argument(
+        "--staging-db", default=None,
+        help="Staging DB output path (build mode); defaults to "
+             "models/staging_merge_catalog.db.",
+    )
+    p_merge.add_argument(
+        "--live-db", default=None,
+        help="Live catalog path override; defaults to get_latest_catalog().",
+    )
+    p_merge.add_argument(
+        "--promote", default=None, metavar="STAGING_DB_PATH",
+        help="Promote this staging DB to the real live catalog.db instead "
+             "of building a new staging merge. Separate, explicit action.",
+    )
+    p_merge.set_defaults(func=_cmd_merge_research_catalog)
+
+    # ingest-mined (WO-P300-E3.002 phase 2)
+    p_ingest_mined = subparsers.add_parser(
+        "ingest-mined",
+        help="WO-P300-E3.002 phase 2: audit-gate + staging-insert "
+             "operator-approved mine_candidates.csv rows, or promote an "
+             "already-built staging copy.",
+    )
+    p_ingest_mined.add_argument(
+        "--csv", default=None,
+        help="Approved candidates CSV path override; defaults to "
+             "config.MINE_REPORTS_DIR / config.MINE_CANDIDATES_CSV.",
+    )
+    p_ingest_mined.add_argument(
+        "--input-dir", default=None,
+        help="Mine XLSX input dir override (re-read fresh from disk, "
+             "never trusts Phase 1's in-memory result); defaults to "
+             "config.DATA_BULK_MINE.",
+    )
+    p_ingest_mined.add_argument(
+        "--staging-db", default=None,
+        help="Staging DB output path (build mode); defaults to "
+             "models/staging_ingest_mined.db.",
+    )
+    p_ingest_mined.add_argument(
+        "--live-db", default=None,
+        help="Live catalog path override; defaults to get_latest_catalog().",
+    )
+    p_ingest_mined.add_argument(
+        "--promote", default=None, metavar="STAGING_DB_PATH",
+        help="Promote this staging DB to the real live catalog.db instead "
+             "of building a new staging ingest. Separate, explicit action.",
+    )
+    p_ingest_mined.set_defaults(func=_cmd_ingest_mined)
+
+    return parser
+
+
+# ---------------------------------------------------------------------------
+# Entry point
+# ---------------------------------------------------------------------------
+
+def main(argv: list[str] | None = None) -> int:
+    logging.basicConfig(level=LOG_LEVEL, format=LOG_FORMAT, stream=sys.stdout)
+    parser = build_parser()
+    args = parser.parse_args(argv)
+    return args.func(args)
+
+
+if __name__ == "__main__":
+    sys.exit(main())

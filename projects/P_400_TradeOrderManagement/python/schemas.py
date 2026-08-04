@@ -36,6 +36,7 @@ class BookRecord(BaseModel):
     open_risk_dollars: float = 0.0
     realized_pnl: Optional[float] = None   # populated on CLOSED records
     close_date: Optional[str] = None       # YYYY-MM-DD; daily-loss filter
+    order_date: Optional[str] = None        # YYYY-MM-DD; from filename prefix (WO-P000-E10.001)
 
 
 class PostureSnapshot(BaseModel):

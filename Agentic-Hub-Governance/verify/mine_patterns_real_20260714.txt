@@ -1,0 +1,125 @@
+﻿2026-07-14 12:57:17,630 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_ADBE.xlsx
+2026-07-14 12:57:17,630 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 12:57:17,943 | INFO | infrastructure.bulk_grid_reader | Parsed 2513 bars from 10_Pattern_ADBE.xlsx
+2026-07-14 12:57:18,251 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_AMD.xlsx
+2026-07-14 12:57:18,251 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 12:57:18,623 | INFO | infrastructure.bulk_grid_reader | Parsed 2513 bars from 10_Pattern_AMD.xlsx
+2026-07-14 12:57:18,850 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_AME.xlsx
+2026-07-14 12:57:18,850 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 12:57:19,201 | INFO | infrastructure.bulk_grid_reader | Parsed 2512 bars from 10_Pattern_AME.xlsx
+2026-07-14 12:57:19,603 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_AMZN.xlsx
+2026-07-14 12:57:19,603 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 12:57:19,962 | INFO | infrastructure.bulk_grid_reader | Parsed 2512 bars from 10_Pattern_AMZN.xlsx
+2026-07-14 12:57:20,241 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_AVGO.xlsx
+2026-07-14 12:57:20,241 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 12:57:20,586 | INFO | infrastructure.bulk_grid_reader | Parsed 2513 bars from 10_Pattern_AVGO.xlsx
+2026-07-14 12:57:20,812 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_BAC.xlsx
+2026-07-14 12:57:20,812 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 12:57:21,172 | INFO | infrastructure.bulk_grid_reader | Parsed 2513 bars from 10_Pattern_BAC.xlsx
+2026-07-14 12:57:21,525 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_BLK.xlsx
+2026-07-14 12:57:21,526 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 12:57:21,867 | INFO | infrastructure.bulk_grid_reader | Parsed 2513 bars from 10_Pattern_BLK.xlsx
+2026-07-14 12:57:22,212 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_BURL.xlsx
+2026-07-14 12:57:22,213 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 12:57:22,561 | INFO | infrastructure.bulk_grid_reader | Parsed 2513 bars from 10_Pattern_BURL.xlsx
+2026-07-14 12:57:22,861 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_CAT.xlsx
+2026-07-14 12:57:22,861 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 12:57:23,213 | INFO | infrastructure.bulk_grid_reader | Parsed 2512 bars from 10_Pattern_CAT.xlsx
+2026-07-14 12:57:23,468 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_CIEN.xlsx
+2026-07-14 12:57:23,468 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 12:57:23,813 | INFO | infrastructure.bulk_grid_reader | Parsed 2514 bars from 10_Pattern_CIEN.xlsx
+2026-07-14 12:57:24,100 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_CRM.xlsx
+2026-07-14 12:57:24,100 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 12:57:24,435 | INFO | infrastructure.bulk_grid_reader | Parsed 2513 bars from 10_Pattern_CRM.xlsx
+2026-07-14 12:57:24,776 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_CVX.xlsx
+2026-07-14 12:57:24,776 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 12:57:25,108 | INFO | infrastructure.bulk_grid_reader | Parsed 2513 bars from 10_Pattern_CVX.xlsx
+2026-07-14 12:57:25,590 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_DE.xlsx
+2026-07-14 12:57:25,590 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 12:57:25,931 | INFO | infrastructure.bulk_grid_reader | Parsed 2512 bars from 10_Pattern_DE.xlsx
+2026-07-14 12:57:26,366 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_DVN.xlsx
+2026-07-14 12:57:26,366 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 12:57:26,711 | INFO | infrastructure.bulk_grid_reader | Parsed 2513 bars from 10_Pattern_DVN.xlsx
+2026-07-14 12:57:27,031 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_GOOGL.xlsx
+2026-07-14 12:57:27,032 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 12:57:27,371 | INFO | infrastructure.bulk_grid_reader | Parsed 2513 bars from 10_Pattern_GOOGL.xlsx
+2026-07-14 12:57:27,709 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_GS.xlsx
+2026-07-14 12:57:27,709 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 12:57:28,047 | INFO | infrastructure.bulk_grid_reader | Parsed 2513 bars from 10_Pattern_GS.xlsx
+2026-07-14 12:57:28,374 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_HAL.xlsx
+2026-07-14 12:57:28,374 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 12:57:28,710 | INFO | infrastructure.bulk_grid_reader | Parsed 2513 bars from 10_Pattern_HAL.xlsx
+2026-07-14 12:57:28,996 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_ICE.xlsx
+2026-07-14 12:57:28,996 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 12:57:29,321 | INFO | infrastructure.bulk_grid_reader | Parsed 2513 bars from 10_Pattern_ICE.xlsx
+2026-07-14 12:57:29,703 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_INTC.xlsx
+2026-07-14 12:57:29,703 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 12:57:30,084 | INFO | infrastructure.bulk_grid_reader | Parsed 2513 bars from 10_Pattern_INTC.xlsx
+2026-07-14 12:57:30,393 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_ITW.xlsx
+2026-07-14 12:57:30,393 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 12:57:30,741 | INFO | infrastructure.bulk_grid_reader | Parsed 2512 bars from 10_Pattern_ITW.xlsx
+2026-07-14 12:57:31,275 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_LEN.xlsx
+2026-07-14 12:57:31,275 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 12:57:31,620 | INFO | infrastructure.bulk_grid_reader | Parsed 2512 bars from 10_Pattern_LEN.xlsx
+2026-07-14 12:57:31,880 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_LMT.xlsx
+2026-07-14 12:57:31,880 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 12:57:32,230 | INFO | infrastructure.bulk_grid_reader | Parsed 2512 bars from 10_Pattern_LMT.xlsx
+2026-07-14 12:57:32,712 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_META.xlsx
+2026-07-14 12:57:32,712 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 12:57:33,071 | INFO | infrastructure.bulk_grid_reader | Parsed 2513 bars from 10_Pattern_META.xlsx
+2026-07-14 12:57:33,363 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_MOS.xlsx
+2026-07-14 12:57:33,363 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 12:57:33,708 | INFO | infrastructure.bulk_grid_reader | Parsed 2512 bars from 10_Pattern_MOS.xlsx
+2026-07-14 12:57:33,992 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_NKE.xlsx
+2026-07-14 12:57:33,992 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 12:57:34,340 | INFO | infrastructure.bulk_grid_reader | Parsed 2512 bars from 10_Pattern_NKE.xlsx
+2026-07-14 12:57:34,671 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_NVDA.xlsx
+2026-07-14 12:57:34,671 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 12:57:35,025 | INFO | infrastructure.bulk_grid_reader | Parsed 2513 bars from 10_Pattern_NVDA.xlsx
+2026-07-14 12:57:35,258 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_PCAR.xlsx
+2026-07-14 12:57:35,258 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 12:57:35,606 | INFO | infrastructure.bulk_grid_reader | Parsed 2512 bars from 10_Pattern_PCAR.xlsx
+2026-07-14 12:57:36,020 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_QCOM.xlsx
+2026-07-14 12:57:36,020 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 12:57:36,360 | INFO | infrastructure.bulk_grid_reader | Parsed 2513 bars from 10_Pattern_QCOM.xlsx
+2026-07-14 12:57:36,654 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_SHW.xlsx
+2026-07-14 12:57:36,654 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 12:57:37,004 | INFO | infrastructure.bulk_grid_reader | Parsed 2512 bars from 10_Pattern_SHW.xlsx
+2026-07-14 12:57:37,436 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_SPY.xlsx
+2026-07-14 12:57:37,436 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 12:57:37,767 | INFO | infrastructure.bulk_grid_reader | Parsed 2512 bars from 10_Pattern_SPY.xlsx
+2026-07-14 12:57:38,251 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_TECK.xlsx
+2026-07-14 12:57:38,251 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 12:57:38,593 | INFO | infrastructure.bulk_grid_reader | Parsed 2513 bars from 10_Pattern_TECK.xlsx
+2026-07-14 12:57:38,909 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_UI.xlsx
+2026-07-14 12:57:38,909 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 12:57:39,259 | INFO | infrastructure.bulk_grid_reader | Parsed 2513 bars from 10_Pattern_UI.xlsx
+2026-07-14 12:57:39,538 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_WMT.xlsx
+2026-07-14 12:57:39,538 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 12:57:39,556 | INFO | infrastructure.bulk_grid_reader | Parsed 123 bars from 10_Pattern_WMT.xlsx
+2026-07-14 12:57:39,588 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 10_Pattern_XOM.xlsx
+2026-07-14 12:57:39,588 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 12:57:39,924 | INFO | infrastructure.bulk_grid_reader | Parsed 2513 bars from 10_Pattern_XOM.xlsx
+2026-07-14 12:57:40,442 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 3_Pattern_ARDX.xlsx
+2026-07-14 12:57:40,442 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 12:57:40,576 | INFO | infrastructure.bulk_grid_reader | Parsed 753 bars from 3_Pattern_ARDX.xlsx
+2026-07-14 12:57:40,704 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 3_Pattern_ASTS.xlsx
+2026-07-14 12:57:40,704 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 12:57:40,794 | INFO | infrastructure.bulk_grid_reader | Parsed 753 bars from 3_Pattern_ASTS.xlsx
+2026-07-14 12:57:40,862 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 3_Pattern_BOIL.xlsx
+2026-07-14 12:57:40,862 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 12:57:40,951 | INFO | infrastructure.bulk_grid_reader | Parsed 753 bars from 3_Pattern_BOIL.xlsx
+2026-07-14 12:57:41,043 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 3_Pattern_CRK.xlsx
+2026-07-14 12:57:41,043 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 12:57:41,177 | INFO | infrastructure.bulk_grid_reader | Parsed 753 bars from 3_Pattern_CRK.xlsx
+2026-07-14 12:57:41,318 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 3_Pattern_MSTR.xlsx
+2026-07-14 12:57:41,318 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 12:57:41,404 | INFO | infrastructure.bulk_grid_reader | Parsed 753 bars from 3_Pattern_MSTR.xlsx
+2026-07-14 12:57:41,515 | INFO | infrastructure.bulk_grid_reader | Parsing bulk file 3_Pattern_TDC.xlsx
+2026-07-14 12:57:41,515 | INFO | infrastructure.bulk_grid_reader | Loading bulk manifest: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\parameters\bulk_ingest_manifest.json
+2026-07-14 12:57:41,601 | INFO | infrastructure.bulk_grid_reader | Parsed 753 bars from 3_Pattern_TDC.xlsx
+
+MINE PATTERNS COMPLETE -- input=C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\data\bulk\mine
+files scanned=40  candidates=5584 (uptrend=2946 breakdown=2638)
+report=C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\outputs\reports\mine\mine_20260714_125741.md
+csv=C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\outputs\reports\mine\mine_candidates.csv

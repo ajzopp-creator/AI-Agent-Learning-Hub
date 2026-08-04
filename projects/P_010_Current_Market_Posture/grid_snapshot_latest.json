@@ -1,29 +1,29 @@
 {
-  "timestamp": "2026-07-25T09:45:03.115507",
+  "timestamp": "2026-08-04T17:28:37.356598",
   "spy": {
-    "date": "07/23/2026",
-    "close": 738.179992675781,
-    "pred_high": 740.84423828125,
-    "pred_low": 734.918212890625,
-    "pred_range": 5.926025390625,
-    "posture": -3.707763671875
+    "date": "08/03/2026",
+    "close": 757.669982910156,
+    "pred_high": 759.710327148438,
+    "pred_low": 752.819519042969,
+    "pred_range": 6.89080810546875,
+    "posture": 3.245086669921875
   },
   "qqq": {
-    "date": "07/23/2026",
-    "close": 691.960021972656,
-    "pred_high": 696.182250976563,
-    "pred_low": 686.057800292969,
-    "pred_range": 10.1244506835938,
-    "posture": -8.071685791015625
+    "date": "08/03/2026",
+    "close": 700.070007324219,
+    "pred_high": 701.723510742188,
+    "pred_low": 691.503540039063,
+    "pred_range": 10.219970703125,
+    "posture": -3.043304443359375
   },
   "vxx": {
-    "date": "07/23/2026",
-    "close": 22.5200004577637,
-    "pred_high": 24.120454788208,
-    "pred_low": 22.4487934112549,
-    "pred_range": 1.67166137695313,
-    "posture": 0.6303977966308595,
-    "signal": "CAUTION",
-    "note": "VP predicts modest VXX rise -- watch for increased volatility"
+    "date": "08/03/2026",
+    "close": 21.0799999237061,
+    "pred_high": 21.4725818634033,
+    "pred_low": 20.4887065887451,
+    "pred_range": 0.983875274658203,
+    "posture": 0.01120376586914065,
+    "signal": "NEUTRAL",
+    "note": "VP sees stable/flat volatility -- no directional signal from VXX"
   }
 }

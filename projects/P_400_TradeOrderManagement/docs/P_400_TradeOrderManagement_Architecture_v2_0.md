@@ -382,6 +382,7 @@ BLOCKED records are always written -- Council vetoes are part of the audit trail
 - PRICE_STALE: "Tape BLOCK: Price [N]s old, over 120s. Refresh snapshot."
 - MARKET_CLOSED: "Tape BLOCK: Market closed, no pre-market flag."
 - ADVERSE_DRIFT: "Tape BLOCK: Drift [X]% collapsed R:R to [Y]. Recalculate."
+- SPREAD_TOO_WIDE: "Tape BLOCK: Spread [X]% of price exceeds [Y]% plausibility threshold. Fill quality unacceptable." (WO-P400-E4.004)
 
 **BEHAVIORAL (annotates only — never blocks)**
 - ALL_CLEAR: "Behavioral: No flags."
@@ -719,9 +720,9 @@ One real single-leg options trade and one real spread trade travel the full path
 
 ---
 
-### 7.5 Phase E3.5 (Deferred ? Chain Data Automation)
+### 7.5 Phase E3.5 — Chain Data Automation (SHIPPED, WO-P400-E4.002, CLOSED 2026-07-24)
 
-Investigate TOS export, ChartExchange scrape, or LLM-assisted chain fetch. Open only after E3.001?E3.003 are live and manual input is confirmed as the dominant friction point.
+No longer deferred. `fetch-snapshot SYMBOL` and `fetch-chain SYMBOL --type call|put` now pull live price/bid/ask/ATR14(computed)/volume/chain data directly from Schwab, replacing manual TOS-screenshot transcription for Bucket A snapshot fields and for chain data. Auto-selects the optimal contract by DTE window (21-45 days) and closest-to-target delta (0.50) when `--strike`/`--expiration` aren't given; those flags remain valid manual overrides. Live-verified against MRCY 2026-07-24 (both fetch-snapshot and fetch-chain). `next_earnings_date`/`sector` remain web-search-sourced by design (Tony's explicit call, 2026-07-21) -- not part of this automation's scope.
 
 ---
 

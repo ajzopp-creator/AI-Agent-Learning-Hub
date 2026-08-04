@@ -1,0 +1,5 @@
+DEBUG handle_write called: schema=SIGNAL_V2
+DEBUG Validated schema=SIGNAL_V2 symbol/ticker=NBIX
+DEBUG Built filepath: C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\signals\2026-07-27_NBIX_v2.0.json
+INFO signal written: 2026-07-27_NBIX_v2.0.json
+INFO OK schema=SIGNAL_V2 packet=2026-07-27_NBIX_v2.0.json

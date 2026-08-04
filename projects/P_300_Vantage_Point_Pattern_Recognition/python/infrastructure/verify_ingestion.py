@@ -1,7 +1,7 @@
 """
 FILE: verify_ingestion.py
-VERSION: 1.1
-DATE: 2026-07-19
+VERSION: 1.2
+DATE: 2026-08-04
 AUTHOR: Anthony Zoppi + Claude
 LAYER: infrastructure
 DESCRIPTION:
@@ -28,8 +28,12 @@ DESCRIPTION:
             AddPattern run for a table it was never meant to touch.
             Default False preserves every existing caller's behavior
             unchanged; application/catalog_merge_pipeline.py's
-            promote_staging_to_live() is the one caller that passes
-            True (decision #10).
+            promote_staging_to_live() does NOT pass True either
+            (decision #10, corrected v1.2) -- expected_delta's exact
+            count-based check already catches real population failures
+            there, without check_topk_cache's false-positive risk on a
+            genuinely degenerate-corpus pattern. No caller currently
+            passes True.
         5. On PASS: atomically replaces master with temp (.bak preserved
            for one cycle).
         6. On FAIL: leaves temp in place for forensic inspection; master
@@ -50,6 +54,19 @@ DESCRIPTION:
           promote so only the previous master is retained.
 
 CHANGELOG:
+    - 2026-08-04 v1.2 (cosmetic doc fix, no behavior change): corrected
+      3 copies of a stale claim -- the module docstring above, verify_
+      temp_db()'s docstring, and verify_and_promote()'s docstring all
+      wrongly stated "application/catalog_merge_pipeline.py's promote_
+      staging_to_live() is the one caller that passes True" for
+      check_topk_cache. It doesn't -- confirmed via direct read of
+      catalog_merge_pipeline.py's actual call site (verify_and_promote()
+      called with 4 positional args, check_topk_cache never passed,
+      uses the False default). Found during WO-P300-E5.002's independent
+      review (2026-07-29), logged there, fixed here. No functional
+      change -- check_topk_cache's real behavior (default False, no
+      caller currently passes True) was always correct; only the prose
+      describing it was wrong.
     - 2026-07-19 v1.1 (WO-P300-E4.006, decision #7a): Added
       _check_no_hollow_topk() and verify_temp_db()/verify_and_
       promote()'s check_topk_cache parameter (default False -- opt-in,
@@ -161,13 +178,13 @@ def verify_temp_db(
     """Run all integrity checks against temp_working.db.
 
     check_topk_cache: if True, also scans for pattern_instances
-    missing topk_cache rows (decision #7a). Default False -- most
-    callers of this shared function (e.g. single-pattern AddPattern
-    via application/add_pattern_pipeline.py) don't populate topk_cache
-    and were never scoped to; application/catalog_merge_pipeline.py's
-    promote_staging_to_live() is the one caller that passes True
-    (decision #10), since new-pattern topk population runs inside
-    that same promote cycle.
+    missing topk_cache rows (decision #7a). Default False -- every
+    caller of this shared function leaves it at False, including
+    application/catalog_merge_pipeline.py's promote_staging_to_live()
+    (decision #10, corrected v1.2): expected_delta's exact count-based
+    check already catches real population failures there without
+    _check_no_hollow_topk's false-positive risk on a genuinely
+    degenerate-corpus pattern. No caller currently passes True.
 
     Returns:
         (all_passed, failure_messages, post_counts)
@@ -242,8 +259,9 @@ def verify_and_promote(
     """End-of-ingest entrypoint. Verifies temp_working.db, and on PASS
     atomically promotes it to master. On FAIL, temp is left in place
     and master is untouched. check_topk_cache: see verify_temp_db's
-    docstring -- default False, catalog_merge_pipeline.py's promote_
-    staging_to_live() is the one caller that passes True."""
+    docstring -- default False; no caller passes True, including
+    catalog_merge_pipeline.py's promote_staging_to_live() (decision #10,
+    corrected v1.2)."""
     if not temp_path.exists():
         return VerificationResult(
             passed=False,

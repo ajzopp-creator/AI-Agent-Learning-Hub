@@ -1,0 +1,24 @@
+WO-P000-E10.001 item 3.3 -- P_805 ranker.py (2026-08-04)
+
+This is the last open item in WO-P000-E10.001. Confirms build_ranked_signals()'s
+consensus_threshold and sector_map are a false positive -- application/
+phase4_rank.py:52 passes both positionally
+(build_ranked_signals(signals, config.CONSENSUS_THRESHOLD, sector_map)),
+sector_map freshly loaded from load_sender_sectors() the line above. Same
+AST-audit blind spot as 8 other false positives found across this WO
+(P_020, P_300, P_400) -- positional/dynamically-built args are invisible
+to a literal keyword scan.
+
+New file: python/tests/test_ranker.py (unittest.TestCase, matching this
+project's existing test_message_selector.py/test_imap_mover.py convention).
+One test: confirms phase4_rank.py's source still contains both the
+load_sender_sectors() call and the full positional build_ranked_signals()
+call -- a SOURCE-level regression guard, not a full behavioral test, since
+the point being verified is caller wiring, not ranker.py's own logic.
+
+Success criteria: script prints PASS, exit code 0, unittest shows 1 test OK.
+
+If it fails: read the unittest output. Do NOT change the assertion. If it
+fails, phase4_rank.py's call to build_ranked_signals() changed shape --
+report back what it now looks like rather than adjusting the test to match,
+since this test exists specifically to catch that kind of silent regression.

@@ -1,6 +1,6 @@
 """
 FILE: topk_cache.py
-VERSION: 1.0
+VERSION: 1.1
 DATE: 2026-07-19
 AUTHOR: Anthony Zoppi + Claude
 LAYER: domain
@@ -36,11 +36,20 @@ DESCRIPTION:
     reads/writes for this table).
 
 CHANGELOG:
+    - 2026-07-29 v1.1 (WO-P300-E5.005 item #1): update_for_new_batch
+      gained an optional progress_callback param, invoked from two new
+      private helpers (_compute_new_pid_topk, _compute_existing_
+      recheck_topk -- split out of update_for_new_batch's own body to
+      stay under the 50-line function cap). Domain stays I/O-free --
+      the callback is caller-supplied; this file still does no logging
+      of its own. Default None, so every existing caller (including
+      seed_full_catalog, which is unaffected) behaves exactly as before.
     - 2026-07-19 v1.0: WO-P300-E4.006. Initial release.
 """
 from __future__ import annotations
 
 import sys
+from collections.abc import Callable
 from pathlib import Path
 
 _PYTHON_DIR = Path(__file__).resolve().parent.parent
@@ -171,11 +180,62 @@ def _displace(
     return [m.model_copy(update={"rank": i + 1}) for i, m in enumerate(updated)]
 
 
+def _compute_new_pid_topk(
+    new_pids: set[int],
+    all_metadata: dict[int, PatternMetadata],
+    historical_windows: dict[int, list[NormalizedBar]],
+    progress_callback: Callable[[int, int, str], None] | None,
+) -> dict[int, list[TopKMatch]]:
+    """Top-K for every newly-added pid, against its full anchor_date-
+    restricted corpus. Split out of update_for_new_batch to keep that
+    function under the 50-line cap while adding progress_callback
+    support (WO-P300-E5.005 item #1)."""
+    new_pid_list = list(new_pids)
+    result: dict[int, list[TopKMatch]] = {}
+    for i, pid in enumerate(new_pid_list, start=1):
+        result[pid] = _rank_topk(
+            pid, _corpus_pids_before(pid, all_metadata), historical_windows,
+        )
+        if progress_callback is not None:
+            progress_callback(i, len(new_pid_list), "new_pids")
+    return result
+
+
+def _compute_existing_recheck_topk(
+    existing_must_check: list[int],
+    new_pids: set[int],
+    all_metadata: dict[int, PatternMetadata],
+    historical_windows: dict[int, list[NormalizedBar]],
+    existing_cache: dict[int, list[TopKMatch]],
+    progress_callback: Callable[[int, int, str], None] | None,
+) -> dict[int, list[TopKMatch]]:
+    """Re-rank every existing pid whose corpus grew (must_check),
+    displacing into its cached top-20 wherever a new pid scores
+    better. Split out of update_for_new_batch for the same reason as
+    _compute_new_pid_topk above -- this is the loop that actually
+    takes over an hour on a large batch, so it's also the one that
+    matters most for progress visibility."""
+    result: dict[int, list[TopKMatch]] = {}
+    for i, pid in enumerate(existing_must_check, start=1):
+        pid_date = all_metadata[pid].anchor_date
+        qualifying_new = [p for p in new_pids if all_metadata[p].anchor_date < pid_date]
+        current = existing_cache.get(pid, [])
+        windows = {p: historical_windows[p] for p in qualifying_new}
+        ranked = similarity.rank_by_distance(historical_windows[pid], windows) if qualifying_new else []
+        for matched_pid, dist, _per_feat in ranked:
+            current = _displace(current, pid, matched_pid, dist)
+        result[pid] = current
+        if progress_callback is not None:
+            progress_callback(i, len(existing_must_check), "existing_recheck")
+    return result
+
+
 def update_for_new_batch(
     new_pids: set[int],
     all_metadata: dict[int, PatternMetadata],
     historical_windows: dict[int, list[NormalizedBar]],
     existing_cache: dict[int, list[TopKMatch]],
+    progress_callback: Callable[[int, int, str], None] | None = None,
 ) -> tuple[dict[int, list[TopKMatch]], dict[int, list[TopKMatch]]]:
     """The ongoing per-batch path (decision #3). Returns (new_pid_
     topk, existing_must_check_topk).
@@ -194,6 +254,13 @@ def update_for_new_batch(
     subset. (Infrastructure-layer writes may still diff against the
     prior cache to skip unchanged DB rows -- that's a write-efficiency
     concern for topk_cache_io.py, not a correctness concern here.)
+
+    progress_callback: optional (completed, total, phase) -> None,
+    invoked from the two private helpers above -- domain stays I/O-
+    free, this only ever calls back into whatever the caller supplied,
+    never logs or prints itself (WO-P300-E5.005 item #1; the caller,
+    application/promote_topk.py, owns the actual logging cadence).
+    Default None preserves every existing caller unchanged.
     """
     from domain.eval_incremental import _partition_unaffected  # deferred, breaks circular import (see module note above)
 
@@ -201,20 +268,12 @@ def update_for_new_batch(
     _safe, must_check = _partition_unaffected(all_metadata, new_pids, min_new_date)
     existing_must_check = [p for p in must_check if p not in new_pids]
 
-    new_pid_topk = {
-        pid: _rank_topk(pid, _corpus_pids_before(pid, all_metadata), historical_windows)
-        for pid in new_pids
-    }
-
-    existing_must_check_topk: dict[int, list[TopKMatch]] = {}
-    for pid in existing_must_check:
-        pid_date = all_metadata[pid].anchor_date
-        qualifying_new = [p for p in new_pids if all_metadata[p].anchor_date < pid_date]
-        current = existing_cache.get(pid, [])
-        windows = {p: historical_windows[p] for p in qualifying_new}
-        ranked = similarity.rank_by_distance(historical_windows[pid], windows) if qualifying_new else []
-        for matched_pid, dist, _per_feat in ranked:
-            current = _displace(current, pid, matched_pid, dist)
-        existing_must_check_topk[pid] = current
+    new_pid_topk = _compute_new_pid_topk(
+        new_pids, all_metadata, historical_windows, progress_callback,
+    )
+    existing_must_check_topk = _compute_existing_recheck_topk(
+        existing_must_check, new_pids, all_metadata, historical_windows,
+        existing_cache, progress_callback,
+    )
 
     return new_pid_topk, existing_must_check_topk
