@@ -1,28 +1,32 @@
-view: table
-filter:
-  conditions:
-    - field: file.folder
-      operator: contains
-      value: TradeManagement/P115
-  conjunction: and
-sort:
-  - field: date
-    direction: desc
-columns:
-  - id: date
-    field: date
-  - id: symbol
-    field: symbol
-  - id: step1_verdict
-    field: step1_verdict
-  - id: setup_score
-    field: setup_score
-  - id: traded
-    field: traded
-  - id: outcome
-    field: outcome
-  - id: why_code
-    field: why_code
+filters:
+  and:
+    - file.inFolder("TradeOrderManagement/P115")
+properties:
+  date:
+    displayName: Date
+  symbol:
+    displayName: Symbol
+  step1_verdict:
+    displayName: Step 1 Verdict
+  setup_score:
+    displayName: Setup Score
+  traded:
+    displayName: Traded
+  outcome:
+    displayName: Outcome
+  why_code:
+    displayName: Why
 views:
   - type: table
     name: Table
+    order:
+      - date
+      - symbol
+      - step1_verdict
+      - setup_score
+      - traded
+      - outcome
+      - why_code
+    sort:
+      - property: date
+        direction: DESC

@@ -2,14 +2,12 @@
 Python: 3.12.12 | packaged by Anaconda, Inc. | (main, Oct 21 2025, 20:05:38) [MSC v.1929 64 bit (AMD64)]
 
 schwab-py version: 1.5.1
-Credentials loaded OK
-APP_KEY starts with: 18F3UYwX...
-APP_SECRET starts with: CZJX...
-CALLBACK_URL: https://127.0.0.1
-TOKEN_PATH: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_020_AJZStrategies_PerformanceAnalysisSystem\python\api\schwab_token.json
-
-Attempting manual auth flow...
-This will generate an auth URL you paste into your browser.
-schwab.auth imported OK
-
-All checks passed - ready for auth flow
+ERROR loading credentials: name 'CZJXPT44lep6eGZHGVFMOskK5R8rY1OWwAmlW2JJeaMHxv5LoAwr2TAL2opjz9yt' is not defined
+Traceback (most recent call last):
+  File "C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_020_AJZStrategies_PerformanceAnalysisSystem\python\api\test_schwab.py", line 25, in <module>
+    spec.loader.exec_module(creds)
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_020_AJZStrategies_PerformanceAnalysisSystem\python\api\schwab_credentials.py", line 17, in <module>
+    CZJXPT44lep6eGZHGVFMOskK5R8rY1OWwAmlW2JJeaMHxv5LoAwr2TAL2opjz9yt
+NameError: name 'CZJXPT44lep6eGZHGVFMOskK5R8rY1OWwAmlW2JJeaMHxv5LoAwr2TAL2opjz9yt' is not defined

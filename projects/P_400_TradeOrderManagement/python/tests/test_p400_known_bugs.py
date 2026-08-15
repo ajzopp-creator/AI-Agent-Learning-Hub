@@ -7,7 +7,7 @@ ANY edit to the files it covers, and before calling a fix "done." Per
 WO-P020-E1.003's Hub-wide rule (2026-07-06), any future bug fixed in
 this project gets a matching test added here in the same session.
 
-Two kinds of test, both labeled below:
+Two kinds of test, both labeled in each docstring:
   BEHAVIOR -- calls the real function against a tiny synthetic input and
               checks the actual output. Confirms the bug cannot recur.
   SOURCE   -- greps the file for the fix's signature. Cheaper, but only
@@ -16,27 +16,36 @@ Two kinds of test, both labeled below:
 E2.017 (test_screen.py hardcoded absolute dates) is still OPEN as of
 2026-07-06 -- not included here. Add its test when that WO closes.
 
+SPLIT ACROSS FILES (WO-P400-E5.004, 2026-08-08): this file grows by design
+(one test per future fix, forever) and will keep hitting the 300-line cap.
+When it does, split -- do not just keep appending. Convention: this file
+holds WO-P400-E2.xxx/E3.xxx; the E10.001 cluster moved to
+test_p400_known_bugs_2.py at the same split. New entries go into whichever
+split file is currently newest/smallest; when THAT one approaches 300
+lines, start test_p400_known_bugs_3.py, and so on. No wiring needed --
+pytest auto-discovers every test_*.py file under tests\\, so a new numbered
+file requires no imports or registration anywhere else. Keep each file's
+own module docstring current about which WO range it covers.
+
+Converted from a standalone RESULTS/check() harness to plain pytest
+assertions per WO-P000-E13.001 Phase 4 (2026-08-08) -- this file did not
+previously run under a plain `pytest` invocation (Finding 5). ROOT is now
+derived from this file's own location instead of hardcoded (Finding 4).
+sys.path manipulation removed -- python\\conftest.py (WO-P000-E13.001
+Phase 2) puts python\\ on sys.path Hub-wide, making it redundant here.
+
 Save path: C:\\Users\\Trader\\AI-Agent-Learning-Hub\\projects\\
            P_400_TradeOrderManagement\\python\\tests\\
            test_p400_known_bugs.py
 
 Run with:
-  C:\\Users\\Trader\\.conda\\envs\\p140\\python.exe test_p400_known_bugs.py
+  C:\\Users\\Trader\\.conda\\envs\\p140\\python.exe -m pytest test_p400_known_bugs.py
 """
-import sys
 from pathlib import Path
 
-ROOT = Path(r"C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_400_TradeOrderManagement\python")
+ROOT = Path(__file__).resolve().parent.parent
 DOMAIN = ROOT / "domain"
 APPLICATION = ROOT / "application"
-sys.path.insert(0, str(ROOT))
-sys.path.insert(0, str(DOMAIN))
-
-RESULTS = []
-
-
-def check(name, kind, passed, detail=""):
-    RESULTS.append((name, kind, passed, detail))
 
 
 def test_e2007_stop_exactly_1x_atr_passes():
@@ -44,8 +53,7 @@ def test_e2007_stop_exactly_1x_atr_passes():
     float rounding (WO-P400-E2.007)."""
     from domain.council import quant_vote, Decision
     v = quant_vote(rr_at_t1=2.5, stop=49.0, entry=50.0, target=55.0, atr_14=1.0)
-    check("e2007_stop_exactly_1x_atr_passes", "BEHAVIOR", v.decision == Decision.PASS,
-          f"got {v.decision}")
+    assert v.decision == Decision.PASS, f"got {v.decision}"
 
 
 def test_e2007_stop_below_tolerance_still_blocks():
@@ -54,8 +62,8 @@ def test_e2007_stop_below_tolerance_still_blocks():
     from domain.council import quant_vote, Decision
     from domain.council_codes import RC_STOP_TOO_TIGHT
     v = quant_vote(rr_at_t1=2.5, stop=49.01, entry=50.0, target=55.0, atr_14=1.0)
-    ok = v.decision == Decision.BLOCK and v.reason_code == RC_STOP_TOO_TIGHT
-    check("e2007_stop_below_tolerance_still_blocks", "BEHAVIOR", ok, f"got {v.decision}/{v.reason_code}")
+    assert v.decision == Decision.BLOCK and v.reason_code == RC_STOP_TOO_TIGHT, \
+        f"got {v.decision}/{v.reason_code}"
 
 
 def test_e2012_book_dir_not_dead_folder():
@@ -64,8 +72,8 @@ def test_e2012_book_dir_not_dead_folder():
     folder (WO-P400-E2.012 fix superseded by the rename)."""
     import config
     parts = config.BOOK_DIR.parts
-    ok = "TradeOrderManagement" in parts and "TradeManagement" not in parts
-    check("e2012_book_dir_not_dead_folder", "SOURCE", ok, f"got {config.BOOK_DIR}")
+    assert "TradeOrderManagement" in parts and "TradeManagement" not in parts, \
+        f"got {config.BOOK_DIR}"
 
 
 def test_e2012_book_loader_field_remap():
@@ -73,8 +81,7 @@ def test_e2012_book_loader_field_remap():
     lifecycle_status) to reader field names (symbol/status) at the read
     boundary (WO-P400-E2.012 second-layer fix)."""
     src = (ROOT / "infrastructure" / "book_loader.py").read_text(encoding="utf-8")
-    ok = 'fm.pop("ticker"' in src and 'fm.pop("lifecycle_status"' in src
-    check("e2012_book_loader_field_remap", "SOURCE", ok)
+    assert 'fm.pop("ticker"' in src and 'fm.pop("lifecycle_status"' in src
 
 
 def test_e2013_tape_adverse_drift_is_caution_not_block():
@@ -83,10 +90,10 @@ def test_e2013_tape_adverse_drift_is_caution_not_block():
     condition (WO-P400-E2.013)."""
     from domain.council import tape_vote, Decision
     from domain.council_codes import RC_ADVERSE_DRIFT
-    v = tape_vote(price_delay_seconds=10, market_open=True, pre_market_flag=False,
+    v = tape_vote(price_delay_seconds=10, market_open=True, price_basis="live",
                    adverse_drift_pct=5.0, rr_after_drift=1.2)
-    ok = v.decision == Decision.CAUTION and v.reason_code == RC_ADVERSE_DRIFT
-    check("e2013_tape_adverse_drift_is_caution_not_block", "BEHAVIOR", ok, f"got {v.decision}")
+    assert v.decision == Decision.CAUTION and v.reason_code == RC_ADVERSE_DRIFT, \
+        f"got {v.decision}"
 
 
 def test_e2014_gate3_scales_with_posture():
@@ -102,9 +109,24 @@ def test_e2014_gate3_scales_with_posture():
         entry=100.0, stop=95.0, target=115.0, base_risk_dollars=500.0,
         cash_available=100000.0, max_position_dollars=1000.0, risk_mode="HALF",
     )
-    ok = half.adjusted_risk_dollars < standard.adjusted_risk_dollars
-    check("e2014_gate3_scales_with_posture", "BEHAVIOR", ok,
-          f"standard={standard.adjusted_risk_dollars} half={half.adjusted_risk_dollars}")
+    assert half.adjusted_risk_dollars < standard.adjusted_risk_dollars, \
+        f"standard={standard.adjusted_risk_dollars} half={half.adjusted_risk_dollars}"
+
+
+def test_e2016_rr_below_min_detail_discloses_both_bases():
+    """BEHAVIOR -- quant_vote()'s RC_RR_BELOW_MIN reason_detail must label
+    both figures explicitly -- realistic-fill spread-adjusted R:R vs.
+    clean/guideline target basis -- not state both on one line with no
+    basis label, which read as self-contradictory even though the BLOCK
+    itself was always correct (WO-P400-E2.016). Mirrors
+    test_council.py::test_quant_blocks_rr_below_min."""
+    from domain.council import quant_vote, Decision
+    from domain.council_codes import RC_RR_BELOW_MIN
+    v = quant_vote(rr_at_t1=1.8, stop=48.0, entry=50.0, target=53.6, atr_14=1.5)
+    assert v.decision == Decision.BLOCK
+    assert v.reason_code == RC_RR_BELOW_MIN
+    assert "spread-adjusted" in v.reason_detail, f"got {v.reason_detail}"
+    assert "clean/guideline basis" in v.reason_detail, f"got {v.reason_detail}"
 
 
 def test_e2018_dispose_failed_wired_into_screen_all():
@@ -112,8 +134,7 @@ def test_e2018_dispose_failed_wired_into_screen_all():
     FAIL packets must not require a manual batch-drop step
     (WO-P400-E2.018)."""
     src = (APPLICATION / "commands.py").read_text(encoding="utf-8")
-    ok = "dispose_failed" in src and "DISPOSAL SUMMARY" in src
-    check("e2018_dispose_failed_wired_into_screen_all", "SOURCE", ok)
+    assert "dispose_failed" in src and "DISPOSAL SUMMARY" in src
 
 
 def test_e3005_spread_council_blocks_wide_leg():
@@ -135,8 +156,8 @@ def test_e3005_spread_council_blocks_wide_leg():
     long_chain = _chain(215.0, 800, 3.5, 18.50, 18.90)
     short_chain = _chain(225.0, 300, 11.9, 9.20, 10.45)
     result = run_spread_council(long_chain, short_chain)
-    ok = result.verdict == "BLOCK" and any("SHORT_LEG_SPREAD_TOO_WIDE" in b for b in result.blocks)
-    check("e3005_spread_council_blocks_wide_leg", "BEHAVIOR", ok, f"got {result.verdict}/{result.blocks}")
+    assert result.verdict == "BLOCK" and any("SHORT_LEG_SPREAD_TOO_WIDE" in b for b in result.blocks), \
+        f"got {result.verdict}/{result.blocks}"
 
 
 def test_e3010_spec_cacheable_verdicts_complete():
@@ -146,9 +167,8 @@ def test_e3010_spec_cacheable_verdicts_complete():
     can't silently drop a tier again (WO-P400-E3.010)."""
     import config
     expected = {"APPROVED", "APPROVED_WITH_CAUTION", "APPROVED_WITH_SEVERE_WARNING"}
-    ok = expected.issubset(config.SPEC_CACHEABLE_VERDICTS)
-    check("e3010_spec_cacheable_verdicts_complete", "SOURCE", ok,
-          f"got {config.SPEC_CACHEABLE_VERDICTS}")
+    assert expected.issubset(config.SPEC_CACHEABLE_VERDICTS), \
+        f"got {config.SPEC_CACHEABLE_VERDICTS}"
 
 
 def test_e3010_commands_uses_cacheable_verdicts_set():
@@ -156,201 +176,27 @@ def test_e3010_commands_uses_cacheable_verdicts_set():
     on SPEC_CACHEABLE_VERDICTS, not a literal "APPROVED" string compare
     (regression of E3.009's exact-string gate, WO-P400-E3.010)."""
     src = (ROOT / "application" / "commands.py").read_text(encoding="utf-8")
-    ok = ("result.verdict in SPEC_CACHEABLE_VERDICTS" in src
-          and 'if result.verdict == "APPROVED":' not in src)
-    check("e3010_commands_uses_cacheable_verdicts_set", "SOURCE", ok, "")
+    assert ("result.verdict in SPEC_CACHEABLE_VERDICTS" in src
+            and 'if result.verdict == "APPROVED":' not in src)
 
 
-def test_e10001_compare_vehicles_passes_options_council_result():
-    """SOURCE -- compare_vehicles.py call site must pass options_council_result
-    positionally; the WO-P000-E10.001 caller-propagation audit's AST scan
-    can't see positional args, so it flagged this as "never passed" -- false
-    positive, confirmed by reading the actual call (item 2.3)."""
-    src = (ROOT / "application" / "compare_vehicles.py").read_text(encoding="utf-8")
-    call_block = src.split("comparison = compare_vehicles(")[1][:200]
-    ok = "options_council_result" in call_block
-    check("e10001_compare_vehicles_passes_options_council_result", "SOURCE", ok)
+def test_e4005_e4006_market_open_wall_clock_and_holiday_aware():
+    """BEHAVIOR -- is_market_open_now() must return False on a real market
+    holiday during normal trading hours (wall-clock alone would say open
+    -- WO-P400-E4.006's holiday-aware upgrade over E4.005's original
+    wall-clock-only check) and True on an ordinary weekday at the same
+    time. Regression-guard mirror entry -- both WOs were genuinely tested
+    at build time (test_market_hours.py, test_market_holidays.py) but
+    neither added the separate guard-file entry this table is supposed to
+    mirror (WO-P400-E5.004, found by WO-P000-E13.001 Phase 4's
+    correspondence check)."""
+    from datetime import datetime
+    from zoneinfo import ZoneInfo
+    from domain.market_hours import is_market_open_now
 
+    eastern = ZoneInfo("America/New_York")
+    labor_day_2026 = datetime(2026, 9, 7, 10, 0, tzinfo=eastern)     # Monday, market holiday
+    ordinary_weekday = datetime(2026, 9, 8, 10, 0, tzinfo=eastern)   # Tuesday, normal session
 
-def test_e10001_cli_resolves_trade_mode_from_paper_flags():
-    """SOURCE -- trade_mode must be resolvable from real --paper /
-    --paper-session CLI flags via _resolve_mode(), not stuck at the REAL
-    default forever (WO-P000-E10.001 item 2.5 -- audit false positive,
-    this is genuinely wired end to end)."""
-    src = (ROOT / "cli.py").read_text(encoding="utf-8")
-    ok = "_resolve_mode(" in src and "--paper" in src
-    check("e10001_cli_resolves_trade_mode_from_paper_flags", "SOURCE", ok)
-
-
-def test_e10001_evaluate_options_passes_is_paper():
-    """SOURCE -- evaluate_options() must thread is_paper into
-    build_option_spec() so the PAPER TRADE banner renders on paper-mode
-    option specs (WO-P000-E10.001 item 2.4 -- confirmed gap: paper and
-    live option specs were byte-identical before this fix)."""
-    src = (ROOT / "application" / "evaluate_options.py").read_text(encoding="utf-8")
-    ok = "is_paper: bool = False" in src and "is_paper=is_paper" in src
-    check("e10001_evaluate_options_passes_is_paper", "SOURCE", ok)
-
-
-def test_e10001_evaluate_spread_passes_is_paper():
-    """SOURCE -- same guarantee for the spread path (WO-P000-E10.001
-    item 2.4)."""
-    src = (ROOT / "application" / "evaluate_spread.py").read_text(encoding="utf-8")
-    ok = "is_paper: bool = False" in src and "is_paper=is_paper" in src
-    check("e10001_evaluate_spread_passes_is_paper", "SOURCE", ok)
-
-
-def test_e10001_commands_derives_is_paper_from_trade_mode():
-    """SOURCE -- commands.py call sites must derive is_paper from the real
-    trade_mode (not hardcode it) at both the spread and options evaluate
-    call sites (WO-P000-E10.001 item 2.4)."""
-    src = (ROOT / "application" / "commands.py").read_text(encoding="utf-8")
-    ok = src.count("is_paper=(trade_mode == TradeMode.PAPER)") == 2
-    check("e10001_commands_derives_is_paper_from_trade_mode", "SOURCE", ok,
-          f"count={src.count('is_paper=(trade_mode == TradeMode.PAPER)')}")
-
-def test_e10001_behavioral_inputs_orders_today():
-    """BEHAVIOR -- compute_behavioral_inputs must count only today's
-    order_date, not yesterday's or a PENDING record dated today counted
-    twice (WO-P000-E10.001 item 2.1)."""
-    from datetime import date
-    from domain.behavioral_history import compute_behavioral_inputs
-    from schemas import BookRecord
-    today = date(2026, 8, 4)
-    records = [
-        BookRecord(symbol="AAPL", status="FILLED", order_date="2026-08-04"),
-        BookRecord(symbol="MSFT", status="FILLED", order_date="2026-08-03"),
-        BookRecord(symbol="NVDA", status="PENDING", order_date="2026-08-04"),
-    ]
-    result = compute_behavioral_inputs(records, today=today)
-    check("e10001_behavioral_inputs_orders_today", "BEHAVIOR", result.orders_today == 2,
-          f"got {result.orders_today}")
-
-
-def test_e10001_behavioral_inputs_consecutive_wins():
-    """BEHAVIOR -- consecutive_wins counts from the most recent CLOSED
-    record backward, stopping at the first non-win (WO-P000-E10.001 item 2.1)."""
-    from datetime import date
-    from domain.behavioral_history import compute_behavioral_inputs
-    from schemas import BookRecord
-    today = date(2026, 8, 4)
-    records = [
-        BookRecord(symbol="AAPL", status="CLOSED", close_date="2026-08-04", realized_pnl=100.0),
-        BookRecord(symbol="MSFT", status="CLOSED", close_date="2026-08-03", realized_pnl=50.0),
-        BookRecord(symbol="NVDA", status="CLOSED", close_date="2026-08-02", realized_pnl=-25.0),
-        BookRecord(symbol="TSLA", status="CLOSED", close_date="2026-08-01", realized_pnl=75.0),
-    ]
-    result = compute_behavioral_inputs(records, today=today)
-    check("e10001_behavioral_inputs_consecutive_wins", "BEHAVIOR", result.consecutive_wins == 2,
-          f"got {result.consecutive_wins}")
-
-
-def test_e10001_behavioral_inputs_recently_stopped_out():
-    """BEHAVIOR -- recently_stopped_out_symbols includes losses within the
-    window and excludes older losses and wins (WO-P000-E10.001 item 2.1)."""
-    from datetime import date
-    from domain.behavioral_history import compute_behavioral_inputs
-    from schemas import BookRecord
-    today = date(2026, 8, 4)
-    records = [
-        BookRecord(symbol="AAPL", status="CLOSED", close_date="2026-08-03", realized_pnl=-50.0),
-        BookRecord(symbol="MSFT", status="CLOSED", close_date="2026-07-20", realized_pnl=-30.0),
-        BookRecord(symbol="NVDA", status="CLOSED", close_date="2026-08-02", realized_pnl=40.0),
-    ]
-    result = compute_behavioral_inputs(records, today=today)
-    ok = result.recently_stopped_out_symbols == ["AAPL"]
-    check("e10001_behavioral_inputs_recently_stopped_out", "BEHAVIOR", ok,
-          f"got {result.recently_stopped_out_symbols}")
-
-
-def test_e10001_evaluate_signal_wires_behavioral_inputs():
-    """SOURCE -- evaluate_signal.py must pass the computed behavioral
-    inputs into behavioral_vote(), not just symbol (WO-P000-E10.001 item
-    2.1 -- confirmed gap, all 5 params were dead defaults, revenge-trade/
-    overtrading/streak-chasing checks had never fired)."""
-    src = (ROOT / "application" / "evaluate_signal.py").read_text(encoding="utf-8")
-    ok = ("compute_behavioral_inputs(records)" in src
-          and "recently_stopped_out_symbols=behavioral.recently_stopped_out_symbols" in src
-          and "orders_today=behavioral.orders_today" in src
-          and "consecutive_wins=behavioral.consecutive_wins" in src)
-    check("e10001_evaluate_signal_wires_behavioral_inputs", "SOURCE", ok)
-
-def test_e10001_earnings_window_moved_behavior_preserved():
-    """BEHAVIOR -- domain.earnings_window.earnings_in_window() must still
-    return True for an earnings date inside the configured window, after
-    being moved out of application/evaluate_signal.py (WO-P000-E10.001
-    item 2.2 -- a move, not a rewrite)."""
-    from datetime import date, timedelta
-    from domain.earnings_window import earnings_in_window
-    import config
-    near_date = (date.today() + timedelta(days=config.EARNINGS_WINDOW_FORWARD_DAYS - 1)).isoformat()
-    far_date = (date.today() + timedelta(days=config.EARNINGS_WINDOW_FORWARD_DAYS + 10)).isoformat()
-    ok = earnings_in_window(near_date) is True and earnings_in_window(far_date) is False
-    check("e10001_earnings_window_moved_behavior_preserved", "BEHAVIOR", ok)
-
-
-def test_e10001_evaluate_options_wires_macro_vote():
-    """SOURCE -- evaluate_options() must call macro_vote() with
-    defined_risk_confirmed=True and merge BLOCK/CAUTION into the options
-    council verdict (WO-P000-E10.001 item 2.2 -- confirmed gap: options
-    previously got zero earnings/binary-event check)."""
-    src = (ROOT / "application" / "evaluate_options.py").read_text(encoding="utf-8")
-    ok = ("macro_vote(" in src
-          and "defined_risk_confirmed=True" in src
-          and "macro.decision == Decision.BLOCK" in src)
-    check("e10001_evaluate_options_wires_macro_vote", "SOURCE", ok)
-
-
-def test_e10001_evaluate_spread_wires_macro_vote():
-    """SOURCE -- evaluate_spread() must call macro_vote() with
-    defined_risk_confirmed=True and merge BLOCK into the spread council
-    verdict (WO-P000-E10.001 item 2.2 -- confirmed gap: spreads previously
-    got zero earnings/binary-event check, evaluate_spread() never called
-    the main council at all)."""
-    src = (ROOT / "application" / "evaluate_spread.py").read_text(encoding="utf-8")
-    ok = ("macro_vote(" in src
-          and "defined_risk_confirmed=True" in src
-          and "macro.decision == Decision.BLOCK" in src
-          and "snapshot_raw: dict" in src)
-    check("e10001_evaluate_spread_wires_macro_vote", "SOURCE", ok)
-
-
-def test_e10001_commands_passes_snapshot_to_evaluate_spread():
-    """SOURCE -- commands.py must pass snapshot_raw=snapshot to
-    evaluate_spread() so the new MACRO check has earnings data to work
-    with (WO-P000-E10.001 item 2.2)."""
-    src = (ROOT / "application" / "commands.py").read_text(encoding="utf-8")
-    ok = "snapshot_raw=snapshot, long_chain_path=chain_path" in src
-    check("e10001_commands_passes_snapshot_to_evaluate_spread", "SOURCE", ok)
-
-
-def test_e10001_spread_council_result_has_cautions_field():
-    """SOURCE -- SpreadCouncilResult must have a cautions list so MACRO
-    CAUTION has somewhere to go without inventing a third verdict value
-    for a field documented as PASS/BLOCK-only (WO-P000-E10.001 item 2.2)."""
-    src = (ROOT / "domain" / "spread_council.py").read_text(encoding="utf-8")
-    ok = "cautions: list" in src
-    check("e10001_spread_council_result_has_cautions_field", "SOURCE", ok)
-
-def main():
-    tests = [v for k, v in list(globals().items()) if k.startswith("test_")]
-    for t in tests:
-        try:
-            t()
-        except Exception as e:
-            check(t.__name__, "ERROR", False, repr(e))
-
-    failed = [r for r in RESULTS if not r[2]]
-    for name, kind, passed, detail in RESULTS:
-        mark = "PASS" if passed else "FAIL"
-        line = f"[{mark}] ({kind}) {name}"
-        if detail and not passed:
-            line += f" -- {detail}"
-        print(line)
-
-    print(f"\n{len(RESULTS) - len(failed)}/{len(RESULTS)} passed")
-    sys.exit(1 if failed else 0)
-
-
-if __name__ == "__main__":
-    main()
+    assert is_market_open_now(labor_day_2026) is False, "holiday must not report open"
+    assert is_market_open_now(ordinary_weekday) is True, "ordinary weekday must report open"

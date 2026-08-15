@@ -9,6 +9,63 @@ the top, reference sections below.
 
 ---
 
+**>>> 2026-08-12 WO-P800-E4.004 remaining 4 Bases files fixed + p800-project-context skill created:**
+
+Prior session (P_400, same day) found and fixed 2 of 6: `P400_Trades.base`,
+`P020_Performance.base` -- top-level `filter:`/`conditions:`/`conjunction:`
+keys are fabricated, not real Obsidian Bases schema; the plugin silently
+ignored them and every base rendered the entire vault unfiltered. This
+session fixed the remaining 4: `P300_Signals.base`, `P115_Evaluations.base`,
+`Open_Positions.base`, `KB_Articles.base`. Converted to real syntax
+(`filters:` plural, `and`/`or` expression lists, `properties:` for display
+names, `views[].order`/`sort`). Each archived before edit
+(`{name}.bak_2026-08-12`).
+
+`P300_Signals.base` and `P115_Evaluations.base` had a compound defect --
+fabricated schema AND still pointed at the pre-rename `TradeManagement/P300`
+and `TradeManagement/P115` paths (never got WO-P800-E3.003's pass). Both
+confirmed dead on disk; new `file.inFolder("TradeOrderManagement/<x>")`
+target confirmed live: P300 582 files, P115 1,484 files. `P300_Signals.base`
+kept its already-valid view-level WATCH-signal filter untouched, only added
+top-level folder scoping (global+view filters AND together per spec).
+
+`KB_Articles.base` -- straightforward folder-path fix, `KnowledgeBase`
+confirmed live at 99 files.
+
+`Open_Positions.base` -- different shape, no folder path. Filters on
+`lifecycle_status`/`traded`/`outcome` properties with an OR/AND nest;
+converted `outcome isEmpty` to `outcome.isEmpty()` method-call syntax. This
+one is the least-verified of the six -- the `.isEmpty()` pattern hasn't been
+confirmed live anywhere else in this WO. Flagged in the WO for Tony to
+spot-check first.
+
+**Also created `p800-project-context` SKILL** --
+`.claude\skills\p800-project-context\SKILL.md`, 197 lines, UTF8-no-BOM/LF.
+First always-loaded context layer for P_800; gap flagged by Tony at session
+start as part of why the fabricated-schema bug sat undetected since
+creation. Documents the TradeManagement-vs-TradeOrderManagement path
+confusion, the real vs. fabricated Bases syntax (as Anti-Pattern #1/#2), the
+EC-004 Pydantic `extra="forbid"` lesson, and P_800's ownership boundary.
+Written to disk only -- Tony still needs to add it live via Customize ->
+Skills (Protocol E).
+
+**Process miss, self-caught:** `WO-P800-E4.004.md` was overwritten directly
+without archiving first, breaking Archive-before-modify. Backfilled
+`WO-P800-E4.004_backup_2026-08-12.md` from the pre-edit version still held in
+session context (not from disk, since the original was already gone) --
+noted here since it's a process gap, not a clean archive-then-edit.
+
+**Not done this session:**
+- Live row-count verification in Obsidian for all 4 newly-fixed bases (Tony)
+- P_300 Ack on `P300_Signals.base`, P_115 Ack on `P115_Evaluations.base`
+- `.isEmpty()` syntax spot-check on `Open_Positions.base` specifically
+- Independent Review (separate session, per WO_COMPLETION_GATE)
+- Skill added live in the app (disk write only, per Protocol E)
+- Sweep of P_300/P_115 skill files for the same fabricated-schema description
+  (WO's own Next Session Prep #4, not yet done)
+
+---
+
 **>>> 2026-07-25 WO-P800-E3.003 P_800-side complete (vault rename TradeManagement -> TradeOrderManagement):**
 
 Tony approved P_800's piece only. Archived `obsidian_writers\config.py` ->
@@ -100,44 +157,69 @@ and `domain\signal_schemas.py`, both present on disk but undocumented.
 
 ## Current State
 
-**Files edited this session** (all archived before modify, all written
-UTF8-no-BOM / LF-only, all mtime-verified after write):
+**Files edited this session (2026-08-12)** (all archived before modify
+except the WO backfill noted above; all written UTF8-no-BOM / LF-only, all
+mtime/BOM/CRLF-verified after write):
 
 | File | Change | Archive |
 |---|---|---|
-| `obsidian_writers\config.py` | CRLF->LF, stale Ack text | `config_backup_2026-07-24_WO-P400-E3.011.py` |
-| `docs\P_800_Interface_Arch_Part2_Bases_Dashboard_v1_0.md` | 5E/5F/5H marked Done | `docs\backups\P_800_Interface_Arch_Part2_backup_2026-07-24.md` |
-| `docs\P_800_SYSTEM_DOCUMENTATION.md` | Section 0 + 7.2 corrections | `docs\backups\P_800_SYSTEM_DOCUMENTATION_v4_1_backup_2026-07-24.md` |
-| `work_orders\WO-P800-E3.002.md` | CLOSED + review section | `WO-P800-E3.002_backup_2026-07-24.md` |
-| `work_orders\WO-P400-E3.011.md` | status header corrected | `WO-P400-E3.011_backup_2026-07-24.md` |
+| `.claude\skills\p800-project-context\SKILL.md` | New file, 197 lines | n/a (new file) |
+| `trading_journal\Bases\P300_Signals.base` | Fabricated schema -> real, folder path fixed | `P300_Signals.base.bak_2026-08-12` |
+| `trading_journal\Bases\P115_Evaluations.base` | Fabricated schema -> real, folder path fixed | `P115_Evaluations.base.bak_2026-08-12` |
+| `trading_journal\Bases\Open_Positions.base` | Fabricated schema -> real (property filter) | `Open_Positions.base.bak_2026-08-12` |
+| `trading_journal\Bases\KB_Articles.base` | Fabricated schema -> real | `KB_Articles.base.bak_2026-08-12` |
+| `work_orders\WO-P800-E4.004.md` | Scope table updated, all 6 marked fixed | `WO-P800-E4.004_backup_2026-08-12.md` (backfilled, see process-miss note above) |
 
-**Vault state at session close:** P115 1483 · P300 403 · P400 190 (+1 paper) ·
-P020 202 · KnowledgeBase 77 · Bases 6 · Dashboard.md present.
+**Vault state, confirmed live this session:** P300 582 · P115 1,484 ·
+KnowledgeBase 99 (via `TradeOrderManagement\<x>` / `KnowledgeBase\` file
+counts). P400 and P020 counts not reverified this session -- last known
+(2026-07-25): P400 190 (+1 paper), P020 202. Bases 6/6 files now real schema
+(all six converted as of this session; row-count live-verify in the Obsidian
+app itself still outstanding -- see Open Items).
 
-**Account/posture at session open:** $32,072.00 · risk_mode OFF · SPY -3.71 /
-QQQ -8.07 / avg -5.89.
+**Account/posture:** not pulled this session.
 
 ---
 
 ## Open Items
 
-1. **WO-P400-E3.011 live re-verification** -- next `APPROVED_WITH_SEVERE_WARNING`
+1. **WO-P800-E4.004 live row-count verification -- DONE 2026-08-12.**
+   Tony confirmed via screenshots: P400_Trades 405, P300_Signals 187,
+   P115_Evaluations 1,485 (1 off the 1,484 disk count -- drift, not a bug),
+   Open_Positions 6 (card view, `.isEmpty()` syntax confirmed working).
+   KB_Articles not screenshotted -- same proven pattern, lower risk.
+2. **WO-P800-E4.004 -- P_300 and P_115 Acks still needed** on their
+   respective `.base` fixes, per WO_COMPLETION_GATE caller propagation.
+3. **Open_Positions empty `stop_price`/`target_1`/`account_id` -- NOT a bug
+   (Tony, 2026-08-12).** P_115 no longer provides those fields -- ownership
+   moved to P_400. Filter/schema confirmed correct in the screenshot; the
+   empty cells are P_115 records correctly showing no data for fields it
+   doesn't own. `Open_Positions.base` mixes both sources (`source: P115` /
+   `source: P400`) by design, so this is expected on any P115-sourced card.
+   No WO needed.
+4. **`p800-project-context` SKILL** -- written to disk, not yet added live
+   in the app (Customize -> Skills). Won't auto-load until Tony does this.
+5. **Sweep P_300/P_115 skill files** for the same fabricated-Bases-schema
+   description (WO-P800-E4.004 Next Session Prep #4, carried over).
+6. **WO-P400-E3.011 live re-verification** -- next `APPROVED_WITH_SEVERE_WARNING`
    record must show `write_route=BUY` and no VERDICT_MAP warning. Only real
    gate left on that WO.
-2. **WO-P800-E3.003 (PENDING)** -- rename `TradeManagement` -> `TradeOrderManagement`
+7. **WO-P800-E3.003 (PENDING)** -- rename `TradeManagement` -> `TradeOrderManagement`
    hub-wide. Needs Tony's sign-off on approach before any file moves. Reverses
    the direction WO-P400-E2.012 concluded (deliberately, not a reopened defect).
-3. **Phase 5G** -- KB Templater template + Web Clipper config. Only Phase 5
+8. **Phase 5G** -- KB Templater template + Web Clipper config. Only Phase 5
    item still open. Also Open Item #4 in Interface Arch Part 2.
-4. **Six `*_backup_*.py` files sitting inside the canonical `obsidian_writers`
+9. **Six `*_backup_*.py` files sitting inside the canonical `obsidian_writers`
    package folder** from the 07-21 edits. Harmless unless imported, but they
    don't belong in a live package. Proposed: move to an `_archive\` subfolder.
    Flagged to Tony, not actioned.
-5. **System doc version bump** -- v4.1 with 2026-07-24 content changes. Tony's call.
-6. **PEH syntax check on `config.py`** -- offered, not staged.
-7. **Source of the recurring CRLF edits** -- normalized twice now (E2.019, E3.011)
-   without identifying the tool doing it. Third occurrence should trigger a real
-   investigation rather than another cleanup.
+10. **System doc version bump** -- v4.1 with 2026-07-24 content changes; also
+    now stale re: Bases fix (Section 5/7.1 caveat added via p800-project-context
+    SKILL, not yet corrected in the doc itself). Tony's call.
+11. **PEH syntax check on `config.py`** -- offered, not staged.
+12. **Source of the recurring CRLF edits** -- normalized twice now (E2.019, E3.011)
+    without identifying the tool doing it. Third occurrence should trigger a real
+    investigation rather than another cleanup.
 
 ---
 

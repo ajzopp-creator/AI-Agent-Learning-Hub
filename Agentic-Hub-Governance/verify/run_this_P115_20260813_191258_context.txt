@@ -1,0 +1,9 @@
+Purpose: STEP 2 emission - build/emit SIGNAL_V2 packet for DAL via P_115 cli.py
+Triggered by: P_116 Launchpad STEP 1-2, DAL Bounce setup, BUY verdict (HybridTier=7)
+Session: P_115 INIT 2026-08-13 (Thursday, August 13, 2026) 14:23 ET
+Fund Verification: PASSED (ROE 20.12%, Debt/Capital 49.1%, FCF positive) - recomputed Fund=4 matches submitted Fund=4
+Post-Earnings Check: CLEAR (last earnings 7/10/26, 24 sessions elapsed)
+200-MA: 26.5% below, STATUS label NORMAL -> zero penalty applied (per standing rule, chart label overrides raw pct)
+Expected output: Signal written: [path to *_v2.0.json] confirming P_400 inbox delivery
+On timeout: do not retry MCP; check for file existence in trading_journal\TradeOrderManagement\signals\ (or processed\ zip if P_400 already evaluated it) before handoff
+Do not change test assertions. Do not modify cli.py or any production file. This script only calls the existing emitter.

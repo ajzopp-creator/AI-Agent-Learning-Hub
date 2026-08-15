@@ -1,0 +1,5 @@
+NTAP signal pulled 2026-08-06 17:xx ET by Tony directive.
+Original: P115-2026-08-06-NTAP-001, BUY, entry 195.80, Fund=3/Anal=3/HybridTier=6.
+Reason: P_118 STEP 1 batch re-scan same day showed Fund=3/Anal=2/HybridTier=5 (PASS) --
+setup weakened after original emission, confirmed stale by Tony before P_400 processed it.
+Verified untouched in signals\ and absent from P_400/_archive folders at time of pull.

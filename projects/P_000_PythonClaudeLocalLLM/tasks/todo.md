@@ -1,13 +1,91 @@
-# LM Studio Wrapper — Project Status & Tasks
+## Current State -- 2026-08-07 (session close, ~21:30 ET)
 
-**File:** `integrations/lm_studio/tasks/todo.md`  
-**Version:** 1.1  
-**Date:** May 28, 2026  
-**Updated:** May 28, 2026 (Stage 1 COMPLETE)  
-**Current Stage:** Stage 2 (Integration Testing)  
-**Status:** ✅ STAGE 1 COMPLETE, Stage 2 READY
+NEXT SESSION -- START HERE: no single blocking priority. Several threads
+closed cleanly today with real verification, a few are genuinely still
+open -- read this in full, the ledger is ground truth for detail on any
+item, this is the index.
 
----
+CLOSED TODAY (verified against live disk state, not self-reported):
+- WO-P000-E14.001 -- LM Studio wrapper consolidation + CONTEXT_LENGTH
+  wiring. OWNER_DONE, Phases 1-4 complete, Independent Review passed
+  (genuinely separate session).
+- WO-P000-E4.001 -- Hub-wide session header rollout + INIT compression
+  (P_000/P_800/P_805) + system doc Section 3.5 + Path Standards table.
+  OWNER_DONE, Independent Review passed.
+- WO-P000-E3.001 -- Completion Gate WO itself closed out (Path Standards
+  table added, Hub-wide Affects audit clean). OWNER_DONE -- Independent
+  Review still genuinely PENDING, needs an actual separate session.
+- WO-P000-E7.001 -- P_400 doc stale `04-Shared-Resources` references
+  fixed and verified. OWNER_DONE -- Independent Review still genuinely
+  NOT PERFORMED, needs an actual separate session. Explicitly does NOT
+  count as reviewed just because today's fix landed.
+- WO-P000-E2.001 -- independently reviewed against live git state by a
+  session that was not the implementer. OWNER_DONE, Independent Review
+  passed. Not CLOSED -- downstream Acks pending.
+- WO-P000-E13.001 -- Phase 2 fully complete across all 11 projects with a
+  python\ dir (config landed, 3 initially-blocked projects unblocked via
+  config-only exclusion, 2 real production/test drift bugs found and
+  deliberately left broken with their own follow-on WOs, not silently
+  fixed). Phase 3 (migration) and Phase 4 (P_400 guard repair) NOT
+  started -- each needs its own separate approval per the WO's own text.
+
+NEW WOs FILED TODAY (both PENDING, unresolved):
+- WO-P300-E5.008 -- test_eval_incremental.py, orphaned by WO-P300-E4.006's
+  v2.0 redesign (not a WO-P000-E10.001 miss -- that attribution was
+  checked and corrected during filing). Needs a real decision: retire the
+  reuse-fraction test coverage or replace it against the new contract.
+- WO-P800-E4.002 -- test_p115_write.py schema drift against
+  obsidian_writers' Note Standard v1.1 (`signal_date`/`written_by` now
+  required, sample data predates that).
+
+GOVERNANCE CORRECTION TODAY (the one that actually matters most):
+End-of-prior-session chat recap wrongly claimed Independent Review had
+been performed on E3.001 and E7.001 -- the same session that did the
+OWNER_DONE work described that work as an independent review, which is
+structurally impossible (self-certification, the exact failure this
+Hub's whole Completion Gate exists to block). WO files themselves were
+accurate the entire time; only the free-text summary was wrong, because
+it was generated from memory of the session's actions instead of a live
+re-check. Caught by Tony, corrected on disk (both WO Status lines now
+state the real state accurately), and fixed at the protocol level, not
+just the instance: `system-doc-initializer` SKILL.md's Standing Rule
+broadened to cover positive claims (not just negatives), Protocol F3
+added (status-claim verification before any multi-item session-close
+summary), `WO_COMPLETION_GATE.md` gained a Session-Close Reporting Rule
+section, EC-005 logged in the skill's own log, EC-006 logged in
+`P_000_SYSTEM_DOCUMENTATION.md` (now v2.0). This todo.md entry was itself
+written under F2+F3 discipline -- WO statuses above were re-read live
+this turn, not pulled from earlier-session memory.
+
+ADDENDUM -- 2026-08-07, ~22:10 ET (after the entry above was written):
+- system-doc-initializer got one more edit: Protocol F3 and the Standing Rule
+  said the same thing twice (both written in the same session that created
+  them) -- consolidated so F3 points to the Standing Rule instead of
+  repeating it. No rule content lost.
+- peh-handoff v1.5->v1.6: new "Related, Not the Same" section
+  cross-referencing today's new handoffs\ pattern against its own verify\
+  pattern, so they don't get conflated or a third one invented later.
+- New standing memory entry: whenever a skill or Hub doc gets touched, also
+  check it for genuine compression opportunity in the same edit -- cut
+  verbosity/redundancy only, never operational content. Applied honestly
+  today: peh-handoff had nothing real to cut (already lean); the one real
+  find was the F3/Standing Rule duplication above.
+- Both skills confirmed re-uploaded live by Tony (Customize -> Skills) --
+  this is no longer a pending action.
+GENUINELY STILL OPEN, NOT DONE:
+- E3.001 and E7.001 both need an actual separate-session Independent
+  Review. Do not self-certify these again, including next session if it
+  happens to be the one that also touches these WOs for something else.
+- E13.001 Phase 3 (file migration: P_400's 32 files, P_300's 1 stray) and
+  Phase 4 (P_400 regression-guard repair) -- awaiting explicit go-ahead,
+  not started.
+- WO-P300-E5.008, WO-P800-E4.002 -- filed, not resolved.
+- Downstream Acks from P_115/P_300/P_400/P_020/P_010/P_805/P_800 still
+  pending on E14.001, E4.001, and E2.001 at each project's own next
+  INIT -- mechanical, not something P_000 can force from here.
+- `Agentic-Hub-Governance\handoffs\` -- new folder, introduced today for
+  Claude Code Desktop @mention handoffs, not yet documented anywhere as a
+  standing Hub convention. Worth a decision on whether it becomes one.
 
 ## Current Stage Summary
 

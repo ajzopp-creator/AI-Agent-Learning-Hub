@@ -1,12 +1,16 @@
 # C:\Users\Trader\AI-Agent-Learning-Hub\pyproject.toml
-# Hub-root editable package (WO-P000-E2.002).
-# ONE installed distribution ("hub_shared") mapping TWO flat top-level names:
+# Hub-root editable package (WO-P000-E2.002, extended WO-P000-E5.001).
+# ONE installed distribution ("hub_shared") mapping these top-level names:
 #   hub_lib            -> shared model-routing facade  (hub_lib\)
 #   shared_resources   -> hub-wide shared signal contract + utilities (shared_resources\)
-# Both packages are flat folders at Hub root, so a simple find with include
-# pinned to exactly these two trees is enough -- no package-dir mapping, no
-# nested hub_lib\hub_lib. include is pinned (NOT excludes) so setuptools never
-# scans projects\ venv\ integrations\.
+#   obsidian_writers    -> ported from P_800, Hub-level Obsidian write interface (WO-P000-E2.003)
+#   integrations        -> bare parent package only, so integrations.lm_studio resolves
+#   integrations.lm_studio -> Hub-level LM Studio module (WO-P000-E5.001), scoped
+#                             narrowly on purpose -- integrations.automation,
+#                             integrations.local_llm, integrations.mcp_servers
+#                             stay OUT of this install; not reviewed for this WO.
+# include is pinned (NOT excludes) so setuptools never scans projects\ venv\
+# or the rest of integrations\ beyond the lm_studio subtree named above.
 
 [build-system]
 requires = ["setuptools>=68", "wheel"]
@@ -30,4 +34,4 @@ all       = ["openai>=1.40", "anthropic>=0.40", "google-genai>=0.8"]
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["hub_lib*", "shared_resources*", "obsidian_writers*"]
+include = ["hub_lib*", "shared_resources*", "obsidian_writers*", "integrations", "integrations.lm_studio*"]

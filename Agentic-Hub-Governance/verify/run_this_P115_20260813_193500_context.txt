@@ -1,0 +1,9 @@
+Purpose: STEP 2 emission - build/emit SIGNAL_V2 packet for DXYZ via P_115 cli.py
+Triggered by: P_115 STEP 1-2, DXYZ ASYM setup (Destiny Tech 100, closed-end fund), HybridTier=5 + AsymmetricSetup
+Session: P_115 INIT 2026-08-13 (Thursday, August 13, 2026)
+Fund Verification: caveat noted - closed-end fund, non-standard financials, recomputed approx tier 3 vs submitted 2 (above, not a downside flag)
+Post-Earnings Check: N/A - fund reports NAV quarterly, no report within 3 sessions, next ~11/9/26
+200-MA: 4.7pct below, STATUS label NORMAL -> zero penalty applied
+Expected output: Signal written: [path to *_v2.0.json] confirming P_400 inbox delivery
+On timeout: do not retry MCP; check for file existence in trading_journal\TradeOrderManagement\signals\ before handoff
+Do not change test assertions. Do not modify cli.py or any production file.

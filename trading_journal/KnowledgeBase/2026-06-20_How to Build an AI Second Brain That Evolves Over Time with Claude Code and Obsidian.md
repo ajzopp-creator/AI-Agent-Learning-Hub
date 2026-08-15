@@ -12,6 +12,9 @@ ticker_relevance:
   - "MindStudio"
 sector:
 origin:
+review_status: reviewed-relevant
+review_date: 2026-08-11
+disposition: "Informs P_400/P_020/Obsidian performance-data architecture initiative (vault-as-memory-substrate, layered memory, feedback loops); not tied to a specific trading system"
 ---
 ## The Problem with Static Knowledge Systems
 

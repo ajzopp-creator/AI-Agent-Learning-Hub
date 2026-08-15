@@ -1,9 +1,9 @@
-# P_400 Trade Order Management ? System Architecture
+﻿# P_400 Trade Order Management ? System Architecture
 **Project ID:** P_400
 **Version:** 2.4 (Council Evidence Frameworks, Two-Tier Signal Flow, Deterministic Python Core, Guidelines Merged, Systems Lens, Phase E4 Live Data Automation, Post-Earnings Stabilization Check)
-**Last Updated:** 2026-07-24
+**Last Updated:** 2026-08-14
 **Maintained By:** Anthony Zoppi
-**Status:** Phase E2 CLOSED ? Phase E3 Design Locked
+**Status:** Phase E4 CLOSED ? Phase E5/E6 IN_PROGRESS (Tier-2B batch runner, Bases reconciliation)
 **Supersedes:** Architecture v1.0 (2026-06-03); P_400_TradeordermanagementGuidelines_v1.1 (merged into Section 3)
 
 ---
@@ -49,7 +49,7 @@ v1.0 was written before the SIGNAL_V2 migration completed. The following v1.0 re
 |---|---|
 | P400SIG schema, `*_signal.json` packets | SIGNAL_V2, `*_v2.0.json` packets |
 | Schema owned inside P_800 internals | `shared_resources\python_utils\signal_schemas.py` ? neutral cross-project contract; P_400 imports `SignalV2` from here only |
-| Per-project work order folders (`work_orders\PHASE_E1\`) | Shared single ledger: `04-Shared-Resources\work_orders\` (alias `Agentic-Hub-Governance\work_orders\`), 1-to-many schema, OWNER_DONE vs CLOSED lifecycle |
+| Per-project work order folders (`work_orders\PHASE_E1\`) | Shared single ledger: `Agentic-Hub-Governance\work_orders\` (real folder since 2026-07-11, ref WO-P000-E7.001), 1-to-many schema, OWNER_DONE vs CLOSED lifecycle |
 | Project path `P_400_Trade_Management_System` | `projects\P_400_TradeOrderManagement\` |
 | Primary AI engine: Perplexity | **Primary AI engine: Claude Desktop** with windows-mcp toolchain; Perplexity artifacts archived under `docs\Perplexity\` |
 | P_400 reader: PENDING | **BUILT and CLOSED** (WO-P400-E1.001): nine files, layered architecture, 4/4 tests, 34 live packets validated |
@@ -272,7 +272,7 @@ Final output is broker-ready and concise: council status, stock order format, an
 
 ### 3.12 Work Order Governance
 
-Work orders live in the shared single ledger `04-Shared-Resources\work_orders\` as plain filesystem markdown (never in the Obsidian vault). One Owner, many Affects, per-consumer Acks. OWNER_DONE = deliverable shipped and verified; CLOSED = all consumers Ack'd. Every P_400 session runs the STEP 0.5 Work Order Review gate before work proceeds. WO closure follows the P_000 Completion Gate checklist (WO-P000-E3.001) once that WO lands.
+Work orders live in the shared single ledger `Agentic-Hub-Governance\work_orders\` as plain filesystem markdown (never in the Obsidian vault). One Owner, many Affects, per-consumer Acks. OWNER_DONE = deliverable shipped and verified; CLOSED = all consumers Ack'd. Every P_400 session runs the STEP 0.5 Work Order Review gate before work proceeds. WO closure follows the P_000 Completion Gate checklist (WO-P000-E3.001) -- landed 2026-08-07, OWNER_DONE.
 
 ---
 

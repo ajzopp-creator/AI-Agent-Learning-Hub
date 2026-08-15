@@ -1,0 +1,40 @@
+{
+  "run_timestamp": "2026-08-07T11:26:31.057806-04:00",
+  "session_date": "2026-08-07",
+  "cash_available": 18894.78,
+  "posture": "FULL",
+  "screened_count": 2,
+  "passed_tier1": 2,
+  "evaluated": 2,
+  "candidates": [
+    {
+      "symbol": "FSLR",
+      "rank": 1,
+      "score": 0.6276,
+      "score_components": {
+        "rr": 0.3797,
+        "atr_headroom": 1.0,
+        "spread": 0.8986,
+        "liquidity": 0.5988,
+        "drift": 0.0
+      },
+      "vehicle": "STOCK",
+      "verdict": "APPROVED",
+      "rr_at_t1": 2.278,
+      "atr_headroom": 4.0212,
+      "spread_pct_of_price": 0.1014,
+      "drift_pct": 2.974,
+      "dollar_risk": 341.4,
+      "quantity": 6
+    }
+  ],
+  "skipped": [
+    {
+      "symbol": "CGON",
+      "reason": "No earnings entry for CGON. Add it to the session earnings file; this symbol will not be evaluated without one."
+    }
+  ],
+  "cumulative_risk_if_all_taken": 341.4,
+  "heat_cap": 3761.8068,
+  "heat_warning": null
+}

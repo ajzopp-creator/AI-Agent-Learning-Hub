@@ -1,7 +1,7 @@
 """
 FILE: daily_evaluate_pipeline.py
-VERSION: 1.22
-DATE: 2026-07-21
+VERSION: 1.23
+DATE: 2026-08-11
 AUTHOR: Anthony Zophi + Claude
 LAYER: application
 DESCRIPTION:
@@ -57,6 +57,13 @@ DESCRIPTION:
                 python application/daily_evaluate_pipeline.py --xlsx <path>
 
 CHANGELOG:
+    - 2026-08-11 v1.23 (WO-P000-E5.001): lm_studio_status import restored to
+      a P_300-owned infrastructure/ wrapper -- reverts the v1.12 (2026-05-30)
+      regression that pointed this file at integrations.lm_studio directly,
+      a Process Boundary Standard violation (LMS status is infra, not
+      orchestration). Hub root sys.path bootstrap removed -- no longer
+      needed now that integrations.lm_studio resolves via the Hub's
+      editable install alongside shared_resources.
     - 2026-07-21 v1.22 (WO-P300-E4.008): IntelliScan support_1/support_2
       now sanity-checked against _close (positive AND within 50% of price)
       before use, not just the SIGNAL_V2 schema's positive-only check.
@@ -151,11 +158,6 @@ _PYTHON_DIR = Path(__file__).resolve().parent.parent
 if str(_PYTHON_DIR) not in sys.path:
     sys.path.insert(0, str(_PYTHON_DIR))
 
-# Hub root bootstrap so integrations.lm_studio resolves from any CWD.
-# Path: daily_evaluate_pipeline.py -> application/ -> python/ -> P_300_*/ -> projects/ -> Hub root
-_HUB_ROOT = Path(__file__).resolve().parent.parent.parent.parent.parent
-if str(_HUB_ROOT) not in sys.path:
-    sys.path.insert(0, str(_HUB_ROOT))
 
 from application import ledger_record  # noqa: E402
 from config import (  # noqa: E402
@@ -172,7 +174,7 @@ from domain.volatility_divergence import (  # noqa: E402
 )
 from infrastructure import catalog_reader, report_writer, signal_emitter  # noqa: E402
 from write_signal_to_obsidian import parse_report_and_write as _obsidian_write  # noqa: E402
-from integrations.lm_studio.infrastructure.lm_studio_status import check as lm_studio_check  # noqa: E402
+from infrastructure.lm_studio_status import check as lm_studio_check  # noqa: E402
 from shared_resources.python_utils.atr import compute_atr_wilder  # noqa: E402
 from utilities.intelliscan_reader import (  # noqa: E402
     load_intelliscan, get_support_levels,

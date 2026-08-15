@@ -1,0 +1,19 @@
+{
+  "run_timestamp": "2026-08-08T15:26:44.834526-04:00",
+  "session_date": "2026-08-08",
+  "cash_available": 13382.0,
+  "posture": "FULL",
+  "screened_count": 1,
+  "passed_tier1": 1,
+  "evaluated": 1,
+  "candidates": [],
+  "skipped": [
+    {
+      "symbol": "CGON",
+      "reason": "fetch-snapshot failed -- see console output above"
+    }
+  ],
+  "cumulative_risk_if_all_taken": 0.0,
+  "heat_cap": 3761.8068,
+  "heat_warning": null
+}

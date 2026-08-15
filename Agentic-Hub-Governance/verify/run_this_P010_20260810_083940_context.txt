@@ -1,0 +1,50 @@
+P_010 -- WO-P010-E1.003 failure-injection test, 2026-08-10
+
+WHAT THIS TESTS
+Reproduces the exact WO-P010-E1.002 failure (QQQ grid export renamed to drop
+its closing paren) against the new E1.003 halt/flag/staleness mechanism, then
+restores and confirms clean recovery. This matches the WO's own VERIFY section
+word for word: break a grid filename, run the morning batch, confirm it halts
+before the note writer and fires a toast, then restore and confirm a clean
+re-run clears the flag.
+
+WHAT IT ACTUALLY DOES (real side effects, Tony has confirmed OK)
+1. Renames the live "History Grid (QQQ)_V3.xlsx" to the broken E1.002 pattern.
+2. Runs the REAL P_010_daily_posture.bat (not a simulation). This will:
+   - Fail STEP 1 with the expected file-not-found error
+   - Write MORNING_RUN_FAILED.flag
+   - Fire a real Windows toast notification ("P_010 Morning Run FAILED")
+   - Skip STEP 2 (note writer) per the new halt logic
+   - Still run STEP 3 (market_health.cli) -- confirmed independent, out of scope
+3. Restores the QQQ filename (wrapped in try/finally -- always runs, even on
+   a check failure or an uncaught exception in the script itself).
+4. Runs the batch again for a clean pass, confirms the flag clears and
+   P_010_RiskConfig.json gets a fresh timestamp + populated qqq_grid_date.
+
+SAFETY NET
+A manual-recovery manifest (_peh_test_restore_manifest.txt, project root) is
+written BEFORE the rename, deleted after a successful restore. If this script
+dies uncaught (Ctrl+C, process kill) before the finally block runs, that
+manifest tells you exactly what to rename back by hand.
+
+WHAT THIS CANNOT VERIFY ITSELF
+Whether the toast notification actually rendered on screen. The script prints
+a manual-check prompt at that point in its output -- Tony needs to confirm
+visually whether a "P_010 Morning Run FAILED" balloon appeared, since there's
+no MCP session live to check for it programmatically during an unattended run.
+
+SUCCESS CRITERIA
+PASS + exit 0 if every automated check passes (batch halted correctly, flag
+written then cleared, filename restored, clean re-run succeeded). The toast
+itself is a separate manual confirmation Tony reports back alongside the
+PASS/FAIL.
+
+ON FAILURE
+If the restore step itself failed (QQQ filename still broken at the end),
+STOP and tell Tony immediately -- do not attempt further fixes, live posture
+data is broken until that's manually corrected. For any other failed check,
+read which one, fix the specific mechanism it points to (flag write logic,
+bat halt logic, or the staleness check), do not touch the restore/finally
+logic. Do not change test assertions to force a pass.
+
+Run with: C:\Users\Trader\.conda\envs\p140\python.exe

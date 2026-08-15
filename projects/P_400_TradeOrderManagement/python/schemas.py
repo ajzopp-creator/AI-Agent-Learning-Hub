@@ -20,6 +20,12 @@ __all__ = [
     "AccountParams",
     "SnapshotDict",
     "OptionChainInput",
+    "EarningsEntry",
+    "EarningsCalendarCache",
+    "SymbolSpreadEntry",
+    "LastSpreadCache",
+    "RankedCandidate",
+    "BatchReport",
 ]
 
 
@@ -82,6 +88,7 @@ class SnapshotDict(BaseModel):
     iv_rank: Optional[float] = None
     option_chain_ref: Optional[Dict] = None
     market_open: bool = True       # set False for pre-market; tape_vote uses this
+    price_basis: str = "live"          # "live" | "close" -- set by fetch_snapshot when market closed, WO-P400-E5.005
     guideline_stop_override: Optional[float] = None   # P_400 re-derived stop (drift reconciliation)
 
 
@@ -120,3 +127,147 @@ class OptionChainInput(BaseModel):
             if not (bid <= v <= ask):
                 raise ValueError(f"mid {v} must be between bid {bid} and ask {ask}")
         return v
+
+
+# ---------------------------------------------------------------------------
+# Tier-2B batch runner (WO-P400-E5.003)
+# ---------------------------------------------------------------------------
+
+class EarningsEntry(BaseModel):
+    """One symbol's earnings/sector data from the session-scoped earnings file.
+
+    Bridge until WO-P400-E5.002 automates acquisition. Written once per
+    session from the manual web-search pass; read by batch-2b.
+
+    next_earnings_date is Optional because "no confirmed date" is a real,
+    honest state (PNR, E5.002 log entry 2026-07-29). It is NOT the same as
+    "clear" -- None means unknown, and the runner must surface that rather
+    than treat it as no-earnings. Never fabricate a date to fill this.
+    """
+
+    symbol: str
+    next_earnings_date: Optional[str] = None    # YYYY-MM-DD, None = unknown
+    last_earnings_date: Optional[str] = None    # YYYY-MM-DD
+    sector: Optional[str] = None
+    source: str = "web_search"
+    date_confirmed: bool = False                # False = estimated from cadence
+
+    @field_validator("next_earnings_date", "last_earnings_date")
+    @classmethod
+    def iso_date_or_none(cls, v: Optional[str]) -> Optional[str]:
+        """Reject malformed dates loudly rather than silently treating as clear."""
+        if v is None:
+            return v
+        from datetime import date
+        try:
+            date.fromisoformat(v)
+        except ValueError:
+            raise ValueError(f"earnings date {v!r} is not ISO YYYY-MM-DD")
+        return v
+
+
+class EarningsCalendarCache(BaseModel):
+    """Locally cached earnings calendar, refreshed on a monthly manual run
+    (WO-P400-E5.002).
+
+    Reuses EarningsEntry per-symbol -- same fields, same honest-null rules,
+    whether an entry came from the old manual web-search file or this
+    automated pull. pulled_date is the cache's own freshness marker, not
+    per-symbol -- the whole cache refreshes in one FMP call.
+    """
+
+    pulled_date: str    # YYYY-MM-DD, ET, when this cache was built
+    entries: Dict[str, EarningsEntry]
+
+
+class SymbolSpreadEntry(BaseModel):
+    """One symbol's last observed live regular-session half-spread.
+
+    WO-P400-E5.005: written every time a live (market-open) quote is
+    fetched, read when pricing a closed-market snapshot off the day's
+    close -- real observed friction, just measured earlier, not a
+    synthetic zero.
+    """
+
+    half_spread: float
+    price: float          # price at observation time, sanity/audit only
+    observed_at: str      # ISO-8601 UTC, live quote timestamp
+
+
+class LastSpreadCache(BaseModel):
+    """Locally cached per-symbol half-spreads (WO-P400-E5.005).
+
+    No single pulled_date like EarningsCalendarCache -- each symbol updates
+    independently on its own next live fetch, not a batch refresh.
+    """
+
+    entries: Dict[str, SymbolSpreadEntry] = {}
+
+
+class RankedCandidate(BaseModel):
+    """One scored row in the batch-2b ranked table.
+
+    `score` is a deterministic composite. It is explicitly NOT a probability
+    and NOT a confidence estimate -- P_400 has no probability model and this
+    field must never be presented as one. score_components is carried so the
+    ordering is auditable: a rank with no visible derivation is a number to
+    argue with, not a number to trade on.
+    """
+
+    symbol: str
+    rank: int
+    score: float = Field(ge=0.0, le=1.0)
+    score_components: Dict[str, float]
+
+    vehicle: Literal["STOCK", "OPTION", "SPREAD", "OPTION_OVERRIDE_ONLY", "NEITHER"]
+    verdict: str
+
+    rr_at_t1: float
+    atr_headroom: float          # stop distance / atr_14; >= 1.0 by QUANT gate
+    spread_pct_of_price: float
+    drift_pct: float
+    dollar_risk: float
+    quantity: int                # shares or contracts, per vehicle
+
+    @field_validator("atr_headroom")
+    @classmethod
+    def headroom_at_least_floor(cls, v: float) -> float:
+        """Anything ranked has cleared QUANT's stop >= 1x ATR gate.
+
+        A value below 1.0 means a BLOCKED candidate reached ranking -- that is
+        a wiring bug, not a low score, and must fail loudly rather than sort
+        to the bottom where nobody looks. Live shape this guards against:
+        INDI 2026-08-05, R:R 22.78 on a 0.05 stop against 0.31 ATR (0.16x).
+        """
+        if v < 1.0:
+            raise ValueError(
+                f"atr_headroom {v} < 1.0 -- candidate should have been BLOCKED "
+                "by QUANT STOP_TOO_TIGHT and never reached ranking"
+            )
+        return v
+
+
+class BatchReport(BaseModel):
+    """Persisted output of one batch-2b run.
+
+    cumulative_risk_if_all_taken is reported, never enforced (WO-P400-E5.003
+    Scope 4, Tony's decision): each evaluate sizes independently against the
+    book as it stands, and the runner shows the summed figure rather than
+    silently arbitrating which trades a batch may contain.
+    """
+
+    run_timestamp: str
+    session_date: str
+    cash_available: float
+    posture: str
+
+    screened_count: int
+    passed_tier1: int
+    evaluated: int
+
+    candidates: List[RankedCandidate] = []
+    skipped: List[Dict[str, str]] = []      # {symbol, reason}
+
+    cumulative_risk_if_all_taken: float
+    heat_cap: float
+    heat_warning: Optional[str] = None

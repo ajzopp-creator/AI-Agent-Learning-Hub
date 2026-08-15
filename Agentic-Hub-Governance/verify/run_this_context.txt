@@ -1,30 +1,34 @@
-PEH VERIFY -- 2026-08-04 -- Independent review re-run for WO-P300-E5.002 / WO-P300-E5.005 closure
+PEH RUN -- 2026-08-04 -- Archive the 20 mined XLSX left in data\bulk\mine\
 
-WHAT THIS SCRIPT TESTS:
-Re-runs 5 existing test files as subprocesses (p140 interpreter), fresh,
-in a session that wrote none of them -- the WO_COMPLETION_GATE Independent
-Review Requirement. Does not modify any test or production code.
+CONTEXT:
+Today's 12:03 BulkAddPattern batch promoted cleanly to live
+(080426catalog.db confirmed on disk, 175.3 MB, .bak matches yesterday's
+live size exactly -- catalog is fine) but the archive-mined step failed
+on all 20 files: E: drive was completely full (0 GB free), zip write hit
+[Errno 28] No space left on device. You've since freed space on E:
+(682.82 GB free now) and the corrupt 994-byte zip stub is already gone.
 
-  1. test_verify_ingestion.py -- WO-P300-E5.002/E5.005 shared completion-
-     gate test (verify_and_promote() fail-branch + pass-branch). Already
-     run once for real 2026-07-30 (ALL CHECKS PASSED); this is an
-     independent re-confirmation, not a repeat.
-  2. test_walkforward_report_io.py -- WO-P300-E5.005 gate report parser
-  3. test_promote_gate.py -- WO-P300-E5.005 domain decision logic
-  4. test_promote_marker_io.py -- WO-P300-E5.005 stop-marker read/write
-  5. test_cli_registry_inventory.py -- confirms 18 commands / 6 modules
-     still registered in cli_commands/main.py (no drift since 2026-07-29)
+WHAT THIS SCRIPT DOES:
+Calls the same archive_mined_file.run_archive() function archive-mined
+--xlsx normally calls, once per file, in the original batch's order.
+For each file: appends to Aug26BULKPattern.zip in E:\AI-Agent-Learning-
+Hub_BackupFiles\, verifies the entry actually landed in the zip, and
+only then deletes the source XLSX from data\bulk\mine\. Does NOT touch
+the catalog, does NOT re-run mine-patterns or ingest-mined -- promote
+already happened, this is archive-only.
 
 SUCCESS CRITERIA:
-All 5 subprocess calls exit 0. Script prints "ALL 5 TEST FILES PASSED"
-and itself exits 0.
+"Archived 20 / 20 files." at the end, exit 0. data\bulk\mine\ should be
+empty of these 20 files afterward (each deleted only after its zip entry
+verified).
 
 IF IT FAILS:
-- Any single file's non-zero exit -- paste the full output for that file
-  back, do not summarize. This blocks closing WO-P300-E5.002 and/or
-  WO-P300-E5.005 until root-caused.
-- Import errors -- likely a source file changed since 2026-07-29/30;
-  report which import failed, do not guess a fix.
-
-Do not change test assertions in any of the 5 files. Read-only against
-the real project -- no catalog writes, no file writes outside tempfile.TemporaryDirectory().
+- Any single file failing (still E: space issue, permissions, etc.) --
+  paste the full output, do not summarize. That file's source XLSX is
+  guaranteed to still be sitting in data\bulk\mine\ (the function never
+  deletes on failure) -- nothing is lost, just re-run this script once
+  fixed.
+- If it stops partway, safe to just re-run -- already-archived files are
+  skipped ("not found" -- they were deleted from data\bulk\mine\ on
+  their successful archive) and the zip's own "already in zip" check
+  prevents duplicate entries either way.

@@ -1,0 +1,19 @@
+{
+  "run_timestamp": "2026-08-07T09:31:16.609736-04:00",
+  "session_date": "2026-08-07",
+  "cash_available": 18894.78,
+  "posture": "FULL",
+  "screened_count": 9,
+  "passed_tier1": 1,
+  "evaluated": 1,
+  "candidates": [],
+  "skipped": [
+    {
+      "symbol": "FSLR",
+      "reason": "verdict=BLOCKED (ADVERSE_DRIFT)"
+    }
+  ],
+  "cumulative_risk_if_all_taken": 0.0,
+  "heat_cap": 3761.8068,
+  "heat_warning": null
+}

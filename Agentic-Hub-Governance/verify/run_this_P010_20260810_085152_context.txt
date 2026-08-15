@@ -1,0 +1,35 @@
+P_010 -- WO-P010-E1.003 toast fix verification (v2, BurntToast), 2026-08-10
+
+WHAT THIS TESTS
+The v1 toast mechanism (NotifyIcon.ShowBalloonTip) was confirmed broken by a
+live test earlier today -- the PowerShell call returned success but no
+balloon ever appeared, because NotifyIcon needs an active Windows message
+loop that a bare console script doesn't have. toast_notify.py was rewritten
+to use the BurntToast PowerShell module (New-BurntToastNotification) instead,
+a real WinRT toast with no message-loop requirement. BurntToast 1.1.0 is
+already installed (Install-Module -Scope CurrentUser, done this session).
+
+WHAT THIS SCRIPT CANNOT VERIFY ITSELF
+Whether the toast was actually visible. It can only confirm the mechanics --
+the module imports, the PowerShell call returns exit code 0. A PowerShell
+call "succeeding" is exactly what v1 did too, right before failing to render
+anything. The only real confirmation is Tony watching the screen.
+
+WHERE TO LOOK
+Bottom-right corner, standard Windows 10/11 toast notification area -- NOT
+the system tray icons area, that was v1's (broken) location.
+
+SUCCESS CRITERIA
+Script prints PASS if send_toast() returns True. That is necessary but NOT
+sufficient -- Tony must separately confirm he saw "P_010 Toast Fix
+Verification" actually render on screen. Report both back: the script's
+PASS/FAIL, and a plain yes/no on visibility.
+
+ON FAILURE
+If send_toast() returns False, check that BurntToast is still importable
+(Import-Module BurntToast in a plain PowerShell window) and that Windows
+notification settings haven't blocked PowerShell from showing toasts
+(Settings > System > Notifications). Do not change the test assertion --
+report the actual PowerShell error output back to Tony/Claude instead.
+
+Run with: C:\Users\Trader\.conda\envs\p140\python.exe

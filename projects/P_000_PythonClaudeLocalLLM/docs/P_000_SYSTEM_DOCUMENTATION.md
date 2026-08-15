@@ -7,9 +7,9 @@
 |---|---|
 | **Project ID** | P_000 |
 | **Project Name** | Python, Claude & Local LLM Learning Hub |
-| **Version** | 1.6 |
+| **Version** | 2.0 |
 | **Created** | March 8, 2026 |
-| **Last Updated** | 2026-07-29 |
+| **Last Updated** | 2026-08-11 |
 | **Owner** | Tony (Trader) |
 | **Status** | Active |
 
@@ -68,9 +68,9 @@ P_000 is the **foundation project** for the AI-Agent-Learning-Hub. It serves fiv
 |---|---|
 | **Hub** | AI-Agent-Learning-Hub — the root project folder containing all trading sub-projects |
 | **p140** | Shared conda environment used by ALL projects. Path: `C:\Users\Trader\.conda\envs\p140\` |
-| **LM Studio** | Local LLM application running Llama models. API endpoint: `http://localhost:1234/v1` |
+| **LM Studio** | Local LLM application running Llama models. API endpoint: `http://localhost:1234/api/v1` |
 | **DeepSeek R1 14B** | Primary local model (daily driver): `deepseek-r1-distill-qwen-14b` |
-| **Qwen 32B** | Batch processing model: `qwen2.5-coder-32b-instruct` |
+| **Qwen 32B** | Batch processing model: `qwen2.5-coder-32b-instruct-abliterated` |
 | **Llama 4 Scout** | Long-context specialist: `llama-4-scout-17b-16e-instruct` |
 | **TOS** | ThinkOrSwim — charting and ThinkScript development platform |
 | **ThinkScript** | Proprietary scripting language used inside ThinkOrSwim |
@@ -120,7 +120,7 @@ See `Local_LLM_Upgrade_Plan_V2.0.md` for full implementation detail.
 | Tier | Model | Use Case |
 |---|---|---|
 | **Primary (daily driver)** | deepseek-r1-distill-qwen-14b | Real-time analysis, coding, trade setup evaluation |
-| **Batch (heavy analysis)** | qwen2.5-coder-32b-instruct | Trade journal processing, document summarization, pipeline builds |
+| **Batch (heavy analysis)** | qwen2.5-coder-32b-instruct-abliterated | Trade journal processing, document summarization, pipeline builds |
 | **Long context (specialist)** | llama-4-scout-17b-16e-instruct | Documents over 128K tokens, full architecture ingestion |
 
 **Hardware context:** ASUS TUF Gaming F16 FX608LP — Intel Core Ultra 9 275HX (24 cores) + RTX 5070 Laptop (8GB GDDR7 VRAM) + 96GB DDR5 RAM.
@@ -228,11 +228,12 @@ AI-Agent-Learning-Hub/
 │       ├── config.py            # Model definitions, routing, endpoints
 │       ├── infrastructure/
 │       │   ├── lm_studio_api.py     # Shared interface — import get_wrapper_status() here
-│       │   └── lm_studio_launcher.py  # Auto-start LM Studio
+│       │   ├── lm_studio_launcher.py  # Auto-start LM Studio
+│       │   └── lm_studio_status.py  # Sync status wrapper — used by P_300 daily_evaluate/preflight_status
 │       ├── domain/
 │       │   └── task_router.py       # Task-to-model routing logic
 │       └── application/
-│           └── lm_studio_client.py  # Full async client (future use)
+│           └── lm_studio_client.py  # Full async client — used by P_000 cli.py and test_health_check.py
 └── docs/
     └── lm_studio/               # Shared LM Studio documentation
         ├── P_000_LMS_Integration_Guide.md
@@ -282,6 +283,19 @@ The Hub has two distinct shared layers. They are NOT duplicates -- keep them sep
 
 `Agentic-Hub-Governance` is a directory junction pointing at `04-Shared-Resources` from 2026-06-05 to 2026-07-11, when the junction was retired and the folder renamed to `Agentic-Hub-Governance` directly. The `$LEDGER` standard is `Agentic-Hub-Governance\work_orders`. Numbered top-level folders were retired 2026-06-05: 06-Experiments deleted (empty); 01-Learning-Path -> `_archive\`; 02-Production-Agents -> `docs\project_notes\production_agents\`; 03-Local-LLM (audio system, still working) -> `integrations\local_llm\`; 05-Documentation -> `docs\reference\`.
 
+#### Canonical Path Standards (added 2026-08-07, ref WO-P000-E3.001)
+
+Every project doc uses these paths, not project-local variants:
+
+| What | Canonical Path | Notes |
+|---|---|---|
+| Work order ledger | `Agentic-Hub-Governance\work_orders\` | Real folder since 2026-07-11 (ref WO-P000-E7.001) -- no longer a junction alias. |
+| Shared code library | `shared_resources\python_utils\` | `vault_interface.py` lives here permanently (WO-P000-E2.003 decision). |
+| Account parameters | `projects\P_000_PythonClaudeLocalLLM\config\P_000_Account_Parameters_Current.md` | Read live -- never hard-code values. |
+| Schwab Token Manager | `integrations\schwab_api\` | Shared -- never project-local. |
+| Hub editable install | `pyproject.toml` at Hub root | Covers hub_lib, shared_resources, obsidian_writers (after WO-P000-E2.003). |
+| p140 interpreter | `C:\Users\Trader\.conda\envs\p140\python.exe` | Always explicit -- never bare `pip` or `python`. |
+
 ### 3.4 AI Behavior Rules & Constraints
 
 **Claude MUST follow these rules in every session for this project:**
@@ -320,6 +334,31 @@ The Hub has two distinct shared layers. They are NOT duplicates -- keep them sep
 | **User is a VS Code novice** | Include explicit VS Code instructions when relevant |
 | **Step-by-step preferred** | Break tasks into clear numbered steps |
 | **Test before proceeding** | Always instruct user to test each component before moving to the next |
+
+---
+
+### 3.5 INIT Execution Pattern & Session Header Standard (added 2026-08-07, ref WO-P000-E4.001)
+
+**Session Header Format (Hub-wide, canonical)**
+
+Every project's INIT/SIP displays: `[Project_ID] [Day], [Month] [DD], [YYYY] [HH:MM] ET [optional session-type label]`
+
+- Example (no label): `P_300 Wednesday, June 17, 2026 14:32 ET`
+- Example (with label): `P_115 Thursday, June 18, 2026 07:50 ET Market Analysis`
+
+Trailing label is optional — include it only when a project needs to distinguish parallel sessions (P_115 has carried one since v2.7 for this reason). No mandatory separator between date and time — an earlier draft required `--`; dropped so a working older pattern (P_115) didn't have to change to match a newer one chosen somewhat arbitrarily.
+
+**INIT Execution Bypass Pattern (preflight-bat + status JSON)**
+
+Problem: windows-mcp's PowerShell/Python transport has a hard ~4-minute timeout ceiling, not tunable at the session level (peh-handoff SKILL). Any INIT step invoking Python via `windows-mcp:PowerShell` from a live chat session risks stalling on it, even for small outputs.
+
+Pattern (proven on P_300, WO-P000-E4.001):
+1. Move the Python work out of the chat-session execution path — a `.bat` the operator runs outside Claude, on their own schedule (same model as `P300_AddPattern.bat` / `P300_DailyEval_v2.bat`).
+2. The `.bat` runs a p140 script that gathers whatever INIT needs using existing project logic only — nothing reimplemented at the boundary — and writes the result plus a generation timestamp to a project-level status JSON (one Pydantic schema per status file).
+3. INIT reads that JSON via `windows-mcp:FileSystem` (mode=read) instead of invoking Python via `windows-mcp:PowerShell`. Zero subprocess calls remain in the INIT path.
+4. Staleness check: JSON timestamp older than the last session close → INIT displays WARNING, asks the operator to re-run the `.bat` — same HALT/reconcile posture a subprocess timeout would have produced, triggered by a stale timestamp instead.
+
+Any project with a Python-dependent INIT step (P_115, P_400, P_805, P_800, P_020, P_010) can adopt this directly — name its own bat/JSON pair, define a Pydantic schema for the fields that step needs, swap the `windows-mcp:PowerShell` call for a `windows-mcp:FileSystem` read plus the staleness check above. Reference implementation: P_300's `P_300_Preflight.bat` / `python\utilities\preflight_status.py` / `python\schemas_preflight.py`.
 
 ---
 
@@ -377,6 +416,8 @@ The Hub has two distinct shared layers. They are NOT duplicates -- keep them sep
 | 003 | 2026-03-08 | Medium | Claude writing monolithic scripts (everything in main.py) | Always split into domain / infrastructure / application layers; hard limit 300 lines per file |
 | 004 | 2026-06-30 | High | An untraced session added extra="forbid" to P400Record (obsidian_writers\domain\vault_schemas.py) without accounting for write_handler.py's unconditional injected source key -- silently broke every P400 vault write for a ~90min window | Pydantic models backing a shared write path must be tested against the actual writer's injected/derived fields, not just the caller's explicit payload, before adding extra="forbid" |
 | 005 | 2026-07-29 | Medium | WOs reaching OWNER_DONE without their Completion Gate checklist block present (WO-P000-E9.001 sat 2 days with none; ledger changelog separately notes ten prior P_300/P_400 WOs did the same) -- INIT's daily check surfaces it but nothing blocks OWNER_DONE from being set without the block already there | Completion Gate block must be copied into the WO in the same edit that sets Status=OWNER_DONE, not backfilled later at Independent Review; see WO_COMPLETION_GATE.md Enforcement section added same day |
+| 006 | 2026-08-07 | High | Session-close chat summary claimed Independent Review was performed on WO-P000-E3.001 and WO-P000-E7.001; disk showed neither had one -- the same session that did the OWNER_DONE work described its own work as an independent review, which it structurally cannot be | Any chat-level claim of WO status (especially Independent Review) must be generated from a live re-read of that WO's Status/Acceptance Criteria in the same turn, never from memory of the session's own narrative -- see WO_COMPLETION_GATE.md's Session-Close Reporting Rule and system-doc-initializer SKILL.md Protocol F3 |
+| 007 | 2026-08-11 | Medium | Step 0.5 asked Tony directly with no attempt to recover the Project ID from conversation/doc context first -- a P_400 session opened with "I have no visibility into which project is attached to this session" and asked which project, working as designed but with only one fallback step | Four-step fallback chain added to Step 0.5 before the ask-Tony step: recent_chats(n=1) for a P_XXX-prefixed title -> widen to n=3-5 if missing/ambiguous -> check that project's architecture doc header for its Project ID field -> ask Tony only if all three miss; see system-doc-initializer SKILL.md EC-006, WO-P000-E17.001 |
 
 ---
 
@@ -467,6 +508,8 @@ Thumbs.db
 | Document | Location | Purpose |
 |---|---|---|
 | `README.md` | Hub root / P_000 root | Project overview and quick reference |
+| `GIT_WORKFLOW.md` | Hub root | Git commit/push workflow, exclusions, session-end checklist (WO-P000-E2.001) |
+| `GITHUB_BACKUP_README.md` | Hub root | GitHub backup reference — repo info, freshness check, recovery via git clone (WO-P000-E2.001) |
 | `Trading_Projects_Folder_Architecture.md` | Hub root | Folder structure and environment standards for all projects |
 | `Claude_Summarizer_App_Architecture.md` | P_000 project files | FastAPI summarizer app architecture detail |
 | `Claude-Python_Agentic_Migration_1.md` | P_000 project files | Agentic migration plan and task checklist |
@@ -492,9 +535,9 @@ Thumbs.db
 | conda_env_name | p140 |
 | python_exe_path | `C:\Users\Trader\.conda\envs\p140\python.exe` |
 | hub_root | `C:\Users\Trader\AI-Agent-Learning-Hub\` |
-| lm_studio_endpoint | `http://localhost:1234/v1` |
+| lm_studio_endpoint | `http://localhost:1234/api/v1` |
 | lm_studio_model | deepseek-r1-distill-qwen-14b |
-| lm_studio_model_batch | qwen2.5-coder-32b-instruct |
+| lm_studio_model_batch | qwen2.5-coder-32b-instruct-abliterated |
 | lm_studio_model_longcontext | llama-4-scout-17b-16e-instruct |
 
 ### 11.2 Code Quality Parameters
@@ -518,9 +561,9 @@ Thumbs.db
 | Parameter | Value |
 |---|---|
 | python_exe | `C:\Users\Trader\.conda\envs\p140\python.exe` |
-| lm_studio_url | `http://localhost:1234/v1` |
+| lm_studio_url | `http://localhost:1234/api/v1` |
 | lm_studio_model | deepseek-r1-distill-qwen-14b |
-| lm_studio_model_batch | qwen2.5-coder-32b-instruct |
+| lm_studio_model_batch | qwen2.5-coder-32b-instruct-abliterated |
 | lm_studio_model_longcontext | llama-4-scout-17b-16e-instruct |
 | hub_root | `C:\Users\Trader\AI-Agent-Learning-Hub\` |
 | max_file_lines | 300 |
@@ -534,4 +577,6 @@ Thumbs.db
 *This document is the authoritative reference for P_000. Update Section 6 whenever a new error is identified and corrected. Update Section 11.4 whenever key parameters change.*
 *Version 1.2 — Updated April 29, 2026: Hardware profile corrected to ASUS TUF F16 / Intel Core Ultra 9 275HX 24-core. CPU Threads parameter updated to 20 across all models.*
 *Version 1.4 — Updated June 3, 2026: Section 1.4 reconciled with on-disk projects/ folder — added P_301, P_400, P_800, P_805. Section 10 — added P_000_Account_Parameters_Current.md. Note: P_116/P_117/P_118 referenced in the account-parameters file are strategy buckets, not Hub project folders.*
+*Version 1.7 — Updated August 6, 2026: Parameter Registry drift corrected against live config.py + running LM Studio server. Batch model key qwen2.5-coder-32b-instruct -> qwen2.5-coder-32b-instruct-abliterated (Sections 1.5, 2.2, 11.1, 11.4). LM Studio endpoint /v1 -> /api/v1 (Sections 1.5, 11.1, 11.4) to match LM_STUDIO_API_BASE in integrations\lm_studio\config.py; Section 2.2 was already correct. Display labels "Qwen2.5-Coder-32B" left unchanged (friendly names, not model keys).*
 *Version 1.6 — Updated July 29, 2026: Section 6 — added EC-005 (Completion Gate checklist backfilled after OWNER_DONE instead of present at time of set). Section 3.3 shared_resources tree refresh (v1.5, WO-P000-E9.001) passed Independent Review same day.*
+*Version 1.8 — Updated August 11, 2026: Section 6 — added EC-007 (Step 0.5 asked Tony directly with no fallback attempt; four-step recovery chain added, ref WO-P000-E17.001, system-doc-initializer SKILL.md EC-006).*

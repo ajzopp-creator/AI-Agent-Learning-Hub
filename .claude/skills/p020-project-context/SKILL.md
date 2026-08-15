@@ -49,6 +49,11 @@ OneDrive: `Path(os.environ["OneDrive"])` — never hardcode drive letter.
 Config key: `DATABASE_FILE` (not `DB_PATH`).
 Python path depth from `python\database\`: `Path(__file__).resolve().parents[2]` = project root.
 
+**Known drift, not yet fixed:** this table's Tracker Dashboard path uses `F:\OneDrive\...`
+while `config.py`'s `TRACKER_DASHBOARD` constant uses `D:\OneDrive\...`. One of these is
+wrong. Flagged 2026-08-09, not yet root-caused — check `os.environ["OneDrive"]` on the
+actual machine before trusting either literal.
+
 ---
 
 ## Valid Trading Systems
@@ -85,6 +90,22 @@ Tag parsing runs only in `paper_import.py` for `account_id='PAPER'`. Live accoun
 
 ---
 
+## System Assignment (API pulls vs. paper)
+
+Live Schwab-API pulls (`account_id=AJZ6348`) do NOT get `system` from the API --
+`domain/system_resolver.py` resolves it by priority: (1) vault -- if a P_400/P_115
+vault note covers that symbol/date, its system tag wins (`source="vault"`); (2)
+tracker -- `TrackerLookup` matches `P_115_118_TrackerDashboard_V2.xlsx` by symbol +
+closest date in-window (`source="tracker"`); (3) default fallthrough to `TOS_Import`
+(`source="default"`) if neither matches. When vault and tracker both resolve and
+disagree, `system_resolver.py` logs it (`agree`/mismatch counters) -- check there
+first if a symbol looks mistagged.
+
+Paper trades skip this resolver entirely -- `paper_import.py` reads `system` directly
+from the ThinkLog tag at CSV-import time, defaulting to `TOS_Import` if untagged.
+
+---
+
 ## Database Rules
 
 - Scope: AJZ (...6348), Jan 1 2026 forward
@@ -111,16 +132,26 @@ Tag parsing runs only in `paper_import.py` for `account_id='PAPER'`. Live accoun
 | `exit_allocator.py` orphaned exits (entry outside current pull batch, e.g. entry from a prior week) were logged then silently dropped — `schwab_mapper.map_pull_file()` discarded them after the warning | `map_pull_file()` now returns orphans; `import_command._resolve_orphans_against_db()` matches against `db_reader.get_open_trade_for_symbol()` (oldest open/partial trade, FIFO) and attaches via `trade_writer.attach_orphan_exit()` |
 | `generate_dashboard.py` headline KPIs (closed count, open count, win rate, expectancy, best/worst) fed the `SYSTEM_ORDER`-filtered/sorted systems list, silently excluding any trade on a system not in the 7-name display list (e.g. TOS_Import) | `compute_kpis()` now takes the unfiltered `raw_systems` list; the filtered/sorted list stays scoped to the per-system breakdown table only |
 | `vault_mapper.build_vault_payload()` passed `trade_id` through as raw int -- P_800's `P020Record.trade_id` is `Optional[str]`, every `--commit` write failed Pydantic validation (201/201, 0 files touched, caught before any write) | Cast with a `_to_str()` helper (None-safe, mirrors existing `_to_int()`) before returning the payload |
+| SKILL.md Code Delivery said "Always `Start-Sleep 3` before `Get-Content`" -- this is the exact anti-pattern that stalled the relay for the full ~4-min MCP ceiling; contradicted the fix WO-P020-E1.012 landed the same week in the system doc and SIP, but nobody swept this skill file | `Start-Sleep` never goes inside an MCP call; `Get-Content` runs in a separate call, no sleep (WO-P020-E1.012) |
+| SKILL.md Schwab Auth said the token file was "written by `python\api\P_020_Schwab_Auth.py`" -- that script was already retired (see `_RETIRED_P_020_Schwab_Auth.py`) in favor of `cli.py auth`, per WO-P020-E1.010 Scope item 4. This skill was never swept when the retirement shipped, so it pointed at dead code | Corrected to `cli.py auth --project ALL`, the shared login module's actual entry point |
+| P_020 and P_400 share one Schwab app registration -- separate logins for each project (the design WO-P020-E1.010 originally specified) silently revoke each other's token, confirmed live 2026-08-09. `P_020_Schwab_Auth.bat` still called `--project P_020` alone, which would have kept breaking P_400 every time Tony double-clicked it | Bat updated to `cli.py auth --project ALL` -- one login, propagated to every registered project, verified byte-identical before success is reported (WO-P020-E1.010 SCOPE AMENDMENT) |
+| `Bases/P020_Performance.base` filtered on `TradeManagement/P020` -- WO-P800-E3.003 (2026-07-25) renamed the vault namespace hub-wide to `TradeOrderManagement/*`; `TradeManagement` no longer exists at all. Not a substring-overmatch risk as previously documented below -- the path was entirely dead, zero rows returned for 17 days, unnoticed | Path corrected to `TradeOrderManagement/P020` (WO-P400-E6.001, 2026-08-11). Superseded next day, see row below. |
+| `Bases/P020_Performance.base`'s entire schema was invalid, not just its path -- `filter:`/`conditions:`/`field:`/`operator:`/`value:`/`conjunction:` are not real Obsidian Bases keys (confirmed against `help.obsidian.md/bases/syntax`). The plugin silently ignored the whole filter block; the base rendered every file in the vault (3,002 results), not just P020's folder, regardless of what path string sat inside the dead filter. The prior day's path fix (row above) edited a block that was never functional. Found live 2026-08-12 (WO-P400-E6.001 follow-up) verifying Scope item 1 by reading the raw file via `obsidian_get_file_contents`, not trusting the rendered UI | Rewritten in real syntax: top-level `filters: {and: [file.inFolder("TradeOrderManagement/P020")]}`, `properties:` block for column display names, `views: [{type: table, order: [...], sort: [{property: close_date, direction: DESC}]}]`. `file.inFolder()` is recursive by design (matches sub-folders), so no separate handling needed for any P020 archive nesting. Live-verified in Obsidian: 3,002 -> 201 results, correctly sorted by `close_date` descending |
+| `P_020_AccountParser.bat` invoked `P_020_TOS_Parser_v2.3.py` -- WO-P020-E1.002 (2026-07-26) had already confirmed v2.3 was dead/non-live and v2.4 was the real parser, but the batch runner itself was never swept. v2.3's `match_entries_exits()` recomputes `potential_exits` fresh per entry from the full unfiltered exits list -- no cross-entry consumption tracking -- so two entries opened close together on the same symbol can both attach the *same* SOLD transaction as their exit, double-counting realized P&L. Confirmed via code trace, not runtime (v2.3 is being retired from the runner, not patched) | Bat now calls `P_020_TOS_Parser_v2.4.py`, which replaced entry/exit matching with a single chronological pass over a shared long_book/short_book ledger -- structurally cannot double-count, an exit txn is popped from the book once. Verified: `test_v24_no_sibling_double_exit` (2 sibling entries, only the correct one closes) + `test_accountparser_bat_points_at_v24` (SOURCE guard on the bat file), both in `test_p020_known_bugs.py`. WO-P020-E1.013 |
 
 ---
 
 ## Vault Export
 
-- `P020_Performance.base` filters on `file.folder contains
-  "TradeManagement/P020"` -- a **substring** match, not exact. Any
-  archive/cleanup subfolder nested under `TradeManagement/P020`
-  still matches and shows stale duplicates in the Base. Archive
-  outside that path, e.g. `TradeManagement/_archive/P020_.../`.
+- `P020_Performance.base` -- as of 2026-08-12 uses real Obsidian Bases syntax
+  (`filters: {and: [file.inFolder("TradeOrderManagement/P020")]}`). Prior
+  versions of this file used a fabricated schema (`filter:`/`conditions:`/
+  `field:`/`operator:`/`value:`) that isn't valid Bases YAML at all -- the
+  plugin silently ignored it and rendered the whole vault, regardless of
+  what path string sat inside. See Bugs Fixed table above for the full
+  incident. `file.inFolder()` is recursive by design, covering any nested
+  archive subfolder under the live path automatically -- the old
+  substring-overmatch concern doesn't apply to the real function.
 - Old filename pattern (`SYMBOL.md`) and new trade_id-disambiguated
   pattern (`SYMBOL_TRADEID.md`, added WO-P800-E3.002) don't collide.
   Re-running `write_to_obsidian.py --commit` after a filename-scheme
@@ -135,21 +166,58 @@ Tag parsing runs only in `paper_import.py` for `account_id='PAPER'`. Live accoun
 - Flow: `schwab.auth.client_from_manual_flow()` — never build URL separately (CSRF mismatch)
 - Callback: `https://127.0.0.1` no port
 - Codes expire ~30s — paste fast
-- Token Manager: `...\python\api\P_020_Schwab_Token_Manager.py` — project-level, this is the real working chain
-- Token file: `...\config\P_020_schwab_token.json` (written by `...\python\api\P_020_Schwab_Auth.py`)
-- Re-auth: double-click `P_020_Schwab_Auth.bat` (project root) — auto-opens browser, captures callback via UIAutomation, no copy-paste
+- Token Manager: `...\python\api\P_020_Schwab_Token_Manager.py` — project-level, this is the real working chain (read-only pre-flight check; does not issue tokens)
+- Token file: `...\config\P_020_schwab_token.json` (written by `cli.py auth`, via `shared_resources\python_utils\schwab_auth.run_auth()` -- NOT by the retired `P_020_Schwab_Auth.py`, see `_RETIRED_P_020_Schwab_Auth.py`)
+- **P_020 and P_400 share ONE Schwab app registration.** A login for either project revokes the other's token at the registration level, regardless of separate token files (confirmed live 2026-08-09, WO-P020-E1.010). Standard reauth is therefore `cli.py auth --project ALL` -- one browser login, propagated + byte-verified into every registered project's token file. `--project P_020` / `--project P_400` alone are retained for targeted reauth only and will break the other project's token if used without a follow-up ALL.
+- Re-auth: double-click `P_020_Schwab_Auth.bat` (project root) -- now runs `--project ALL`. Auto-opens browser, captures callback via UIAutomation, no copy-paste.
+- Weekly cadence: reauth once before the Saturday weekly update covers both projects for the documented 7-day refresh-token window -- IF Schwab keeps the refresh token stable across refreshes. Unconfirmed as of 2026-08-09; check by comparing `refresh_token` in both projects' token files after each has refreshed at least once (see WO-P020-E1.010 OPEN section).
 - `AI-Agent-Learning-Hub\integrations\schwab_api\` does NOT exist — built 3/14/26 as Phase 2A shared-infra plan, abandoned same day when Phase 3 SQLite pivot happened, deleted 6/21/26. Never recreate this path or treat it as canonical if referenced in old chats/docs.
 
 ---
 
 ## Code Delivery
 
-- Run via Windows-MCP first; fallback = single CMD one-liner with full paths
-- Always redirect stderr: `-RedirectStandardError "C:\Temp\err.txt"`
-- Always `Start-Sleep 3` before `Get-Content`
-- File writes: Python script, never PowerShell string replacement (corrupts UTF-8)
-- Tracker Dashboard (F: drive): Windows-MCP PowerShell only — not accessible via filesystem MCP
+- Direct-write tools (`filesystem:write_file`, or `windows-mcp:FileSystem` mode=write
+  for append) are the STANDARD path for any file write on Windows -- content passes as a
+  tool parameter, never through a PowerShell command string. No sandbox build step, no
+  base64, no chunking, no cross-machine hash comparison for the normal case
+  (WO-P000-E15.001, 2026-08-09). Validate on Windows: compile with p140 under
+  `-W error::SyntaxWarning` before declaring a file good -- syntax-only checking is
+  insufficient (unchanged from prior guidance).
+- Sandbox-build + base64 + SHA-256-compare is a FALLBACK ONLY, for a payload too large
+  for a single tool call. Not the default. If reaching for it, first check whether the
+  content simply fits in one `filesystem:write_file` call -- direct write has been proven
+  to ~200 lines / 10KB in a single call, which covers nearly this project's entire
+  300-line hard limit.
+- `Start-Process -WindowStyle Hidden` with `-RedirectStandardOutput`/`-RedirectStandardError` to
+  uniquely timestamped files (`$ts = Get-Date -Format "HHmmss"`) — never `Start-Job`, never
+  `-NoNewWindow` (WO-P020-E1.012)
+- `Get-Content` on the output file in a SEPARATE MCP call. NEVER `Start-Sleep` inside an MCP
+  call — it stalls the relay for the full ~4-min ceiling (WO-P020-E1.012)
+- Inline `python -c "..."` through the PowerShell MCP relay has stalled the full 4-minute
+  ceiling twice (2026-08-09, unrelated calls). `Start-Process` invocations of a script file
+  have not shown this failure. Prefer writing a small script file and running it via
+  `Start-Process` over an inline `-c` one-liner when a call seems likely to be slow.
+- Tracker Dashboard (drive letter TBD, see Canonical Paths note above): Windows-MCP PowerShell only — not accessible via filesystem MCP
 
 ---
 
-*Skill version: 2.4 | Updated: 2026-07-21 | Added trade_id str-cast bug (WO-P800-E3.002) to bug registry; added Vault Export section (Base folder-filter substring trap, filename-scheme migration leaves orphans)*
+*Skill version: 2.8 | Updated: 2026-08-12 | `Bases/P020_Performance.base` was
+found to use an entirely fabricated Bases schema, not just a stale path --
+`filter:`/`conditions:`/`field:`/`operator:` are not real Obsidian Bases keys,
+so the filter block was silently ignored by the plugin regardless of the path
+string inside it (yesterday's WO-P400-E6.001 path fix never actually took
+effect). Rewritten in real syntax (`filters:`/`file.inFolder()`), live-verified
+3,002 -> 201 results. Vault Export section and Bugs table corrected; added
+System Assignment section (vault -> tracker -> TOS_Import default priority via
+`system_resolver.py`, not documented anywhere prior). Prior: v2.7 (2026-08-11)
+Bases path corrected to `TradeOrderManagement/P020` (WO-P400-E6.001); new Bugs
+table row. Prior: v2.6 (2026-08-09) Schwab Auth section corrected: token file
+is written by `cli.py auth` (retired script was stale info, not just a stale caller);
+documented the shared-app-registration finding and `--project ALL` as the standard
+reauth path; `P_020_Schwab_Auth.bat` updated to match (WO-P020-E1.010 SCOPE AMENDMENT).
+Code Delivery rewritten to name direct-write tools as the standard transport, sandbox
++base64 demoted to oversized-payload fallback (WO-P000-E15.001). Added inline `python -c`
+relay-stall observation. Flagged unresolved F:/D: drive-letter mismatch in Tracker
+Dashboard path. Two new Bugs Fixed entries. Prior: v2.5 (2026-08-09) fixed stale
+Start-Sleep line; v2.4 (2026-07-21) added trade_id str-cast bug, Vault Export section.*

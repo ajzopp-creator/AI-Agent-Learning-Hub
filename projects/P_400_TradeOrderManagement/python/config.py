@@ -161,3 +161,60 @@ MACD_SIGNAL: int = 9
 BB_PERIOD: int = 20
 BB_STDDEV: float = 2.0
 FIB_LOOKBACK_BARS: int = 60   # matches TOS ThinkScript source exactly (confirmed 2026-07-24): swingHigh = Highest(high, 60), swingLow = Lowest(low, 60)
+
+# --- Tier-2B batch runner (WO-P400-E5.003) ---------------------------------
+# Ranking is a deterministic composite SCORE, never a probability. P_400 has
+# no probability model. Weights sum to 1.0 and are tuning parameters, not
+# calibrated estimates -- treat any change as a judgment call, not a fix.
+BATCH_RANK_WEIGHT_RR: float = 0.35            # R:R at T1, normalized
+BATCH_RANK_WEIGHT_ATR_HEADROOM: float = 0.30  # stop distance / ATR, above the 1.0x floor
+BATCH_RANK_WEIGHT_SPREAD: float = 0.15        # tighter half-spread scores higher
+BATCH_RANK_WEIGHT_LIQUIDITY: float = 0.10     # avg_volume_20d, log-scaled
+BATCH_RANK_WEIGHT_DRIFT: float = 0.10         # smaller |drift| scores higher
+
+# Normalization ceilings -- values at or above these score 1.0 on that factor.
+# RR ceiling deliberately low: a 22.78 R:R off a 0.05 stop (INDI, 2026-08-05)
+# must not dominate the sort just because the denominator was tiny.
+BATCH_RANK_RR_CEILING: float = 6.0
+BATCH_RANK_ATR_HEADROOM_CEILING: float = 3.0   # 3x ATR stop = full headroom credit
+BATCH_RANK_SPREAD_CEILING_PCT: float = 1.0     # half-spread >= 1% of price scores 0
+BATCH_RANK_VOLUME_FLOOR: float = 100_000       # at or below this, liquidity scores 0
+BATCH_RANK_VOLUME_CEILING: float = 20_000_000  # log-scaled between floor and this
+
+BATCH_MAX_SYMBOLS: int = 25                 # hard cap per batch-2b run
+BATCH_EARNINGS_FILE_PATTERN: str = "earnings_{date}.json"  # session-scoped, python\
+BATCH_EARNINGS_DIR: Path = HUB_ROOT / "projects" / "P_400_TradeOrderManagement" / "python"
+
+# --- Tier-2B batch report persistence (WO-P400-E5.003) ---------------------
+BATCH_REPORT_DIR: Path = HUB_ROOT / "projects" / "P_400_TradeOrderManagement" / "outputs" / "batch_reports"
+BATCH_REPORT_FILE_PATTERN: str = "batch2b_{date}_{ts}.json"
+
+# --- Earnings calendar automation (WO-P400-E5.002) --------------------------
+# Nasdaq's public, unauthenticated endpoints -- not FMP. FMP's free tier
+# proved too narrow to use (bulk earnings-calendar capped at ~73 large-cap
+# symbols regardless of date range; CGON, a real live signal 2026-08-08 that
+# HAD reported inside the pulled window, was absent; per-symbol fallback is
+# paywalled, 402). Nasdaq's public calendar returned 585 companies for a
+# single day (2026-08-06) including CGON, and its company-profile endpoint
+# carries Sector for free, no key. Confirmed live 2026-08-08.
+#
+# Accepted risk: these are undocumented public endpoints (used widely by
+# scrapers, not an official rate-limited developer API) -- no published SLA
+# or rate limit. A User-Agent header is required or Nasdaq blocks the
+# request; no API key exists to rotate.
+#
+# Per-DATE, not per-range (unlike FMP) -- the monthly refresh loops one call
+# per day across the window, not one bulk call.
+NASDAQ_API_BASE_URL: str = "https://api.nasdaq.com/api"
+NASDAQ_USER_AGENT: str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+EARNINGS_CALENDAR_CACHE_PATH: Path = HUB_ROOT / "projects" / "P_400_TradeOrderManagement" / "python" / "earnings_calendar_cache.json"
+LAST_SPREAD_CACHE_PATH: Path = HUB_ROOT / "projects" / "P_400_TradeOrderManagement" / "python" / "last_spread_cache.json"  # WO-P400-E5.005
+# Forward window + backward buffer -- no 3-month API cap to respect now (that
+# was FMP-specific), kept at the same size since it still comfortably covers
+# MACRO's tight 3-day-forward/2-day-back gate window with margin.
+EARNINGS_CALENDAR_LOOKAHEAD_DAYS: int = 83
+EARNINGS_CALENDAR_LOOKBACK_BUFFER_DAYS: int = 7
+# Fixed-monthly-schedule staleness check (Tony's call, 2026-08-08): trust the
+# pull date, don't spot-check symbols against the live API. ~30-day cadence
+# + 5-day grace before earnings_lookup.py warns.
+EARNINGS_CALENDAR_MAX_STALENESS_DAYS: int = 35

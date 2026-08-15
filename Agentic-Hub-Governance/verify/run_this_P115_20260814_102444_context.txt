@@ -1,0 +1,26 @@
+P_115 STEP 2 signal emission -- SBLK -- 2026-08-14
+
+Task: Emit SIGNAL_V2 packet for SBLK via cli.py (P_115 STEP 2, architecture v1.3
+emit-only). BUY/ASYM verdict = ASYM from LogEntry SBLK|2|3|2|3|0|-|ASYM
+(chart P_115_BuytheDipChart_V16). Fund Verification passed (stockanalysis.com:
+ROE=3.41%, Debt/Cap~33.3%, FCF+ -> base 25pts -> Tier2, matches submitted Fund=2
+exactly; 200-MA status NORMAL, zero penalty). Post-earnings check: SBLK reported
+Q2 2026 earnings 8/5/26 AMC, 7 trading sessions elapsed as of signal date
+8/14/26 -- past 3-session stabilization window, no flag. No opposing BEAR
+position on file (no FSLR/SATL-style override needed).
+
+guideline_stop = 27.06 (PA Stop, Structure, from chart label -- do not recompute)
+guideline_target = 37.17 (T1/T2 Exit, chart label)
+guideline_entry = 29.15 (session close per chart; Tony specified entry zone
+$29-31 in shorthand "SBLK EP: 29/31" -- 29.15 sits inside that zone, used as
+the single --entry value cli.py requires)
+
+What this script does: runs cli.py with the exact production args below, then
+confirms the SIGNAL_V2 JSON landed in
+trading_journal\TradeOrderManagement\signals\ via a read-back (not just a
+clean subprocess return). Prints PASS with the file path, or FAIL with the
+stderr/stdout captured, and writes a sibling .done marker either way.
+
+Do not change the entry/stop/target values above if this needs to be
+re-run by Claude Code -- they come from the chart, not from a calculation
+this script performs.

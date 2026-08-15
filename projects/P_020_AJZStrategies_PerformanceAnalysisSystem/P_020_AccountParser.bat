@@ -85,7 +85,7 @@ echo ===========================================================================
 echo.
 
 REM Run the parser
-"C:\Users\Trader\.conda\envs\p140\python.exe" python\parsers\P_020_TOS_Parser_v2.3.py "%INPUT_PATH%"
+"C:\Users\Trader\.conda\envs\p140\python.exe" python\parsers\P_020_TOS_Parser_v2.4.py "%INPUT_PATH%"
 
 REM Check if parser succeeded
 if %ERRORLEVEL% NEQ 0 (

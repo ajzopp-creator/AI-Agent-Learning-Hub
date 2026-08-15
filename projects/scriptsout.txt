@@ -1,0 +1,76 @@
+
+    Directory: C:\Users\Trader\.conda\envs\p140\Scripts
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d----           4/11/2026 12:45 PM                __pycache__
+-a---          10/21/2025  4:07 PM             74 2to3-script.py
+-a---          10/21/2025  4:07 PM          54032 2to3.exe
+-a---           2/23/2026  7:14 PM         108334 autopep8.exe
+-a---           4/28/2026  6:04 PM         108336 cyclopts.exe
+-a---            5/2/2026  7:20 AM         108339 distro.exe
+-a---           4/28/2026  6:04 PM         108343 docutils.exe
+-a---          12/14/2025  9:58 PM         108364 dotenv.exe
+-a---           2/25/2026  3:48 PM          14607 dumppdf.py
+-a---           4/19/2026  3:55 PM         108350 email_validator.exe
+-a---           2/10/2026  9:14 AM            211 f2py-script.py
+-a---           2/10/2026  9:10 AM            159 f2py.bat
+-a---           10/1/2025  1:22 PM          54032 f2py.exe
+-a---           4/28/2026  6:04 PM         108335 fastmcp.exe
+-a---           2/23/2026  7:14 PM         108335 flask.exe
+-a---           2/23/2026  7:14 PM           2485 get_gprof
+-a---           2/23/2026  7:14 PM           1679 get_objgraph
+-a---           2/23/2026  7:14 PM         108331 httpx.exe
+-a---          10/21/2025  4:07 PM             72 idle-script.py
+-a---          10/21/2025  4:07 PM          54032 idle.exe
+-a---           4/25/2026  9:27 AM         108340 jsonschema.exe
+-a---           4/28/2026  6:04 PM         108337 keyring.exe
+-a---           7/26/2026 10:50 AM         108347 markdown-it.exe
+-a---           4/25/2026  9:27 AM         108338 mcp-obsidian.exe
+-a---           4/25/2026  9:27 AM         108331 mcp.exe
+-a---           2/25/2026  3:48 PM         108360 normalizer.exe
+-a---           7/18/2026 11:43 PM            223 numba
+-a---           2/10/2026  9:14 AM            211 numpy-config-script.py
+-a---           10/1/2025  1:22 PM          54032 numpy-config.exe
+-a---            5/2/2026  8:47 AM         108336 openai.exe
+-a---           2/25/2026  3:48 PM          10065 pdf2txt.py
+-a---           2/25/2026  3:48 PM         108340 pdfplumber.exe
+-a---           2/23/2026  7:13 PM            205 pip-script.py
+-a---          12/12/2025  2:31 PM          54040 pip.exe
+-a---           2/23/2026  7:13 PM            205 pip3-script.py
+-a---          12/12/2025  2:31 PM          54040 pip3.exe
+-a---            7/3/2026 12:10 PM         108345 playwright.exe
+-a---            3/3/2026  4:09 PM         108330 pwiz.exe
+-a---          12/14/2025  9:58 PM         108373 py.test.exe
+-a---           2/23/2026  7:14 PM         108339 pycodestyle.exe
+-a---          10/21/2025  4:07 PM             57 pydoc-script.py
+-a---          10/21/2025  4:07 PM          54032 pydoc.exe
+-a---           7/26/2026 10:50 AM         108342 pygmentize.exe
+-a---           2/25/2026  3:48 PM         108352 pypdfium2.exe
+-a---          12/14/2025  9:58 PM         108373 pytest.exe
+-a---           4/11/2026 12:46 PM         108359 pywin32_postinstall.exe
+-a---           4/11/2026 12:45 PM          25736 pywin32_postinstall.py
+-a---           4/11/2026 12:46 PM         108355 pywin32_testall.exe
+-a---           4/11/2026 12:45 PM           3847 pywin32_testall.py
+-a---           4/28/2026  6:04 PM         108347 rst2html.exe
+-a---           4/28/2026  6:04 PM         108349 rst2html4.exe
+-a---           4/28/2026  6:04 PM         108349 rst2html5.exe
+-a---           4/28/2026  6:04 PM         108349 rst2latex.exe
+-a---           4/28/2026  6:04 PM         108345 rst2man.exe
+-a---           4/28/2026  6:04 PM         108345 rst2odt.exe
+-a---           4/28/2026  6:04 PM         108357 rst2pseudoxml.exe
+-a---           4/28/2026  6:04 PM         108343 rst2s5.exe
+-a---           4/28/2026  6:04 PM         108349 rst2xetex.exe
+-a---           4/28/2026  6:04 PM         108345 rst2xml.exe
+-a---            3/3/2026  4:09 PM         108332 sample.exe
+-a---           7/18/2026 12:03 AM         108342 scalene.exe
+-a---           2/23/2026  7:14 PM           1626 schwab-generate-token.py
+-a---           2/23/2026  7:14 PM            196 schwab-order-codegen.py
+-a---          12/14/2025  9:58 PM         108359 tqdm.exe
+-a---           2/23/2026  7:14 PM            615 undill
+-a---           4/25/2026  9:27 AM         108338 uvicorn.exe
+-a---           4/28/2026  6:04 PM         108338 watchfiles.exe
+-a---           2/23/2026  7:14 PM         108340 websockets.exe
+-a---           1/27/2025 10:07 AM            203 wheel-script.py
+-a---           1/15/2025  9:33 AM          54032 wheel.exe
+

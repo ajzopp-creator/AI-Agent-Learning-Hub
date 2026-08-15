@@ -1,0 +1,35 @@
+P_010 -- WO-P010-E1.003 housekeeping (file split), 2026-08-10
+
+WHAT THIS TESTS
+P_010_write_daily_note.py (429 -> 113 lines) and P_010_intraday_vp_check_v4.py
+(299 -> 212 lines) were split into 6 files (note_api_fetchers.py,
+note_content_builders.py, note_template_engine.py, intraday_risk_logic.py, plus
+the two slimmed originals) to get both under the Hub's 300-line hard limit. This
+script confirms the split preserved identical behavior: all 6 modules import
+cleanly, the pure-logic functions (suggest_risk_level, suggest_bias, PRANGE
+validation, risk-mode determination) return the same values they did before the
+split against known inputs, and the slimmed orchestration files actually import
+the functions they're supposed to (identity checks, not just "no ImportError").
+It also runs the content-builder functions against today's real
+P_010_RiskConfig.json / grid_snapshot_latest.json read-only, to catch anything
+a synthetic test would miss.
+
+WHAT IT DELIBERATELY DOES NOT DO
+Does not call main() on either script. Does not hit yfinance (live price fetch).
+Does not write to P_010_RiskConfig.json, grid_snapshot_latest.json, or the
+Obsidian vault. This is a pure logic/wiring smoke test, not a live production
+run -- today's real posture data must not be touched by this script.
+
+SUCCESS CRITERIA
+Script prints PASS and exits 0 if every check passes. Prints FAIL with the list
+of failed check labels and exits 1 otherwise.
+
+ON FAILURE
+Read which check(s) failed. Most likely causes: (1) an import got the wrong
+name after the split, (2) a function's signature changed during extraction,
+(3) a constant (TEMPLATES, RISK_CONFIG path) didn't move correctly. Fix the
+specific file the failure points to -- do not rewrite the whole split. Do not
+change test assertions to make a failure pass; if an assertion looks wrong,
+flag it back to Tony instead of loosening it.
+
+Run with: C:\Users\Trader\.conda\envs\p140\python.exe

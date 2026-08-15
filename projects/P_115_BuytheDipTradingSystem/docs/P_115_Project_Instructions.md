@@ -1,3 +1,15 @@
+> **RETIRED 2026-08-13 (WO-P115-E3.001 Pass 7).** This file is no longer
+> synced into a claude.ai/Desktop Project Instructions panel -- that panel
+> has been removed from Project Knowledge and retired as a governance
+> surface (no file-based sync to the Hub, drifted stale twice under this
+> WO). Governance for P_115 sessions now runs entirely through
+> `.claude\skills\p115-project-context\SKILL.md` +
+> `docs\SESSION_INITIALIZATION_PROMPT.md` +
+> `docs\P_115_System_Architecture.v1.0.md`. This file is kept only as a
+> historical snapshot of the last-correct Instructions content. Do not
+> treat it as active; do not re-sync it anywhere.
+
+---
 # TRADING SYSTEM ASSISTANT - P_115 through P_118
 **Anthony Zoppi | AI-Agent-Learning-Hub**
 

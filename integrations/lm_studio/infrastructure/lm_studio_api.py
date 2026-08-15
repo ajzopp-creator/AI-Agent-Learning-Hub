@@ -25,10 +25,6 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-# Ensure Hub root is on path when run directly or imported from any project
-_HUB_ROOT = Path(__file__).parent.parent.parent.parent
-if str(_HUB_ROOT) not in sys.path:
-    sys.path.insert(0, str(_HUB_ROOT))
 from integrations.lm_studio.config import (
     LM_STUDIO_CHAT_ENDPOINT,
     LM_STUDIO_MODELS_ENDPOINT,
@@ -38,6 +34,8 @@ from integrations.lm_studio.config import (
     MAX_RETRIES,
     RETRY_DELAY_SECONDS,
     LOG_FILE,
+    MODELS,
+    CONTEXT_LENGTH,
 )
 
 # ── LOGGING SETUP ─────────────────────────────────────────────────────────────
@@ -88,6 +86,14 @@ async def _wait_for_model_ready(model_id: str) -> bool:
     return False
 
 
+def _tier_for_model_id(model_id: str) -> Optional[str]:
+    """Reverse-lookup a model's tier ('primary'/'batch'/'long_context') from MODELS."""
+    for tier, cfg in MODELS.items():
+        if cfg["id"] == model_id:
+            return tier
+    return None
+
+
 async def get_available_models() -> Optional[Dict[str, Any]]:
     """Fetch list of available models from LM Studio."""
     try:
@@ -110,7 +116,15 @@ async def load_model(model_id: str) -> bool:
     prevents the caller from sending a chat request before the model is
     actually ready (which causes a 400 Bad Request).
     """
-    payload = {"model": model_id}
+    payload: Dict[str, Any] = {"model": model_id}
+    tier = _tier_for_model_id(model_id)
+    if tier:
+        payload["context_length"] = CONTEXT_LENGTH[tier]
+    else:
+        logger.warning(
+            f"No tier found for model_id {model_id} -- loading without "
+            f"explicit context_length"
+        )
 
     for attempt in range(MAX_RETRIES):
         try:

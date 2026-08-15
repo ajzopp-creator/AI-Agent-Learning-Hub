@@ -1,0 +1,9 @@
+Purpose: STEP 2 emission - build/emit SIGNAL_V2 packet for FLY via P_115 cli.py
+Triggered by: P_115 STEP 1-2, FLY ASYM setup (Firefly Aerospace), HybridTier=5 + AsymmetricSetup
+Session: P_115 INIT 2026-08-13 (Thursday, August 13, 2026)
+Post-Earnings Check: FLAGGED - Day 2/3 post Q2 2026 report (8/11/26 AMC). Tony gave explicit override to emit despite hold.
+Fund Verification: weak - recomputed approx tier1 vs submitted 2 (ROE deeply negative, FCF deeply negative)
+200-MA: -2pct (NORMAL label) -> zero penalty applied
+Expected output: Signal written: [path to *_v2.0.json] confirming P_400 inbox delivery
+On timeout: do not retry MCP; check for file existence in trading_journal\TradeOrderManagement\signals\ before handoff
+Do not change test assertions. Do not modify cli.py or any production file.

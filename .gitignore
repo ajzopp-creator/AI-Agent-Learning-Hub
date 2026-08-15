@@ -229,3 +229,15 @@ projects/P_300_Vantage_Point_Pattern_Recognition/data/historical_patterns/
 #
 # NEVER remove lines that protect credentials!
 # You can add more patterns as needed.
+
+# Added by hub_git_triage.ps1 on 2026-08-14_213202
+# Build/verification artifacts - not meant to be committed
+*.b64tmp
+*.py.done
+**/_pytest_basetemp*/
+
+# Added by hub_git_triage.ps1 on 2026-08-14_213253
+# Build/verification artifacts - not meant to be committed
+*.b64tmp
+*.py.done
+**/_pytest_basetemp*/

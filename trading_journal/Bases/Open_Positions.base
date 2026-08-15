@@ -1,37 +1,35 @@
-view: table
-filter:
-  conditions:
-    - field: lifecycle_status
-      operator: eq
-      value: OPEN
-  conjunction: or
-  groups:
-    - conditions:
-        - field: traded
-          operator: eq
-          value: Y
-        - field: outcome
-          operator: isEmpty
-          value: ""
-      conjunction: and
-sort:
-  - field: date
-    direction: asc
-columns:
-  - id: date
-    field: date
-  - id: ticker
-    field: ticker
-  - id: source
-    field: source
-  - id: entry_price
-    field: entry_price
-  - id: stop_price
-    field: stop_price
-  - id: target_1
-    field: target_1
-  - id: account_id
-    field: account_id
+filters:
+  or:
+    - lifecycle_status == "OPEN"
+    - and:
+        - traded == "Y"
+        - outcome.isEmpty()
+properties:
+  date:
+    displayName: Date
+  ticker:
+    displayName: Ticker
+  source:
+    displayName: Source
+  entry_price:
+    displayName: Entry
+  stop_price:
+    displayName: Stop
+  target_1:
+    displayName: Target 1
+  account_id:
+    displayName: Account
 views:
   - type: cards
     name: Table
+    order:
+      - date
+      - ticker
+      - source
+      - entry_price
+      - stop_price
+      - target_1
+      - account_id
+    sort:
+      - property: date
+        direction: ASC

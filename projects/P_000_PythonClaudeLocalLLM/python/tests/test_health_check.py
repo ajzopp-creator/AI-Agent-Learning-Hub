@@ -12,9 +12,9 @@ sys.path.insert(0, str(Path(__file__).parent.parent))        # python/
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))  # project root
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent.parent))  # Hub root
 
-from application.lm_studio_client import LMStudioClient
-from domain.task_router import list_all_tasks
-from config import MODELS
+from integrations.lm_studio.application.lm_studio_client import LMStudioClient
+from integrations.lm_studio.domain.task_router import list_all_tasks
+from integrations.lm_studio.config import MODELS
 
 
 async def main():

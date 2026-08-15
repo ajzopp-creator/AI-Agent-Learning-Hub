@@ -19,10 +19,6 @@ import sys
 from pathlib import Path
 from typing import Optional
 
-# Ensure Hub root is on path when run directly or imported from any project
-_HUB_ROOT = Path(__file__).parent.parent.parent.parent
-if str(_HUB_ROOT) not in sys.path:
-    sys.path.insert(0, str(_HUB_ROOT))
 
 from integrations.lm_studio.config import (
     LM_STUDIO_MODELS_ENDPOINT,

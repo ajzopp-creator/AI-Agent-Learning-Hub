@@ -72,7 +72,7 @@ tracker_writer.py                      # standalone; reads Excel, calls write_to
 
 ## Session Initialization (Claude Desktop only)
 
-At the start of any P_115 trading session, trigger the SIP by typing `INIT` or `P_115 INIT`. The full sequence is in `docs/SESSION_INITIALIZATION_PROMPT.md` (v3.4). It reads `P_010_RiskConfig.json` for current posture and `P_000_Account_Parameters_Current.md` for account parameters. Posture **must** be re-read fresh before every signal emission and before writing MarketDirection. P_115 performs NO position sizing -- STEP 2 is emit-only as of arch v1.3 (2026-07-24); P_400 owns sizing, R:R, options gates, and order formatting.
+At the start of any P_115 trading session, trigger the SIP by typing `INIT` or `P_115 INIT`. The full sequence is in `docs/SESSION_INITIALIZATION_PROMPT.md` (v3.5). It reads `P_010_RiskConfig.json` for current posture and `P_000_Account_Parameters_Current.md` for account parameters. Posture **must** be re-read fresh before every signal emission and before writing MarketDirection. P_115 performs NO position sizing -- STEP 2 is emit-only as of arch v1.3 (2026-07-24); P_400 owns sizing, R:R, options gates, and order formatting.
 
 ## Documentation Protocol
 

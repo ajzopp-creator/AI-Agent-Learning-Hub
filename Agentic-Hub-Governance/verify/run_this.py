@@ -1,73 +1,69 @@
 """
 FILE: Agentic-Hub-Governance/verify/run_this.py
-PURPOSE: Independent-review re-run for WO-P300-E5.002 / WO-P300-E5.005
-         closure. This session wrote none of the code or tests below --
-         re-running them fresh is the WO_COMPLETION_GATE Independent
-         Review Requirement, not a repeat of the 2026-07-29/07-30
-         sessions' own claims (M-054: a claim is not evidence).
+PURPOSE: Archive the 20 mined-corpus XLSX files left in data\\bulk\\mine\\
+         after the 2026-08-04 12:03 batch's archive-mined step failed on
+         a full E: drive (ENOSPC). E: now has 682.82 GB free (Tony
+         cleared space). The catalog promote itself already succeeded
+         (080426catalog.db confirmed on disk) -- this only re-runs the
+         archive step, nothing touches the catalog.
 
-Runs all 5 test files relevant to these two WOs, each as a subprocess
-via the p140 interpreter, and reports exit codes + tail output.
-Read-only: none of these tests touch the real project catalog (all use
-tempfile.TemporaryDirectory() or synthetic in-memory fixtures per their
-own docstrings).
+Calls utilities.archive_mined_file.run_archive() directly (same function
+cli.py archive-mined --xlsx <path> calls) once per file, in the same
+20-file order the original batch log showed. Each call is independently
+safe: append to zip -> verify entry landed -> only then delete source.
+A failure on one file does not affect the others or roll back prior
+successes.
 
 RUN:
     C:\\Users\\Trader\\.conda\\envs\\p140\\python.exe run_this.py
 """
 from __future__ import annotations
 
-import subprocess
 import sys
 from pathlib import Path
 
-PY = r"C:\Users\Trader\.conda\envs\p140\python.exe"
-TESTS_DIR = Path(
-    r"C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\python\tests"
+PROJECT_ROOT = Path(
+    r"C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition"
 )
+PYTHON_DIR = PROJECT_ROOT / "python"
+sys.path.insert(0, str(PYTHON_DIR))
 
-TEST_FILES = [
-    "test_verify_ingestion.py",       # WO-P300-E5.002/E5.005 shared completion-gate test
-    "test_walkforward_report_io.py",  # WO-P300-E5.005
-    "test_promote_gate.py",           # WO-P300-E5.005
-    "test_promote_marker_io.py",      # WO-P300-E5.005
-    "test_cli_registry_inventory.py", # WO-P300-E5.005 (18 commands / 6 modules)
+MINE_DIR = PROJECT_ROOT / "data" / "bulk" / "mine"
+
+FILES = [
+    "10_Pattern_AIQ.xlsx", "10_Pattern_ASTS.xlsx", "10_Pattern_BBAI.xlsx",
+    "10_Pattern_BBBY.xlsx", "10_Pattern_ENPH.xlsx", "10_Pattern_EXP.xlsx",
+    "10_Pattern_FLNC.xlsx", "10_Pattern_GGAL.xlsx", "10_Pattern_HRZN.xlsx",
+    "10_Pattern_IREN.xlsx", "10_Pattern_JMIA.xlsx", "10_Pattern_KEY.xlsx",
+    "10_Pattern_OCSL.xlsx", "10_Pattern_PAVE.xlsx", "10_Pattern_POOL.xlsx",
+    "10_Pattern_PSEC.xlsx", "10_Pattern_RKLB.xlsx", "10_Pattern_RKT.xlsx",
+    "10_Pattern_RY.xlsx", "10_Pattern_VUZI.xlsx",
 ]
 
 
 def main() -> int:
-    print(f"Python: {PY}")
-    overall_ok = True
-    for fname in TEST_FILES:
-        fpath = TESTS_DIR / fname
-        print(f"\n{'=' * 70}")
-        print(f"RUNNING: {fname}")
-        print("=" * 70)
-        if not fpath.exists():
-            print(f"  MISSING: {fpath}")
-            overall_ok = False
-            continue
-        result = subprocess.run(
-            [PY, str(fpath)],
-            capture_output=True,
-            text=True,
-            timeout=120,
-        )
-        print(result.stdout)
-        if result.stderr:
-            print("--- stderr ---")
-            print(result.stderr)
-        print(f"EXIT CODE: {result.returncode}")
-        if result.returncode != 0:
-            overall_ok = False
+    from utilities.archive_mined_file import run_archive
 
-    print(f"\n{'=' * 70}")
-    if overall_ok:
-        print("ALL 5 TEST FILES PASSED (exit 0)")
-    else:
-        print("AT LEAST ONE TEST FILE FAILED -- see above")
-    print("=" * 70)
-    return 0 if overall_ok else 1
+    ok = 0
+    failed: list[str] = []
+    for i, fname in enumerate(FILES, 1):
+        fpath = MINE_DIR / fname
+        print(f"[{i}/{len(FILES)}] {fname}")
+        if not fpath.exists():
+            print(f"  SKIP -- not found (already archived?): {fpath}")
+            continue
+        rc = run_archive(fpath)
+        if rc == 0:
+            ok += 1
+        else:
+            failed.append(fname)
+
+    print(f"\n{'=' * 60}")
+    print(f"Archived {ok} / {len(FILES)} files.")
+    if failed:
+        print(f"FAILED ({len(failed)}): {', '.join(failed)}")
+    print("=" * 60)
+    return 0 if not failed else 1
 
 
 if __name__ == "__main__":

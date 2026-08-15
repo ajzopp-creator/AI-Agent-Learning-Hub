@@ -48,66 +48,70 @@ if ($failedSymbols.Count -eq 0) {
     Write-Host "=======================================================================" -ForegroundColor Red
 }
 
-# --- Chaikin Power Gauge batch (Claude Code /chrome) ---
-# NOTE: vault notes are filed under anchor_date (last market close), not the
-# eval run date -- a same-day filename match against $today will almost
-# always miss. Pull BUY/WATCH tickers directly from this run's own log instead.
-$PROMPT_TEMPLATE = "$PROJECT_ROOT\python\utilities\chaikin_batch_prompt.txt"
-$today = Get-Date -Format "yyyy-MM-dd"
+# --- Chaikin Power Gauge batch (schema-driven scanner, WO-P800-E4.001) ---
+# Migrated 2026-08-12 from the old per-project log-parsing + inline claude
+# call to the shared Hub-root RunChaikinBatch.ps1 -Schema P300. The shared
+# scanner reads write_route directly from vault frontmatter (no date-
+# guessing off $LOG, no log parsing) and carries P_300's own permanent
+# skip list (WO-P300-E5.007) via SCHEMA_SKIP_LISTS in
+# chaikin_enrichment\config.py -- extended the same day specifically so
+# this migration wouldn't silently reintroduce that bug. The shared
+# RunChaikinBatch.ps1 does its own `claude auth status --text` guard
+# internally (streams straight to console -- not duplicated here).
+$HUB_RUN_CHAIKIN = "C:\Users\Trader\AI-Agent-Learning-Hub\RunChaikinBatch.ps1"
+$LAST_PROMPT = "C:\Users\Trader\AI-Agent-Learning-Hub\shared_resources\chaikin_enrichment\_last_prompt.txt"
+$VAULT_DIR = "C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\"
 
-$actionable = Select-String -Path $LOG -Pattern "SIGNAL REPORT\s+(\S+)\s+(BUY|WATCH)" |
-    ForEach-Object { $_.Matches[0].Groups[1].Value } | Select-Object -Unique
+$batchStartTime = Get-Date
+& $HUB_RUN_CHAIKIN -Schema P300
+$chaikinExitCode = $LASTEXITCODE
 
-if ($actionable.Count -eq 0) {
-    Write-Host "No BUY/WATCH symbols today -- skipping Chaikin batch." -ForegroundColor Yellow
+# The wrapper's own exit code is ambiguous between "no candidates, clean
+# exit" and "candidates existed, claude -p --chrome's own exit code" --
+# _last_prompt.txt's mtime is the durable signal instead: the scanner only
+# (re)writes it when candidates are actually found this run (same
+# discipline as the vault-note LastWriteTime check below).
+$promptIsFresh = (Test-Path $LAST_PROMPT) -and
+    ((Get-Item $LAST_PROMPT).LastWriteTime -gt $batchStartTime)
+
+if (-not $promptIsFresh) {
+    Write-Host "No BUY/WATCH candidates found for P300 today (or all were skip-listed) -- Chaikin batch was a no-op." -ForegroundColor Yellow
+    "Chaikin batch: no candidates (schema-driven scan; see console above for any [SKIP] lines)." | Add-Content -Path $LOG -Encoding UTF8
 } else {
-    $symbolList = $actionable -join ", "
-    $prompt = (Get-Content $PROMPT_TEMPLATE -Raw) -replace "\{DATE\}", $today -replace "\{SYMBOLS\}", $symbolList
+    # Candidates existed -- parse "SYMBOL -> path" lines from the actual
+    # prompt the scanner built, not a re-derivation (M-082: reuse the real
+    # artifact instead of guessing what it should have been).
+    $actionable = Select-String -Path $LAST_PROMPT -Pattern '^(\S+) -> ' |
+        ForEach-Object { $_.Matches[0].Groups[1].Value } | Select-Object -Unique
 
-    # M-097 guard: claude -p shares interactive auth/session state (same
-    # credential store), but nothing here previously verified it before
-    # calling out -- a missing/expired login printed one easy-to-miss line
-    # and silently produced nothing. Check first, fail loud.
-    $authCheck = claude auth status --text 2>&1
-    if ($LASTEXITCODE -ne 0) {
-        Write-Host "Chaikin batch SKIPPED -- Claude Code not authenticated. Run 'claude /login' then re-run this script." -ForegroundColor Red
-    } else {
-        Write-Host "Running Chaikin Power Gauge batch for: $symbolList" -ForegroundColor Cyan
+    if ($chaikinExitCode -ne 0) {
+        Write-Host "Chaikin batch wrapper exited $chaikinExitCode -- verifying against real vault notes below, not trusting the exit code alone." -ForegroundColor Yellow
+    }
 
-        # WO-P300-E4.009: claude -p --chrome can exit 0 with a normal-
-        # looking response while the underlying Chaikin task did NOT
-        # actually happen -- a login wall or a disconnected Chrome
-        # extension both produce coherent prose describing the failure,
-        # not a script-detectable error code (confirmed 2026-07-21: a
-        # real login-wall failure printed and scrolled past unremarked).
-        # Tee-Object preserves live console output while also capturing
-        # it for inspection below. Best-effort text match on Claude's own
-        # phrasing -- not guaranteed exhaustive, since it's prose, not a
-        # fixed error code -- so treat a MISS here as "not flagged", not
-        # as proof the batch actually worked. Read the response either way.
-        $chaikinLines = claude -p $prompt --chrome 2>&1 | Tee-Object -Variable chaikinLinesRaw
-        $chaikinText = ($chaikinLinesRaw -join "`n")
-        $failureIndicators = @(
-            "login page", "not logging in", "sign in to Chaikin",
-            "log in to Chaikin", "extension.{0,20}not connected",
-            "chrome extension.{0,20}not", "could not connect",
-            "unable to connect", "not authenticated"
-        )
-        $chaikinFailed = $false
-        foreach ($pattern in $failureIndicators) {
-            if ($chaikinText -match $pattern) { $chaikinFailed = $true; break }
-        }
-        if ($chaikinFailed) {
-            Write-Host ""
-            Write-Host "=======================================================================" -ForegroundColor Red
-            Write-Host " CHAIKIN BATCH LIKELY DID NOT COMPLETE -- see response above." -ForegroundColor Red
-            Write-Host " Probable cause: Chaikin login wall or Chrome extension not connected." -ForegroundColor Red
-            Write-Host " No Power Gauge data was likely written for: $symbolList" -ForegroundColor Red
-            Write-Host " Fix the underlying issue, then re-run the Chaikin step for these" -ForegroundColor Red
-            Write-Host " symbols -- this detection is best-effort text matching, not" -ForegroundColor Red
-            Write-Host " guaranteed, so verify by checking the actual vault notes too." -ForegroundColor Red
-            Write-Host "=======================================================================" -ForegroundColor Red
-            "CHAIKIN BATCH LIKELY FAILED (login wall / extension not connected) for: $symbolList" | Add-Content -Path $LOG -Encoding UTF8
+    # WO-P300-E4.009 discipline, unchanged: never trust claude's own prose
+    # or a bare exit code -- verify the actual vault file was written with
+    # a fresh Chaikin section, after this run started.
+    $writtenCount = 0
+    $notWritten = @()
+    foreach ($sym in $actionable) {
+        $noteFile = Get-ChildItem $VAULT_DIR -File -Filter "*_$sym.md" -ErrorAction SilentlyContinue |
+            Sort-Object LastWriteTime -Descending | Select-Object -First 1
+        if ($noteFile -and $noteFile.LastWriteTime -gt $batchStartTime -and
+            (Select-String -Path $noteFile.FullName -Pattern "## Chaikin Power Gauge" -Quiet)) {
+            $writtenCount++
+        } else {
+            $notWritten += $sym
         }
     }
+    Write-Host ""
+    if ($notWritten.Count -eq 0) {
+        $summaryLine = "Chaikin batch complete: $writtenCount / $($actionable.Count) ratings written successfully."
+        Write-Host $summaryLine -ForegroundColor Green
+        $summaryLine | Add-Content -Path $LOG -Encoding UTF8
+    } else {
+        $summaryLine = "Chaikin batch: $writtenCount / $($actionable.Count) notes updated. NOT updated (verify above -- may be legitimate no-coverage, or a real miss, including auth failure -- check console output above): $($notWritten -join ', ')"
+        Write-Host $summaryLine -ForegroundColor Yellow
+        $summaryLine | Add-Content -Path $LOG -Encoding UTF8
+    }
 }
+

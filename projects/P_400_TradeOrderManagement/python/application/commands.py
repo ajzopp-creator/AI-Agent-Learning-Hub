@@ -254,7 +254,7 @@ def cmd_compare(symbol: str, snapshot_path: str, chain_path: str,
         print(f"[ERROR] No valid v2 packet found for {symbol} in {SIGNALS_DIR}")
         return 1
 
-    print(run_comparison(packet, snapshot_path, chain_path, cash))
+    print(run_comparison(packet, snapshot_path, chain_path, cash, TradeMode.REAL))
     return 0
 
 

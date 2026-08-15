@@ -29,6 +29,7 @@ from domain.council_codes import (  # noqa: F401
     RC_EARNINGS_IN_WINDOW,
     RC_MARKET_CLOSED,
     RC_OVERTRADING,
+    RC_USING_CLOSE_DATA,
     RC_POST_EARNINGS_STABILIZATION,
     RC_PRICE_STALE,
     RC_REVENGE_TRADE,
@@ -95,8 +96,8 @@ def quant_vote(
             role=Role.QUANT, decision=Decision.BLOCK,
             reason_code=RC_RR_BELOW_MIN,
             reason_detail=(
-                f"R:R {rr_at_t1:.2f} below {MIN_ACCEPTABLE_RR:.1f}. "
-                f"T1={target:.2f}, needs >= {entry + reward_for_2x:.2f}."
+                f"R:R {rr_at_t1:.2f} (realistic-fill, spread-adjusted) below {MIN_ACCEPTABLE_RR:.1f}. "
+                f"T1={target:.2f}, needs >= {entry + reward_for_2x:.2f} (clean/guideline basis)."
             ),
         )
     if atr_14 > 0 and risk_per_share < (atr_14 * MIN_STOP_ATR_MULTIPLE) - STOP_ATR_TOLERANCE:
@@ -177,22 +178,32 @@ def macro_vote(
 def tape_vote(
     price_delay_seconds: int,
     market_open: bool,
-    pre_market_flag: bool,
+    price_basis: str,
     adverse_drift_pct: float,
     rr_after_drift: float,
 ) -> CouncilVote:
-    """Tape / momentum blocks. Section 4.5."""
+    """Tape / momentum blocks. Section 4.5.
+
+    price_basis: "live" (regular-session quote) or "close" (last completed
+    daily bar, used by fetch_snapshot when the market is closed -- WO-P400-E5.005).
+    """
     if price_delay_seconds > PRICE_STALENESS_THRESHOLD_SEC:
         return CouncilVote(
             role=Role.TAPE, decision=Decision.BLOCK,
             reason_code=RC_PRICE_STALE,
             reason_detail=f"Price {price_delay_seconds}s old (threshold {PRICE_STALENESS_THRESHOLD_SEC}s).",
         )
-    if not market_open and not pre_market_flag:
+    if not market_open:
+        if price_basis == "close":
+            return CouncilVote(
+                role=Role.TAPE, decision=Decision.CAUTION,
+                reason_code=RC_USING_CLOSE_DATA,
+                reason_detail="Market closed -- priced off last regular-session close, not a live quote.",
+            )
         return CouncilVote(
             role=Role.TAPE, decision=Decision.BLOCK,
             reason_code=RC_MARKET_CLOSED,
-            reason_detail="Market closed. Set pre_market_flag to proceed.",
+            reason_detail="Market closed and no close-priced data available.",
         )
     if adverse_drift_pct > 0 and rr_after_drift < MIN_ACCEPTABLE_RR:
         return CouncilVote(

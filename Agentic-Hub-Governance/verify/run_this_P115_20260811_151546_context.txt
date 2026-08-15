@@ -1,0 +1,31 @@
+P_115 session 2026-08-11. Task: emit SIGNAL_V2 packet for AA (Alcoa).
+
+AA STEP 1: LogEntry Fund=3(adj) Anal=3 Candle=2 Setup=3 STR=-2 Verdict=BUY (chart-confirmed,
+P_115_BuytheDipChart_V16). Raw Fund=4, 200-MA -5.1% (PULLBACK) -> -1 penalty -> adjusted
+Fund=3. HybridTier=6 (>=6, bare minimum) -> BUY. Fund Verification (V110.2, mandatory on
+Fund>=2): recomputed via stockanalysis.com -- ROE ~19.2% (pass >15%), Debt/Capital ~23%
+(pass <60%), FCF $519M positive (pass). Clean, no flag. Post-earnings check: last AA
+earnings 2026-07-16, ~19 sessions ago -- no flag.
+
+Caveat (not a gate-blocker, flagged for Tony): D_102 BigTrendsSNT overlay on the same chart
+shows an independently-active BEAR signal (entry 53.5, trailing DC/4% exit) -- a different
+system, not P_115's own verdict. Confidence set to MEDIUM (not HIGH) because HybridTier is
+at the bare 6 threshold and price sits in a 200-MA PULLBACK, not NORMAL uptrend.
+
+Gates clear -- emit per emission decision gate (architecture v1.3/v1.4).
+
+Script tests: calls application.emit_signal.emit_signal() directly (bypassing cli.py
+argparse) with the STEP1-confirmed values, then verifies success by checking the expected
+output file exists directly (trading_journal\TradeOrderManagement\signals\2026-08-11_AA_v2.0.json)
+-- NOT by wrapping the function's return value in Path(), since the prior WSM run
+(run_this_P115_20260811_144857) showed emit_signal returns a bool, not a path string.
+
+Success criteria: script prints PASS and the SIGNAL_V2 JSON file exists at the path above.
+
+If FAIL: read the traceback, propose a production fix in application/emit_signal.py or
+domain/signal_builder.py as appropriate. Do not change the signal input values
+(entry/stop/target/etc. are STEP1-derived facts, not test parameters) without flagging to
+Tony first.
+
+Do not change test assertions -- there are none; this is a live signal emission, not a
+unit test.

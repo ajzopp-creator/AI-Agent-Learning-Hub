@@ -14,9 +14,11 @@ from pathlib import Path
 from typing import Optional
 
 from config import (
+    OPTION_OI_MINIMUM,
     OPTION_SELECTION_MAX_DTE,
     OPTION_SELECTION_MIN_DTE,
     OPTION_SELECTION_TARGET_DELTA,
+    OPTION_SPREAD_MAX_PCT,
     SCHWAB_CONFIG_PATH,
     SCHWAB_TOKEN_PATH,
 )
@@ -29,6 +31,20 @@ PYTHON_DIR = Path(__file__).resolve().parents[1]  # chain_SYMBOL.json lives here
 def _spread_pct(bid: float, ask: float) -> float:
     mid = (bid + ask) / 2
     return (ask - bid) / mid * 100 if mid > 0 else 0.0
+
+
+def _viability_warning(chain: OptionChainInput) -> Optional[str]:
+    """Scope 6 (WO-P400-E5.003): report-only check at fetch time -- the
+    authoritative gates still live in options_council.py and are unchanged.
+    Found live 2026-08-05: auto-selection could pick a contract already
+    failing both gates with no console signal until compare/evaluate ran.
+    """
+    problems = []
+    if chain.open_interest < OPTION_OI_MINIMUM:
+        problems.append(f"OI={chain.open_interest} < {OPTION_OI_MINIMUM} minimum")
+    if chain.spread_pct_of_mid > OPTION_SPREAD_MAX_PCT:
+        problems.append(f"spread={chain.spread_pct_of_mid:.1f}% > {OPTION_SPREAD_MAX_PCT}% max")
+    return "; ".join(problems) if problems else None
 
 
 def cmd_fetch_chain(
@@ -108,4 +124,7 @@ def cmd_fetch_chain(
     print(f"  strike={chain.strike}  expiration={chain.expiration}  "
           f"delta={chain.delta:.3f}  OI={chain.open_interest}  "
           f"spread={chain.spread_pct_of_mid:.1f}%")
+    warn = _viability_warning(chain)
+    if warn:
+        print(f"[WARN] {symbol} contract may fail options_council viability gates: {warn}")
     return 0

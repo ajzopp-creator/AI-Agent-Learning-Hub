@@ -47,6 +47,11 @@ demand.
 | Skip-automation flag | `SKIP_TODAY.flag` (project root) — drop here to suppress all automation for the day |
 | Session Guardian | `P_010_Start_Guardian.bat` — double-click each morning; auto-runs the missed morning posture if today's log is absent, then monitors for Claude Desktop sync/API errors |
 | Error log | `docs\P_010_Error_Corrections_Log.md` |
+| Failure flag | `MORNING_RUN_FAILED.flag` (project root) -- written/cleared by `P_010_daily_posture_v5.py`; `P_010_daily_posture.bat` skips STEP 2 (note writer) if present; Guardian checks it too (WO-P010-E1.003) |
+| Toast notifier | `python\toast_notify.py` -- BurntToast-based, NOT windows-mcp:Notification (that tool needs a live MCP session; unattended runs have none). See ERROR 003. |
+| Staleness check | `python\staleness_check.py` -- keys off RiskConfig's `timestamp` field, never `grid_date` (grid_date legitimately lags over weekends) |
+| Note writer split | `python\note_api_fetchers.py` / `note_content_builders.py` / `note_template_engine.py` -- extracted from the note writer 2026-08-10 to clear the 300-line limit; `P_010_write_daily_note.py` is orchestration only now |
+| Intraday split | `python\intraday_risk_logic.py` -- PRANGE validation + risk-mode decision, extracted 2026-08-10; `P_010_intraday_vp_check_v4.py` is orchestration only now |
 
 **Task Scheduler (locked bat filenames — never rename, Scheduler references them directly):**
 `P_010_daily_posture.bat` (weekdays 7:30 AM trigger, runs ~9:30 AM) | `P_010_run_intraday_vp_check.bat` (weekdays 2:00 PM)
@@ -167,7 +172,19 @@ ELSE                          -> final = risk_mode
    overwrites `TradingJournal/DD-MM-YYYY.md`; if a re-run is needed, the
    existing file must be deleted first (Section 10 troubleshooting), not
    silently replaced by re-running the script.
-7. **Assuming EZBreakouts exposure data or the P_300-in-P_010 migration
+7. **Trusting a subprocess exit code alone as proof a Windows notification
+   fired** -- ERROR 003 (2026-08-10, MEDIUM). Two-stage silent failure:
+   NotifyIcon.ShowBalloonTip "succeeded" with no message loop to render it,
+   then BurntToast's replacement call also returned exit 0 after a
+   terminating Import-Module error (powershell.exe -Command doesn't
+   reliably propagate -ErrorAction Stop into its own exit code). Neither
+   failure was visible to any automated check -- only confirmed by Tony
+   watching the screen and seeing nothing. Fix: wrap the PowerShell call in
+   try/catch with an explicit exit code, and treat non-empty stderr as
+   failure even when the exit code claims success. Any unattended-script
+   notification mechanism needs a human-watched screen test before it's
+   trusted, not just a clean return.
+8. **Assuming EZBreakouts exposure data or the P_300-in-P_010 migration
    already exist** — both are open backlog items (IN PROGRESS / QUEUED),
    not shipped features. Check `docs/P_010_Enhancement_Backlog.md` before
    referencing either as if it's live.
@@ -287,6 +304,27 @@ Do NOT load reflexively — this SKILL covers routine INIT and troubleshooting.
   per Hub-wide rule in `WO_COMPLETION_GATE.md`)
 
 ## Changelog
+
+### 2026-08-10
+- WO-P010-E1.003 (fail-loud alerting) landed: MORNING_RUN_FAILED.flag
+  halt mechanism (P_010_daily_posture_v5.py writes/clears it,
+  P_010_daily_posture.bat checks it before STEP 2, note writer never
+  runs against a failed morning read), 	oast_notify.py (native Windows
+  toast, BurntToast-based -- see ERROR 003), staleness_check.py (keys off
+  	imestamp, never grid_date -- grid_date legitimately lags over
+  weekends). Also split two files that had grown past the 300-line hard
+  limit: P_010_write_daily_note.py (429 -> 151 lines, extracted
+  
+ote_api_fetchers.py / 
+ote_content_builders.py /
+  
+ote_template_engine.py) and P_010_intraday_vp_check_v4.py
+  (299 -> 238 lines, extracted intraday_risk_logic.py). Anti-pattern 7
+  added (ERROR 003). Item 4 from the WO (intraday .bat errorlevel bug
+  printing [ERROR] after [SUCCESS]) still open -- no repro found on a
+  static read, needs a live repro log before touching it. STEP 3
+  (market_health.cli) deliberately left unconditional -- confirmed
+  independent of STEP 1's output, no dependency to gate.
 
 ### 2026-07-08
 - Initial build. Created under WO-P000-E6.001 (Gap 3 of the 2026-07-06

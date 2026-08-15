@@ -12,6 +12,9 @@ ticker_relevance:
   - "X (formerly Twitter)"
 sector:
 origin:
+review_status: reviewed-relevant
+review_date: 2026-08-05
+disposition: "Fake-edge test applied to P_400 Tier-2B batch flow; drove decision to build combined CLI batch command (loop) rather than agent graph. Sections 3, 7.2 and 8 directly cited. Not yet implemented -- awaiting Tony approval on file plan."
 ---
 ![Image](https://pbs.twimg.com/media/HOAA7BpW0AE_Dxe?format=jpg&name=large)
 

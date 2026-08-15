@@ -36,7 +36,11 @@ The LM Studio Wrapper provides a **unified, standardized interface** for local L
 **Responsibility:** Pure I/O with external systems.
 
 #### `lm_studio_api.py` — LM Studio Native API Calls
-- `load_model()` — Load a model via `/api/v1/models/load`
+- `load_model()` — Load a model via `/api/v1/models/load`. Resolves the model's
+  tier via `MODELS` and sends `context_length` from `config.CONTEXT_LENGTH` at
+  the top level of the POST body (WO-P000-E14.001) — the declared context
+  length is now authoritative, not whatever LM Studio last happened to load
+  the model with.
 - `unload_model()` — Unload current model
 - `send_chat_request()` — Send prompt to loaded model via `/api/v1/chat`
 - `get_available_models()` — Fetch model list

@@ -1,0 +1,5 @@
+{
+  "returncode": 0,
+  "stdout": "2026-08-13 16:33:14 | INFO     | obsidian_writers.infrastructure.json_writer | signal written: 2026-08-13_FLY_v2.0.json\n2026-08-13 16:33:14 | INFO     | obsidian_writers.application.write_handler | OK schema=SIGNAL_V2 packet=2026-08-13_FLY_v2.0.json\nSignal written: True\n",
+  "stderr": "DEBUG handle_write called: schema=SIGNAL_V2\nDEBUG Validated schema=SIGNAL_V2 symbol/ticker=FLY\nDEBUG Built filepath: C:\\Users\\Trader\\AI-Agent-Learning-Hub\\trading_journal\\TradeOrderManagement\\signals\\2026-08-13_FLY_v2.0.json\nINFO signal written: 2026-08-13_FLY_v2.0.json\nINFO OK schema=SIGNAL_V2 packet=2026-08-13_FLY_v2.0.json\n"
+}

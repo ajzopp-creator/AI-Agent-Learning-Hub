@@ -2,8 +2,15 @@
 
 Commands (run from python\\database\\ dir, p140 env):
 
+    python cli.py auth --project ALL     -- ONE login, all projects (standard)
     python cli.py auth --project P_020   -- (re)issue P_020's own Schwab token
     python cli.py auth --project P_400   -- (re)issue P_400's Schwab token
+
+ALL is the standard weekly path. Schwab revokes at the app-registration
+level, so two separate logins leave only the most recent project working
+(confirmed 2026-08-09). Single-project mode is retained for targeted
+reauth, but running it re-grants and therefore kills the other projects'
+tokens -- follow it with ALL, or just use ALL.
 
 Command implementations live in application/ -- this file is argparse
 wiring + main() dispatch only.
@@ -23,13 +30,18 @@ def main() -> int:
     p_auth.add_argument(
         "--project",
         required=True,
-        choices=["P_020", "P_400"],
-        help="Which project's token to (re)issue",
+        choices=["ALL", "P_020", "P_400"],
+        help="Which project's token to (re)issue; ALL = one login for every project",
     )
 
     args = parser.parse_args()
 
     if args.cmd == "auth":
+        if args.project == "ALL":
+            from application.schwab_auth_commands import cmd_auth_all
+
+            return cmd_auth_all()
+
         from application.schwab_auth_commands import cmd_auth
 
         return cmd_auth(args.project)

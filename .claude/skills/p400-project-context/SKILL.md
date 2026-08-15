@@ -79,6 +79,19 @@ has a dedicated `APPROVED_WITH_SEVERE_WARNING` branch (state each warning
 No blocks/severe-warnings, a CAUTION → `APPROVED_WITH_CAUTION`. Otherwise
 `APPROVED`.
 
+**TAPE and market hours (WO-P400-E5.005, 2026-08-10):** outside 9:30-16:00
+ET no longer hard-BLOCKs. `fetch_snapshot.py` prices off the last
+completed daily bar's close instead of a live quote, with bid/ask
+reconstructed from the symbol's last observed LIVE half-spread
+(`infrastructure\last_spread_cache.py`, updated on every market-open
+fetch — real friction, not a synthetic zero). `tape_vote()` reads this as
+`price_basis` ("live" | "close"): closed + `price_basis=="close"` →
+CAUTION (`RC_USING_CLOSE_DATA`), not BLOCK. No cached spread for a symbol
+yet (never fetched live before) → `fetch_snapshot.py` fails loud, no file
+written — fetch that symbol live during market hours first. The old
+`pre_market_flag` param is gone (was dead — hardcoded `False`, never
+wired to anything).
+
 Reason codes live in `domain\council_codes.py` as string constants — never
 inline a literal reason string in a new role function; import from there.
 
@@ -125,6 +138,23 @@ otherwise (2026-07-10: told Tony "I don't look up earnings data" — false;
 Schwab command). Third instance of this gap-class would need a structural
 fix, not another changelog line.
 
+**batch-2b's earnings source is different from the manual flow above --
+read this before offering batch-2b (WO-P400-E5.002, 2026-08-08; found live
+2026-08-11 on HAL/VKTX).** `batch-2b` does NOT use Bucket B web-search or
+the old manual `earnings_YYYY-MM-DD.json` bridge file -- that file is dead
+code for batch-2b as of E5.002 (`infrastructure/earnings_file.py`, still on
+disk, called by nothing). `application/earnings_lookup.py` reads
+`earnings_calendar_cache.json` exclusively (Nasdaq public calendar,
+refreshed via `cli.py refresh-earnings-calendar`). A PASS symbol missing
+from that cache -- e.g. a real, liquid, well-known ticker whose next-earnings
+date simply isn't officially confirmed by Nasdaq yet -- hard-fails the
+WHOLE batch (`EarningsDataMissing`, no per-symbol skip/override exists).
+Running `refresh-earnings-calendar` will NOT help if Nasdaq itself hasn't
+posted a date yet -- confirmed live: HAL/VKTX still absent after a fresh
+pull. The only way through today is the manual per-symbol
+`fetch-snapshot`/`fetch-chain`/`compare` flow (Bucket B web-search-sourced
+earnings), which does not touch the cache at all.
+
 **Chain data (options):**
 ```
 cli.py fetch-chain SYMBOL --type call|put [--strike X] [--expiration DATE]
@@ -148,6 +178,12 @@ Tony's TOS ThinkScript exactly (verified against MRCY, all 5 levels
 exact). **Item 9 (chart pattern) is never computed** — geometric shape ID
 is a judgment call (Tony confirmed 2026-07-21); Claude narrates it over
 the printed table in STEP 3A, no screenshot.
+
+**Record trade_mode (WO-P400-E5.001, 2026-07-29):** `record` accepts
+`--paper` independently of what `evaluate`/`spec` cached. Fill-time is
+often when Tony actually knows paper-vs-real -- use `record SYMBOL
+--order-id ID --paper` (or omit for real) at that point; never require a
+prior `--paper` on evaluate/spec first. See Bugs Already Fixed below.
 
 **Auth troubleshooting:** `OAuthError "unsupported_token_type"` on
 `fetch-snapshot`/`fetch-chain` → get a fresh grant via **P_020**, not
@@ -182,7 +218,11 @@ alongside or immediately after this skill, same session, per
 | E3.010/E3.011 (4th recurrence) | New verdict tier `APPROVED_WITH_SEVERE_WARNING` (2026-07-20) missing from spec-cache gate, `record_commands.py` allow-list, `obsidian_writers\config.py` `VERDICT_MAP` (defaulted PASS instead of BUY), and a test allowlist — same root cause, 4 spots | Each fixed individually; `VERDICT_MAP` P_800-Acked 2026-07-24. **Unfixed structural gap:** no single source of truth enumerates all verdict-tier consumers. |
 | E4.005 | `is_market_open_now()` was Mon-Fri 9:30-16:00 wall-clock only, no holiday check — `market_open: true` on holidays | Fixed with E4.006 (same root gap) |
 | E4.006 | `_sessions_since_earnings()` weekday-count had no holiday awareness — miscounted the `POST_EARNINGS_STABILIZATION_SESSIONS` window by one per holiday | New `domain\market_holidays.py` (rule-based, verified vs. NYSE 2026-2028 calendar); consumed by `market_hours.py` and `evaluate_signal.py`. Also fixed: `test_schwab_market_data.py` mock (`get_quotes` plural for slash-symbols); a weekday-dependent test fixture. |
-
+| E2.016 | quant_vote()'s RC_RR_BELOW_MIN `reason_detail` stated R:R (spread-adjusted, from `evaluate_signal.py`) and needs >= (clean entry/stop) on the same line with no basis label — read as self-contradictory though the BLOCK itself was always correct | Relabeled both figures in place: (realistic-fill, spread-adjusted) / (clean/guideline basis). No parameter or behavior change. Test: `test_council.py::test_quant_blocks_rr_below_min` asserts both labels present. |
+| E5.001 | `record` couldn't set `trade_mode` -- `evaluate`/`spec` cache it early, but Tony often decides paper-vs-real at fill, not eval time (CPAY, 2026-07-29: workaround was re-running `spec --paper` just to overwrite the cache before `record`). | `record` gained `--paper`; `cmd_record_submit()` builds a call-scoped override to `PAPER` before `write_p400_record()` -- `eval_cache` file itself never mutated. Tony: "Paper is a decision I make when I go to BUY." Test: `test_record_commands.py` (override-sets-PAPER / no-override-keeps-cached / override-doesn't-mutate-cache). |
+| E5.005 | `tape_vote()` hard-BLOCKed every evaluate outside 9:30-16:00 ET via `RC_MARKET_CLOSED` unless `pre_market_flag=True` -- hardcoded `False` in `evaluate_signal.py`, never wired anywhere, so it was a 100% block with a dead escape hatch | Replaced `pre_market_flag` with `price_basis` ("live"/"close"). Closed-market path prices off the last daily bar's close (`fetch_snapshot.py`) with bid/ask reconstructed from the symbol's last observed LIVE half-spread (`infrastructure\last_spread_cache.py`, real friction, not synthetic zero) -- CAUTIONs (`RC_USING_CLOSE_DATA`) instead of BLOCKing. No cached spread yet -> fails loud, no file written. Tests: `test_tape_price_basis.py`, `test_fetch_snapshot.py`, `test_last_spread_cache.py`. |
+| E6.001 | `Bases/P400_Trades.base` filtered on `TradeManagement/P400` -- renamed to `TradeOrderManagement/P400` by WO-P800-E3.003 (2026-07-25); dead path returned zero rows silently for 17 days. Also sorted on a `date` field that does not exist in the P400 note schema | Path corrected to `TradeOrderManagement/P400`; sort field corrected to `run_date`. See WO-P400-E6.001 -- also found P_400 order notes never close the lifecycle loop (entry_date/close_date/realized_pnl stay null forever), reconciliation design pending |
+| E5.006 | `cmd_compare()` had zero disposition wiring on any outcome -- a `NEITHER` recommendation (both vehicles fail R:R/viability) printed the comparison table and returned, leaving the packet in the live inbox indefinitely -- no archive, no record, re-fetched (re-billed against live Schwab) every session. Found live 2026-08-11 on HAL and VKTX after a `batch-2b` earnings-cache hard-fail forced the manual `compare` fallback. | `run_comparison()` (`compare_vehicles.py`) gained a `trade_mode` param and a new `_dispose_if_neither()` helper -- on `NEITHER`, calls the existing `drop_signal()` (`drop_reason="RR_INVALID"`), archiving the packet and writing a REVIEWED_NO_TRADE record, mirroring the ENTRY_MISSED path `cmd_evaluate()` already used. Tony's directive (2026-08-11): once a signal reaches P_400 it is either a trade or it is not -- no hold-and-recheck; re-qualification is the trade-selector projects' job (P_115/P_300/P_118), not Order Management's. Test: `test_run_comparison_neither_disposes_packet`. Live-verified same session: inbox count 16 -> 0. |
 ---
 
 ## Layer Architecture (Hub Standard)
@@ -274,6 +314,21 @@ is the cautionary example: a log line is not a council verdict.
     next-day after-close earnings inside the 3-day window; presented as an
     unweighted 3-way pick, Tony picked "run anyway," burned a live pull +
     an auth re-grant, caught his own call as wrong before evaluate ran).
+13. Vehicle selection is options-first (WO-P400-E5.003, 2026-08-07, Tony
+    confirmed applies to both the manual flow and batch-2b) -- no longer
+    gated behind stock-sizes-to-0 / R:R<2:1 / Tony-request. For every
+    approved stock-based (asset_class="stock") signal, run compare
+    (calls domain.vehicle_selector.compare_vehicles()) before evaluate and
+    follow its recommended field -- STOCK, OPTION, SPREAD,
+    OPTION_OVERRIDE_ONLY, or NEITHER -- into the matching command. SIP
+    v2.6 Step 2/4c carries the full branch table. batch-2b's internal
+    vehicle selection (application/batch_2b_scoring.py) reuses
+    compare_vehicles() directly rather than the manual compare CLI path,
+    but the same options-first policy governs both.
+14. Trade mode (paper vs. real) is set at `record` time via `--paper`
+    (WO-P400-E5.001) -- do not ask Tony to resolve it as an open question
+    if he's already stated it; do not require `--paper` on an earlier
+    `evaluate`/`spec` call. Fill-time is the correct decision point.
 
 **Must Not:**
 1. Hardcode a risk_mode, account balance, or position cap that should be
@@ -317,20 +372,89 @@ is the cautionary example: a log line is not a council verdict.
 ## Maintenance
 
 - **Owner:** Anthony Zoppi (review), Claude (drafting)
+- **Write safety (added WO-P400-E5.005, 2026-08-10):** any PowerShell
+  write to THIS file must use a single-quoted here-string (`@'...'@`),
+  never double-quoted (`@"..."@` or `"..."`). This file's own prose uses
+  markdown backtick-code-formatting constantly (`` `reason_detail` ``,
+  `` `evaluate_signal.py` ``, etc.) -- in a double-quoted string,
+  PowerShell reads backtick+letter as an escape sequence (`` `r ``->CR,
+  `` `e ``->ESC, `` `n ``->LF, `` `t ``->TAB), silently eating the first
+  letter after the backtick and inserting a control character instead.
+  The E2.016 Bugs-table row corrupted this way sat wrong for 5 days,
+  unnoticed, before this WO found and fixed it. A single-quoted
+  here-string is fully literal -- no escape interpretation at all -- so
+  this class of bug can't recur regardless of how much backtick-code
+  formatting the new content contains.
 - **Update trigger:** any WO that fixes a bug here (add a Bugs Already
   Fixed row + matching test, same session, per `WO_COMPLETION_GATE.md`)
   OR any WO that renames, moves, redefines, or automates a path/config/
   data-source value this file documents — even when P_400 is only an
   `Affects:` consumer, not the Owner. This file's own last-updated date
   is not evidence its content is current: check the WO ledger, not just
-  this changelog, before trusting a Bucket-A/B or path rule. Two
+  this changelog, before trusting a Bucket-A/B or path rule. Three
   confirmed multi-day gaps on record (WO-P800-E3.003 vault rename sat
   unreflected 2 days; WO-P400-E4.001-E4.003 Schwab automation sat
-  unreflected 4 days) plus the 2026-08-04 auth-command gap (9 days) — same
-  failure shape each time: "P_400 already knows this happened, the skill
-  file just wasn't told."
+  unreflected 4 days; WO-P400-E5.001 sat unreflected 14 days) plus the
+  2026-08-04 auth-command gap (9 days) — same failure shape each time:
+  "P_400 already knows this happened, the skill file just wasn't told."
 
 ## Changelog
+
+### 2026-08-12
+- WO-P400-E5.001 (OWNER_DONE 2026-07-29, 11/11 live-verified) never got
+  its Bugs-table row -- 14 days undocumented, only surfaced this session
+  via chat-history search after Tony flagged it. Added Bugs row, Live
+  Data section note, and Must #14. Same failure shape as the other
+  doc-sync gaps logged below.
+
+### 2026-08-11
+- WO-P400-E5.006: Bugs Already Fixed row added -- `cmd_compare()` had no
+  disposition wiring on any outcome; NEITHER left packets stuck in the
+  inbox indefinitely. Fixed via `_dispose_if_neither()` in
+  `compare_vehicles.py`, reusing the existing `drop_signal()` path.
+  Tony's directive: once a signal reaches P_400 it is either a trade or
+  it is not -- no hold-and-recheck state anywhere in this project.
+- Same session, unrelated: added a note under Live Data & Dossier
+  Automation describing batch-2b's earnings source (WO-P400-E5.002,
+  Nasdaq calendar cache only, no per-symbol override, old manual bridge
+  file now dead code) -- found live when batch-2b hard-failed on HAL/VKTX
+  despite both being real, liquid tickers with simply-unconfirmed dates.
+  No code defect, documentation gap only.
+
+- WO-P400-E6.001: `Bases/P400_Trades.base` found pointing at the dead
+  `TradeManagement/P400` path (renamed by WO-P800-E3.003, 2026-07-25) --
+  zero rows returned silently for 17 days. Fixed, plus a sort-field bug
+  (`date` does not exist in this schema; corrected to `run_date`). Same
+  investigation found P_400 order notes never close the lifecycle loop --
+  `entry_date`/`close_date`/`realized_pnl` stay null forever, no
+  reconciliation step exists. Reconciliation design recommended (extend
+  P_020's SQLite-as-source-of-truth pattern) but not yet approved/built.
+
+### 2026-08-10
+- WO-P400-E5.005: Council Roles section updated -- TAPE no longer
+  hard-BLOCKs outside market hours; describes price_basis and the new
+  last_spread_cache.json mechanism. Added Bugs Already Fixed row.
+- Same session, unrelated: found and fixed byte-level corruption in the
+  E2.016 Bugs table row (sitting since ~2026-08-05) -- a prior session's
+  PowerShell write used a double-quoted string containing markdown
+  backtick-code-formatting; PowerShell interpreted backtick+letter as
+  escape sequences, eating the first letter of several words and
+  inserting a control character in its place. Purely cosmetic (didn't
+  break table syntax) but silently wrong for 5 days, unnoticed. Root
+  cause is generic to any future skill-file edit containing markdown
+  backtick-code spans -- single-quoted here-strings (fully literal, no
+  escape interpretation) are the safe pattern; used one for both fixes.
+
+### 2026-08-07
+- Added Must #13: vehicle selection is options-first (WO-P400-E5.003) --
+  compare runs before every stock-based evaluate now, both in the manual
+  flow and in the new batch-2b CLI runner. Replaces the old
+  stock-sizes-to-0/R:R<2:1/Tony-request fork description. SIP updated to
+  v2.6 same session (Scope 7 of WO-P400-E5.003 -- doc-sync required before
+  that WO can move past IN_PROGRESS).
+
+### 2026-08-05
+- Added Bugs Already Fixed row for WO-P400-E2.016 (OWNER_DONE, pending Independent Review) — RC_RR_BELOW_MIN message-text relabel, no behavior change. Matching test added same session per this file's own Update trigger.
 
 ### 2026-08-04
 - Added Must #12 (earnings-window pre-check before offering Tier-2B) and

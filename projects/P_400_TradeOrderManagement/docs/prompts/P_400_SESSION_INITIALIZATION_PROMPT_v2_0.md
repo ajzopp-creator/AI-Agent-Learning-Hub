@@ -1,5 +1,5 @@
-# P_400 Session Initialization Prompt v2.5
-**Ref:** Architecture v2.2 | Last Updated: 2026-07-24
+# P_400 Session Initialization Prompt v2.6
+**Ref:** Architecture v2.2 | Last Updated: 2026-08-07
 **Location:** docs\prompts\P_400_SESSION_INITIALIZATION_PROMPT_v2_0.md
 **Pairs With:** docs\P_400_TradeOrderManagement_Architecture_v2_0.md
 
@@ -47,7 +47,7 @@ From the PASS list already printed in STEP 0.7, ask: "Which PASS signals
 ## STEP 2 — Tier + Vehicle Selection
 - **2A** — full technical workup + snapshot, then pipeline
 - **2B** — live snapshot only, direct to pipeline
-- **Options fork:** stock sizes to 0 OR R:R < 2:1 OR Tony requests options — add --options flag; Claude asks for chain file (arch doc Section 7.3) before STEP 4.
+- **Vehicle selection is options-first (WO-P400-E5.003, 2026-08-07)** — no longer gated behind stock-sizes-to-0 / R:R<2:1 / Tony-request. Applies to the manual flow here AND `batch-2b` (Tony confirmed both, 2026-08-07). See STEP 4c: `compare` runs before every stock-based (asset_class="stock") evaluate.
 
 ## STEP 3A — Full Dossier (2A only)
 Run `cli.py dossier SYMBOL` (WO-P400-E4.003) -- computes items 1-8 live
@@ -61,8 +61,19 @@ Entry drifted > 1.5% AND no 2:1 target — STOP, write REVIEWED_NO_TRADE via P_8
 
 ## STEP 4 — Snapshot + Pipeline
 **4a.** Assemble snapshot_SYMBOL.json (arch doc Section 6.2). Save in python\.
-**4b (options only).** Tony supplies chain_SYMBOL.json (arch doc Section 7.3). TOS first — ChartExchange — Yahoo — Barchart. Spreads need two files.
-**4c.** Output command — ask --cash if not stated:
+**4b.** Tony supplies chain_SYMBOL.json (arch doc Section 7.3) -- options-first (WO-P400-E5.003, 2026-08-07): needed for every stock-based signal now, not options-only. TOS first — ChartExchange — Yahoo — Barchart. Spreads need two files.
+**4c.** Run compare first (options-first), then follow its recommended field into the matching command. Ask --cash if not stated:
+
+Compare (run before choosing a command):
+```
+C:\Users\Trader\.conda\envs\p140\python.exe cli.py compare SYMBOL --snapshot snapshot_SYMBOL.json --chain chain_SYMBOL.json --cash DOLLARS
+```
+
+- **STOCK** -> stock command below
+- **OPTION** -> options single-leg command below
+- **SPREAD** -> options spread command below (also fires on IV > 50 / premium breach)
+- **OPTION_OVERRIDE_ONLY** -> neither vehicle viable without an explicit override; see override protocol (arch doc Section 2.5 item 5) before proceeding
+- **NEITHER** -> no viable vehicle; STOP, do not evaluate
 
 Stock:
 ```
@@ -108,6 +119,13 @@ Tony submits in Schwab, reports order_id. Call P_800 handle_write() — status S
 
 ## Changelog
 
+### v2.6 -- 2026-08-07
+- STEP 2/4: vehicle selection changed to options-first (WO-P400-E5.003) --
+  compare now runs before every stock-based (asset_class="stock") evaluate,
+  replacing the stock-sizes-to-0/R:R<2:1/Tony-request fork. Applies to both
+  this manual flow and the new batch-2b CLI runner (Tony confirmed both,
+  2026-08-07).
+
 ### v2.5 -- 2026-07-24
 - STEP 3A: screenshot-reading replaced with `cli.py dossier SYMBOL`
   (WO-P400-E4.003) -- items 1-8 computed live, item 9 (chart pattern)
@@ -123,4 +141,4 @@ Tony submits in Schwab, reports order_id. Call P_800 handle_write() — status S
 - Phase E3 options pipeline integrated (WO-P400-E3.003); chain template added; options/spread CLI variants added.
 
 ---
-*Owner: Anthony Zoppi | 2026-07-24 | v2.5*
+*Owner: Anthony Zoppi | 2026-08-07 | v2.6*

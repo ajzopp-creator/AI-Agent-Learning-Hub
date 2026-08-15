@@ -1,0 +1,10 @@
+{
+  "FSLR": {"symbol": "FSLR", "next_earnings_date": "2026-10-29", "last_earnings_date": "2026-07-23", "sector": "Technology (Solar)", "source": "web_search", "date_confirmed": false},
+  "AVB": {"symbol": "AVB", "next_earnings_date": "2026-10-21", "last_earnings_date": "2026-07-22", "sector": "Real Estate (Residential REIT)", "source": "web_search", "date_confirmed": true},
+  "DX": {"symbol": "DX", "next_earnings_date": "2026-10-19", "last_earnings_date": "2026-07-20", "sector": "Financials (Mortgage REIT)", "source": "web_search", "date_confirmed": true},
+  "LFCR": {"symbol": "LFCR", "next_earnings_date": null, "last_earnings_date": "2026-08-05", "sector": "Healthcare (Biopharma/CDMO)", "source": "web_search", "date_confirmed": true},
+  "MAA": {"symbol": "MAA", "next_earnings_date": "2026-10-28", "last_earnings_date": "2026-07-29", "sector": "Real Estate (Residential REIT)", "source": "web_search", "date_confirmed": true},
+  "NVR": {"symbol": "NVR", "next_earnings_date": "2026-10-22", "last_earnings_date": "2026-07-23", "sector": "Consumer Discretionary (Homebuilders)", "source": "web_search", "date_confirmed": true},
+  "NVT": {"symbol": "NVT", "next_earnings_date": "2026-10-23", "last_earnings_date": "2026-07-31", "sector": "Industrials (Electrical Equipment)", "source": "web_search", "date_confirmed": true},
+  "PSKY": {"symbol": "PSKY", "next_earnings_date": null, "last_earnings_date": "2026-08-04", "sector": "Communication Services (Media)", "source": "web_search", "date_confirmed": true}
+}

@@ -1,5 +1,6 @@
 {
   "default_risk_pct": 0.015,
+  "max_position_pct": 0.05,
   "options_multiplier": 100,
   "consolidation_window_minutes": 10,
   "default_system_name": "TOS_Import"

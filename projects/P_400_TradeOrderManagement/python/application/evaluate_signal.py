@@ -224,7 +224,7 @@ def evaluate_signal(
         tape_vote(
             price_delay_seconds=snap.price_delay_seconds,
             market_open=snap.market_open,
-            pre_market_flag=False,
+            price_basis=snap.price_basis,
             adverse_drift_pct=adverse_drift,
             rr_after_drift=rr_after_drift,
         ),

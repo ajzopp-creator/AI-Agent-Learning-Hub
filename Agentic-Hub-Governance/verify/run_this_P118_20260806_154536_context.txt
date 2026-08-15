@@ -1,0 +1,37 @@
+P_118 STEP 2 -- NTAP signal emission
+Date: 2026-08-06 (session ET 15:45)
+Related: WO-P115-E3.001 (architecture v1.4, STEP 2 = emit only)
+
+WHAT THIS SCRIPT DOES
+Shells out to the production cli.py entry point (does not reimplement or
+bypass it) with the STEP 2 SIGNAL_V2 args for a single NTAP signal:
+P_118 Eddie Z, High Handle pattern, BUY verdict (HybridTier=6), entry
+195.80, stop 162.67 (PA Stop/Structure), target 202.58 (T1). Fund
+Verification and post-earnings check were both already run and cleared
+before this script was staged -- this script only emits, it does not
+re-derive the verdict.
+
+WHY IT EXISTS
+Staged per peh-handoff v1.5 BEFORE the live windows-mcp:PowerShell call to
+the same cli.py command, as the durable fallback if that live call times
+out or the relay stalls. If you are reading this, the live call likely
+hit the ~4-minute MCP ceiling or a relay stall.
+
+SUCCESS CRITERIA
+Run it with:
+C:\Users\Trader\.conda\envs\p140\python.exe run_this_P118_20260806_154536.py
+Prints "PASS" and the line "Signal written: [path to *_v2.0.json]" from
+cli.py's own output. A run_this_P118_20260806_154536.py.done file is
+written next to this script either way (status=PASS/FAIL, exit_code,
+timestamp) -- that file is the Test-Path-checkable completion signal.
+
+ON FAILURE
+Read the captured cli.py stdout/stderr printed before "FAIL:". Most likely
+causes: cli.py argument name drift (verify against current cli.py --help,
+this script was built from the documented arg list as of 2026-08-06),
+missing --support-1/--support-2 flags if cli.py hasn't picked up the
+WO-P115-E3.001 Pass 4 wiring on this machine yet, or a P_400 inbox path
+permissions issue. Do not change the SIGNAL_V2 field values (entry/stop/
+target/rationale) to force a pass -- if cli.py rejects them, the fix is in
+cli.py's argument handling or the inbox path, not in these values. Paste
+the full output back to Tony/Claude for diagnosis before re-running.

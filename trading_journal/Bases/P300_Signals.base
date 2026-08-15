@@ -1,30 +1,23 @@
-view: table
-filter:
-  conditions:
-    - field: file.folder
-      operator: contains
-      value: TradeManagement/P300
-  conjunction: and
-sort:
-  - field: date
-    direction: desc
-columns:
-  - id: date
-    field: date
-  - id: ticker
-    field: ticker
-  - id: signal
-    field: signal
-  - id: signal_horizon
-    field: signal_horizon
-  - id: h5_win_rate
-    field: h5_win_rate
-  - id: h10_win_rate
-    field: h10_win_rate
-  - id: h5_mean_ret
-    field: h5_mean_ret
-  - id: n_matches
-    field: n_matches
+filters:
+  and:
+    - file.inFolder("TradeOrderManagement/P300")
+properties:
+  date:
+    displayName: Date
+  ticker:
+    displayName: Ticker
+  signal:
+    displayName: Signal
+  signal_horizon:
+    displayName: Horizon
+  h5_win_rate:
+    displayName: H5 Win Rate
+  h10_win_rate:
+    displayName: H10 Win Rate
+  h5_mean_ret:
+    displayName: H5 Mean Return
+  n_matches:
+    displayName: N Matches
 views:
   - type: table
     name: Table
@@ -36,6 +29,15 @@ views:
     groupBy:
       property: file.tags
       direction: ASC
+    order:
+      - date
+      - ticker
+      - signal
+      - signal_horizon
+      - h5_win_rate
+      - h10_win_rate
+      - h5_mean_ret
+      - n_matches
     sort:
       - property: file.ctime
         direction: ASC

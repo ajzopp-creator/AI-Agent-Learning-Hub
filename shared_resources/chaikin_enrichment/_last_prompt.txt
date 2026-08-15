@@ -3,9 +3,13 @@ stock symbols and attaching each one to its Obsidian note.
 
 Notes to enrich (symbol -> exact note path, already resolved by Python --
 do not guess or construct a different path):
-EMR -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P115\2026-07-24_EMR.md
-OGN -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P115\2026-07-24_OGN.md
-PH -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P115\2026-07-24_PH.md
+BBY -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-08-13_BBY.md
+EPD -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-08-13_EPD.md
+FICO -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-08-13_FICO.md
+MSCI -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-08-13_MSCI.md
+RBLX -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-08-13_RBLX.md
+RDDT -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-08-13_RDDT.md
+SMPL -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-08-13_SMPL.md
 
 For EACH symbol/note pair listed above, do the following in order:
 

@@ -5,6 +5,7 @@
 # Last updated: 2026-07-27 (checklist now includes project skill files -- WO-P800-E3.003 renamed a shared vault path and went 2 days undetected in p400-project-context skill, since only CLAUDE.md/P_000 doc were checked)
 # Last updated: 2026-08-03 (added Caller Propagation + Imperative Sweep checks -- WO-P115-E2.001 wired support fields into emit_signal() but never into cli.py, the only entry point, and closed anyway; architecture v1.3 removed P_115 sizing but was logged only in changelogs while 9 imperative rules still commanded sizing. Both closed on "the owning layer is done." Ref WO-P115-E3.001)
 # Last updated: 2026-07-29 (added Enforcement section -- Completion Gate block must exist at time OWNER_DONE is set, not backfilled later; ref EC-005, WO-P000-E9.001)
+# Last updated: 2026-08-07 (added Session-Close Reporting Rule -- a session that did OWNER_DONE work on WO-P000-E3.001/E7.001 described that same work as "Independent Review" in its own chat recap; ref EC-006)
 
 ---
 
@@ -58,6 +59,10 @@ P_300 WOs sat OWNER_DONE with an empty Completion Gate checklist for weeks --
 nothing forced a second look before self-certifying done.
 
 This applies Hub-wide, to every project, no exceptions for small WOs.
+
+## Session-Close Reporting Rule (added 2026-08-07, ref EC-006)
+
+A chat-level summary stating a WO has been "reviewed," "closed out with review," or similar is not itself evidence of review -- it must be backed by that WO's own Independent Review section/checkbox, re-read live in the same turn the claim is made. A session that performed OWNER_DONE-level work on a WO (Completion Gate items, fixes, doc corrections) describing that same work as Independent Review in its own summary is the self-certification failure this section already exists to block -- just one layer up, in prose instead of the ledger file. Never collapse "this session did the work" and "a separate session reviewed it" into one claim.
 
 ## Why Caller Propagation and Imperative Sweep Exist
 

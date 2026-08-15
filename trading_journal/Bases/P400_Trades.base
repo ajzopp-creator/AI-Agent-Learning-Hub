@@ -1,28 +1,32 @@
-view: table
-filter:
-  conditions:
-    - field: file.folder
-      operator: contains
-      value: TradeManagement/P400
-  conjunction: and
-sort:
-  - field: date
-    direction: desc
-columns:
-  - id: date
-    field: date
-  - id: ticker
-    field: ticker
-  - id: account_id
-    field: account_id
-  - id: council_verdict
-    field: council_verdict
-  - id: lifecycle_status
-    field: lifecycle_status
-  - id: realized_pnl
-    field: realized_pnl
-  - id: why_code
-    field: why_code
+filters:
+  and:
+    - file.inFolder("TradeOrderManagement/P400")
+properties:
+  run_date:
+    displayName: Date
+  ticker:
+    displayName: Ticker
+  account_id:
+    displayName: Account
+  council_verdict:
+    displayName: Verdict
+  lifecycle_status:
+    displayName: Status
+  realized_pnl:
+    displayName: P&L
+  why_code:
+    displayName: Why
 views:
   - type: table
     name: Table
+    order:
+      - run_date
+      - ticker
+      - account_id
+      - council_verdict
+      - lifecycle_status
+      - realized_pnl
+      - why_code
+    sort:
+      - property: run_date
+        direction: DESC

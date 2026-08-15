@@ -8,6 +8,15 @@ string for CLI output.
 Architecture v2.1 Section 7.3. Wired to options_council.py under
 WO-P400-E3.004 (item 2) -- previously OI/spread/RR-parity/IV-rank gates
 were built and unit-tested but never invoked on the live compare path.
+
+NEITHER disposal (WO-P400-E5.006, 2026-08-11): when neither vehicle is
+viable, the packet is archived and a REVIEWED_NO_TRADE record is written
+immediately -- Tony's call: once a signal reaches P_400 it is either a
+trade or it is not. P_400 does not hold a packet waiting to see if it
+re-qualifies later; that is the trade-selector projects' job
+(P_115/P_300/P_118), not Order Management's. Mirrors the existing
+ENTRY_MISSED disposal pattern already used by cmd_evaluate()'s
+--drop-reason path.
 """
 
 from __future__ import annotations
@@ -16,6 +25,7 @@ import json
 import logging
 from pathlib import Path
 
+from config import TradeMode
 from infrastructure.params_reader import read_params
 from infrastructure.posture_reader import read_posture
 from infrastructure.chain_loader import load_chain
@@ -37,6 +47,7 @@ def run_comparison(
     snapshot_path: str,
     chain_path: str,
     cash_available: float,
+    trade_mode: TradeMode,
 ) -> str:
     """Run stock vs option comparison and return formatted table.
 
@@ -45,9 +56,12 @@ def run_comparison(
         snapshot_path: Path to snapshot_SYMBOL.json.
         chain_path: Path to chain_SYMBOL.json.
         cash_available: Per-trade buying power from Tony.
+        trade_mode: REAL or PAPER -- used only by the NEITHER disposal
+            path; sizing itself is mode-agnostic.
 
     Returns:
-        Multi-line comparison table string.
+        Multi-line comparison table string. If the recommendation is
+        NEITHER, a REVIEWED_NO_TRADE disposal line is appended.
     """
     snapshot_raw = json.loads(Path(snapshot_path).read_text(encoding="utf-8"))
     snap = SnapshotDict(**snapshot_raw)
@@ -85,7 +99,30 @@ def run_comparison(
 
     comparison = compare_vehicles(packet.symbol, stock_sizing, option_sizing,
                                    options_council_result)
-    return _format_comparison(comparison, snap, chain, posture.risk_mode)
+    table = _format_comparison(comparison, snap, chain, posture.risk_mode)
+    return table + _dispose_if_neither(packet, comparison, trade_mode)
+
+
+def _dispose_if_neither(
+    packet: SignalV2,
+    comparison: VehicleComparison,
+    trade_mode: TradeMode,
+) -> str:
+    """Archive + write REVIEWED_NO_TRADE when neither vehicle is viable.
+
+    No-op (returns "") for every other recommendation -- STOCK/OPTION/
+    SPREAD/OPTION_OVERRIDE_ONLY still proceed to evaluate per the SIP,
+    unchanged.
+    """
+    if comparison.recommended != "NEITHER":
+        return ""
+    from application.drop_signal import drop_signal
+    ok = drop_signal(packet, "RR_INVALID", trade_mode)
+    logger.info("compare NEITHER -> drop_signal ok=%s", ok)
+    return (
+        f"\nREVIEWED_NO_TRADE: {packet.symbol}  drop_reason=RR_INVALID  "
+        f"(archived={'OK' if ok else 'FAILED'}, record written)"
+    )
 
 
 def _format_comparison(

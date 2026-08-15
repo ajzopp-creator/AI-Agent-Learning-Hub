@@ -1,5 +1,59 @@
 # P_300 Task Queue
 
+**>>> 2026-08-14 (Sonnet) -- DailyEval + Chaikin batch clean, live production run; WO-P300-E4.009 base WO still not closable (no failure occurred to exercise the detection):**
+
+`P_300_RunAllDailyEvals.ps1` run, 11 symbols (BBY, EPD, ESS, FICO, LRN, MSCI, NCLH, PPC, RBLX, RDDT, SMPL), anchor 2026-08-13. All 11 evaluations completed, 0 errors. 7 BUY/WATCH candidates (BBY, EPD, FICO, MSCI, RBLX, RDDT, SMPL) fed to the shared Chaikin scanner (`RunChaikinBatch.ps1 -Schema P300`) -- 7/7 enriched, no login prompts, session pre-authenticated.
+
+**Spot-verified 2/7 vault notes directly** (not taking console output at face value -- M-054): `2026-08-13_BBY.md` and `2026-08-13_FICO.md`, both `Created`/`Modified` 06:17 today. Chaikin ratings match console exactly (BBY Neutral, FICO Bearish), full Quick Stats + Summary sections present, no truncation, `note_version: 1`, `write_route` frontmatter clean.
+
+**WO-P300-E4.009 base WO (whole-batch failure detection) still not closable off this run** -- today's batch had zero failures (no login wall, no extension drop), so the WO's own designed detection was never exercised. Confirms the happy path is clean end-to-end on the schema-driven scanner; does not supply the still-owed real-failure confirmation.
+
+LM Studio confirmed running by Tony (INIT preflight had flagged NOT READY at session start; resolved before this batch ran).
+
+---
+
+**>>> 2026-08-12 (3rd, Sonnet) -- WO-P800-E4.001 P_300 Ack DONE for real -- 6 real notes enriched, independently read back, all confirmed correct:**
+
+Tony hit the auth blocker from the prior entry, refreshed the Claude Code CLI token (`/login`, browser OAuth), re-ran `RunChaikinBatch.ps1 -Schema P300` standalone. Console reported all 6 candidates (CLIX, NSLR, RWT, STLA, SYNA, XPO) enriched.
+
+**Did not take that at face value** -- the standalone script bypasses `P_300_RunAllDailyEvals.ps1`'s own wrapper-level readback check (that only fires when Chaikin runs as part of a full daily-eval batch), so this session read all 6 notes directly off disk. All 6 confirmed: real, complete `## Chaikin Power Gauge` sections, ratings matching the console exactly, `LastWriteTime` 14:08-14:09 today, no truncation or malformed markdown, `write_route` frontmatter unchanged (NFR-1 held). CLIX correctly handled as a no-coverage ETF (`Rating: None` + ETF Profile stats, not the stock Quick Stats template) -- confirms the skip-list mechanism and Chaikin's own per-symbol coverage gaps are two separate, correctly-independent things (CLIX isn't skip-listed and shouldn't be; it just has no rating).
+
+**WO-P800-E4.001 updated: P_300 Ack -> DONE**, matching P_115's 2026-07-25 standard exactly. Both Acks now done. Status stays OWNER_DONE (not CLOSED) -- this session wrote the skip-list extension code earlier today, so per WO_COMPLETION_GATE's Independent Review Requirement it can't also close the WO. A fresh session that wrote none of the skip-list code owes the final CLOSED move.
+
+**Real finding, not this WO's scope:** today's `claude -p --chrome` 401 was the Claude Code CLI's own OAuth token expiring (confirmed via code.claude.com/docs/en/errors), NOT a separate Chaikin-specific Chrome-extension credential as first guessed and initially written into the WO -- corrected same session before Tony acted on the wrong fix.
+
+---
+
+**>>> 2026-08-12 (2nd, Sonnet) -- WO-P800-E4.001 Chaikin skip-list extension BUILT + PEH-verified (5/5); P_300_RunAllDailyEvals.ps1 migrated to schema-driven scanner; Ack itself still owed on next real BUY/WATCH:**
+
+**4-file plan (Tony-approved) built in delivery order, config -> domain -> infrastructure -> application, all in `shared_resources\chaikin_enrichment\`:** `config.py` v1.0->v1.1 (+27 ln, `SCHEMA_SKIP_LISTS` dict, per-schema, P_115 unaffected via empty default); `domain\candidate_filter.py` v1.0->v1.1 (+~20 ln, `is_candidate()`/`filter_candidates()` gained an optional `skip_symbols` param defaulting to empty frozenset -- backward compatible, existing tests needed zero changes); `infrastructure\skip_list_reader.py` (NEW, 39 ln, `read_skip_list(schema) -> dict[symbol, reason]`, graceful empty-dict fallback); `application\run_chaikin_batch.py` v1.0->v1.1 (+~20 ln, wires the reader in, prints `[SKIP] SYMBOL -- reason` for qualifying-but-skipped symbols by calling `filter_candidates()` twice rather than re-deriving qualification logic, M-082).
+
+**PEH-verified same day, 5/5 PASS** (`Agentic-Hub-Governance\verify\run_this_P300_20260812_chaikin_skiplist.py`, Tony ran it): full import chain across all 4 files; existing `test_candidate_filter.py` assertions re-run directly, still pass unmodified; new skip-exclusion behavior confirmed both directions; a REAL read of P_300's actual `chaikin_skip_list.csv` returns exactly the 6 known symbols (XYLD, BITX, CRPT, CDPYF, CNSWF, EDVMF); P_115 confirmed to get an empty skip map.
+
+**`P_300_RunAllDailyEvals.ps1` migrated in the same pass** -- inline log-parsing + direct `claude -p --chrome` call replaced with `& RunChaikinBatch.ps1 -Schema P300`. Candidate list for the post-batch vault-note readback (WO-P300-E4.009's discipline, preserved unchanged -- never trust claude's prose, verify the actual vault file) now comes from the scanner's own `_last_prompt.txt` artifact, mtime-checked against `$batchStartTime` since the wrapper's exit code alone can't distinguish "no candidates" from "candidates existed, claude's exit code passed through." PowerShell syntax verified via real `[System.Management.Automation.Language.Parser]::ParseFile()` -- 0 errors, ran directly (no python.exe involved, so no MCP wedge risk).
+
+**Real trade-off, disclosed in the WO, not hidden:** the old script's best-effort failure-phrase matching (login wall / extension-not-connected prose detection) didn't port to the shared script and wasn't rebuilt here -- out of scope for the approved 4-file plan. The load-bearing safety net (real vault-note readback) is fully preserved, so a silent failure still can't be mistaken for success; only the specific "probable cause" hint text is lost. Flagged as a possible small follow-up, not filed as its own WO.
+
+**WO-P800-E4.001 updated** with a full "P_300-Side Build" section (Acks line changed from "pending" to "build done, Ack still owed"). **Ack itself still not complete** -- zero real BUY/WATCH candidates existed within `LOOKBACK_DAYS=1` at build time (most recent P_300 vault note was 5 days stale; Tony was mid-export of today's live grids when this was first found, same session, earlier). Real Ack -- matching P_115's own 2026-07-25 standard -- is owed on the next real DailyEval batch that produces a BUY or WATCH.
+
+**Three windows-mcp:PowerShell wedges on python.exe calls this session** (Chaikin scanner check, sqlite3 topk_cache check, this build's verification script) -- all handed off via PEH rather than retried blind, all came back clean. Plain PowerShell (ping, PowerShell's own AST parser) worked reliably throughout; only python.exe subprocess calls wedged. Broader than the 2026-07-20 todo.md entry's "narrowed to sqlite3 specifically" finding -- today's evidence (2 of 3 wedges were non-DB) suggests python.exe-via-MCP is the more general risk factor this session, not sqlite3 alone. Not filed as a new M-lesson (M-030 already states the general rule); noted here as a session data point.
+
+---
+
+**>>> 2026-08-12 (Sonnet) -- WO-P300-E4.006 status header was stale for 24 days (actually CLOSED); WO-P300-E5.008 unblocked; P_800 Chaikin Ack still open (data + shared-code gaps found):**
+
+**WO-P300-E4.006 corrected: stale header said "BUILT, NOT YET PEH-VERIFIED," body proved otherwise.** This session's own INIT summary initially repeated that stale header to Tony as fact. Caught only because Tony pushed back asking what the E4.006/E5.004 distinction meant -- re-reading the FULL 670-line WO body (not just the header) showed PEH Steps 1-4 all PASSED 2026-07-19 (unit tests, full import chain, dry-run migration against a catalog copy, then the real migration against the live catalog), and the one flagged gap (byte-identity regression vs. a full rescore) was closed 2026-07-20/21 (12/12 exact match). The Status line itself was simply never updated to match -- pure documentation drift, not a code problem. Independently re-verified today against the CURRENT live catalog (080526catalog.db, 31,845 patterns, vs. the WO's own 071726catalog.db/10,761-pattern evidence): topk_cache table real, 636,632 rows, 31,839/31,845 pattern_instances covered, 20.00 avg rows/pattern (exact TOP_K_MATCHES=20 match), 6 uncovered = the known degenerate-corpus pids. Confirms the design has held through 21,084 patterns of real growth, not just on ship day. WO-P300-E4.006 moved to CLOSED (Completion Gate checklist added -- none existed before; Independent Review section added, fresh session, wrote none of the original code, per WO_COMPLETION_GATE). Verification script staged/run via PEH after a windows-mcp:PowerShell wedge on the sqlite3-against-live-catalog call (exact known M-030 failure shape -- not retried blind; relay recovered for non-DB calls afterward, confirmed via a plain ping before handing off): Agentic-Hub-Governance\verify\check_topk_cache_20260812.py, read-only, Tony ran it, real output pasted back.
+
+**WO-P300-E5.008 unblocked as a direct consequence.** Its Depends On, OUT OF SCOPE, and RISKS AND UNVERIFIED ITEMS sections all cited E4.006's stale header (copied verbatim when E5.008 was filed 2026-08-07) as an open blocker on run_incremental_post_batch's contract. All three corrected in place -- E5.008 can now be scoped and built (retire vs. replace the orphaned reuse-fraction test coverage) against the real, settled contract. E5.008's own Status stays PENDING -- the retire-vs-replace decision itself still hasn't been made; only the false blocker is gone.
+
+**New lesson filed: M-111** -- a WO's own Status header line is not authoritative over its own body; both must be checked, and a contradiction between them is itself a signal worth surfacing, not silently resolved in either direction. See lessons.md.
+
+**WO-P800-E4.001 (P_300's Chaikin Ack) -- still open, two real gaps found, neither resolved yet:**
+1. **Data gap:** the schema-driven scanner's LOOKBACK_DAYS=1 means a real Ack needs a fresh BUY/WATCH note from today or yesterday. Most recent P_300 vault note on disk at session start was 2026-08-07 (5 days stale) -- zero real candidates exist to test against. Tony was mid-export of today's live grids (NSLR, RWT) when this was found; today's DailyEval batch (Tony's own operator-run step, not run this session) is the real unblock.
+2. **Shared-code gap, more consequential:** shared_resources\chaikin_enrichment\ (the new schema-driven scanner P_800 built) has zero awareness of P_300's chaikin_skip_list.csv (WO-P300-E5.007, shipped 2026-08-05 -- OTC/ETF symbols Chaikin structurally can't rate: EDVMF, XYLD, BITX, CRPT, CDPYF, CNSWF). Folding P_300_RunAllDailyEvals.ps1's inline Chaikin chain over to RunChaikinBatch.ps1 -Schema P300 as-is would silently reintroduce the exact bug E5.007 fixed one week ago. 4-file plan proposed to Tony, not yet approved: chaikin_enrichment\config.py (+~8 ln, per-schema SCHEMA_SKIP_LISTS dict, P_115 unaffected via empty default), domain\candidate_filter.py (+~15 ln, exclude skip-set symbols), a small infra CSV-read helper (+~10 ln), and P_300_RunAllDailyEvals.ps1 itself (~-100/+10 ln, inline chain replaced with the schema-driven call, note-readback/summary logic kept). Extends WO-P800-E4.001 directly (P_300-owned cross-project WO already) -- no new WO needed. Awaiting Tony's go-ahead before any code is written.
+
+---
+
 **>>> 2026-07-30 (Sonnet) -- WO-P300-E5.002 status-line self-contradiction resolved, completion-gate fail-path test built and PASSED in production:**
 
 **WO-P300-E5.002 ledger self-contradiction, resolved.** Tony flagged the
@@ -808,3 +862,95 @@ nice-to-have.
 
 **Both WOs' full evidence trail (Completion Gate + Independent Review
 sections) is in the WO files themselves**, not just here.
+
+
+---
+
+**>>> 2026-08-04, later same day (Sonnet) -- APPENDED OUT OF ORDER (same
+filesystem MCP timeout as the entry above -- tool still not retried):**
+
+**Real production incident, resolved same session.** The 12:03 BulkAddPattern
+batch promoted cleanly to live (`080426catalog.db`, 175.3 MB, `.bak` matches
+prior live size exactly -- confirmed on disk before touching anything else)
+but `archive-mined` failed on all 20 files: `E:\` (MINE_ARCHIVE_DIR) hit
+`[Errno 28] No space left on device` -- 0.00 GB free out of ~931 GB used.
+Not a P_300 bug -- root cause was Windows File History / Macrium Reflect
+disk images consuming the drive (P_300's own `AI-Agent-Learning-Hub_
+BackupFiles` folder was only ~183MB of the total). Tony freed space himself
+(682.82 GB free after) and removed the corrupt 994-byte zip stub the failed
+run left behind.
+
+**Archived via PEH** (`Agentic-Hub-Governance\verify\run_this.py`, calling
+`utilities.archive_mined_file.run_archive()` directly per file, same
+function `archive-mined --xlsx` calls): **20 / 20 archived, exit 0.**
+`E:\AI-Agent-Learning-Hub_BackupFiles\Aug26BULKPattern.zip` confirmed on
+disk, 6.9 MB. `data\bulk\mine\` confirmed empty afterward. Tickers: AIQ,
+ASTS, BBAI, BBBY, ENPH, EXP, FLNC, GGAL, HRZN, IREN, JMIA, KEY, OCSL, PAVE,
+POOL, PSEC, RKLB, RKT, RY, VUZI.
+
+**Self-caught mid-session:** attempted a `python.exe -m py_compile` sanity
+check via `windows-mcp:PowerShell` earlier the same session (verifying the
+`verify_ingestion.py` docstring fix) -- hung the full 4-min ceiling, exact
+M-030 failure. Did not retry; verified the edit by re-reading the file
+directly instead. No repeat of that mistake on this archive task -- went
+straight to PEH.
+
+**Not yet done:** `P_300_Preflight.bat` re-run (the script's own closing
+instruction, operator-run) -- INIT will read stale catalog counts (23,365/
+369, dated 2026-08-03) until that happens. `CLAUDE.md`/SIP v3.3->v3.5 and
+`verify_ingestion.py`'s 3 stale docstrings were fixed earlier this session
+(see prior entry).
+
+---
+
+**>>> 2026-08-05 (Sonnet) -- WO-P300-E5.007 BUILT: Chaikin permanent-skip filter wired at both call sites:**
+
+**EDVMF classified and added.** Web-verified (Bloomberg/CNBC/StockTitan):
+OTCQX:EDVMF, primary listings LSE:EDV and TSX:EDV -- Endeavour Mining plc.
+Same Class 2 shape as CDPYF/CNSWF. Added to `data\reference\chaikin_skip_list.csv`
+(5 rows -> 6), resolving the WO's one deliberately-unconfirmed entry.
+
+**Scope decision (WO's "still open" item):** filter at both call sites,
+duplicated ~15-line read+filter block per script rather than a new shared
+.ps1 module -- the CSV stays the single source of truth for the list
+itself; only the trivial read/filter code is duplicated, matching the
+existing per-script hardcoded-constant convention ($LOG, $PROMPT_TEMPLATE
+aren't shared today either).
+
+**Files changed (3, all plan-gated, approved before build):**
+- `data\reference\chaikin_skip_list.csv` -- +1 row (EDVMF).
+- `P_300_RunChaikinBatch.ps1` (25 -> 42 lines) -- `$SKIP_LIST_CSV` constant,
+  filter block right after `$actionable` derivation, `[SKIP] <symbol> --
+  <reason>` visible per skip (hard requirement per WO), refined the
+  "nothing to run" message to distinguish "no BUY/WATCH at all" from
+  "all BUY/WATCH were on the skip list" -- the WO's silent-narrowing
+  concern applies to this message too, not just the skip itself.
+- `P_300_RunAllDailyEvals.ps1` (~103 -> ~122 lines) -- identical block at
+  its inline Chaikin chain's equivalent insertion point, plus
+  `Add-Content -Path $LOG` for each skip line (this script is already
+  building that log; the standalone script only reads it, so no
+  Add-Content there).
+
+**Verified before calling this done:**
+- Full file re-read after each write, compared against intended content
+  (M-110) -- no truncation, correct order, both files complete.
+- `[System.Management.Automation.Language.Parser]::ParseFile()` on both
+  .ps1 files -- 0 parse errors each (PowerShell's ast.parse() equivalent).
+- Real execution of the filter block against the live CSV with a mixed
+  fake symbol list (AAPL, XYLD, EDVMF, MSFT, CDPYF) -- correctly narrowed
+  to AAPL/MSFT, printed 3 named `[SKIP]` lines with real reasons pulled
+  from the CSV, skip count matched. Not just syntax-valid -- confirmed
+  logically correct against real data (M-110's full standard: parse,
+  then run).
+
+**Not touched (explicitly out of scope per WO):** `chaikin_batch_prompt.txt`
+ETF-route bug, XYLD/EDVMF stub-section cleanup in existing vault notes --
+both listed under WO-P300-E5.007's "OPEN, NOT PART OF THIS WO," awaiting
+separate go-ahead.
+
+**Next real-world proof:** first live DailyEval or standalone Chaikin
+batch run that includes a skip-list symbol in its BUY/WATCH set --
+confirms the `[SKIP]` line fires in production, not just in this
+session's synthetic test. WO-P300-E5.007 not marked CLOSED here --
+this session wrote the code (WO_COMPLETION_GATE: needs a fresh-session
+independent review before closure, same standard as E5.002/E5.005).

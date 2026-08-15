@@ -7,9 +7,18 @@ than duplicating them (WO-P800-E4.001).
 
 CHANGELOG:
   v1.0  2026-07-24  Initial version. Built against WO-P800-E4.001.
+  v1.1  2026-08-12  Added SCHEMA_SKIP_LISTS -- P_300's chaikin_skip_list.csv
+                    (WO-P300-E5.007, OTC/ETF symbols Chaikin structurally
+                    can't rate) had no equivalent in this shared package.
+                    Folding P_300's daily-eval script over to this scanner
+                    without it would have silently reintroduced the exact
+                    bug E5.007 fixed. Per-schema, empty default -- P_115
+                    unaffected. Extends WO-P800-E4.001, not a new WO.
 """
 
-from obsidian_writers.config import VAULT_FOLDER_MAP, VAULT_ROOT
+from pathlib import Path
+
+from obsidian_writers.config import HUB_ROOT, VAULT_FOLDER_MAP, VAULT_ROOT
 
 # -- SCHEMAS ENABLED ----------------------------------------------------------
 # Schemas eligible for Chaikin enrichment. Add a schema here only after its
@@ -34,6 +43,25 @@ LOOKBACK_DAYS: int = 1
 # candidate. Must match exactly what run_chaikin_batch.py writes back.
 CHAIKIN_SECTION_HEADER: str = "## Chaikin Power Gauge"
 
+# -- PER-SCHEMA SKIP LISTS ----------------------------------------------------
+# Optional CSV per schema naming symbols that schema's own upstream work has
+# confirmed Chaikin structurally cannot rate (ETFs, OTC mirrors of a non-US
+# primary listing, etc. -- see each schema's own WO for the enumeration
+# rationale; P_300's is WO-P300-E5.007). CSV must have a 'symbol' column and
+# should have a 'reason' column (read_skip_list degrades gracefully without
+# one). A schema absent from this dict, or whose file doesn't exist yet, gets
+# no filtering -- read_skip_list returns an empty dict either way.
+SCHEMA_SKIP_LISTS: dict[str, Path] = {
+    "P300": (
+        HUB_ROOT
+        / "projects"
+        / "P_300_Vantage_Point_Pattern_Recognition"
+        / "data"
+        / "reference"
+        / "chaikin_skip_list.csv"
+    ),
+}
+
 # -- RE-EXPORTED VAULT PATHS ----------------------------------------------------
 # Re-exported (not re-defined) so every other chaikin_enrichment module
 # imports from this config.py alone, never reaching into obsidian_writers
@@ -44,6 +72,7 @@ __all__ = [
     "CANDIDATE_WRITE_ROUTES",
     "LOOKBACK_DAYS",
     "CHAIKIN_SECTION_HEADER",
+    "SCHEMA_SKIP_LISTS",
     "VAULT_FOLDER_MAP",
     "VAULT_ROOT",
 ]

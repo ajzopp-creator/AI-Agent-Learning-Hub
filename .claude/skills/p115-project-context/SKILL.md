@@ -19,7 +19,7 @@ architecture doc, loaded on demand.
 
 | File | Role |
 | :---- | :---- |
-| `docs/SESSION_INITIALIZATION_PROMPT.md` (v3.4) | INIT sequence — steps only |
+| `docs/SESSION_INITIALIZATION_PROMPT.md` (v3.5) | INIT sequence — steps only. Read directly by path, never via project_knowledge_search (returns fragments mixed with other docs). |
 | `docs/P_115_System_Architecture.v1.0.md` | Full spec, EC log, scoring detail — on demand |
 | `docs/P_115_BuyTheDip_MasterDoc_v1_0.md` | Original strategy doc (superseded by Architecture doc for domain rules) |
 | `Quick_Reference_Prompts_v9_4_1.md` | Shorthand command formats for STEP 1/2/3 + batch |
@@ -137,65 +137,25 @@ grandfathered pre-5/23/2026 rows only).
 
 ## Anti-Patterns (Forbidden by Construction)
 
-1. **Misreading LogEntry field position 2 as STR** — it's FundamentalsTier.
-   State the explicit parse before scoring. EC-011.
-2. **PascalCase vault-write dict keys** — silently dropped by Pydantic; can
-   return True/PASS with an empty record. All keys snake_case.
-3. **`traded` field as Python bool** — must be the string `"Y"`/`"N"`; bool
-   raises a Pydantic validation error.
-4. **Numeric optional fields as `'--'`** — must be `None`, not the string
-   placeholder used in the human-facing tracker.
-5. **Trusting `write_to_vault()`'s True/PASS return as proof of a real write**
-   — a structurally empty record can still return True/PASS. Always read the
-   written file back to confirm fields landed.
-6. **Wrong-case or missing Symbol on vault write** — drives the filename;
-   silently writes as `UNKNOWN` and still returns PASS, no error.
-7. **Treating a same-day `write_to_vault(..., overwrite=False)` False return
-   as failure** — `overwrite=False` is the default; False on a re-run usually
-   means the file already exists (idempotent protection). Verify file content
-   directly before treating it as an error.
-8. **Trusting TOS Fund tier on a BUY/ASYM without the stockanalysis.com
-   recheck** — TOS Fund is systematically inflated (AEO 4/21 confirmed fail,
-   TOS=4 vs actual=2).
-9. **Using an INIT-snapshot risk_mode on any P_115 output** -- posture must be
-   re-read fresh from `P_010_RiskConfig.json` before every packet emission and
-   before writing MarketDirection to a tracker row, not just once at INIT.
-   P_115 does not size; sizing-time posture is P_400's concern.
-10. **Reclassifying a P_910-sourced signal as SignalSource=P_117** — P_910
-    signals log `SignalSource=P_910` directly (fixed in spreadsheet 7/6/26).
-11. **Treating a mid-session LogEntry/chart mismatch as a data-entry error**
-    during market hours — classify as "Flipped" (live intraday change)
-    instead.
-12. **Treating a uniform STR=-2 across an entire batch as N individual ticker
-    errors** — that pattern is a regime signal (falling knife / deep bounce),
-    not per-ticker noise. Same logic applies to a P_920 scanner output that
-    comes back systematically STR=-2.
-13. **Producing a P_115 STEP 2 sizing block at all** -- as of 2026-07-24
-    (architecture v1.3) P_115 STEP 2 is signal emission ONLY: build and emit
-    the SIGNAL_V2 packet, nothing else. No three-gate sizing, no R:R
-    validation, no options viability gates, no TP/SL rendering, no options
-    chain lookup, no premium-cap math. All of it is P_400's (P_400
-    architecture doc Section 3.1). STEP 3 output stays in the locked compact
-    labeled block format -- never prose.
-14. **Asking the user for P_118 PatternType** — read from chart LogEntry or
-    chart image; never ask, never default to `--` on a BUY/ASYM row.
-15. **Calling `windows-mcp:PowerShell` for Python and waiting past 4 minutes**
-    — on timeout, hand off to Claude Code immediately per `peh-handoff` SKILL;
-    do not retry MCP, do not write inline PowerShell as a substitute.
-16. **Building a vault-write data dict from only the deprecated `date` field**
-    — `P115Record` requires `signal_date`, `run_date`, `run_ts`, and
-    `written_by` (convention: `"P_11X/session"`, matching prior records like
-    `2026-07-06_JPM.md`). A dict with only `date` will fail Pydantic
-    validation on write. Include all four on every vault-write script, not
-    just the display-facing tracker fields.
+Full incident narratives for all of these live in the architecture doc's EC log (see "When to Consult" below) -- this list is rule + reference only.
 
-17. **Delivering a single-ticker BUY/ASYM verdict without the 27-column
-    tab-delimited tracker row** -- happened on ANET (P_118, 2026-07-08): the
-    vault write went out but the Excel-ready row was never output, caught
-    only when Tony asked for it after the fact. The tab-delimited row is
-    owed immediately alongside the vault write on every BUY/ASYM, not just
-    on batch STEP 1 runs -- a single-ticker STEP 1->2->3 flow does not
-    exempt it.
+1. **LogEntry position 2 = FundamentalsTier, not STR.** State the parse explicitly before scoring. (EC-011)
+2. **PascalCase vault-write dict keys** -- Pydantic silently drops them; can return True/PASS on an empty record. snake_case only.
+3. **`traded` as Python bool** -- must be string `"Y"`/`"N"`; bool raises a Pydantic error.
+4. **Numeric optionals as `'--'`** -- must be `None`, not the tracker placeholder string.
+5. **Trusting `write_to_vault()`'s True/PASS return as proof** -- always read the file back to confirm fields landed.
+6. **Wrong-case/missing Symbol on vault write** -- drives the filename; silently writes `UNKNOWN`, still returns PASS.
+7. **Treating a same-day `write_to_vault(overwrite=False)` False return as failure** -- usually means the file already exists (idempotent); verify content before calling it an error.
+8. **Trusting TOS Fund tier without the stockanalysis.com recheck** -- TOS is systematically inflated (AEO 4/21: TOS=4 vs actual=2).
+9. **Using an INIT-snapshot risk_mode on any output** -- re-read `P_010_RiskConfig.json` fresh before every packet emission and MarketDirection write. P_115 doesn't size; sizing-time posture is P_400's concern.
+10. **Reclassifying a P_910-sourced signal as SignalSource=P_117** -- P_910 logs `SignalSource=P_910` directly (fixed 7/6/26).
+11. **Treating a mid-session LogEntry/chart mismatch as a data-entry error** -- classify as "Flipped" during market hours.
+12. **Treating a uniform batch-wide STR=-2 as N individual errors** -- it's a regime signal, not per-ticker noise. Same for a P_920 scanner output.
+13. **Producing any P_115 STEP 2 sizing block** -- STEP 2 is emission only (v1.3, 2026-07-24): build and emit SIGNAL_V2, nothing else. No sizing, R:R, options gates, TP/SL, or premium math -- all P_400's. STEP 3 stays in the locked compact block format, never prose.
+14. **Asking the user for P_118 PatternType** -- read from chart LogEntry or image; never ask, never default `--` on BUY/ASYM.
+15. **Waiting past 4 minutes on a stalled `windows-mcp:PowerShell` Python call** -- hand off to Claude Code immediately per `peh-handoff`; never retry MCP or substitute inline PowerShell.
+16. **Building a vault-write dict from only the deprecated `date` field** -- `P115Record` needs `signal_date`/`run_date`/`run_ts`/`written_by` (convention `"P_11X/session"`); `date` alone fails Pydantic validation.
+17. **Delivering a BUY/ASYM verdict without the 27-column tracker row** -- owed immediately alongside the vault write, every time, even single-ticker flows (missed live on ANET, 2026-07-08).
 ---
 
 ## Layer Architecture (Hub Standard)
@@ -275,6 +235,27 @@ remain in P_115's own files. Never reintroduce one.
 
 ---
 
+## INIT Fast Path (target: 2 Windows-MCP calls)
+
+Root cause of slow INIT (2026-08-06): system-doc-initializer's Hub-wide
+P_000_SYSTEM_DOCUMENTATION.md pull was running on every P_115 INIT with
+nothing P_115-specific in it; SIP was fetched via project_knowledge_search
+then re-read directly because search returned fragments mixed with other
+docs; WO review was a directory listing + 6 individual file reads instead
+of one grep. 8+ round trips before a relay stall made it worse.
+
+1. Skip the Hub-wide P_000_SYSTEM_DOCUMENTATION.md pull on routine P_115
+   trade sessions -- p115-project-context already carries what matters.
+   Only pull it for explicit cross-project/governance work.
+2. Read `docs/SESSION_INITIALIZATION_PROMPT.md` directly by path -- never
+   project_knowledge_search it first.
+3. WO review (Step 0.5) = one `Select-String -Pattern "P_115"` pass across
+   `work_orders\*.md`, not a directory listing plus individual reads.
+4. Steps 1-3 (ET time, account params, posture) = one combined PowerShell
+   call -- already the working pattern, keep it.
+5. Ping (`Write-Output "ping"`) before any call expected to run long; if
+   ping itself doesn't return in a few seconds, stop and report relay-down
+   rather than let the real call run to the 4-min ceiling.
 ## Session-Start Checklist
 
 - [ ] Call `tool_search` for PowerShell/Windows-MCP first (SIP STEP 0) —
@@ -287,6 +268,7 @@ remain in P_115's own files. Never reintroduce one.
       live before any packet emission, not carried over from INIT
 - [ ] On any LogEntry paste: state the field-position parse explicitly
       before scoring
+- [ ] Follow INIT Fast Path above -- target 2 Windows-MCP calls, not 8+
 
 ---
 
@@ -313,6 +295,14 @@ Do NOT load reflexively — this SKILL covers routine STEP 1/2/3 operation.
 
 ## Changelog
 
+### 2026-08-06
+- **INIT Fast Path added; changelog archived (Tony directive, live session).**
+  INIT was taking 8+ round trips before a relay stall made it worse -- see
+  INIT Fast Path section above for root cause + fix. Same session: changelog
+  entries before 2026-08-03 moved to CHANGELOG_ARCHIVE.md, and Anti-Patterns
+  compressed to rule + reference (full incident detail already lives in the
+  architecture doc's EC log) -- cuts load size, drops zero rules.
+
 ### 2026-08-03
 - **Imperative sweep for architecture v1.3/v1.4 (Tony directive).** The
   7/24 removal of P_115 order management had been recorded in this file's
@@ -326,65 +316,7 @@ Do NOT load reflexively — this SKILL covers routine STEP 1/2/3 operation.
   Musts, Must Nots, anti-patterns, and workflow command lines, not just
   logged. Rule added: STEP 2 = emit only.
 
-### 2026-07-24
-- P_115 Order Management removed (Tony directive). Architecture doc
-  Section 8.2 changed from Position Sizing to Signal Emission -- P_400
-  owns all sizing/R:R/stop/target/order-formatting decisions now
-  (P_400 architecture doc Section 3.1), confirmed P_400's screen-all is
-  fully source-agnostic (no P_400-side change needed for P_116/P_118/
-  P_910/P_920 packets). schemas.py archived (dead code, unused
-  VALID_SOURCES gate that would've blocked non-P_115/P_300 source tags
-  if ever reconnected). File table row above corrected -- it pointed at
-  POSITION_SIZING_THREE_GATE_REFERENCE.md, a file that never existed
-  on disk; actual file is P_115_ Asset Sizing Requirements.md, now
-  marked superseded. Note: found but did NOT fix -- LogEntry Field Order
-  section below still says STR valid range is -1 to 2, but the 2026-07-08
-  (update 4) entry below corrected it to -2 to 2; out of scope for this
-  session's task, flagged for a future pass.
-
-### 2026-07-24 (correction, same day)
-- v1.3's Section 8.2 Step 3 wrongly had signal_source varying by
-  P_115/P_116/P_118/P_910/P_920 (Tony caught this). Corrected in the
-  architecture doc (v1.4): P_115 is the analytical process (V110 scoring
-  engine) -- P_116/P_118/P_910/P_920 are scan sources / chart-pattern
-  variants that feed candidates INTO P_115's analysis, not separate
-  emitters. signal_source is always P_115 in the P_400 packet. strategy
-  still carries the setup-type distinction (dip_buy/breakout/
-  mean_reversion/support_bounce); scan/variant provenance is a
-  27-column-tracker-level detail only. The schemas.py archival itself
-  still stands (genuinely dead code either way) but the "would block
-  P_116/P_118/P_910/P_920 tags" rationale in the entry below is wrong --
-  those tags should never have gone in signal_source to begin with.
-### 2026-07-08 (update 4)
-- STR valid range corrected again: -2 to 2, not -1 to 2 as the 7/6/26
-  correction had it. -2 is a legitimate falling-knife/regime reading, not
-  out of range -- confirmed by repeated live LogEntry data across multiple
-  tickers (WYFI, ANET-batch PASS rows) and the architecture doc's own
-  FISV-style Cause A worked example, which uses STR=-2 as the falling-knife
-  trigger alongside Fund=0. LogEntry Field Order section and Must-Not #2
-  both updated.
-### 2026-07-08 (update 3)
-- Anti-pattern #17 added: the 27-column tab-delimited tracker row is owed
-  on every BUY/ASYM immediately alongside the vault write, even on a
-  single-ticker STEP 1->2->3 flow -- not just on batch STEP 1 runs. Missed
-  live on ANET (P_118 BUY, 2026-07-08); vault write landed clean but the
-  Excel row was never output until Tony asked for it retroactively.
-### 2026-07-08 (update 2)
-- Anti-pattern #16 added: `P115Record` requires `signal_date`/`run_date`/
-  `run_ts`/`written_by` -- the deprecated `date` field alone fails Pydantic
-  validation. Discovered live via PEH handoff on the ANET P_118 BUY write
-  (2026-07-08_ANET.md, version 1, confirmed clean via readback -- no
-  double-write despite an earlier MCP 4-minute timeout on the same script).
-  Claude Code fixed the missing fields using the `P_118/session`
-  `written_by` convention already established in `2026-07-06_JPM.md`.
-
-### 2026-07-08- Initial build. Created under WO-P000-E6.001 (Gap 3 of the 2026-07-06
-  context-engineering KB review — P_115 was one of three active projects
-  with no project-context layer). Content sourced from
-  `SESSION_INITIALIZATION_PROMPT.md` v3.4, `P_115_System_Architecture.v1.0.md`
-  (EC log, scoring chain, schema), and accumulated session memory (vault-write
-  lessons, STR range correction 7/6/26, P_910 SignalSource fix, P_920 Fund
-  Verification gap).
+*Entries before 2026-08-03 archived verbatim to `p115-project-context_CHANGELOG_ARCHIVE.md`.*
 
 ---
 

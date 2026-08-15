@@ -14,6 +14,12 @@ Exit codes:
 
 CHANGELOG:
   v1.0  2026-07-24  Initial version.
+  v1.1  2026-08-12  Wired in read_skip_list() -- a schema's permanent
+                    skip list (P_300's WO-P300-E5.007) now excludes
+                    symbols before they reach the prompt, and skipped-
+                    but-otherwise-qualifying symbols print a [SKIP] line
+                    with the reason, matching the visibility the prior
+                    P_300-local PowerShell version gave Tony.
 """
 
 import argparse
@@ -24,6 +30,9 @@ from shared_resources.chaikin_enrichment.config import SCHEMAS_ENABLED
 from shared_resources.chaikin_enrichment.domain.candidate_filter import (
     NoteCandidate,
     filter_candidates,
+)
+from shared_resources.chaikin_enrichment.infrastructure.skip_list_reader import (
+    read_skip_list,
 )
 from shared_resources.chaikin_enrichment.infrastructure.vault_scanner import scan_schema
 
@@ -69,7 +78,22 @@ def run(schema_name: str) -> int:
         )
 
     scanned = scan_schema(schema_name)
-    candidates = filter_candidates(scanned)
+    skip_map = read_skip_list(schema_name)
+    skip_symbols = frozenset(skip_map)
+
+    candidates = filter_candidates(scanned, skip_symbols)
+
+    # Report skips for visibility -- only symbols that would otherwise have
+    # qualified (matches the prior P_300-local script's behavior of only
+    # printing [SKIP] for real BUY/WATCH candidates, not the whole list).
+    # Reuses filter_candidates itself (once with, once without the skip set)
+    # rather than re-deriving qualification logic here (M-082).
+    if skip_symbols:
+        unfiltered = {c.symbol for c in filter_candidates(scanned)}
+        filtered = {c.symbol for c in candidates}
+        for symbol in sorted(unfiltered - filtered):
+            reason = skip_map.get(symbol, "")
+            print(f"[SKIP] {symbol} -- {reason}")
 
     if not candidates:
         print(f"No BUY/WATCH candidates found for {schema_name} -- nothing to run.")

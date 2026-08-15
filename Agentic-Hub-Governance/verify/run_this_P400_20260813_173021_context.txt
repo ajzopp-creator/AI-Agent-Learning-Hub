@@ -1,0 +1,21 @@
+WO-P400-E5.004 -- PEH verify
+Date: 2026-08-13
+
+What this tests: WO-P400-E5.004 asked for a regression-guard test covering
+is_market_open_now()'s holiday-aware behavior (E4.005/E4.006). Investigation
+before writing anything new found the test
+(test_e4005_e4006_market_open_wall_clock_and_holiday_aware) already exists
+in tests\test_p400_known_bugs.py -- file mtime 2026-08-10, two days after
+the WO was filed (2026-08-08). WO-P400-E5.004's Status field was never
+updated from PENDING to reflect this. Same shape as the recurring
+skill-file/WO desync pattern already logged elsewhere in this project.
+
+This script:
+1. Runs the specific target test, verbose.
+2. Collects the full P_400 python\ test suite (count).
+3. Runs the full suite for pass/fail.
+
+Success criteria: targeted test passes; full suite passes with 0 failures.
+
+If it fails: read the error, propose a production fix, do not change test
+assertions in test_p400_known_bugs.py, ask Tony to re-run.

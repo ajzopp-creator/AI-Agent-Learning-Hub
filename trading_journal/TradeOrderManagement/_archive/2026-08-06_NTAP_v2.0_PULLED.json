@@ -1,0 +1,33 @@
+{
+  "signal_id": "P115-2026-08-06-NTAP-001",
+  "signal_timestamp": "2026-08-06T19:45:36Z",
+  "signal_source": "P_115",
+  "strategy": "breakout",
+  "symbol": "NTAP",
+  "asset_class": "stock",
+  "guideline_entry": 195.8,
+  "guideline_stop": 162.67,
+  "guideline_target": 202.58,
+  "signal_horizon": "10-20 days",
+  "confidence_level": "MEDIUM",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": null,
+  "intelliscan_support_1": 162.42,
+  "intelliscan_support_2": 122.35,
+  "target_source": null,
+  "context": {
+    "close_at_signal": 191.05,
+    "trailing_volume_30d": 1452906.0,
+    "signal_rationale": "P_118 Eddie Z High Handle BUY: HybridTier=6 (Fund3+Anal3), Candle2/Setup3/STR0. Prior high 195.7 handle resistance after run-up+pullback base (~4wk); entry above trigger. Fund reverified via stockanalysis.com (ROE 109.2%, Debt/Cap ~65% fail, FCF+ = Tier3, matches submitted, no flag). No earnings flag (last 5/28/26, next 8/26/26). RSI 69.8, ADX 33.61 strong trend. HOT posture (avg_posture 10.63). support_1/2 are chart-read MA levels (48EMA/200SMA), not P_300 IntelliScan output.",
+    "atm_at_signal": null
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-06",
+    "chart_timeframe": "1D",
+    "signal_source_link": "TOS_NTAP_chart_2026-08-06_session"
+  }
+}

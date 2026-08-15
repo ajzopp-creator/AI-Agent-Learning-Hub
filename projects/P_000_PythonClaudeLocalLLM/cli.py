@@ -10,17 +10,17 @@ import json
 from pathlib import Path
 from typing import Optional
 
-# Add current directory to path for imports
-sys.path.insert(0, str(Path(__file__).parent))
+# Add Hub root to path for canonical wrapper imports
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from application.lm_studio_client import LMStudioClient
-from domain.task_router import (
+from integrations.lm_studio.application.lm_studio_client import LMStudioClient
+from integrations.lm_studio.domain.task_router import (
     list_all_tasks,
     validate_task_type,
     get_model_info,
     route_task,
 )
-from config import MODELS, TASK_ROUTING, LM_STUDIO_API_BASE
+from integrations.lm_studio.config import MODELS, TASK_ROUTING, LM_STUDIO_API_BASE
 
 
 async def health_check():

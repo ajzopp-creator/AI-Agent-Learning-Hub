@@ -1,30 +1,35 @@
-view: table
-filter:
-  conditions:
-    - field: file.folder
-      operator: contains
-      value: TradeManagement/P020
-  conjunction: and
-sort:
-  - field: close_date
-    direction: desc
-columns:
-  - id: close_date
-    field: close_date
-  - id: symbol
-    field: symbol
-  - id: account_id
-    field: account_id
-  - id: system
-    field: system
-  - id: realized_pnl
-    field: realized_pnl
-  - id: realized_R
-    field: realized_R
-  - id: outcome
-    field: outcome
-  - id: sig_code
-    field: sig_code
+filters:
+  and:
+    - file.inFolder("TradeOrderManagement/P020")
+properties:
+  close_date:
+    displayName: Close Date
+  symbol:
+    displayName: Symbol
+  account_id:
+    displayName: Account
+  system:
+    displayName: System
+  realized_pnl:
+    displayName: P&L
+  realized_R:
+    displayName: R
+  outcome:
+    displayName: Outcome
+  sig_code:
+    displayName: Sig
 views:
   - type: table
     name: Table
+    order:
+      - close_date
+      - symbol
+      - account_id
+      - system
+      - realized_pnl
+      - realized_R
+      - outcome
+      - sig_code
+    sort:
+      - property: close_date
+        direction: DESC

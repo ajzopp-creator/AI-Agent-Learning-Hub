@@ -1,48 +1,38 @@
-╔════════════════════════════════════════════════════════════════╗
-║  P_805 EMAIL TRADE EXTRACTOR — SESSION INITIALIZATION v1.5    ║
-╚════════════════════════════════════════════════════════════════╝
+# P_805 EMAIL TRADE EXTRACTOR — SESSION INITIALIZATION v1.5
 
-TRIGGER: "INIT", "P_805", or "P_805 INIT"
+**Trigger:** `INIT` | `P_805` | `P_805 INIT`
 
-───────────────────────────────────────────────────────────────
+---
 
-STEP 1 — Session Header
-Display: P_805 [Day, Month DD, YYYY — HH:MM ET]
+### Step 1 — Session Header
+Display: `P_805 [Day], [Month] [DD], [YYYY] [HH:MM] ET [optional label]`
 
-───────────────────────────────────────────────────────────────
+### Step 0.5 — Work Order Review
+Query `Agentic-Hub-Governance\work_orders\`:
+- Owner=P_805, status not CLOSED -> display, HALT if required
+- P_805 in Affects, Ack pending -> display, ACTION REQUIRED after session
 
-STEP 0.5 — Work Order Review
-Query shared ledger: C:\Users\Trader\AI-Agent-Learning-Hub\Agentic-Hub-Governance\work_orders\
-- Owner=P_805, status not CLOSED → Display; HALT if required
-- P_805 in Affects, Ack pending → Display; ACTION REQUIRED after session
+Unavailable -> proceed with inline note.
 
-If unavailable: proceed with inline note.
-
-───────────────────────────────────────────────────────────────
-
-STEP 2 — Verify Working State
+### Step 2 — Verify Working State
 Load from disk (filesystem MCP):
-- P_805_SYSTEM_DOCUMENTATION.md (v1.4+) — phases, KB status, queued work
-- python\config.py — constants, active settings
-- Latest daily output: data\daily\<YYYY-MM-DD>_signals.csv
+- `P_805_SYSTEM_DOCUMENTATION.md` (v1.4+) -- phases, KB status, queued work
+- `python\config.py` -- constants, active settings
+- Latest daily output: `data\daily\<YYYY-MM-DD>_signals.csv`
 
-If MCP unavailable: request upload of SYSTEM_DOCUMENTATION.md + config.py.
+MCP unavailable -> request upload of SYSTEM_DOCUMENTATION.md + config.py.
 
-───────────────────────────────────────────────────────────────
-
-STEP 3 — Current Phase & Progress
+### Step 3 — Current Phase & Progress
 From SYSTEM_DOCUMENTATION Section 7:
-- Phase 1 (Scan):           ✅ COMPLETE
-- Phase 2 (Sender Filter):  ✅ COMPLETE
-- Phase 3 (Ticker Extract): ✅ COMPLETE
-- Phase 4 (Consensus Rank): ⏭ NEXT
-- Phase 5 (Writer):         ⏭ FUTURE
-- KB Integration:           ✅ ACTIVE (data\inbox\ → KnowledgeBase/)
+- Phase 1 (Scan) -- COMPLETE
+- Phase 2 (Sender Filter) -- COMPLETE
+- Phase 3 (Ticker Extract) -- COMPLETE
+- Phase 4 (Consensus Rank) -- NEXT
+- Phase 5 (Writer) -- FUTURE
+- KB Integration -- ACTIVE (`data\inbox\` -> `KnowledgeBase/`)
 
-───────────────────────────────────────────────────────────────
-
-STEP 4 — Session Summary Block
-
+### Step 4 — Session Summary
+```
 P_805 SESSION INITIALIZED
 ────────────────────────────────
 Architecture:      v1.4
@@ -54,26 +44,18 @@ Sender whitelist:  59 enabled (sender_sheet.csv)
 KB path:           ACTIVE — data\inbox\ → KnowledgeBase/
 Queued work:       [from Section 12.3 of SYSTEM_DOCUMENTATION]
 ────────────────────────────────
+```
 
-───────────────────────────────────────────────────────────────
+### Step 5 — Confirm Focus
+Ask: "Proceeding with [Phase 4 / queued item #X / other], or steering elsewhere?" Wait for confirmation -- do NOT code until confirmed.
 
-STEP 5 — Confirm Focus
-Ask: "Proceeding with [Phase 4 / queued item #X / other], or steering elsewhere?"
+---
 
-Wait for confirmation. Do NOT code until confirmed.
+**Briefing compression (long sessions):** copy session summary + last confirmed direction + specific task block from SYSTEM_DOCUMENTATION. Paste into new chat as: *"P_805 SESSION RESUME -- [phase]. Context: [summary]. Proceeding with [task]."*
 
-───────────────────────────────────────────────────────────────
+---
 
-BRIEFING COMPRESSION (long sessions):
-Copy session summary + last confirmed direction + specific task block
-from SYSTEM_DOCUMENTATION. Paste into new chat as:
-
-"P_805 SESSION RESUME — [phase]. Context: [summary]. Proceeding with [task]."
-
-───────────────────────────────────────────────────────────────
-
-CHANGELOG:
-v1.5 (2026-06-04): Added STEP 0.5 Work Order Review (governance).
-v1.4 (original): Initial minimal init with phase tracking.
-
-───────────────────────────────────────────────────────────────
+## Changelog
+- v1.6 (2026-08-07): Session header fixed to canonical Hub-wide format (ref WO-P000-E4.001) -- was still the pre-revision `[Day, Month DD, YYYY -- HH:MM ET]` draft. Box-drawing separators replaced with plain markdown for Hub-wide style consistency and file-size reduction (79 -> ~55 lines). Duplicate file consolidated: this `docs\` copy is now the sole canonical file; the byte-identical project-root copy is removed (ref WO-P000-E4.001).
+- v1.5 (2026-06-04): Added STEP 0.5 Work Order Review (governance).
+- v1.4 (original): Initial minimal init with phase tracking.

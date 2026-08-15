@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """
 P_010 Daily Posture V5.0
 Reads VP Grid XLSX files to calculate daily market posture.
@@ -17,6 +17,18 @@ UNCHANGED FROM V4:
     risk_mode, source, spy_grid_date, qqq_grid_date -- all unchanged
   - grid_snapshot_latest.json structure extended but backward compatible
   - P_115 / P_118 integration unaffected
+
+WO-P010-E1.003 (2026-08-10): added MORNING_RUN_FAILED.flag halt mechanism.
+On any failure (unhandled exception OR main()'s existing return-1 paths),
+the __main__ block writes MORNING_RUN_FAILED.flag next to P_010_RiskConfig.json
+and fires a toast notification. P_010_daily_posture.bat checks this flag
+after STEP 1 and skips STEP 2 (note writer) if present, so the note writer
+never runs against a failed morning read. Guardian also checks this flag
+later as a persistent, cross-process signal. Flag is cleared at the start
+of every run, before the attempt -- a leftover flag from a prior failed day
+never blocks today's run once today's script actually starts.
+main()'s internal logic is UNCHANGED from V5 -- only the __main__ entry
+point wrapper is new.
 """
 
 import sys
@@ -25,6 +37,8 @@ import pandas as pd
 from pathlib import Path
 from datetime import datetime
 from shutil import copy2
+
+from toast_notify import send_toast
 
 VXX_SIGNAL_THRESHOLDS = {
     'BULLISH_CONFIRM': -1.0,
@@ -237,5 +251,43 @@ def main():
     return 0
 
 
+def _write_failure_flag(flag_path, detail):
+    flag_path.write_text(
+        f"FAILED: {datetime.now().isoformat()}\n{detail}\n",
+        encoding="utf-8"
+    )
+
+
+def _notify_failure(detail):
+    # Toast is best-effort -- a notification failure must never mask or
+    # crash the real error handling underneath it.
+    try:
+        send_toast("P_010 Morning Run FAILED", detail)
+    except Exception:
+        pass
+
+
 if __name__ == "__main__":
-    sys.exit(main())
+    project_root = Path(__file__).parent.parent
+    flag_path = project_root / "MORNING_RUN_FAILED.flag"
+
+    # Clear any stale flag from a prior failed day before attempting today's run.
+    if flag_path.exists():
+        flag_path.unlink()
+
+    try:
+        exit_code = main()
+    except Exception as e:
+        import traceback
+        detail = f"{type(e).__name__}: {e}\n{traceback.format_exc()}"
+        _write_failure_flag(flag_path, detail)
+        _notify_failure(str(e))
+        sys.exit(1)
+
+    if exit_code != 0:
+        detail = (f"main() returned exit code {exit_code} -- "
+                  f"see today's P_010_Daily_*.log for the specific ERROR line")
+        _write_failure_flag(flag_path, detail)
+        _notify_failure(f"Exit code {exit_code} -- check today's log")
+
+    sys.exit(exit_code)

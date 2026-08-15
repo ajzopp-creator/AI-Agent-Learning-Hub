@@ -39,6 +39,9 @@ the retention standard.
 ---
 ## Section 1 -- Session Methodology Rules (Active)
 
+### M-111 -- A WO's Status header is a claim about its own body, not a substitute for reading it
+**Rule:** A work order's `**Status:**` line can go stale independently of the body beneath it -- the body can accumulate real, verified evidence (PEH steps, real production runs, closed follow-ups) while the header line is simply never touched. Reading only the header and reporting it as current status is a distinct failure from M-054 (a *closure note in tasks/*.md* is a claim, not evidence) -- this is the WO document's own internal header/body contradiction, and it can make Claude confidently report an ACTIVE WO as unverified when it's actually done, not just report a DONE WO as active. Caught 2026-08-12: WO-P300-E4.006's header read "BUILT, NOT YET PEH-VERIFIED" while its own body documented four PASSED PEH steps, a real production migration, and a closed byte-identity regression, all dated 2026-07-19/21 -- three weeks of drift, propagated into an INIT summary and a downstream WO's (E5.008) false blocker before Tony's own pushback triggered a full re-read. **Prevention: for any WO whose Status is being reported, quoted, or relied on for a downstream decision (blocking another WO, an INIT summary, a work-order-governance display), read the full body -- not just the header -- before stating status as fact. A header/body mismatch is itself worth surfacing, not silently resolved toward whichever one seems more current.**
+
 ### M-089 -- `db_utils.get_latest_catalog()` returns a plain `str`, not a `Path`
 **Rule:** Other callers rely on the plain-`str` return for direct
 `sqlite3.connect(f"file:{path}...")` use -- wrap in `Path()` before calling

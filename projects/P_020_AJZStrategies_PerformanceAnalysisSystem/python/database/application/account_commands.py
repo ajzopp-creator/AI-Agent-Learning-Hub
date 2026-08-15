@@ -60,6 +60,14 @@ def run_balance_command(account: str) -> None:
         else:
             print("WARNING: Could not update P_000 Account Parameters (see log)")
 
+    # WO-P020-E1.011: full Balance/Risk/Max/History sync, threshold-gated
+    # (default +/-10% vs. last written baseline). Independent of the
+    # buying_power/cash_available block above -- gated only on total_value.
+    if balance.get('total_value') is not None:
+        from infrastructure.p000_params_writer import write_full_account_params
+        if write_full_account_params(balance['total_value']):
+            print("P_000 Account Parameters fully synced (Balance/Risk/Max/History)")
+
 
 def run_positions_command(account: str) -> None:
     """Pull and display current open positions from Schwab.

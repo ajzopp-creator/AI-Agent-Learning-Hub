@@ -1,0 +1,89 @@
+WO-P000-E13.001 -- Phase 4 (Repair the P_400 regression guard)
+Date: 2026-08-08. Run this AFTER Phase 3 has completed with PASS -- this
+script checks for that precondition and aborts cleanly if Phase 3 hasn't
+happened yet.
+
+REQUIRES a sidecar file in the SAME folder as this script:
+  run_this_E13001_phase4_<TS>_guard_content.b64
+That file must be transferred alongside the .py script -- the script reads
+it, base64-decodes it, and verifies its SHA256 against a hash embedded in
+the script before writing anything. If the hash doesn't match, it aborts
+and writes nothing (content may have been corrupted or is the wrong file).
+
+WHAT THIS SCRIPT DOES
+1. Replaces tests\test_p400_known_bugs.py entirely with validated new
+   content (backs up the current version first, dated suffix). The new
+   version: converts the old RESULTS/check() harness to plain pytest
+   `assert` statements (so this file actually runs under a normal `pytest`
+   call -- it didn't before, Finding 5), derives ROOT from the file's own
+   location instead of a hardcoded C:\ path (Finding 4), drops the two
+   sys.path.insert() calls (redundant now that Phase 2's conftest.py
+   handles it), and adds one new test -- test_e2016_rr_below_min_detail_
+   discloses_both_bases -- mirroring test_council.py's existing
+   test_quant_blocks_rr_below_min, closing the desync Finding 6 described
+   (the skill's table had an E2.016 row with no matching guard entry).
+2. Sweeps sys.path.insert(...) lines out of the other 15 test files in
+   tests\ -- mechanical line-only removal, nothing else in those files is
+   touched, each file backed up first. This is the suite-wide scope
+   correction from Finding 8 (16 files / 23 calls total, not just the 2 in
+   the guard file itself).
+3. Runs the full P_400 suite and checks the collected count is 310 -- one
+   more than Phase 3's 309, because this phase adds one new test
+   (test_e2016...). An increase to 310 is correct here, not a red flag;
+   anything else means something unexpected happened.
+4. Confirms zero sys.path.insert() calls remain anywhere in the 16-file
+   scope (conftest.py's own 2 calls are expected and untouched -- that's
+   the intended central location now).
+5. Runs the guard file alone under plain `pytest` and confirms all 25
+   tests collect and pass.
+6. Cross-checks every WO id in the skill's Bugs Already Fixed table
+   against the guard's test names. This surfaced two rows during drafting
+   that have NO matching guard test at all: E4.005 and E4.006 (both
+   present in the table, neither has a corresponding test_e4005_* or
+   test_e4006_* function in the guard). Per the WO's own instruction
+   (item 12), REPORT this, do not fix it inline -- if the script's own
+   correspondence check confirms it, note it in the WO
+   (WO-P000-E13.001) as a listed gap, not a silent addition. Same for any
+   other row the check flags (e.g. E3.011 may also show as unmatched --
+   the guard's two E3.010 tests don't have "e3011" in their names even
+   though the table row is "E3.010/E3.011" combined; use judgment on
+   whether that's a real gap or an artifact of the combined row before
+   writing it up).
+
+SUCCESS CRITERIA
+- All named checks in the script's own summary show PASS.
+- Guard file: 25 collected, 25 passed, standalone.
+- Full P_400 suite: 310 collected, 0 unexpected failures.
+- Zero sys.path.insert in the swept scope.
+- Correspondence gaps (if any) are listed in the terminal output for
+  Claude/Tony to add to the WO -- not silently patched into the guard.
+
+IF IT FAILS
+- Hash mismatch on the sidecar: don't retry with a "close enough" file --
+  get the correct sidecar re-transferred and re-run.
+- Sweep count mismatch on any file ("expected N, found M"): that file's
+  content has drifted since the audit this script's SWEEP_TARGETS dict was
+  built from. Don't force it -- read the actual file, understand why, then
+  either fix the script's expected count if the drift is legitimate, or
+  investigate the drift if it looks unintended.
+- Suite failures after the write: read the pytest tail the script prints.
+  Most likely cause would be an import or reference inside
+  test_p400_known_bugs.py that doesn't hold post-move (e.g. if Phase 3
+  moved something the guard's SOURCE checks read via ROOT/APPLICATION
+  path objects to a different relative location than expected -- unlikely
+  since Phase 3 only moves test files, not domain/application code, but
+  check first before assuming).
+
+DO NOT
+- Touch domain\, application\, or config.py -- Phase 4 is test-suite only.
+- Fix the E4.005/E4.006 (or E3.011) correspondence gap by writing new
+  guard tests as part of this run. List it, don't close it -- that's a
+  separate, deliberate decision for Tony, not a drive-by add.
+- Remove the .bak/.backup_* clutter already sitting in tests\ next to the
+  guard file -- still out of scope per this WO's own text, cleanup is a
+  separate call.
+
+WHEN DONE
+Paste the full terminal output back, including the correspondence-check
+line even if it shows gaps -- that's expected information, not a failure
+to hide.

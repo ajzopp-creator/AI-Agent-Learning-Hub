@@ -1,0 +1,51 @@
+WO-P000-E13.001 -- Phase 3 (Migrate the strays)
+Date: 2026-08-08. Tony approved Phase 3 + Phase 4 both, this handoff covers
+Phase 3 only. Run this BEFORE the Phase 4 handoff -- Phase 4 requires files
+already in tests\.
+
+WHAT THIS SCRIPT DOES
+- P_400: moves all 32 top-level python\test_*.py files into python\tests\.
+- P_300: moves python\test_signal_emitter_dry_run.py into python\tests\.
+- For each project: captures a pre-move pytest baseline, refuses to move
+  anything if the baseline doesn't match the recorded Phase 2 number
+  (309 for P_400, 65 for P_300 -- drift since Phase 2 means something
+  changed and needs investigating before a migration, not during one).
+- After moving, re-runs pytest and requires the COLLECTED count (not just
+  passed) to match the baseline exactly. A silently-uncollected file is a
+  failure even if pytest reports "no failures".
+- Writes run_this_E13001_phase3_<TS>.py.done next to itself on completion,
+  PASS or FAIL either way.
+
+SUCCESS CRITERIA
+- Both projects show PASS in the final summary.
+- P_400 top-level test_*.py count is 0 afterward (all 32 in tests\).
+- P_300 top-level test_signal_emitter_dry_run.py is gone, present in tests\.
+- Collected counts: P_400 = 309, P_300 = 65 (with --continue-on-collection-
+  errors -- P_300 has one known, deliberately-unfixed collection error,
+  test_eval_incremental.py, tracked separately as WO-P300-E5.008).
+
+IF IT FAILS
+- Pre-move baseline mismatch: STOP. Do not move files. Report the actual
+  vs. expected collected count back to Tony/Claude -- something changed
+  in one of these projects since 2026-08-05/07 that needs its own look.
+- Post-move count mismatch: files have already moved (this is disk state,
+  not something to silently revert). Read the tail of pytest output the
+  script prints and diagnose -- likely an import that assumed the old
+  top-level location. Do NOT blanket-fix by editing multiple files at
+  once; fix one, re-run, verify count, repeat. Never modify test
+  assertions to make a count match -- only import/path issues are in
+  scope here.
+- "destination already exists" for any file: stop, that's unexpected,
+  surface it rather than overwriting.
+
+DO NOT
+- Change any test's assertions. This WO is a move, not an edit.
+- Touch P_400's tests\ backup clutter (5 .bak/.backup_* files sitting next
+  to test_p400_known_bugs.py) -- explicitly out of scope for this WO.
+- Delete P_300's test_signal_emitter_dry_run_backup_*.py -- already deleted
+  in the Phase 2 unblock pass (2026-08-07), should not exist anymore; if
+  it somehow still does, leave it, don't delete it as part of this run.
+
+WHEN DONE
+Paste the full terminal output back. If PASS, Phase 4 handoff can run
+next (P_400 guard repair -- separate script, separate context file).

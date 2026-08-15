@@ -1,0 +1,22 @@
+P_115 session 2026-08-11 08:08 ET. Task: emit SIGNAL_V2 packet for WSM.
+
+WSM STEP 1: LogEntry Fund=4 Anal=3 Candle=2 Setup=3 STR=0 Verdict=BUY (chart-confirmed,
+P_115_BuytheDipChart_V16). HybridTier=7 (>=6) -> BUY. Fund Verification (V110.2,
+mandatory on Fund>=2): recomputed via stockanalysis.com -- ROE ~51.5% (pass >15%),
+Debt/Capital ~41.2% (pass <60%), FCF $1.06B TTM positive (pass). Clean, no flag.
+Post-earnings check: next WSM earnings 2026-08-28, ~12 sessions out -- no flag.
+Gates clear -- emit immediately per emission decision gate (architecture v1.3/v1.4).
+
+Script tests: calls application.emit_signal.emit_signal() directly (bypassing cli.py
+argparse) with the STEP1-confirmed values, then verifies the returned path exists on disk.
+
+Success criteria: script prints PASS and the SIGNAL_V2 JSON file exists under
+trading_journal\TradeOrderManagement\signals\.
+
+If FAIL: read the traceback, propose a production fix in application/emit_signal.py
+or domain/signal_builder.py as appropriate. Do not change the signal input values
+(entry/stop/target/etc. are STEP1-derived facts, not test parameters) without
+flagging to Tony first.
+
+Do not change test assertions -- there are none; this is a live signal emission,
+not a unit test.

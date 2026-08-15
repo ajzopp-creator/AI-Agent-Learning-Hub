@@ -32,7 +32,16 @@ Before writing ANY file/code/change: present complete plan (files, changes, why,
 Attached knowledge/imported-Project name (system prompt's imported_knowledge/project-context block — not guessed) is this session's Project ID everywhere below, not whichever doc Step 1 loads.
 
 - P_000's SYSTEM_DOCUMENTATION.md always loads in Step 1 regardless of attached project (Hub-wide reference, by design) — that does NOT make this a "P_000 session." Use the attached Project (P_400/P_800/P_300/etc.) in the Step 3 chat name and any WO/ledger/review-note session label.
-- No project attached or ambiguous → ask Tony, never default to P_000. (See EC-003.)
+
+**Fallback chain (added 2026-08-11, ref WO-P000-E17.001/EC-006/EC-007) — run in order, stop at the first hit:**
+
+1. Attached-project block present and unambiguous → use it. Done.
+2. Missing or ambiguous → `recent_chats(n=1)`. Title carries a clean P_XXX prefix → use it.
+3. Still missing/ambiguous → widen to `recent_chats(n=3-5)`. A consistent P_XXX pattern across them → use it.
+4. Still nothing → check that Project's architecture doc header (on-demand doc, e.g. P_XXX_SYSTEM_DOCUMENTATION.md) for its Project ID field → use it.
+5. No doc either → ask Tony directly. Never default to P_000. (See EC-003, EC-007.)
+
+This chain recovers a *missing or ambiguous* Project ID from conversation/doc context. It does not help when no Claude.ai Project is attached to the chat at all (a Project-settings issue, not a Step 0.5 issue) — that case still lands on step 5, ask Tony, same as before.
 
 ---
 
@@ -84,7 +93,7 @@ All clear → proceed silently. Any flag → surface before suggested chat name.
 
 `[Project ID]` = the Project identified in Step 0.5. Never P_000 unless Step 0.5 actually identified P_000.
 
-`Suggested chat name: [Project ID] - [Topic] - MM-DD-YYYY`
+`Suggested chat name: [Project_ID] [Day], [Month] [DD], [YYYY] [HH:MM] ET [optional session-type label]`
 
 ---
 
@@ -194,6 +203,8 @@ Trigger: Tony signals the session is ending, or a WO closes this session. Two in
 
 **F2 State.** Session changed code, ran a validation, or moved project state (file versions, validation numbers, blocked/next items)? Yes → write a Current-State entry to `[Project ID]/tasks/todo.md` (Project ID from Step 0.5), verified via mtime check — same discipline as any other Hub write. NOT skippable when state changed; F1's "skip if nothing new" does not apply to F2. State can change with no new lesson, or vice versa — check both, every time. (See EC-004.)
 
+**F3 Status-Claim Verification.** Before any session-close summary or multi-item recap stating WO, Independent Review, or completion status: re-read each item's Status line / relevant checkbox live, in the same turn -- never from memory of the session's own actions. Same rule as the Standing Rule below, applied specifically at session close. (See EC-005.)
+
 ## Edge Cases
 
 | Situation | Action |
@@ -216,11 +227,15 @@ Read the whole doc · report what it loaded · replace the full doc · run on ev
 
 ## Standing Rule — Conversation Context Integrity
 
-Before reporting a negative: review history → verify with tools → only then report. Never assume an action wasn't taken if it was discussed this session.
+Before reporting ANY claim about session or WO state -- negative or positive -- review history → verify with tools → only then report. Never assume an action was or wasn't taken from memory of the session's own narrative. Independent Review claims specifically: "this session did the work" and "a separate session reviewed it" are different facts -- never state the second without a live-checked WO file backing it. (See EC-005.)
 
 ---
 
 ## Error Corrections Log
+
+**EC-006 -- Step 0.5 asked Tony with no fallback attempt despite recoverable context (2026-08-11). Medium.** A P_400 session opened with "I have no visibility into which project is attached to this session... which project are we running," and asked Tony directly -- the only fallback Step 0.5 had. Working as designed, not a bug in the old rule, but the design never tried the conversation's own recent-chat titles or the target project's doc header before interrupting Tony. Fix: four-step fallback chain added to Step 0.5 (`recent_chats(n=1)` → widen to n=3-5 → project doc header check → ask Tony), ref WO-P000-E17.001. Also logged as EC-007 in P_000_SYSTEM_DOCUMENTATION.md Section 6 (Hub-wide log).
+
+**EC-005 -- Session-close recap claimed Independent Review for two WOs that never received it (2026-08-07). High.** After completing real OWNER_DONE-level work on WO-P000-E3.001 and WO-P000-E7.001 (Completion Gate items, doc fixes) in the same session, the closing chat summary described both as "closed out... with real Independent Review" -- conflating "this session did the work" with "a separate session reviewed it," which the implementing session structurally cannot supply for itself. The WO files were internally accurate the whole time (E3.001 said "pending," E7.001's checkbox was unchecked); only the free-text chat summary was wrong, because it was generated from memory of the session's actions instead of a live re-check. Fix: Standing Rule broadened to cover positive claims, not just negatives; Protocol F3 added requiring a live status re-check before any multi-item session-close summary.
 
 **EC-004 — State from 2 sessions never reached todo.md (2026-07-12/13). High.** Protocol F only checked for lessons; state is a different question F1 never asked — F1 found no new "lesson" either session despite `pattern_miner.py` moving v1.4→v2.1 across two validation rounds. Next session's INIT loaded stale todo.md, re-opened an already-resolved question. Fix: F1/F2 split, F2 mandatory + mtime-verified whenever state changed.
 
@@ -232,4 +247,4 @@ Before reporting a negative: review history → verify with tools → only then 
 
 ---
 
-*Last Updated: 2026-07-13 — Protocol F split into F1 (lessons) + F2 (state checkout, mandatory, mtime-verified) (EC-004); inline violation blockquotes collapsed to EC-log pointers; Protocol B/E prose tightened into tables. No rule/path/condition removed. Prior: 2026-07-08 Step 0.5 added (EC-003). Prior: 2026-07-06 Protocol F added. Prior: 2026-06-12 Compressed v3.0.*
+*Last Updated: 2026-08-11 — Step 0.5 fallback chain added (EC-006, ref WO-P000-E17.001): `recent_chats(n=1)` → widen n=3-5 → project doc header check → ask Tony, replacing the ask-Tony-only fallback that ran with no recovery attempt first. Prior: 2026-07-13 Protocol F split into F1 (lessons) + F2 (state checkout, mandatory, mtime-verified) (EC-004); inline violation blockquotes collapsed to EC-log pointers; Protocol B/E prose tightened into tables. No rule/path/condition removed. Prior: 2026-07-08 Step 0.5 added (EC-003). Prior: 2026-07-06 Protocol F added. Prior: 2026-06-12 Compressed v3.0.*

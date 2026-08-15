@@ -295,6 +295,66 @@ def test_wo_e1001_orphans_returned_and_dispositionable():
           f"{len(orphans)} orphan(s), all dispositionable")
 
 
+def test_v24_no_sibling_double_exit():
+    """BEHAVIOR -- v2.4's match_entries_exits() must not double-count an
+    exit across sibling entries. v2.3's version (the one
+    P_020_AccountParser.bat pointed at until this session -- see
+    WO-P020-E1.013) recomputes potential_exits fresh from the FULL exits
+    list, filtered only by date >= that entry's own date, independently
+    per entry -- no cross-entry tracking of which exit rows a sibling
+    already claimed. Two entries opened close together can both attach
+    the SAME SOLD transaction as their exit, double-counting realized P&L.
+    v2.4 replaced this with a single chronological pass over a shared
+    long_book/short_book ledger, which cannot double-count by construction
+    -- an exit txn is popped from the book once, not re-queried per entry.
+    This test proves that property holds: 2 entries, qty 2 each, only the
+    first should close; total exit qty recorded across ALL positions must
+    equal the real SOLD qty (2), not double it (4)."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location(
+        "tos_parser_v24_siblingtest", PARSERS / "P_020_TOS_Parser_v2.4.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+
+    stmt = (
+        "DATE,TIME,TYPE,REF #,DESCRIPTION,Misc Fees,Commissions & Fees,"
+        "AMOUNT,BALANCE\n"
+        '6/1/26,09:31:00,TRD,="1",BOT +2 XYZ @10.00,,,-20.00,1000.00\n'
+        '6/2/26,09:31:00,TRD,="2",BOT +2 XYZ @10.00,,,-20.00,980.00\n'
+        '6/3/26,09:31:00,TRD,="3",SOLD -2 XYZ @12.00,,,24.00,1004.00\n'
+    )
+    with tempfile.NamedTemporaryFile("w", suffix=".csv", delete=False) as f:
+        f.write(stmt)
+        path = Path(f.name)
+    trades_df = mod.load_tos_csv(path)
+    path.unlink()
+
+    audit_records = []
+    positions = mod.match_entries_exits(
+        trades_df[trades_df["trade_type"] == "STOCK"].copy(),
+        max_exits=2, audit_records=audit_records)
+
+    total_exit_qty = sum(
+        ex["exit_quantity"] for pos in positions for ex in pos["exits"])
+    open_count = sum(1 for pos in positions if len(pos["exits"]) == 0)
+    ok = (len(positions) == 2 and total_exit_qty == 2 and open_count == 1)
+    check("v24_no_sibling_double_exit", "BEHAVIOR", ok,
+          f"{len(positions)} positions, total_exit_qty={total_exit_qty} "
+          f"(want 2, not 4), open_count={open_count}")
+
+
+def test_accountparser_bat_points_at_v24():
+    """SOURCE -- P_020_AccountParser.bat must invoke v2.4, not the dead
+    v2.3 (WO-P020-E1.013: batch file was stale, pointed at a version
+    WO-P020-E1.002 had already confirmed was not live, with the sibling
+    double-exit bug from the test above)."""
+    root = PARSERS.parent.parent
+    bat = root / "P_020_AccountParser.bat"
+    src = bat.read_text(encoding="utf-8")
+    ok = "P_020_TOS_Parser_v2.4.py" in src and "P_020_TOS_Parser_v2.3.py" not in src
+    check("accountparser_bat_points_at_v24", "SOURCE", ok)
+
+
 def main():
     tests = [v for k, v in list(globals().items()) if k.startswith("test_")]
     for t in tests:

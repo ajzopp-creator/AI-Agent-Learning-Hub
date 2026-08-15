@@ -6,7 +6,7 @@ Hours Trading page) as returning wider/less-reliable quotes outside regular
 hours, so session state should not be inferred from Schwab's own fields
 either. Wall-clock only.
 
-Holiday calendar added WO-P400-E4.006 (domain\market_holidays.py) --
+Holiday calendar added WO-P400-E4.006 (domain\\market_holidays.py) --
 formerly the known limitation here (and in WO-P400-E2.023's
 sessions_since_earnings, fixed in the same WO). No per-year data to
 maintain -- see that module's docstring for the rule set.
@@ -32,7 +32,8 @@ def is_market_open_now(now: Optional[datetime] = None) -> bool:
             testability. Defaults to actual current time.
 
     Returns:
-        False on weekends or outside 9:30-16:00 Eastern. No holiday check.
+        False on weekends, US market holidays (domain.market_holidays), or
+        outside 9:30-16:00 Eastern.
     """
     if now is None:
         now = datetime.now(timezone.utc)
