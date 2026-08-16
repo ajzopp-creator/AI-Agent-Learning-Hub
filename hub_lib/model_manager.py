@@ -8,11 +8,14 @@ Update routing in one place (MODEL_MAP) or via env-var override; every
 project picks up the change on next run.
 """
 
+import logging
 import os
 from typing import Tuple
 
-from . import providers
+from . import machine_capability, providers
 from .exceptions import ConfigError
+
+logger = logging.getLogger(__name__)
 
 # Default routing - (provider, model_id) per task name.
 # Override any task at runtime via env var:
@@ -41,7 +44,9 @@ class ModelManager:
     def get_model(cls, task: str) -> Tuple[str, str]:
         """Return (provider, model_id) for a task name.
 
-        Checks for an env-var override first, then falls back to MODEL_MAP.
+        Resolution order: env-var override, then machine-capability
+        substitution (local_* -> cloud_* if this machine has no local LLM
+        tier), then MODEL_MAP lookup.
 
         Args:
             task: Task name (key in MODEL_MAP).
@@ -50,7 +55,9 @@ class ModelManager:
             Tuple of (provider, model_id).
 
         Raises:
-            ConfigError: If the task is not defined and no override is set.
+            ConfigError: If the task is not defined and no override is set,
+                or if a local_* task needs cloud substitution but no
+                matching cloud_* task exists in MODEL_MAP.
         """
         override = os.environ.get(f"HUBLIB_TASK_{task.upper()}", "").strip()
         if override:
@@ -61,6 +68,21 @@ class ModelManager:
                 )
             provider, model_id = override.split(":", 1)
             return provider.strip(), model_id.strip()
+
+        if task.startswith("local_") and not machine_capability.has_local_llm():
+            cloud_task = task.replace("local_", "cloud_", 1)
+            if cloud_task not in MODEL_MAP:
+                raise ConfigError(
+                    f"No local LLM tier on this machine and no cloud "
+                    f"equivalent {cloud_task!r} defined in MODEL_MAP for "
+                    f"{task!r}."
+                )
+            logger.info(
+                "No local LLM tier on this machine -- routing %r to %r.",
+                task, cloud_task,
+            )
+            task = cloud_task
+
         if task not in MODEL_MAP:
             raise ConfigError(
                 f"Task {task!r} not in MODEL_MAP. "

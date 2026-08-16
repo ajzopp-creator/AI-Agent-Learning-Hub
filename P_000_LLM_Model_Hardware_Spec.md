@@ -99,7 +99,7 @@ This machine has no LM Studio tier. All `local_*` tasks route to their `cloud_*`
 
 ## hub_lib MODEL_MAP — current routing
 
-Defined in `C:\Users\Trader\AI-Agent-Learning-Hub\hub_lib\hub_lib\model_manager.py`.
+Defined in `C:\Users\Trader\AI-Agent-Learning-Hub\hub_lib\model_manager.py`.
 
 | Task name | Provider (ASUS) | Provider (LG) | Model |
 |---|---|---|---|
@@ -110,7 +110,7 @@ Defined in `C:\Users\Trader\AI-Agent-Learning-Hub\hub_lib\hub_lib\model_manager.
 | `vp_pattern`    | google    | google    | gemini-2.5-flash |
 | `vp_reasoning`  | google    | google    | gemini-2.5-pro |
 
-**Open risk:** hostname-aware routing (WO-P000-E10.004) is not yet implemented in code. Until it closes, MODEL_MAP is still hardcoded to the ASUS assumption — a `local_*` task run on the LG will try to hit `localhost:1234` and fail rather than automatically falling back to cloud. Don't run local-task code on the LG until E10.004 lands.
+**Open risk (resolved pending verification):** hostname-aware routing (WO-P000-E10.004) landed in code 2026-08-15 — `machine_capability.py` (new) plus a `model_manager.py` edit auto-route `local_*` to `cloud_*` on any machine without a local LLM tier. WO status stays PENDING until the two checks in its Verification Plan run: confirm the LG silently substitutes cloud with an INFO-level log, and confirm the ASUS still hits `localhost:1234` unchanged.
 
 To swap a local task to a different model on the ASUS, either edit the row in MODEL_MAP or set an override in `.env`:
 
