@@ -1,12 +1,20 @@
-# P_000_Model_hardware_Spec
+# P_000_Model_Hardware_Spec
 
-**Machine:** AJZ-TRADING-LAP (ASUS TUF Gaming F16 FX608LP)
-**Last verified:** May 2, 2026
-**Regenerate with:** `Trader-CLI` PowerShell one-liner at the bottom of this doc
+**Last verified:** August 15, 2026
+**Regenerate with:** `Trader-CLI` PowerShell one-liner at the bottom of this doc — note which machine it was run on when updating.
 
 ---
 
-## Hardware
+## Machines
+
+| Machine | Role | Local LLM tier | Notes |
+|---|---|---|---|
+| AJZ-TRADING-LAP (ASUS TUF F16) | Primary | Full — see below | RTX 5070 8GB VRAM, 96GB RAM |
+| AJZSTRATEGIESLG (LG Gram 17Z990-R) | Secondary | None — cloud only | No usable GPU offload path; Cowork also unavailable (Windows 11 Home, no Hyper-V) |
+
+---
+
+## Machine: AJZ-TRADING-LAP (ASUS TUF Gaming F16 FX608LP)
 
 | Component | Spec |
 |---|---|
@@ -26,13 +34,11 @@
 | Storage F: | 4 TB USB HDD (Seagate Expansion) — static OneDrive snapshot, do not rely on for live work |
 | Other display adapters | DisplayLink USB (dock) |
 
----
-
-## Local LLM capacity (LM Studio + llama.cpp)
+### Local LLM capacity (LM Studio + llama.cpp)
 
 VRAM is the binding constraint for fully-on-GPU inference. With 8 GB usable VRAM and 96 GB system RAM, partial offload covers everything up to dense 70B at Q4.
 
-### Sizing rules of thumb
+#### Sizing rules of thumb
 
 | Quant | Size formula | Example: 7B | 14B | 32B | 70B |
 |---|---|---|---|---|---|
@@ -42,7 +48,7 @@ VRAM is the binding constraint for fully-on-GPU inference. With 8 GB usable VRAM
 
 Add ~1 GB for KV cache at 8K context, ~2 GB at 32K. Reserve ~500 MB VRAM for the desktop.
 
-### What runs well on this machine
+#### What runs well on this machine
 
 | Tier | Recommended model | Quant | Where it lives | Tokens/sec (typical) |
 |---|---|---|---|---|
@@ -54,7 +60,7 @@ Add ~1 GB for KV cache at 8K context, ~2 GB at 32K. Reserve ~500 MB VRAM for the
 
 For trading-specific reasoning (chart pattern logic, scenario analysis), QwQ-32B in the Smart tier is the strongest single choice — purpose-built for chain-of-thought work, runs at the same memory cost as Qwen2.5-32B.
 
-### LM Studio per-model settings
+#### LM Studio per-model settings
 
 | Model size | n_gpu_layers | Context | Notes |
 |---|---|---|---|
@@ -65,34 +71,52 @@ For trading-specific reasoning (chart pattern logic, scenario analysis), QwQ-32B
 
 LM Studio's "GPU Offload" slider equates to n_gpu_layers. Start conservative, watch nvidia-smi, push up until you see VRAM hit ~7.5 GB.
 
+### Tooling decisions tied to this hardware
+
+- **Local runtime:** LM Studio (GUI) is the chosen stack. Reasons: native Blackwell/CUDA 12.6 support, OpenAI-compatible server on `localhost:1234` already wired into hub_lib, per-layer GPU offload control, model browser. Anaconda AI Navigator was evaluated and rejected — smaller library, less control, no Blackwell tuning.
+- **Headless alternative:** Ollama (`localhost:11434`) is a viable swap if you ever want LM Studio off the desktop. hub_lib's `call_lmstudio()` works against either by changing `base_url`.
+- **Maximum-throughput alternative:** llama.cpp directly. ~15% faster than LM Studio on the same GGUF, no GUI. Only worth the tradeoff for batch jobs.
+
+---
+
+## Machine: AJZSTRATEGIESLG (LG Gram 17Z990-R)
+
+**Role:** Secondary, cloud-inference-only.
+
+| Component | Spec |
+|---|---|
+| CPU | Intel Core i7-8565U — 4 cores |
+| GPU | Intel UHD 620 (integrated, no CUDA path) |
+| RAM | 15.8 GB |
+| Disk | 237 GB NVMe (single) |
+| OS | Windows 11 Home — no Hyper-V, Cowork unavailable |
+
+No usable GPU offload path on this hardware. DeepSeek R1 14B would run CPU-only at roughly 1–2 tok/s; Qwen 32B and Llama 4 Scout aren't runnable at all. A single 8B model as an offline fallback is technically possible post-rebuild (~150 GB free) at maybe 3–5 tok/s — Tony's call, not a recommendation; slow enough that the Claude API wins whenever a network is available.
+
+This machine has no LM Studio tier. All `local_*` tasks route to their `cloud_*` equivalent here instead — see MODEL_MAP routing below.
+
 ---
 
 ## hub_lib MODEL_MAP — current routing
 
 Defined in `C:\Users\Trader\AI-Agent-Learning-Hub\hub_lib\hub_lib\model_manager.py`.
 
-| Task name | Provider | Model |
-|---|---|---|
-| `local_fast`    | lmstudio  | qwen2.5-7b-instruct |
-| `local_smart`   | lmstudio  | qwen2.5-32b-instruct |
-| `cloud_fast`    | anthropic | claude-haiku-4-5-20251001 |
-| `cloud_smart`   | anthropic | claude-opus-4-7 |
-| `vp_pattern`    | google    | gemini-2.5-flash |
-| `vp_reasoning`  | google    | gemini-2.5-pro |
+| Task name | Provider (ASUS) | Provider (LG) | Model |
+|---|---|---|---|
+| `local_fast`    | lmstudio  | anthropic → routed to `cloud_fast` | qwen2.5-7b-instruct / claude-haiku-4-5-20251001 |
+| `local_smart`   | lmstudio  | anthropic → routed to `cloud_smart` | qwen2.5-32b-instruct / claude-opus-4-7 |
+| `cloud_fast`    | anthropic | anthropic | claude-haiku-4-5-20251001 |
+| `cloud_smart`   | anthropic | anthropic | claude-opus-4-7 |
+| `vp_pattern`    | google    | google    | gemini-2.5-flash |
+| `vp_reasoning`  | google    | google    | gemini-2.5-pro |
 
-To swap a local task to a different model, either edit the row in `MODEL_MAP` or set an override in `C:\Users\Trader\AI-Agent-Learning-Hub\.env`:
+**Open risk:** hostname-aware routing (WO-P000-E10.004) is not yet implemented in code. Until it closes, MODEL_MAP is still hardcoded to the ASUS assumption — a `local_*` task run on the LG will try to hit `localhost:1234` and fail rather than automatically falling back to cloud. Don't run local-task code on the LG until E10.004 lands.
+
+To swap a local task to a different model on the ASUS, either edit the row in MODEL_MAP or set an override in `.env`:
 
 ```
 HUBLIB_TASK_LOCAL_SMART=lmstudio:qwq-32b
 ```
-
----
-
-## Tooling decisions tied to this hardware
-
-- **Local runtime:** LM Studio (GUI) is the chosen stack. Reasons: native Blackwell/CUDA 12.6 support, OpenAI-compatible server on `localhost:1234` already wired into hub_lib, per-layer GPU offload control, model browser. Anaconda AI Navigator was evaluated and rejected — smaller library, less control, no Blackwell tuning.
-- **Headless alternative:** Ollama (`localhost:11434`) is a viable swap if you ever want LM Studio off the desktop. hub_lib's `call_lmstudio()` works against either by changing `base_url`.
-- **Maximum-throughput alternative:** llama.cpp directly. ~15% faster than LM Studio on the same GGUF, no GUI. Only worth the tradeoff for batch jobs.
 
 ---
 
@@ -115,10 +139,11 @@ nvidia-smi --query-gpu=name,memory.total,driver_version,compute_cap --format=csv
 Get-PhysicalDisk | Format-Table FriendlyName, MediaType, BusType, @{N='GB';E={[math]::Round($_.Size/1GB,0)}}
 ```
 
-Update the tables above when any line changes (new GPU driver, RAM upgrade, BIOS update, OS build).
+Update the relevant machine's table above when any line changes (new GPU driver, RAM upgrade, BIOS update, OS build).
 
 ---
 
 ## Change log
 
+- **2026-08-15** — Restructured to per-machine format (WO-P000-E10.002). Added AJZSTRATEGIESLG (LG Gram) as secondary, cloud-inference-only machine. No changes to ASUS spec content. Flagged MODEL_MAP as still hardcoded pending WO-P000-E10.004.
 - **2026-05-02** — Initial spec captured. Machine confirmed as ASUS TUF F16 FX608LP, Core Ultra 9 275HX, RTX 5070 Laptop 8 GB, 96 GB DDR5-5600. hub_lib v0.1 MODEL_MAP recorded.

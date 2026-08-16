@@ -9,7 +9,7 @@
 | **Project Name** | Python, Claude & Local LLM Learning Hub |
 | **Version** | 2.0 |
 | **Created** | March 8, 2026 |
-| **Last Updated** | 2026-08-11 |
+| **Last Updated** | 2026-08-15 |
 | **Owner** | Tony (Trader) |
 | **Status** | Active |
 
@@ -123,7 +123,7 @@ See `Local_LLM_Upgrade_Plan_V2.0.md` for full implementation detail.
 | **Batch (heavy analysis)** | qwen2.5-coder-32b-instruct-abliterated | Trade journal processing, document summarization, pipeline builds |
 | **Long context (specialist)** | llama-4-scout-17b-16e-instruct | Documents over 128K tokens, full architecture ingestion |
 
-**Hardware context:** ASUS TUF Gaming F16 FX608LP — Intel Core Ultra 9 275HX (24 cores) + RTX 5070 Laptop (8GB GDDR7 VRAM) + 96GB DDR5 RAM.
+**Hardware context:** ASUS TUF Gaming F16 FX608LP — Intel Core Ultra 9 275HX (24 cores) + RTX 5070 Laptop (8GB GDDR7 VRAM) + 96GB DDR5 RAM. (ASUS machine only — see Section 2.5 for the LG's cloud-only configuration.)
 The 96GB RAM enables CPU offload of the 32B model — viable for batch work at 5–12 tokens/sec.
 
 **LM Studio model configuration:**
@@ -175,6 +175,19 @@ See `P_000_LMS_Integration_Guide.md` for the standard init pattern.
 | PowerShell | Primary command-line interface |
 | FFmpeg | Audio processing |
 | Whisper | Audio transcription (combined with LM Studio for analysis) |
+
+### 2.5 Machines (added 2026-08-15, ref WO-P000-E10.002/E10.003)
+
+Two machines run the Hub. Sections 2.1–2.4 above describe the ASUS configuration specifically — do not assume they apply Hub-wide.
+
+| Machine | Role | Local LLM tier | Cowork |
+|---|---|---|---|
+| AJZ-TRADING-LAP (ASUS TUF F16) | Primary | Full three-tier stack (Section 2.2) | Available (Windows 11 Pro, Hyper-V) |
+| AJZSTRATEGIESLG (LG Gram 17Z990-R) | Secondary | None — no usable GPU offload path | Unavailable (Windows 11 Home, no Hyper-V) |
+
+AJZSTRATEGIESLG routes all AI tasks through the Claude API. `local_*` MODEL_MAP tasks resolve to their `cloud_*` equivalent once WO-P000-E10.004 lands (PENDING as of this writing — until then, do not run local-task code on the LG).
+
+Full hardware detail for both machines: `P_000_LLM_Model_Hardware_Spec.md`.
 
 ---
 
@@ -577,6 +590,7 @@ Thumbs.db
 *This document is the authoritative reference for P_000. Update Section 6 whenever a new error is identified and corrected. Update Section 11.4 whenever key parameters change.*
 *Version 1.2 — Updated April 29, 2026: Hardware profile corrected to ASUS TUF F16 / Intel Core Ultra 9 275HX 24-core. CPU Threads parameter updated to 20 across all models.*
 *Version 1.4 — Updated June 3, 2026: Section 1.4 reconciled with on-disk projects/ folder — added P_301, P_400, P_800, P_805. Section 10 — added P_000_Account_Parameters_Current.md. Note: P_116/P_117/P_118 referenced in the account-parameters file are strategy buckets, not Hub project folders.*
-*Version 1.7 — Updated August 6, 2026: Parameter Registry drift corrected against live config.py + running LM Studio server. Batch model key qwen2.5-coder-32b-instruct -> qwen2.5-coder-32b-instruct-abliterated (Sections 1.5, 2.2, 11.1, 11.4). LM Studio endpoint /v1 -> /api/v1 (Sections 1.5, 11.1, 11.4) to match LM_STUDIO_API_BASE in integrations\lm_studio\config.py; Section 2.2 was already correct. Display labels "Qwen2.5-Coder-32B" left unchanged (friendly names, not model keys).*
 *Version 1.6 — Updated July 29, 2026: Section 6 — added EC-005 (Completion Gate checklist backfilled after OWNER_DONE instead of present at time of set). Section 3.3 shared_resources tree refresh (v1.5, WO-P000-E9.001) passed Independent Review same day.*
+*Version 1.7 — Updated August 6, 2026: Parameter Registry drift corrected against live config.py + running LM Studio server. Batch model key qwen2.5-coder-32b-instruct -> qwen2.5-coder-32b-instruct-abliterated (Sections 1.5, 2.2, 11.1, 11.4). LM Studio endpoint /v1 -> /api/v1 (Sections 1.5, 11.1, 11.4) to match LM_STUDIO_API_BASE in integrations\lm_studio\config.py; Section 2.2 was already correct. Display labels "Qwen2.5-Coder-32B" left unchanged (friendly names, not model keys).*
 *Version 1.8 — Updated August 11, 2026: Section 6 — added EC-007 (Step 0.5 asked Tony directly with no fallback attempt; four-step recovery chain added, ref WO-P000-E17.001, system-doc-initializer SKILL.md EC-006).*
+*Version 1.9 — Updated August 15, 2026: Section 2 — added 2.5 Machines, documenting AJZSTRATEGIESLG (LG Gram) as a secondary, cloud-inference-only machine with no LM Studio tier and no Cowork; qualified the Section 2.2 hardware-context line as ASUS-specific. Ref WO-P000-E10.002/E10.003, Phase 7 of P_000_LG_Laptop_Mirror_Plan_v1_1.md.*
