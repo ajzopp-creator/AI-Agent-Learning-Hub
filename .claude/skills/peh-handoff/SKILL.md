@@ -11,14 +11,14 @@ description: >
   file-writing MCP call the same way until Test-Path confirms it. Test-Path proves
   existence, NOT correctness — generated files are written directly via
   filesystem:write_file or windows-mcp:FileSystem (mode=write) and validated on
-  Windows with p140 under warnings-as-errors; sandbox-build + base64 + SHA-256 is
-  a fallback only for payloads too large for one tool call; targeted edits are
-  count-verified. Applies to all Python execution AND file writes under
+  Windows with p140 under warnings-as-errors. Existing files default to a
+  targeted PowerShell replace, not a full-file rewrite, since str_replace fails
+  on these paths. Applies to all Python execution AND file writes under
   C:\Users\Trader\AI-Agent-Learning-Hub\projects\.
 ---
 
 # peh-handoff
-v1.7 | Created 2026-06-16 | Applies to all Python execution and file-writing MCP calls under C:\Users\Trader\AI-Agent-Learning-Hub\projects\
+v1.9 | Created 2026-06-16 | Applies to all Python execution and file-writing MCP calls under C:\Users\Trader\AI-Agent-Learning-Hub\projects\
 
 ## Trigger
 - MCP Python call about to run, or already timed out (4-min ceiling, ~9/10 occurrence)
@@ -74,7 +74,34 @@ earnings_file.py).
 closes it early and turns the remainder into stray code. Observed 2026-08-05
 (conftest.py explaining why it used a raw docstring — by quoting one).
 
+**Unicode punctuation in PowerShell script anchors (new, discovered 2026-08-29).**
+Em-dashes, arrows, and other non-ASCII characters typed directly into a
+`.ps1` script's match/anchor string (e.g. `$old = "...em-dash..."`) can
+silently fail to match content read from the SAME file via
+`[System.IO.File]::ReadAllText()`, even though both reads are UTF-8.
+Root cause: the `.ps1` script file itself and the PowerShell host parsing
+it do not always round-trip non-ASCII bytes the same way `ReadAllText`
+does -- observed twice 2026-08-29 (P_000_SYSTEM_DOCUMENTATION.md and
+system-doc-initializer SKILL.md edits), both times as silent 0-occurrence
+matches with no error, not a crash. Confirmed via a live probe (occurrence
+count printed before any write): the full-paragraph anchor containing an
+em-dash returned 0; the identical anchor with the em-dash stripped out
+returned 1, same file, same content, same session.
+Remedy: never type em-dash/arrow/other non-ASCII characters directly into
+a `.ps1` anchor string. Use a shorter ASCII-only substring immediately
+before or after the special character to `IndexOf()` a position, then
+splice with `Substring()` -- never require the special character itself to
+appear inside a matched-and-replaced string. If the special character must
+appear in the REPLACEMENT text, build it from `[char]` codes
+(`[char]0x2014` for em-dash, `[char]0x2192` for arrow) rather than typing
+it, or just use plain ASCII (`--`, `->`) in new content going forward.
+Always print an occurrence-count guard before writing (per the Rule below)
+-- this is what surfaces the 0-vs-1 mismatch instead of a silent no-op.
 ### Rule — generated files (remedy rewritten v1.7, ref WO-P000-E15.001)
+**Applies to genuinely new files.** For editing an existing file, see "Rule —
+editing an EXISTING file" below first — that rule takes precedence when a file
+already has content on disk.
+
 **Default:** write directly to the Windows path via `filesystem:write_file` or
 `windows-mcp:FileSystem` (mode=write; `append=True` only when appending).
 Content passes as a tool parameter, not through a PowerShell command string, so
@@ -107,7 +134,63 @@ tool call, fall back to the pre-v1.7 procedure — do not use it by default:
 Confirm the content actually doesn't fit one direct-write call before reaching
 for the fallback — it exists for the oversized case, not as the default path.
 
-### Rule — targeted edits to existing files
+### Rule — editing an EXISTING file (new, v1.8)
+**A file that already has real content on disk is never a "generate a new
+file" case, even when the edit touches most of it.** The rule above is for
+files that don't exist yet. This rule governs every edit to something already
+on disk — a WO, a skill file, a vault note, a config, a production module.
+
+**Why this is its own rule, not a variant of the one above.** `str_replace`
+(the actual line-level patch tool) fails outright on this Hub's Windows paths
+— confirmed failure, WO-P020-E1.010.md, 2026-08-19 ("File not found" despite
+the file existing and being readable). The fallback that's been used since is
+reading the whole file, retyping it with the edit folded in, and writing the
+full result back via `windows-mcp:FileSystem`. That reliably lands on disk
+(Durable signal, above, still applies), but landing intact is not the same
+question as landing IDENTICAL to the original outside the intended change —
+and that second question was never being checked. Flagged live by Tony,
+2026-08-19, P_400 session — not from a confirmed corruption incident, unlike
+every other rule in this file. This is a preventive rule, on a risk Tony
+identified before it produced a visible failure, not a root-caused one.
+
+**Default for an existing file: a genuine targeted replace, not a full
+rewrite.**
+```powershell
+$path = 'C:\...\target_file.ext'
+$old  = 'exact old text, single-quoted to avoid backtick/escape corruption'
+$new  = 'exact new text, same rule'
+$content = Get-Content $path -Raw
+$hits = ([regex]::Matches($content, [regex]::Escape($old))).Count
+if ($hits -ne 1) {
+    Write-Output "ABORT: expected exactly 1 occurrence of `$old, found $hits -- not writing"
+} else {
+    $updated = $content.Replace($old, $new)
+    Set-Content -Path $path -Value $updated -NoNewline
+    Write-Output "OK: replaced 1 occurrence"
+}
+```
+Use `.Replace()` (literal), not `-replace` (regex) — avoids an entire class of
+regex-metacharacter escaping mistakes for content that's usually code or prose,
+not a pattern. The occurrence-count guard before writing extends v1.5's
+existing "count structural invariants before/after" principle to the write
+itself, rather than only checking after the fact.
+
+**When a full read-and-rewrite is still the right call** (multi-project WO
+files with several non-contiguous edited sections in one pass, a near-total
+restructure, or content where `$old` can't be pinned to a single unique exact
+string): it's still permitted, but requires an explicit diff-style check
+before reporting success — not the spot-checks (byte count, grep for one new
+marker) used up to this session. At minimum: capture line count and a hash
+before AND after, and for anything Tony would treat as high-stakes (a WO, a
+skill file, a vault record affecting a live position), read back a section
+that was NOT supposed to change and confirm it's untouched, not just that the
+new section is present.
+
+**Both paths still end at Durable signal** (Test-Path + Length/line-count)
+before reporting success to Tony — this rule adds a correctness check on TOP
+of that, it doesn't replace it.
+
+### Rule — targeted edits to existing files (v1.5, string-replacement risk)
 String replacement can succeed and still destroy content. Count structural
 invariants BEFORE and AFTER, in the same call, and abort on mismatch rather than
 writing:
@@ -213,6 +296,25 @@ No PASS/FAIL in output → ask for full terminal output.
 `C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_000_PythonClaudeLocalLLM\docs\PEH_Python_Execution_Handoff.md`
 
 ## History
+- v1.9 (8/29/26, P_000 session): added Content integrity finding -- Unicode
+  punctuation (em-dash, arrow) typed directly into a .ps1 anchor string can
+  silently fail to match against the same content read via
+  [System.IO.File]::ReadAllText(), 0 occurrences, no error. Root-caused via
+  live occurrence-count probe (ASCII-stripped anchor matched, original
+  didn't) during WO-P000-E4.002/E19.001 doc edits. Remedy: ASCII-only
+  anchors + IndexOf/Substring splicing; build special characters from
+  [char] codes only when they must appear in replacement text.
+- v1.8 (8/19/26, P_400 session): added "Rule — editing an EXISTING file",
+  distinguishing it from the generated-files rule above it. Root cause:
+  `str_replace` confirmed failing on Windows paths this session
+  (WO-P020-E1.010.md edit, "File not found"), and the full-file
+  read-and-rewrite used instead was never being checked for accidental drift
+  outside the intended edit — only that the intended change landed. Flagged
+  by Tony before any confirmed corruption, not after one; recorded honestly
+  as a preventive rule rather than backfilling a fake incident to match this
+  file's usual evidence-based format. New default: literal `.Replace()` with
+  a before-write occurrence-count guard for existing files; full rewrite
+  permitted only with an explicit diff-style check, not a spot-check.
 - v1.7 (8/9/26, ref WO-P000-E15.001): transport remedy narrowed for
   generated files. Default is now a direct-write tool (filesystem:write_file
   / windows-mcp:FileSystem mode=write), validated on Windows with p140 under

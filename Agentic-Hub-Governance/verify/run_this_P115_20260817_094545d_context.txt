@@ -1,0 +1,1 @@
+Context: dump last 25 tracker rows safely, avoid nested f-string quote escaping bug from prior attempt

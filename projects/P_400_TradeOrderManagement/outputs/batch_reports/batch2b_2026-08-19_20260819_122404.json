@@ -1,0 +1,92 @@
+{
+  "run_timestamp": "2026-08-19T12:24:04.554463-04:00",
+  "session_date": "2026-08-19",
+  "cash_available": 18325.0,
+  "posture": "FULL",
+  "screened_count": 11,
+  "passed_tier1": 11,
+  "evaluated": 11,
+  "candidates": [
+    {
+      "symbol": "SBLK",
+      "rank": 1,
+      "score": 0.6464,
+      "score_components": {
+        "rr": 0.4317,
+        "atr_headroom": 1.0,
+        "spread": 0.9669,
+        "liquidity": 0.5023,
+        "drift": 0.0
+      },
+      "vehicle": "STOCK",
+      "verdict": "APPROVED",
+      "rr_at_t1": 2.59,
+      "atr_headroom": 3.3968,
+      "spread_pct_of_price": 0.0331,
+      "drift_pct": 2.934,
+      "dollar_risk": 158.61,
+      "quantity": 51
+    },
+    {
+      "symbol": "SBLK",
+      "rank": 2,
+      "score": 0.6464,
+      "score_components": {
+        "rr": 0.4317,
+        "atr_headroom": 1.0,
+        "spread": 0.9669,
+        "liquidity": 0.5023,
+        "drift": 0.0
+      },
+      "vehicle": "STOCK",
+      "verdict": "APPROVED",
+      "rr_at_t1": 2.59,
+      "atr_headroom": 3.3968,
+      "spread_pct_of_price": 0.0331,
+      "drift_pct": 2.934,
+      "dollar_risk": 158.61,
+      "quantity": 51
+    }
+  ],
+  "skipped": [
+    {
+      "symbol": "HWM",
+      "reason": "verdict=BLOCKED (STOP_TOO_TIGHT)"
+    },
+    {
+      "symbol": "NRG",
+      "reason": "verdict=BLOCKED (RR_BELOW_MIN)"
+    },
+    {
+      "symbol": "ALGN",
+      "reason": "verdict=BLOCKED (RR_BELOW_MIN)"
+    },
+    {
+      "symbol": "APTV",
+      "reason": "verdict=BLOCKED (STOP_TOO_TIGHT)"
+    },
+    {
+      "symbol": "CAR",
+      "reason": "verdict=BLOCKED (STOP_TOO_TIGHT)"
+    },
+    {
+      "symbol": "CIFR",
+      "reason": "verdict=BLOCKED (STOP_TOO_TIGHT)"
+    },
+    {
+      "symbol": "POWL",
+      "reason": "verdict=BLOCKED (RR_BELOW_MIN)"
+    },
+    {
+      "symbol": "SARK",
+      "reason": "verdict=BLOCKED (STOP_TOO_TIGHT)"
+    },
+    {
+      "symbol": "TSN",
+      "reason": "verdict=BLOCKED (RR_BELOW_MIN)"
+    }
+  ],
+  "cumulative_risk_if_all_taken": 317.22,
+  "heat_cap": 3761.8068,
+  "heat_warning": "2 APPROVED candidates -- cumulative risk if all taken $317.22 vs heat cap $3761.81 (within cap). Not enforced -- each evaluate sizes independently (SIP v2.4, RISK never blocks)."
+}

@@ -1,0 +1,53 @@
+P_805 -- Candidate Sender Scan (2026-08-24)
+
+TASK
+Tony wants to find newsletter/trade-signal senders showing up in his mailboxes
+that aren't yet on P_805's approved-sender whitelist (data\sender_sheet.csv),
+including ones landing in Spam/Junk. This is a one-off diagnostic, not a new
+P_805 pipeline phase -- it produces a report for Tony to review by hand.
+
+WHAT THE SCRIPT DOES
+Scans all 4 accounts (icloud, gmail, outlook, yahoo): INBOX + spam/junk mbox
+export for each, via P_805's existing infrastructure.mbox_reader (stdlib
+mailbox.mbox() -- never a regex split, per Entry 001 in P_805's system doc).
+Drops any sender already in sender_sheet.csv (enabled OR disabled) and any
+matching config.EXCLUDED_SENDER_SUBSTRINGS. Aggregates what's left by address:
+message count, which account(s), regular vs. spam, first/last seen date, one
+example subject. Writes a CSV to:
+
+  data\candidate_senders\2026-08-24_candidate_senders.csv
+
+sorted by message count descending.
+
+READ-ONLY -- no IMAP connection, no keyring, no LLM calls, no writes to
+sender_sheet.csv or any mail. Only output is the one CSV report above plus
+this script's own .done marker.
+
+SUCCESS CRITERIA
+- Script prints "PASS" and exits 0.
+- data\candidate_senders\2026-08-24_candidate_senders.csv exists with a
+  header row and >= 0 data rows (0 candidates is a valid, successful result
+  -- it means nothing new is showing up outside the whitelist).
+- Per-account/mailbox candidate-message counts print to stdout (8 lines,
+  one per account x regular/spam) -- sanity-check these aren't all zero,
+  which would suggest a path problem rather than a genuinely clean mailbox.
+
+IF IT FAILS
+- Import error on `config`, `infrastructure.mbox_reader`, or
+  `domain.sender_filter`: sys.path insert or PROJECT_ROOT is wrong --
+  check PROJECT_ROOT at the top of the script against the actual project
+  path, don't guess-fix the import.
+- FileNotFoundError on an mbox path: Thunderbird profile path may have
+  changed (see config.PROFILE_PATH, currently "m306ztzh.IETimport") or a
+  SPAM_MBOX_FILES entry is stale -- verify the actual path exists on disk
+  before editing the script's hardcoded dict.
+- Any exception during mbox parsing: do NOT catch-and-continue silently --
+  surface the account/mailbox_type it happened on so Tony knows which
+  mailbox is affected.
+
+Do not change what counts as a "candidate" (the whitelist-exclusion and
+EXCLUDED_SENDER_SUBSTRINGS logic) to make the script pass -- if something
+looks wrong, report it, don't quietly loosen the filter.
+
+This script does not touch production P_805 code. Nothing here needs to be
+merged back into python\ -- it only imports from it.

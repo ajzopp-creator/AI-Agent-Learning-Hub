@@ -1,0 +1,6 @@
+WO: none (follow-up to WO-P010-E2.001 groundwork, Tony's question re: why
+p020-project-context hardcodes a Valid Trading Systems list instead of
+reading from DB). Purpose: confirm whether a 'systems' table exists in
+P_020_trades.db (trades.system has an FK REFERENCES systems(system_id)
+per the schema pulled earlier this session) and what it actually contains.
+Read-only. No writes, no skill edits yet.

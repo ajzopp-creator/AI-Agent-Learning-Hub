@@ -1,0 +1,10 @@
+bucketed input: 28 rows
+open (no exits yet, excluded from win/loss): 7
+
+P_300-sourced trades, REAL closed-trade outcomes by bucket:
+  OFF   closed_n= 5  wins= 1  losses= 4  win%= 20.0  total_pnl=$  235.96  avg_pnl=$  47.19
+  HALF  closed_n= 3  wins= 1  losses= 2  win%= 33.3  total_pnl=$  104.01  avg_pnl=$  34.67
+  FULL  closed_n=13  wins= 8  losses= 5  win%= 61.5  total_pnl=$ 1643.08  avg_pnl=$ 126.39
+
+csv: C:\Users\Trader\AI-Agent-Learning-Hub\Agentic-Hub-Governance\verify\p300_trades_winloss_20260829_140000.csv
+DONE

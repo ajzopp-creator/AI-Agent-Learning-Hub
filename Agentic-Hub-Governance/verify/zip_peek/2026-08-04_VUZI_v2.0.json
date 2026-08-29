@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-03-VUZI-001",
+  "signal_timestamp": "2026-08-04T22:29:48Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "VUZI",
+  "asset_class": "stock",
+  "guideline_entry": 2.40000009536743,
+  "guideline_stop": 2.2428388520065914,
+  "guideline_target": 2.54999995231628,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 2.2428388520065914,
+  "intelliscan_support_1": 2.09500002861023,
+  "intelliscan_support_2": 2.54999995231628,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 2.40000009536743,
+    "trailing_volume_30d": 607800.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 75.0% WR, z=1.21, mean return +9.00% at h=5",
+    "atm_at_signal": 0.1571612433608384
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-03",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-03_VUZI.md"
+  }
+}

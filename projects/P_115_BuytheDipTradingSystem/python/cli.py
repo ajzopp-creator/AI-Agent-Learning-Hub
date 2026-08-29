@@ -7,7 +7,7 @@ Run from this folder with the p140 interpreter:
     python.exe cli.py --symbol AMTM --session-date 2026-06-03
         --timestamp 2026-06-03T14:23:00Z --strategy dip_buy
         --entry 47.50 --stop 45.75 --target 52.00
-        --horizon "3-5 days" --confidence HIGH --close 47.75
+        --horizon "10-15 trading days" --confidence HIGH --close 47.75
         --volume 1850000 --rationale "Dip into 20-day MA after earnings"
         --timeframe 1D --source-link "TradeOrderManagement/P_115/x.md"
         --atm 1.85 --support-1 45.20 --support-2 43.10
@@ -22,6 +22,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+import config  # noqa: E402
 from application.emit_signal import emit_signal  # noqa: E402
 
 
@@ -35,7 +36,7 @@ def _parse_args() -> argparse.Namespace:
     p.add_argument("--entry", type=float, required=True)
     p.add_argument("--stop", type=float, required=True)
     p.add_argument("--target", type=float, required=True)
-    p.add_argument("--horizon", required=True)
+    p.add_argument("--horizon", default=config.DEFAULT_SIGNAL_HORIZON)
     p.add_argument("--confidence", required=True)
     p.add_argument("--close", type=float, required=True)
     p.add_argument("--volume", type=float, required=True)

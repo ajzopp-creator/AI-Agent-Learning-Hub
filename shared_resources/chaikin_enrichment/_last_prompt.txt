@@ -3,13 +3,11 @@ stock symbols and attaching each one to its Obsidian note.
 
 Notes to enrich (symbol -> exact note path, already resolved by Python --
 do not guess or construct a different path):
-BBY -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-08-13_BBY.md
-EPD -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-08-13_EPD.md
-FICO -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-08-13_FICO.md
-MSCI -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-08-13_MSCI.md
-RBLX -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-08-13_RBLX.md
-RDDT -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-08-13_RDDT.md
-SMPL -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-08-13_SMPL.md
+BRK_A -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-08-26_BRK_A.md
+RBA -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-08-27_RBA.md
+TDC -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-08-27_TDC.md
+TE -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-08-27_TE.md
+TSLY -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-08-27_TSLY.md
 
 For EACH symbol/note pair listed above, do the following in order:
 
@@ -46,13 +44,23 @@ For EACH symbol/note pair listed above, do the following in order:
    or descriptive paragraph to extract for them. Do not try to invent
    one. The Quick Stats block above is the substantive per-category
    data that IS available as text. If a ticker has no Chaikin coverage
-   at all (Rating shows "None" and summary shows "Power Gauge summary
-   not available", with no price quote), skip the note entirely --
-   do not append a stub section -- and report it as no-coverage.
+   at all -- Rating widget shows "None" AND the summary panel states
+   the symbol is unrated (wording varies: "This ETF is unrated" /
+   "This stock is unrated" / "No rating summary available" / "Power
+   Gauge summary not available") -- skip the note entirely, do not
+   append a stub section, and report it as no-coverage. A price quote
+   CAN still be present on an unrated page (that's separate market
+   data, not a Chaikin rating) -- do not treat a visible price as
+   evidence the symbol has coverage.
 
 6. Save the file. Do not modify any other part of the note --
    frontmatter, existing headers, and existing text stay untouched.
 
 Move to the next symbol only after the current one's note is saved.
-When all symbols are done, report which succeeded and which failed
-(e.g. login required, page didn't load, note file not found).
+When all symbols are done, report results in three separate buckets --
+do not merge or hedge between them:
+  - Updated: note saved with a new Chaikin Power Gauge section.
+  - No-coverage: skipped per step 5's rule. This is an expected
+    outcome, not a failure -- report it plainly, no hedging language.
+  - Failed: could not complete for a real reason (login required,
+    page didn't load, note file not found, etc.) -- state the reason.

@@ -1,0 +1,31 @@
+WO-P000-E8.001 routine archive roll -- P_300 tasks/todo.md + tasks/lessons.md
+Staged 2026-08-29. Third archive pass (prior: 2026-07-22, 2026-07-23).
+
+WHAT IT DOES (mechanical, reversible, nothing deleted)
+1. Backs up all four files to tasks\_backup_20260829_archive_roll\ FIRST.
+2. todo.md: moves dated session-log entries to todo_archive.md --
+   top block ("**>>> YYYY-MM-DD" entries above the Retention note) dated
+   BEFORE 2026-08-21, and out-of-order appended entries (below the
+   "End of P_300 Task Queue" marker) dated BEFORE 2026-08-23. Reference
+   sections (Current State, Completed stages, Backlog, Active, Maintenance)
+   are NOT touched -- E8.001 exempts them. Adds a "Third pass" sentence
+   to the Retention note.
+3. lessons.md: archives Section 1 entries oldest-first (lowest M-number)
+   until the live file is at or under 40 entries -- BUT skips any entry
+   whose ID (e.g. "M-030") is referenced in the P_300 SKILL.md, SIP, or
+   CLAUDE.md, since those are still load-bearing. Prints the archived and
+   the skipped-because-referenced lists. Also moves the multi-KB
+   "Last Updated" history line (line 5) into the archive and replaces it
+   with a one-line pointer.
+4. Invariants checked and printed: entry counts before/after, and
+   byte conservation -- (live + archive) after == (live + archive) before
+   + the bytes of the new section headers/notes the script itself adds.
+   Any mismatch -> FAIL, and the backups in step 1 are the restore point.
+
+SUCCESS: counts + byte check printed, todo.md dated-log portion <= 500
+lines, lessons.md <= 40 entries, PASS.
+
+ON FAILURE: do NOT hand-edit the live files. Restore from
+tasks\_backup_20260829_archive_roll\ and report the error.
+Do not change the cut dates, the 40-entry cap, or the referenced-ID skip.
+Do not change test assertions.

@@ -36,6 +36,13 @@ Never type from memory. Copy from here.
 | Schwab config | `...\config\P_020_schwab_config.json` |
 | Schwab token | `...\config\P_020_schwab_token.json` |
 | Weekly runner | `...\P_020_Weekly_Update.bat` |
+| CLI entry points | TWO, not one -- `cli.py` (auth only, `--project` flag)
+  vs. `P_020_Trade_Manager.py` (`balance`, `positions`, `init-db`, `verify`,
+  trade-import commands -- `cmd_balance()` calls
+  `application.account_commands.run_balance_command()`). Confirmed live
+  2026-08-20 after handing Tony a `cli.py balance` command that doesn't
+  exist (WO-P020-E1.016). Check which one before writing any CLI command
+  for Tony to paste.
 | ThinkLog parser | `...\python\database\domain\thinklog_parser.py` |
 | ThinkLog reader | `...\python\database\infrastructure\thinklog_reader.py` |
 | Paper import | `...\python\database\application\paper_import.py` |
@@ -58,9 +65,17 @@ actual machine before trusting either literal.
 
 ## Valid Trading Systems
 
-Only these values are valid for `trades.system`. Never empty, never outside this list.
+Authoritative source is the `systems` table in `P_020_trades.db` (`trades.system`
+is an FK to `systems.system_id`) -- query `SELECT system_id FROM systems WHERE
+active=1` rather than trusting a hardcoded list here, which drifts. This list
+was found stale 2026-08-29 (missing `P_300`, `P_010` -- both live with real
+trade counts, confirmed via the table itself, WO-P010-E2.001 follow-up) and
+the enumeration was removed in favor of this pointer.
 
-`P_115` · `P_116` · `P_117` · `P_118` · `P_910` · `P_920` · `SNT` · `Day` · `TOS_Import`
+**Known case mismatch (flagged 2026-08-29, not yet fixed):** `systems` table
+PK is `Day` (mixed case) but 7 live `trades` rows store `DAY` (all caps). Not
+currently enforced (FK doesn't appear active), but would break if
+`PRAGMA foreign_keys` were ever turned on.
 
 `TOS_Import` = unmatched fallthrough only.
 
@@ -103,6 +118,18 @@ first if a symbol looks mistagged.
 
 Paper trades skip this resolver entirely -- `paper_import.py` reads `system` directly
 from the ThinkLog tag at CSV-import time, defaulting to `TOS_Import` if untagged.
+
+IRA9885 also skips this resolver entirely (WO-P020-E1.015, 2026-08-22) --
+`application/system_attribution.py`'s `run_full_attribution()` checks
+`account_id == 'IRA9885'` and skips `apply_system_names()`, going straight to
+ThinkLog override then P_820. No Tracker/vault detour, since neither has
+meaningful IRA coverage.
+
+ThinkLog note format for IRA (Tony, 2026-08-22): no traceable system ->
+`[INV][SIG] free text` (system=`INV`). Traceable system -> put the real
+system in the WHY bracket, `INV` moves to a parenthetical in the free text:
+`[P_117][A] (INV) free text` (system=`P_117`, `INV` is context only).
+Both are standard two-bracket lines -- no parser change for either form.
 
 ---
 

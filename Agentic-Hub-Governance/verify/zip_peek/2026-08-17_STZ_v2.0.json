@@ -1,0 +1,33 @@
+{
+  "signal_id": "P115-2026-08-17-STZ-001",
+  "signal_timestamp": "2026-08-17T14:28:07Z",
+  "signal_source": "P_115",
+  "strategy": "dip_buy",
+  "symbol": "STZ",
+  "asset_class": "stock",
+  "guideline_entry": 139.18,
+  "guideline_stop": 129.52,
+  "guideline_target": 162.9,
+  "signal_horizon": "10-15 trading days",
+  "confidence_level": "MEDIUM",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 135.8,
+  "intelliscan_support_1": null,
+  "intelliscan_support_2": null,
+  "target_source": null,
+  "context": {
+    "close_at_signal": 139.18,
+    "trailing_volume_30d": 1432261.0,
+    "signal_rationale": "P_117 SNT PUT rec cross-validated via P_115 core engine, came out BUY (HybridTier=6: Fund 3/Anal 3/Candle 2/Setup 3). Fund verified clean (ROE 23.69%, D/C 55.2%, FCF+, matches submitted base 4). 200-MA -4% PULLBACK penalty (-1) correctly applied, adjusted Fund 3. No earnings flag (last 6/30/26, next ~5/27/27). Confidence MEDIUM: outside PUT call disagrees with engine BUY, RVOL 0.91, ADX 13.33 weak trend, HybridTier exactly at threshold not above it.",
+    "atm_at_signal": 3.38
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-17",
+    "chart_timeframe": "1D",
+    "signal_source_link": "P_117 SNT PUT rec (contradicts P_115 BUY) - TOS chart cross-validation 2026-08-17"
+  }
+}

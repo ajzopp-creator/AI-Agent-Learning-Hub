@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-05-DX-001",
+  "signal_timestamp": "2026-08-06T18:55:23Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "DX",
+  "asset_class": "stock",
+  "guideline_entry": 12.8500003814697,
+  "guideline_stop": 12.590906951543342,
+  "guideline_target": 12.9399995803833,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "MEDIUM",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 12.5950002670288,
+  "intelliscan_support_1": 12.5950002670288,
+  "intelliscan_support_2": 12.9399995803833,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 12.8500003814697,
+    "trailing_volume_30d": 4691596.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 65.0% WR, z=0.29, mean return +2.15% at h=5",
+    "atm_at_signal": 0.25909342992635725
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-05",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-05_DX.md"
+  }
+}

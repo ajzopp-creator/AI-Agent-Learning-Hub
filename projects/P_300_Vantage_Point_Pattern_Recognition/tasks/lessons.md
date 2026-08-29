@@ -2,7 +2,7 @@
 
 **File:** `tasks/lessons.md`
 **Status:** Live working document
-**Last Updated:** 2026-07-12 (WO-P300-E3.001 Scanner Loop built + PEH-verified 7/7 -- 5 files: archive_scanner_file.py NEW, scanner_report_writer.py NEW, scanner_loop.py NEW, cli.py v1.11 +scanner-loop, config.py v1.12 +SCANNER LOOP section. Data-source decision resolved same-day: reuses IntelliScan's native crossover screen + existing bulk_grid_reader.py/bulk_pattern_detector.py unchanged, point-in-time only, STRICT-only, report-only (no catalog write). M-080 added: missing reports_dir override forced test monkeypatching, same family as M-075 -- fixed at the source, not just in the test. data/bulk/nightly_scan/ folder created; real nightly-export run is next, separate step.) | 2026-07-08 (WO-P300-E2.001 Bulk Extraction: spec reviewed, scan decoded from .isc, Phase 0 verified on SPY/AAPL/DE exports (VP backfills predictions only 5 yr, boundary 2021-07-14), config.py v1.9 shipped + PEH-verified 11/11. M-070 added: PEH is a two-file contract -- run_this.py + run_this_context.txt written together, always. PowerShell MCP wedged mid-session per M-030; recovery = Claude Desktop restart.) | 2026-06-29 (ledger-fill produced its first real output ever: 4 stacked bugs found and fixed in one session -- M-060 date format, M-061 yfinance MultiIndex columns, M-062 query_unfilled checked the wrong column, M-064 persist-only-on-full-fill discarded every partial outcome. M-063 widened the fetch window. Result: h5=115/h7=97/h10=58/h15=2/h20=0 fully real, verified via before/after counts. See M-060 through M-064.) | 2026-06-29 (Ledger dedup: 175->142 rows, 33 duplicates removed across 26 groups -- COHR fired 6x, an entire 06-12 batch re-fired wholesale on 06-13/06-15. M-059 added: insert_fired_signal() has no uniqueness guard; code fix still OWED. Backup saved before delete; live-recount safety check matched dry-run exactly.) | 2026-06-28 (AddPattern batch: 31/32 ingested clean, 1 rejected as true duplicate (DOCU, source_file_id=277) -- catalog 331->362 patterns / 245 symbols. DailyEval batch: 22/22 clean, 9 BUY/12 WATCH/1 PASS, first live run under config v1.8 z>1.0. M-058 added: failed ingests leave the source file in historical_patterns\, blocking re-runs until the operator removes it. Pairs with O-009.) | 2026-06-17 (M-051 REAL fix landed: report_writer.py v1.8 -- print_signal_report_clean() no longer hardcodes [OK] written to vault / ARCHIVE OK; gated on LEDGER_LOG_CLASSES, fabricated archive block removed. Paired daily_evaluate_pipeline.py v1.20 M-043 fix -- _obsidian_write() False return now logged. M-054 added: the 2026-06-12 todo.md/lessons.md closure note for this exact bug was never verified against the file -- bug ran live in production 2026-06-12 through 2026-06-17 undetected. Caught via operator-uploaded live DailyEval console log.) | 2026-06-16 (WO-P300-E1.001 IntelliScan stop integration SHIPPED. intelliscan_reader.py v1.0 NEW; signal_schemas.py v2.1 (3 new SignalV2 fields); signal_emitter.py v2.1; daily_evaluate_pipeline.py v1.18. Smoke test PASS: 12 symbols, both support levels correct. M-052 added. WO-P115-E2.001 OPEN -- same pattern needed for P_115.) | 2026-06-12 (M-051 added -- hardcoded success string anti-pattern; falsified functional test captured in report_writer.py print_signal_report_clean().) | 2026-06-11 (M-019 instance: ledger_record.py Unicode arrow fixed; NFR-1 + report_writer smoke PASS; Enhancement 2 gate-on 3/4 done.) | 2026-06-09 (Enhancement 2 shipped -- Certainty-Equivalent BUY gate. CARA exponential utility (Kochenderfer Ch. 6) computes a risk-adjusted CE return per horizon; gates BUY when CE_GATE_ENABLED=True. Shipped OFF (observe-only). config v1.7 + schemas_pipeline_b v1.3 + domain/utility.py v1.0 NEW + aggregator v1.1 + signal_classifier v1.1 + report_writer v1.7. M-046 + M-047 added. utility.py smoke PASS verified.) | 2026-06-08 (Enhancement 1 shipped -- P_300 -> P_400 SIGNAL_V2 signal packet via the P_800 Hub interface. signal_emitter v2.0 + daily_evaluate_pipeline v1.15. M-045 added. COHR live BUY validated -> packet written to TradeOrderManagement/signals/. Architecture v2.7 Enhancement Log + Change Log updated.) | 2026-06-03 SEALED (Phase 3 Ledger Calibration System COMPLETE. M-040 through M-044 added. Ledger verified: COHR + DE signals captured. Next: 20-day wait, then ledger-fill.)
+**Last Updated:** 2026-08-29 (M-114). Full per-session update history moved to tasks/lessons_archive.md, third pass.
 **Maintained By:** Anthony Zoppi + Claude (architect)
 
 ---
@@ -36,6 +36,8 @@ entries -- file dropped 138.4KB/1,392 lines -> ~63KB. See
 tasks/lessons_archive.md for the removed entries and WO-P000-E8.001 for
 the retention standard.
 
+Third pass: 2026-08-29 -- 23 Section 1 entries archived oldest-first, skipping IDs still referenced in SKILL/SIP/CLAUDE.md (M-015); Last-Updated history line moved to the archive. Script: verify\run_this_P300_20260829_104500.py.
+
 ---
 ## Section 1 -- Session Methodology Rules (Active)
 
@@ -48,151 +50,8 @@ the retention standard.
 any `Path`-only method (`.stat()`, `.name`) on it. Caught 2026-07-13 in a
 diagnostic script; script-local bug, not a `db_utils.py` defect.
 
-### M-001 -- "You write, I review" pattern
-**Rule:** For all file deliveries (Python, docs, configs), the AI writes the file directly to its target Windows path via `windows-mcp:FileSystem`. The operator reviews. The AI never asks the operator to copy-paste code from chat. (Confirmed 2026-05-13.)
-
-### M-003 -- Plan before write
-**Rule:** Any task involving 3+ files or architectural decisions requires a written file plan with line-count estimates *before* any code is written. Wait for explicit operator approval.
-
-### M-005 -- Match operator message length
-**Rule:** Short user message -> short AI response. Substantive decisions warrant substantive answers; trivial pings get trivial replies. Never lecture. Never restate the operator's question.
-
-### M-006 -- Honest accountability over defensive recovery
-**Rule:** When the AI misses something, acknowledge it directly. No padding, no apology spirals. State what was missed, what's being corrected, and move on.
-
-### M-009 -- Architecture doc contains only canonical statements
-**Rule:** The P_300 architecture doc states facts, not suggestions. Hedge phrases are forbidden unless explicitly marked illustrative. (Identified 2026-05-13.)
-
-### M-010 -- Catch vestigial planning artifacts at architecture transitions
-**Rule:** When project strategy shifts, audit prior plan artifacts for items that no longer fit. Plan revisions must update downstream artifacts in the same pass. (Identified 2026-05-13.)
-
-**Instances caught so far:**
-- (1) Preservation CSV concept survived Path A->B fresh-start decision (Stage 2->3, 2026-05-13)
-- (2) `ONEDRIVE_ROOT` constant survived D3 converter scope trim (Stage 4, 2026-05-15)
-- (3) `History Grid (*).csv` live-format reference survived Stage 4 XLSX standardization (Stage 6 pre-work, 2026-05-16)
-
-### M-011 -- Route Python logging to stdout in scripts called from PowerShell
-**Rule:** All Python scripts from PowerShell must configure `logging.basicConfig()` with `stream=sys.stdout`. PowerShell flags any stderr output as red NativeCommandError even when exit code is 0. (Identified 2026-05-13.)
-
-**Extension (Stage 6, 2026-05-17):** ANY stderr output renders red, including SyntaxWarning, DeprecationWarning, `sys.stderr.write()`, and third-party library warnings. Defenses: forward slashes in path literals; `warnings.filterwarnings("ignore", ...)`; `2>&1` redirection as last resort.
-
-### M-013 -- Cross-field invariants in Pydantic v2 go in `@model_validator(mode="after")`
-**Rule:** Pydantic v2 field validators run in declaration order and see only earlier fields. Cross-field invariants belong in `@model_validator(mode="after")`. (Identified 2026-05-14.)
-
-### M-014 -- Validate config artifacts against a real source-data sample before commit
-**Rule:** For any config claiming alignment with vendor data, run a verification pass against an actual example file BEFORE writing to the final location. (Identified 2026-05-14.)
-
 ### M-015 -- Live filesystem MCP reads override project attachments for `tasks/*.md`
 **Rule:** When INIT loads `tasks/lessons.md` and `tasks/todo.md`, ALWAYS read via filesystem MCP (`filesystem:read_text_file`), NEVER trust project-attached versions. Attachments lag disk. (Identified 2026-05-15.)
-
-### M-021 -- Pydantic v2 `model_copy(update=...)` skips re-validation
-**Rule:** `model_copy(update=...)` does NOT run validators. Use full re-construction in validator negative tests. (Identified 2026-05-17.)
-
-### M-024 -- Pipeline A filename date format is strict YYYYMMDD; no capture-date sanity check
-**Rule:** Pipeline A does NOT check that capture date is not in the future or that target precedes capture. Double-check capture date before running `add-pattern`. (Identified 2026-05-18.)
-
-### M-026 -- Date-validity pre-checks for date-driven pick lists
-**Rule:** Validate every proposed date against weekends and US market holidays before publishing any date-driven pick list. Use `pandas.tseries.holiday.USFederalHolidayCalendar` + `weekday() < 5` check. (Identified 2026-05-18.)
-
-### M-027 -- Cost-estimate discipline: measure or admit unknown, never extrapolate from feel
-**Rule:** When asked for cost, token, time, or performance estimates, either (a) measure the actual value, or (b) state "unknown" with the specific reason. Never extrapolate from intuition. (Identified 2026-05-19.)
-
-### M-029 -- Don't interpret domain data without confirming domain semantics
-**Rule:** State what the measurement says (numeric, value-neutral). Only label features as "signal"/"noise" when domain meaning is confirmed. (Identified 2026-05-19.)
-
-### M-030 -- `windows-mcp:PowerShell` + `python -c` with embedded code hangs reliably
-**Rule:** Do not invoke `python -c "<embedded code>"` via `windows-mcp:PowerShell`. Hangs ~75-100% of attempts. Use `python script.py` instead. (Identified 2026-05-20.)
-
-### M-031 -- File-size accretion crossing §8.4.2 is a signal to split, not a license to slim docstrings
-**Rule:** When a file grows past 300 lines through legitimate accretion, split at a natural boundary. Don't compress docstrings. Current breaches: `schemas_pipeline_b.py` 408, `daily_evaluate_pipeline.py` 417, `report_writer.py` 373. (Identified 2026-05-20.)
-
-### M-032 -- Windows CMD batch: `SETLOCAL ENABLEDELAYEDEXPANSION` + `!VAR!` breaks parser on this system
-
-**Rule:** Do not use `SETLOCAL ENABLEDELAYEDEXPANSION` combined with `!VAR!` in Windows batch files on this workstation -- produces `: was unexpected at this time.` even on syntactically correct files. Use `%date%` string slicing for dates; `goto` label pattern to break for loops. Generalized: don't set-and-use a `%VAR%` inside the same `(...)` block, period -- plain percent-expansion is parse-time-bound within a block regardless of delayed expansion.
-
-**Recurrence (2026-07-07):** `P_300_AddPattern.bat`'s day-rollover backup copy silently no-op'd since the 2026-06-23 rebuild -- `NEWCATALOG` was set and referenced inside the same parenthesized `if/else (...)` block, so `%NEWCATALOG%` evaluated empty; `copy /y "...\%LATEST%" "...\"` (empty destination) silently failed with no errorlevel check. No data damage (ingest still wrote to the existing catalog correctly via `get_latest_catalog()`), but the daily-snapshot naming convention never fired for at least 2 weeks. Fixed via the goto-label pattern M-032 already prescribes -- `NEWCATALOG` set at top-level, not inside a block.
-
-(Identified 2026-05-21; recurrence 2026-07-07)
-### M-034 -- Feature ablation at N=116: volume_zscore is noise; z_score not discriminating at this catalog size
-
-**Rule:** Run feature ablation and threshold sweep at meaningful catalog size (N>=50) before treating default similarity features/thresholds as production-ready.
-
-**Finding 1 (2026-05-28, N=116):** Removing `volume_zscore` from SIMILARITY_FEATURES raised BUY precision 54.0% -> 70.5% (+16.5pp) with +42 BUY count -- volume is noisy cross-symbol/cross-time. All other 9 features within +-1.3pp. Shipped config.py v1.4.
-
-**Finding 2 (same date):** `BUY_MIN_Z_SCORE` lowered 1.0 -> 0.0 (config.py v1.5) -- at N=116/58% baseline WR, z_score wasn't discriminating (z=-0.5/0.0/0.5 all produced identical buy_count=49, precision=79.6%). Production thresholds post-2026-05-28: BUY n>=5/wr>=0.70/z>0.0 (79.6% precision, +6.4% mean h=5), WATCH n>=3/wr>=0.60/z>0.0.
-
-**Addendum (2026-06-28, re-eval trigger fired at N=331):** Walk-forward eval (strictly-earlier-anchor corpus, not LOO) on the full 331-pattern catalog: z>0.0 gave BUY=155 (60.0% accuracy); z>1.0 gave BUY=97 (62.9% accuracy). WATCH absorbed exactly the 58-pattern difference; PASS bit-for-bit identical across both -- confirms the override touches only the BUY boundary. The 58 demoted patterns ran 55.2% WR (below the 60% BUY-pool average) -- a real, modest edge cut. Decision: re-tightened `BUY_MIN_Z_SCORE` 0.0 -> 1.0 (config.py v1.8). Trigger closed.
-
-(Captured 2026-05-28 / 2026-06-28)
-### M-035 -- AI must verify python interpreter BEFORE issuing any python invocation to the operator
-**Rule:** M-016 is not only a diagnostic the operator runs when something breaks. The AI must proactively run `(Get-Command python).Source` via `windows-mcp:PowerShell` and confirm it returns `C:\Users\Trader\.conda\envs\p140\python.exe` BEFORE telling the operator to run any `python` command. If the check fails, fix the interpreter first. Never issue a `python` command to the operator on an unverified interpreter.
-
-**Failure mode captured 2026-05-29:** AI instructed operator to run `python integrations\lm_studio\examples\p300_status_check.py` without checking interpreter. Python 3.14 (system) was active; ImportError on `idna` followed. M-016 was in the SKILL but AI treated it as operator-only guidance rather than a pre-flight gate on every AI-issued python invocation.
-
-(Captured 2026-05-29)
-
-### M-038 -- Always verify the Hub interface before proposing any cross-project call
-**Rule:** Before writing or proposing any code that calls from one project into another, read the actual source file of the calling module to confirm how it currently imports the target. Then check `shared_resources/python_utils/` for a published Hub interface. If one exists, use it -- never reach into another project's internals via a hardcoded `sys.path` injection.
-
-**The Hub interface for Obsidian writes is:**
-```python
-from shared_resources.python_utils.vault_interface import write_to_vault
-```
-located at `C:\Users\Trader\AI-Agent-Learning-Hub\shared_resources\python_utils\vault_interface.py`.
-
-**Failure mode captured 2026-05-31:** AI proposed a backfill script that would have called `handle_write()` from P_800's internal `obsidian_writers.application.write_handler` directly, bypassing the published Hub interface `write_to_vault()` in `shared_resources/python_utils/vault_interface.py`. The existing `write_signal_to_obsidian.py` was already violating this boundary via `sys.path` injection. Both corrected to use the Hub interface.
-
-**Check sequence before any cross-project import:**
-1. Read the calling module's current import block
-2. Check `shared_resources/python_utils/` for an existing interface
-3. Read the interface README if present
-4. Use the published interface -- never bypass it
-
-(Captured 2026-05-31)
-
-### M-039 -- Pipe multi-line script output to UTF-8 file; read it back directly
-**Rule:** When a Python script will produce more than one screen of output, always pipe to a UTF-8 file and read it back via `windows-mcp:FileSystem`. Never ask the operator to paste it and never use bare `>` redirection -- PowerShell default `>` writes UTF-16 LE which produces garbled text and is unreadable by Claude.
-
-**Correct pattern for any long-output script:**
-```powershell
-python python\script.py 2>&1 | Out-File -Encoding utf8 output.txt
-```
-Claude then reads `output.txt` directly via `windows-mcp:FileSystem` without operator involvement.
-
-**Applies to:** catalog-summary, feature ablation, threshold sweep, backfill, LOO replay, and any other script with unbounded output.
-
-**Failure mode captured 2026-05-31:** Backfill script produced 750 lines. AI told operator to run and paste output. Operator uploaded a file written with bare `>` which produced UTF-16 LE. Claude had to decode around the encoding artifact rather than reading clean UTF-8 directly.
-
-(Captured 2026-05-31)
-
-### M-040 -- Test execution paths, not just imports; end-to-end before marking complete
-**Rule:** Module-level imports and parser registration pass tests; handler execution is different. When adding new CLI subcommands, ledger hooks, or any stateful feature, test ACTUAL EXECUTION: call the handler, invoke the workflow, verify output. Don't just test that imports work or that the parser builds.
-
-**Procedure before marking any feature "production-ready":**
-1. Write test that imports the handler function AND calls it (not just `build_parser()`)
-2. Run the actual user workflow end-to-end
-3. For multi-step processes (capture -> wait -> fill -> report), test at least one minimal cycle
-4. Verify the output is correct
-5. **CRITICAL:** Verify that non-blocking error paths actually succeed, not just that errors are logged
-
-**Failure mode captured 2026-06-03:** Phase 3 ledger system (calibration, ledger-fill, ledger-calibration subcommands) passed a test suite that only verified `build_parser()` succeeded and subcommands were registered. The test never called `_cmd_daily_evaluate()` which triggers lazy imports. Result: `ledger_record.py` had a broken import (`infrastructure.catalog_db` doesn't exist) that passed all tests but failed on first real execution when Tony ran `P_300_DailyEval_v2.bat COHR`. Root cause: incomplete test coverage of execution paths.
-
-**Second failure (same session, 2026-06-03):** After fixing the import error, the ledger_record hook runs non-blocking (good design), but `get_latest_catalog()` call returns wrong path -> queries wrong DB -> `sqlite3.OperationalError: no such table: patterns`. Hook fails silently; signal still fires. Good error handling masks the real bug: catalog path resolution is broken. Lesson: test non-blocking error paths to verify they actually SUCCEED, not just that they're handled.
-
-**Applies to:** Any new CLI handler, ledger hook, pipeline stage, or cross-module orchestration. Especially important for non-blocking error handlers -- verify the happy path works, not just that errors are caught.
-
-(Captured 2026-06-03)
-
-### M-041 -- Verify utility function signatures before using them in integration points
-**Rule:** When adding a new feature that calls an existing utility function (especially from `utilities/`), verify the function exists, understand what it returns, and test it in isolation FIRST. Don't assume a function with a suggestive name does what you expect. Broken utility calls in integration points can hide under non-blocking error handlers.
-
-**Failure mode captured 2026-06-03:** After fixing the import error in ledger_record.py, the code called `get_latest_catalog()` from `utilities/db_utils.py` -- a function that either doesn't exist or returns the wrong type/path. The failure was silent due to non-blocking error handling; the ledger hook failed but the daily eval continued and the signal fired. No indication to operator that the ledger record failed until examining logs.
-
-**Fix:** Use explicit path construction (glob + mtime sort) instead of relying on a utility function that wasn't verified. After fix confirmed working (COHR eval 2026-06-03 12:11:26).
-
-**Applies to:** Any new cross-module call, especially to utilities or infrastructure layers. Always verify by reading the source before use.
-
-(Captured 2026-06-03)
 
 ### M-042 -- Non-blocking hooks can hide silent failures; add explicit success logging
 **Rule:** When a feature is designed to fail non-blocking (errors logged but don't stop the flow), add EXPLICIT success logging so absence of a success message indicates the hook never ran or failed silently. Without positive confirmation, debugging becomes guesswork.
@@ -538,8 +397,94 @@ None of the three were caught by boundary-line verification prints -- all confir
 
 (Captured 2026-07-23, three of Claude's own mistakes in one session, all self-caught.)
 
+## M-111 -- M-097's "persists indefinitely" theory was wrong; headless Claude Code OAuth tokens do not reliably refresh
+
+**Rule:** `claude -p` (headless/non-interactive) does NOT share the same reliable auto-refresh behavior as an interactive session. Per Anthropic's own Claude Code CLI issue tracker (multiple confirmed reports: anthropics/claude-code #28827, #50743, #79685, #80091), the OAuth access token has a short TTL (~8 hours) and is not reliably refreshed when the CLI is invoked headlessly, while a concurrent interactive session on the same machine keeps working. A script that calls `claude -p ... --chrome` roughly once a day should be expected to hit a 401 on a routine basis, not treated as rare. M-097's "a login persists indefinitely under normal use, so this was a one-time bootstrap gap" was reasoned from Anthropic's docs on LOGIN expiry (the multi-day/long-lived kind, code.claude.com/docs/en/authentication's 3-day warning) -- a separate, longer-lived mechanism from the short-lived ACCESS TOKEN refresh problem specific to headless mode. Two different expiry mechanisms were conflated.
+
+**Trigger:** Real recurrences on 2026-08-12 and 2026-08-19 (a third, 2026-08-18, per Tony directly -- undocumented in todo.md, matching the exact recording-gap risk M-097 itself warns about). Three occurrences in five weeks, the last two on consecutive days, directly contradicts "very likely a one-time gap."
+
+**Fix:** Not built this session. Two real candidate directions surfaced, neither yet tested: (1) route the Chaikin batch through Tony's already-running interactive Claude Code session (`--continue`/`--resume`) instead of an independent `-p` spawn, since interactive sessions don't hit this bug; (2) `claude setup-token` issues a long-lived (1-year) credential, but per code.claude.com/docs/en/authentication it "can only make model requests, so it can't establish Remote Control sessions" -- unconfirmed whether `--chrome` browsing counts as a Remote Control session, which would rule this option out for this specific use case. This entry corrects M-097's root-cause claim only; M-097's actual fix (the `claude auth status --text` pre-flight guard, loud-not-silent) remains valid and unaffected.
+
+**Pairs with:** M-097 (corrects its stated root cause, not its shipped fix), WO-P300-E4.009 (loud-detection WO this failure mode keeps exercising).
+
+(Captured 2026-08-19, Claude's own correction of a prior session's theory, prompted by Tony asking for root cause on a recurrence.)
 
 
 
 
 
+
+
+
+## M-112 -- A WO's "WHAT WAS BUILT" section can go stale even when the WO itself is never touched -- a LATER, unrelated WO can quietly retire the code it describes
+
+**Rule:** M-111 documents drift in a WO's own Status header. This is a different failure: WO-P300-E4.009's Status header was never wrong, but its "WHAT WAS BUILT" section (Tee-Object capture + failure-phrase match + red banner + $LOG line, built into P_300_RunAllDailyEvals.ps1's inline Chaikin chain) stopped describing real production code on 2026-08-12, when WO-P800-E4.001's schema-driven migration replaced that inline chain with a call to Hub-root RunChaikinBatch.ps1 -- a script with no output capture, no phrase matching, no banner, and no log file at all. Nobody cross-checked E4.009 against the code WO-P800-E4.001 was replacing, because E4.009 wasn't the WO being worked. A WO can be 100% internally consistent (header matches body) and still be entirely wrong about what code currently exists, if a later WO in a different project changes the ground under it.
+
+**Trigger:** 2026-08-21, first real Chaikin batch failure since the migration (0/8 notes updated, WebFetch-403 fallback instead of a login wall). Went looking for the promised red banner and $LOG entry to confirm E4.009's detection fired -- neither exists in the current code. The failure WAS caught, just by a different, undocumented mechanism (P_300_RunAllDailyEvals.ps1's post-run vault-note check, added by WO-P800-E4.001 for an unrelated reason -- verifying enrichment succeeded, not originally framed as E4.009's replacement).
+
+**Prevention:** When a WO changes a shared call path (a script another WO's "WHAT WAS BUILT" section describes calling into), grep the ledger for other WOs referencing that same script/mechanism before closing -- not just the WOs in Affects:. WO_COMPLETION_GATE.md's Caller Propagation check (ref WO-P115-E2.001) covers callers of a changed function; it doesn't currently cover WOs whose own acceptance criteria describe the code being replaced. Candidate fix, not yet proposed to Tony: extend Caller Propagation's checklist item to include "other WOs describing this code path" as a category to search, not just active call sites.
+
+**Pairs with:** M-111 (header/body drift within one WO), M-054 (live artifact over any document), WO-P300-E4.009, WO-P800-E4.001.
+
+(Captured 2026-08-21, Claude's own finding, prompted by Tony providing real failure-run console output and flagging "not clean.")
+
+
+## M-113 -- Claude in Chrome "Your approved sites" is a persistent, browser-level grant, not per-conversation -- but two known Anthropic-side bugs can make it misbehave
+
+**Rule:** Once a site shows under the extension's Permissions -> "Your approved sites" with a Revoke button, that's an "always allow" grant that persists across separate sessions/tab groups/conversations until manually revoked -- confirmed live 2026-08-21: Tony approved members.chaikinanalytics.com in his own side panel, and a completely separate MCP tab-group session (this chat) navigated to the same domain immediately after with zero prompt. Not scoped to the approving conversation.
+
+**Known failure modes (Anthropic-side, not ours), if the prompt ever recurs unexpectedly:**
+1. anthropics/claude-code#74715 -- "Always allow" sometimes persists as `duration:"once"` instead of `duration:"always"` in the extension's storage; the site never actually lands in the approved list despite the user clicking Always Allow, so the prompt keeps firing every action.
+2. anthropics/claude-code#58464 / #57219 -- domain shows correctly under "Your approved sites" (recent Last Used timestamp and all) but `navigate` calls still return "permission_required" / "Navigation to this domain is not allowed" anyway -- a sync gap between the approval store and the navigate permission check.
+
+Neither hit us on 2026-08-21 -- the approval stuck cleanly and navigate worked immediately, no retry needed. Listed here so a future recurrence isn't mistaken for something P_300 broke.
+
+**Accepted workaround (Tony's call, 2026-08-21):** if Chaikin (or any approved site) unexpectedly re-prompts, Tony manually re-approves once -- acceptable as a one-off. Becomes worth real investigation only if it recurs repeatedly (pattern, not a single blip) -- same one-off-vs-repeatable threshold this Hub already applies to the Chaikin OAuth 401 recurrences (M-111).
+
+**Pairs with:** M-111 (headless auth reliability, same "one-off is fine, pattern needs investigation" threshold), WO-P300-E4.009 (this permission model is the foundation of the MCP-driven Chaikin pull that replaced `claude -p --chrome` for today's real batch).
+
+(Captured 2026-08-21, Tony's own policy call after Claude found and explained the two known upstream bugs.)
+
+
+
+## M-114 -- "No usable cache, full O(N^2) rescore required" was declared from the JSON fingerprint alone; the eval already existed on disk, and the machinery to rebuild it in minutes had been built a month earlier
+
+**Rule:** Before declaring that a long recompute is required, check ALL THREE places a walk-forward result can live, not just one: (1) `outputs\reports\eval\walkforward_*.txt` -- every promote writes a post-batch report for the full catalog, named after the STAGING db (`walkforward_staging_ingest_mined_*`), which is byte-identical to the live catalog it was promoted to; (2) `topk_cache` on the live catalog -- maintained on every promote via `update_for_new_batch` (new pids scored + all displaced existing pids rechecked, including backfilled anchor dates); (3) only then the JSON cache (`models\eval_cache\`), whose fingerprint is keyed to the PRE-batch catalog and will miss after every promote by design. If (1) is missing, `application\reconstruct_pre_batch.py` (WO-P300-E5.004 Part A, 130s at N=14,812, 25/25 exact vs. real DTW) rebuilds the batch from (2). `run_eval_loop.py` is the cold-path tool for a catalog with no `topk_cache` -- it must never be pointed at the live catalog.
+
+**Trigger:** 2026-08-27/28 session concluded WO-P300-E5.006 step 3 was BLOCKED on a ~214.5h uncached run, built `P_300_RunEvalLoop_KeepAwake.bat`, and planned a checkpoint/resume layer -- all because `read_cached_walk_forward` returned None on the 42,955-fingerprint JSON. Verified 2026-08-29: `walkforward_staging_ingest_mined_default_20260826_130212.txt` already holds all 44,399 patterns x 5 horizons (221,996 lines, last row VYX 2026-07-28 corpus_size 44,396), written by the 08-26 promote (`BulkAddPattern_20260826_111500.log`: "topk_cache populated on staging: 1444 new pids, 42341 existing pids rechecked"). The backfill concern (1,438 of 1,444 new pids with historical anchor dates) is exactly what the recheck loop handles.
+
+**Prevention:** Any "must rescore" conclusion in this project cites the report-folder listing and the live `topk_cache` row count in the same message. The KeepAwake eval wrapper stays on disk but is not run; the checkpoint plan is dropped. A blocker entry in a WO gets the same evidence bar as an acceptance criterion (M-100) -- "no cache" was asserted from one lookup, not three.
+
+**Pairs with:** M-082 (re-deriving instead of re-running proven logic -- E5.004 solved this exact shape), M-100 (premises need evidence), M-054 (live artifact over session memory), WO-P300-E5.004, WO-P300-E5.006.
+
+(Captured 2026-08-29, Claude's own finding after Tony challenged the 214.5h estimate: "we definitely did not build this environment correctly that any process would take this long on 44,000 records.")
+
+
+## M-115 -- WO ownership field (Owner) is not "whichever project's data the WO touches most" -- Affects lists collaborators, Owner decides who acts
+
+**Rule:** A WO's Owner field is the single project responsible for acting on it; other projects named in Affects are informed or impacted, not co-owners, even when their data matters more to the outcome than the Owner's own project does. Reading a WO's Affects list as shared ownership routes the work to the wrong session type.
+
+**Trigger (2026-08-29):** Summarizing the P_300 INIT session's action queue, WO-P010-E2.001 (Owner: P_010, Affects: P_400/P_300) was described as "sitting with P_010/P_400," implying P_400 shared ownership. Tony corrected: P_010 owns it and it needs a P_010 session; P_400 is named in Affects only because question 2 needs the P_400/P_020 trade ledger for P_300-sourced trades -- that doesn't make it a P_400 task, and nothing on it is owed from P_400 today.
+
+**Fix:** When stating which session type a WO needs, cite Owner alone. Affects explains why other projects are named in the WO body; it is not a routing signal for who acts next.
+
+(Captured 2026-08-29, Tony's direct correction.)
+
+
+## M-116 -- "I did not find it on file" needs a full-file search, not just the ranges already read this session for an unrelated purpose
+
+**Rule:** Before concluding a fact is undocumented ("not explained anywhere on file", "new finding"), search the ENTIRE relevant file, not just the sections already read earlier in the session for a different task. A partial read establishes coverage of what was read, not of the file.
+
+**Trigger (2026-08-29):** Independent-reviewing WO-P300-E4.009, flagged 2026-08-26_BRK_A's missing Chaikin section as "not explained anywhere on file" and guessed, unconfirmed, that a BRK_A vs BRK.A ticker-format mismatch was breaking the URL. Tony corrected: this was already investigated and documented in tasks/todo.md's 2026-08-27 entry (around line 448), which this session had never read -- INIT read only offset 0-120 and 470-573 of a 595-line file, skipping the middle section that held the answer. The real finding on file is more complete than the guess: BRK_A/BRK_B both fail to resolve on Chaikin under the underscore ticker format from _last_prompt.txt; retried with the period format Chaikin actually uses, BRK.B showed real data (a pure ticker-format bug, fixed by hand each pull) but BRK.A was confirmed genuine no-coverage even with the correct format -- Chaikin does not rate the A-share at all. Verified three separate times (08-27 period-format retry, Tony's own screenshot, 08-28 re-confirmation).
+
+**Fix:** A claim that something is undocumented is itself a claim requiring evidence -- grep or fully read the specific file before asserting absence, not just rely on whatever portions of it happen to have been read earlier in the session for a different task.
+
+(Captured 2026-08-29, Tony's direct correction.)
+
+## M-117 -- windows-mcp:FileSystem mode=write silently converts LF-only files to CRLF; a full-file rewrite must be byte-verified after write, not just line-count-verified
+
+**Trigger (2026-08-29):** Building WO-P300-E5.009, rewrote docs/P_300_System_Initialization_Prompt_v3_1.md (confirmed LF-only before editing) via windows-mcp:FileSystem mode=write, passing content built with plain LF line breaks. Post-write byte scan (done as routine PEH-style verification, not because anything looked wrong) found CR_COUNT=205 where it should have been 0 -- the write tool itself had normalized every line ending to CRLF on the way to disk, silently, with no error or warning. Line count, content, and every text spot-check still passed; only a raw byte scan caught it.
+
+**Fix:** After any full-file rewrite via windows-mcp:FileSystem mode=write, byte-scan the result for CR bytes (or CRLF pairs) and compare to the line-ending convention confirmed before the edit -- do not trust line-count or content spot-checks alone, they do not detect this. If the file is supposed to stay LF-only and the write introduced CRLF, normalize immediately with a .NET ReadAllText -> -replace "``r``n","``n" -> WriteAllText(UTF8, no BOM) pass and re-verify CR_COUNT=0 before considering the edit done. This is a distinct failure mode from the PowerShell .Replace() line-ending mismatches already logged this session (M-054/M-055 era fixes) -- those broke targeted `.Replace()` matches; this one silently corrupts a file's established convention on a clean full-file write with no match failure to signal it.
+
+(Captured 2026-08-29, self-caught during WO-P300-E5.009 build, not a Tony correction.)

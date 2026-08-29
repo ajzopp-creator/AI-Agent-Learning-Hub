@@ -1,0 +1,83 @@
+{
+  "schema": "CREATE TABLE trades (\n            trade_id               INTEGER  PRIMARY KEY AUTOINCREMENT,\n            account_id             TEXT     NOT NULL REFERENCES accounts(account_id),\n            system                 TEXT     NOT NULL REFERENCES systems(system_id),\n            underlying_symbol      TEXT     NOT NULL,\n            asset_type             TEXT     NOT NULL\n                                            CHECK(asset_type IN\n                                                  ('stock','etf','call','put','spread')),\n            direction              TEXT     NOT NULL\n                                            CHECK(direction IN ('long','short')),\n            open_date              DATE     NOT NULL,\n            open_datetime          DATETIME,\n            qty                    REAL     NOT NULL,\n            entry_price            REAL     NOT NULL,\n            stop_price             REAL,\n            risk_amount            REAL,\n            total_commissions      REAL     NOT NULL DEFAULT 0.0,\n            status                 TEXT     NOT NULL DEFAULT 'open'\n                                            CHECK(status IN ('open','partial','closed')),\n            tags                   TEXT,\n            notes                  TEXT,\n            source                 TEXT     NOT NULL DEFAULT 'schwab_api',\n            schwab_transaction_id  TEXT     UNIQUE,\n            created_at             DATETIME DEFAULT CURRENT_TIMESTAMP,\n            updated_at             DATETIME DEFAULT CURRENT_TIMESTAMP\n        , reason TEXT, signal_strength TEXT)",
+  "columns": [
+    "trade_id",
+    "account_id",
+    "system",
+    "underlying_symbol",
+    "asset_type",
+    "direction",
+    "open_date",
+    "open_datetime",
+    "qty",
+    "entry_price",
+    "stop_price",
+    "risk_amount",
+    "total_commissions",
+    "status",
+    "tags",
+    "notes",
+    "source",
+    "schwab_transaction_id",
+    "created_at",
+    "updated_at",
+    "reason",
+    "signal_strength"
+  ],
+  "counts_by_system": [
+    [
+      "DAY",
+      7
+    ],
+    [
+      "INV",
+      9
+    ],
+    [
+      "P_010",
+      4
+    ],
+    [
+      "P_115",
+      41
+    ],
+    [
+      "P_116",
+      43
+    ],
+    [
+      "P_117",
+      26
+    ],
+    [
+      "P_118",
+      66
+    ],
+    [
+      "P_300",
+      28
+    ],
+    [
+      "P_910",
+      7
+    ],
+    [
+      "P_920",
+      8
+    ],
+    [
+      "SNT",
+      22
+    ],
+    [
+      "TOS_Import",
+      368
+    ]
+  ],
+  "total_trades": 629,
+  "p300_text_hits": {
+    "reason": 1,
+    "notes": 0,
+    "signal_strength": 0
+  }
+}

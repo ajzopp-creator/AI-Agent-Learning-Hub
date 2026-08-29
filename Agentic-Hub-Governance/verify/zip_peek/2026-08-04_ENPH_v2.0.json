@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-03-ENPH-001",
+  "signal_timestamp": "2026-08-04T22:04:03Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "ENPH",
+  "asset_class": "stock",
+  "guideline_entry": 39.3499984741211,
+  "guideline_stop": 36.78462521535381,
+  "guideline_target": 39.5999984741211,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 36.78462521535381,
+  "intelliscan_support_1": 34.9599990844727,
+  "intelliscan_support_2": 39.5999984741211,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 39.3499984741211,
+    "trailing_volume_30d": 4302500.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 85.0% WR, z=2.13, mean return +9.72% at h=5",
+    "atm_at_signal": 2.5653732587672855
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-03",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-03_ENPH.md"
+  }
+}

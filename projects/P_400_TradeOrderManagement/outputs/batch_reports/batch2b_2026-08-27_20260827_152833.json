@@ -1,0 +1,27 @@
+{
+  "run_timestamp": "2026-08-27T15:28:33.642816-04:00",
+  "session_date": "2026-08-27",
+  "cash_available": 17543.89,
+  "posture": "HALF",
+  "screened_count": 3,
+  "passed_tier1": 3,
+  "evaluated": 3,
+  "candidates": [],
+  "skipped": [
+    {
+      "symbol": "FFIV",
+      "reason": "verdict=BLOCKED (ADVERSE_DRIFT)"
+    },
+    {
+      "symbol": "DOMO",
+      "reason": "verdict=BLOCKED (ADVERSE_DRIFT)"
+    },
+    {
+      "symbol": "XRX",
+      "reason": "verdict=BLOCKED (RR_BELOW_MIN)"
+    }
+  ],
+  "cumulative_risk_if_all_taken": 0.0,
+  "heat_cap": 3761.8068,
+  "heat_warning": null
+}

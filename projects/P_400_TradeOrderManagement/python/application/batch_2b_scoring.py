@@ -32,7 +32,6 @@ from domain.options_sizer import size_option_chart_based
 from domain.ranking import order_by_score, score_candidate
 from domain.vehicle_selector import compare_vehicles
 from infrastructure.chain_loader import load_chain
-from infrastructure.earnings_file import EarningsDataMissing, require_entry
 from schemas import BatchReport, RankedCandidate
 
 EASTERN = ZoneInfo("America/New_York")
@@ -88,7 +87,7 @@ def _fetch_snapshot_dict(symbol: str, entry) -> Optional[dict]:
     return json.loads(snap_path.read_text(encoding="utf-8"))
 
 
-def _vehicle_comparison(packet, eval_result, cash: float, params, posture) -> Tuple[str, float, int, float]:
+def _vehicle_comparison(packet, eval_result, cash: float, params, posture) -> Tuple[str, float, int, float, str]:
     """Options-first vehicle selection (Scope 2). Calls
     domain.vehicle_selector.compare_vehicles() directly -- not
     application.compare_vehicles.run_comparison() -- reusing
@@ -101,12 +100,16 @@ def _vehicle_comparison(packet, eval_result, cash: float, params, posture) -> Tu
     must not cost an otherwise-APPROVED stock trade its ranked row.
 
     Returns:
-        (vehicle, rr_at_t1, quantity, dollar_risk)
+        (vehicle, rr_at_t1, quantity, dollar_risk, reason) -- reason (added
+        WO-P400-E6.006) is always populated, not just on the STOCK-fallback
+        path, so the batch report never silently omits why a vehicle won.
     """
     symbol = packet.symbol
     if cmd_fetch_chain(symbol, "call") != 0:
         return ("STOCK", eval_result.rr_after_drift,
-                eval_result.sizing.shares, eval_result.sizing.dollar_risk)
+                eval_result.sizing.shares, eval_result.sizing.dollar_risk,
+                "options chain fetch failed (Schwab error or no contract in "
+                "DTE window) -- stock used")
 
     chain_path = PYTHON_DIR / f"chain_{symbol}.json"
     chain = load_chain(str(chain_path))
@@ -127,15 +130,18 @@ def _vehicle_comparison(packet, eval_result, cash: float, params, posture) -> Tu
 
     if comparison.recommended in ("OPTION", "SPREAD"):
         return (comparison.recommended, comparison.option_rr,
-                comparison.option_contracts, comparison.option_dollar_risk)
+                comparison.option_contracts, comparison.option_dollar_risk,
+                comparison.recommendation_reason)
     if comparison.recommended == "STOCK":
-        return ("STOCK", comparison.stock_rr, comparison.stock_shares, comparison.stock_dollar_risk)
+        return ("STOCK", comparison.stock_rr, comparison.stock_shares,
+                comparison.stock_dollar_risk, comparison.recommendation_reason)
     # OPTION_OVERRIDE_ONLY / NEITHER -- no real quantity without an explicit override
-    return (comparison.recommended, comparison.stock_rr, 0, 0.0)
+    return (comparison.recommended, comparison.stock_rr, 0, 0.0, comparison.recommendation_reason)
 
 
 def _build_candidate(packet, eval_result, snapshot: dict, vehicle: str,
-                      rr_at_t1: float, quantity: int, dollar_risk: float) -> dict:
+                      rr_at_t1: float, quantity: int, dollar_risk: float,
+                      vehicle_reason: str) -> dict:
     atr_headroom = _atr_headroom(
         eval_result.effective_entry, eval_result.effective_stop, snapshot.get("atr_14", 0.0),
     )
@@ -152,6 +158,7 @@ def _build_candidate(packet, eval_result, snapshot: dict, vehicle: str,
         "score": score,
         "score_components": components,
         "vehicle": vehicle,
+        "vehicle_reason": vehicle_reason,
         "verdict": eval_result.verdict,
         "rr_at_t1": rr_at_t1,
         "atr_headroom": atr_headroom,
@@ -176,10 +183,11 @@ def _process_symbol(packet, entries, cash: float, trade_mode: TradeMode,
                                    "selection only covers stock-based signals"})
         return None
 
-    try:
-        earnings_entry = require_entry(entries, symbol)
-    except EarningsDataMissing as exc:
-        skipped.append({"symbol": symbol, "reason": str(exc)})
+    earnings_entry = entries.get(symbol.upper())
+    if earnings_entry is None:
+        skipped.append({"symbol": symbol,
+                         "reason": f"no earnings calendar entry for {symbol} -- "
+                                   "skipped, not batch-fatal (WO-P400-E6.004)"})
         return None
 
     snapshot = _fetch_snapshot_dict(symbol, earnings_entry)
@@ -195,10 +203,11 @@ def _process_symbol(packet, entries, cash: float, trade_mode: TradeMode,
                                    f"({eval_result.first_block() or 'not approved'})"})
         return None
 
-    vehicle, rr_at_t1, quantity, dollar_risk = _vehicle_comparison(
+    vehicle, rr_at_t1, quantity, dollar_risk, vehicle_reason = _vehicle_comparison(
         packet, eval_result, cash, params, posture,
     )
-    return _build_candidate(packet, eval_result, snapshot, vehicle, rr_at_t1, quantity, dollar_risk)
+    return _build_candidate(packet, eval_result, snapshot, vehicle, rr_at_t1,
+                             quantity, dollar_risk, vehicle_reason)
 
 
 def evaluate_pass_symbols(pass_symbols, packets, entries, cash, trade_mode,

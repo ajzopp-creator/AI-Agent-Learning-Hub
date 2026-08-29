@@ -1,0 +1,33 @@
+{
+  "signal_id": "P115-2026-08-03-ZION-001",
+  "signal_timestamp": "2026-08-03T18:16:08Z",
+  "signal_source": "P_115",
+  "strategy": "support_bounce",
+  "symbol": "ZION",
+  "asset_class": "stock",
+  "guideline_entry": 70.5,
+  "guideline_stop": 67.6,
+  "guideline_target": 73.34,
+  "signal_horizon": "3-5 days",
+  "confidence_level": "MEDIUM",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 68.98,
+  "intelliscan_support_1": 68.49,
+  "intelliscan_support_2": 60.23,
+  "target_source": null,
+  "context": {
+    "close_at_signal": 70.41,
+    "trailing_volume_30d": 1710160.0,
+    "signal_rationale": "P_116 bounce. HybridTier 7 (Fund 4 + Anal 3). 200-MA 16.9% NORMAL, no penalty. PA Stop 67.60 structure. Target = prior high 73.34, not the 91.05 measured move. RVOL 0.24, regime RANGE BOUND, risk_mode OFF. Supports 68.49 / 60.23 read from chart, not P_300 IntelliScan.",
+    "atm_at_signal": 1.52
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-03",
+    "chart_timeframe": "1D",
+    "signal_source_link": "TradeOrderManagement/P115/2026-08-03_ZION.md"
+  }
+}

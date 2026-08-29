@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-04-MSTR-001",
+  "signal_timestamp": "2026-08-05T16:17:05Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "MSTR",
+  "asset_class": "stock",
+  "guideline_entry": 97.6500015258789,
+  "guideline_stop": 92.07263090468392,
+  "guideline_target": 100.050003051758,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 92.07263090468392,
+  "intelliscan_support_1": 89.2099990844727,
+  "intelliscan_support_2": 100.050003051758,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 97.6500015258789,
+    "trailing_volume_30d": 15220700.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 75.0% WR, z=1.21, mean return +7.43% at h=5",
+    "atm_at_signal": 5.577370621194993
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-04",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-04_MSTR.md"
+  }
+}

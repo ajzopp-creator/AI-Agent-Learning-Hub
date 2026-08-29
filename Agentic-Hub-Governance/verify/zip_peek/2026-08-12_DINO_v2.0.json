@@ -1,0 +1,33 @@
+{
+  "signal_id": "P115-2026-08-12-DINO-001",
+  "signal_timestamp": "2026-08-12T18:23:39Z",
+  "signal_source": "P_115",
+  "strategy": "support_bounce",
+  "symbol": "DINO",
+  "asset_class": "stock",
+  "guideline_entry": 87.5,
+  "guideline_stop": 80.14,
+  "guideline_target": 93.39,
+  "signal_horizon": "3-5 days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 83.93,
+  "intelliscan_support_1": null,
+  "intelliscan_support_2": null,
+  "target_source": null,
+  "context": {
+    "close_at_signal": 88.03,
+    "trailing_volume_30d": 3007050.0,
+    "signal_rationale": "P_116 Bounce setup; HybridTier=7 (Anal3+Fund4); Fund verification not applicable to P_116; vol 3.18x avg20; ADX 28.15 Strong trend; BULL trend above 200-SMA; post-earnings clear (7/28/26)",
+    "atm_at_signal": 3.57
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-12",
+    "chart_timeframe": "1D",
+    "signal_source_link": "P_116_Launchpad_STEP1_DINO_2026-08-12.md"
+  }
+}

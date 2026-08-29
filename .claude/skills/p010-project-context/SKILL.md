@@ -5,7 +5,8 @@ description: >
   paths, risk-mode calculation, and anti-patterns. Load at the start of ANY
   session involving P_010 work. Triggers on any reference to P_010,
   RiskConfig.json, avg_posture, risk_mode, VXX signal, VantagePoint Grid,
-  intraday_adjustment, morning_risk_mode, or the Obsidian daily note writer.
+  intraday_signal, morning_risk_mode, MORNING_RUN_FAILED.flag, or the
+  Obsidian daily note writer.
   Always read BEFORE writing any code or file path.
 ---
 
@@ -45,6 +46,7 @@ demand.
 | Note writer | `python\P_010_write_daily_note.py` — ACTIVE, writes Obsidian daily note |
 | Obsidian vault | `C:\Users\Trader\Documents\AJZStrategies_TradingJournal\Trading Journal\TradingJournal\DD-MM-YYYY.md` |
 | Skip-automation flag | `SKIP_TODAY.flag` (project root) — drop here to suppress all automation for the day |
+| Failure flag | `MORNING_RUN_FAILED.flag` (project root) — written by `P_010_daily_posture_v5.py` (`__main__`) on any exception or non-zero exit (WO-P010-E1.003); `.bat` halts before STEP 2 (note writer) while present; cleared automatically at the start of the next morning run |
 | Session Guardian | `P_010_Start_Guardian.bat` — double-click each morning; auto-runs the missed morning posture if today's log is absent, then monitors for Claude Desktop sync/API errors |
 | Error log | `docs\P_010_Error_Corrections_Log.md` |
 | Failure flag | `MORNING_RUN_FAILED.flag` (project root) -- written/cleared by `P_010_daily_posture_v5.py`; `P_010_daily_posture.bat` skips STEP 2 (note writer) if present; Guardian checks it too (WO-P010-E1.003) |
@@ -85,14 +87,27 @@ vxx_posture < -1.0          -> BULLISH_CONFIRM
 vxx_posture >= 1.5          -> WARNING
 ```
 
-**Intraday adjustment (2 PM check, PRANGE-based):**
+**Intraday signal (2 PM check, V5.0 directional step logic --
+`intraday_risk_logic.py`, split out WO-P010-E1.003 housekeeping 2026-08-10;
+this section corrected 2026-08-26 -- was documenting a stale v4
+PRANGE-percentage/MIN() table that no longer matches production code):**
 ```
-Both symbols within PRANGE      -> intraday_adjustment = NONE
-One symbol outside PRANGE (>2%) -> intraday_adjustment = HALF
-Both outside OR deviation >5%   -> intraday_adjustment = REDUCED
+Per symbol, band_status vs PRANGE: above_band / in_band / below_band
 
-Risk hierarchy (most restrictive wins): OFF < REDUCED < HALF < NONE < FULL
-Final mode = MIN(morning risk_mode, intraday_adjustment)
+Both symbols above_band  -> signal = UPGRADE
+Both symbols below_band  -> signal = DOWNGRADE
+Both symbols in_band     -> signal = CONFIRM
+Mixed                    -> DOWNGRADE if either symbol is below_band,
+                             else CONFIRM (conservative on mixed reads)
+
+Applied as a single step against morning_risk_mode (NOT MIN()):
+  UPGRADE:   OFF->HALF | HALF->FULL | FULL->FULL (confirm-worded)
+  DOWNGRADE: FULL->HALF | HALF->OFF | OFF->OFF (confirm-worded)
+  CONFIRM:   final_mode = morning_risk_mode, unchanged
+
+final_mode is written directly into `risk_mode` (overwriting the morning
+value in place). `intraday_signal` holds UPGRADE/CONFIRM/DOWNGRADE.
+`intraday_reason` holds the human-readable explanation string.
 ```
 
 **`HOT` is not a P_010 output.** P_010's `risk_mode` field is only ever
@@ -118,14 +133,18 @@ write HOT into `P_010_RiskConfig.json` or treat it as a fourth risk_mode value.
 }
 ```
 
-**After intraday run (adds 2 fields in place):**
+**After intraday run (adds/overwrites fields in place):**
 ```json
 {
   "...all morning fields...": "...",
-  "intraday_adjustment": "REDUCED",
-  "intraday_reason": "Both symbols outside PRANGE"
+  "risk_mode": "OFF",
+  "intraday_signal": "CONFIRM",
+  "intraday_reason": "Intraday confirm: Prices within predicted range (PRANGE)",
+  "morning_risk_mode": "OFF"
 }
 ```
+`risk_mode` above is OVERWRITTEN with the final combined value.
+`morning_risk_mode` preserves what it was before the intraday step ran.
 
 **`morning_risk_mode`** is a separate, locked field the intraday script must
 preserve — see ERROR 001 below. It does not appear in the schema table above
@@ -134,9 +153,22 @@ the morning script itself.
 
 **Downstream consumer logic (P_115/P_118):**
 ```
-IF intraday_adjustment exists -> final = MIN(risk_mode, intraday_adjustment)
-ELSE                          -> final = risk_mode
+`risk_mode` is ALREADY the final combined value once the intraday script
+has run -- P_010 applies the morning+intraday step logic internally
+(intraday_risk_logic.determine_final_risk_mode) and overwrites `risk_mode`
+in place. Downstream consumers read `risk_mode` directly; no MIN() or
+combination logic belongs downstream anymore.
+
+IF intraday_signal is absent -> intraday has not run yet today; risk_mode
+                                 is still the morning-only value
+ELSE                          -> risk_mode is the final value;
+                                 morning_risk_mode shows the pre-intraday value
 ```
+**FLAG (2026-08-26):** if P_115/P_118 still implement their own
+`MIN(risk_mode, intraday_adjustment)` combination on their side, that
+logic reads a field (`intraday_adjustment`) that no longer exists in the
+schema -- worth a P_115/P_118-side check. Out of scope for this skill/WO
+to fix, noting so it isn't lost.
 
 ---
 
@@ -184,10 +216,31 @@ ELSE                          -> final = risk_mode
    failure even when the exit code claims success. Any unattended-script
    notification mechanism needs a human-watched screen test before it's
    trusted, not just a clean return.
+7a. **Unescaped parentheses in an `echo` line inside a `.bat` if/else
+   block** -- ERROR 004 (2026-08-26, MEDIUM, WO-P010-E1.003 addendum).
+   `P_010_run_intraday_vp_check.bat` printed `[SUCCESS]` and `[ERROR]`
+   together on every clean run because `echo ... (in outputs/)` inside
+   `if %errorlevel% equ 0 ( ... ) else ( ... )` had a stray unescaped `)`
+   that closed the outer block early, so both branches ran unconditionally.
+   Fixed by escaping to `^(in outputs/^)`. Any literal `(`/`)` in a command
+   inside a parenthesized batch block must be caret-escaped, even if it
+   looks balanced to a human reader.
 8. **Assuming EZBreakouts exposure data or the P_300-in-P_010 migration
    already exist** — both are open backlog items (IN PROGRESS / QUEUED),
    not shipped features. Check `docs/P_010_Enhancement_Backlog.md` before
    referencing either as if it's live.
+9. **Treating a run as clean without checking `MORNING_RUN_FAILED.flag`**
+   — added WO-P010-E1.003 (2026-08-10). The morning script clears any
+   stale flag at the start of each run, then rewrites it and fires a
+   best-effort BurntToast notification on any exception or non-zero
+   exit (subject to item 7's ERROR 003 caveat above — the toast itself
+   is best-effort and not proven-reliable). `P_010_daily_posture.bat`
+   halts before STEP 2 (note writer) while the flag is present. Intraday
+   and note-writer scripts additionally gate on
+   `staleness_check.is_morning_data_stale` (keyed off the JSON
+   `timestamp` field, never `grid_date`). A `[SUCCESS]` line in the
+   console output does not by itself confirm a clean run — check for the
+   flag file.
 
 ---
 
@@ -208,8 +261,9 @@ Three-script pipeline (9:30 AM, Task Scheduler -> P_010_daily_posture.bat):
 Intraday pipeline (2:00 PM, Task Scheduler -> P_010_run_intraday_vp_check.bat):
   P_010_intraday_vp_check_v4.py
     reads   grid_snapshot_latest.json, live SPY/QQQ prices via yfinance
-    updates P_010_RiskConfig.json in place (adds intraday_adjustment,
-            intraday_reason, preserves morning_risk_mode)
+    updates P_010_RiskConfig.json in place (overwrites risk_mode with
+            final_mode, adds intraday_signal + intraday_reason, preserves
+            morning_risk_mode)
     writes  outputs\intraday_vp_check_YYYYMMDD_HHMMSS.json (audit)
 ```
 
@@ -247,10 +301,15 @@ work immediately | **Sync Blocked** [YELLOW] | **Server Error** [YELLOW] |
 4. Treat `risk_mode` as authoritative once read — never re-derive it from
    `avg_posture` downstream; that arithmetic only runs inside the morning
    script itself.
-5. Confirm `intraday_adjustment` presence before deciding whether MIN()
-   logic applies (it may not exist before the 2 PM run).
+5. Confirm `intraday_signal` presence before treating `risk_mode` as
+   final for the day (it may not exist before the 2 PM run -- absence
+   means risk_mode is still morning-only, not that intraday failed).
 6. Check `docs/P_010_Enhancement_Backlog.md` before assuming a queued or
    in-progress feature (EZBreakouts feed, P_300 migration) is live.
+7. Check for `MORNING_RUN_FAILED.flag` before treating a morning run as
+   successful, even if the console printed `[SUCCESS]` (WO-P010-E1.003
+   guard; see Anti-Pattern 9 and ERROR 003 caveat on notification
+   reliability).
 
 **Must Not:**
 1. Let the VXX signal influence `risk_mode` — advisory layer only.
@@ -274,8 +333,10 @@ work immediately | **Sync Blocked** [YELLOW] | **Server Error** [YELLOW] |
       — if stale, surface "run INIT daily" rather than proceeding on old data
 - [ ] Confirm `morning_risk_mode` field is present before any intraday
       troubleshooting (its absence is the ERROR 001 risk signal)
+- [ ] Check `MORNING_RUN_FAILED.flag` does not exist in project root
+      before treating today's RiskConfig as clean (WO-P010-E1.003 guard)
 - [ ] Display risk_mode, avg_posture, SPY/QQQ posture, vxx_signal, and
-      intraday_adjustment (or "not run") in the session summary
+      intraday_signal (or "not run") in the session summary
 
 ---
 
@@ -304,6 +365,29 @@ Do NOT load reflexively — this SKILL covers routine INIT and troubleshooting.
   per Hub-wide rule in `WO_COMPLETION_GATE.md`)
 
 ## Changelog
+
+### 2026-08-26
+- WO-P010-E1.003 IMPERATIVE SWEEP closure: documented the
+  MORNING_RUN_FAILED.flag fail-loud mechanism (Critical Paths table,
+  Anti-Pattern 9, Must rule 7, Session-Start Checklist) -- this skill
+  had no mention of it despite the mechanism being live in code since
+  2026-08-10. Corrected Risk Mode Calculation + Schema sections: the
+  live intraday logic is V5.0 step-based UPGRADE/CONFIRM/DOWNGRADE
+  against morning_risk_mode (intraday_risk_logic.py), overwriting
+  isk_mode in place -- not the v4 PRANGE-percentage
+  intraday_adjustment/MIN() table this skill had documented since its
+  2026-07-08 initial build. That table was stale from the V5.0 rewrite
+  onward and went uncaught until Tony spotted the live JSON field
+  mismatch in a 2026-08-26 session. Flagged an open question for
+  P_115/P_118: if either still implements its own
+  MIN(risk_mode, intraday_adjustment), that reads a field that no
+  longer exists in the schema -- not fixed here, out of scope for this
+  skill/WO.
+- Same session, later: fixed ERROR 004 (see Anti-Pattern 7a) -- the
+  [SUCCESS]/[ERROR] false-positive from this WO's 2026-07-17 addendum,
+  live-reproduced during the verification pass above, then root-caused
+  and fixed in P_010_run_intraday_vp_check.bat (unescaped parens
+  breaking the if/else block) and re-verified live clean.
 
 ### 2026-08-10
 - WO-P010-E1.003 (fail-loud alerting) landed: MORNING_RUN_FAILED.flag
@@ -340,3 +424,16 @@ ote_template_engine.py) and P_010_intraday_vp_check_v4.py
 ---
 
 **End of P_010 Project Context SKILL**
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-05-LFCR-001",
+  "signal_timestamp": "2026-08-06T18:56:40Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "LFCR",
+  "asset_class": "stock",
+  "guideline_entry": 4.44000005722046,
+  "guideline_stop": 4.1869510179365,
+  "guideline_target": 4.57999992370605,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 4.23000001907349,
+  "intelliscan_support_1": 4.23000001907349,
+  "intelliscan_support_2": 4.57999992370605,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 4.44000005722046,
+    "trailing_volume_30d": 145224.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 80.0% WR, z=1.67, mean return +7.23% at h=5",
+    "atm_at_signal": 0.25304903928395966
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-05",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-05_LFCR.md"
+  }
+}

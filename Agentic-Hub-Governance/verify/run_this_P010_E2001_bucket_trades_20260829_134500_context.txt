@@ -1,0 +1,12 @@
+WO: WO-P010-E2.001 Question 2 groundwork (Tony approved 2026-08-29, "Yes
+do it" -- reuse P_115 Workstream E's n=10-per-bucket bar).
+Purpose: bucket the 28 real P_020 trades tagged system='P_300' by market
+regime (OFF/HALF/FULL) at each trade's open_date, reusing WO-P300-E5.006's
+exact VP-reconstruction method (SPY/QQQ 10-year grids via
+infrastructure.bulk_grid_reader.parse_bulk_file, P_010's own bucket cuts)
+so this measurement agrees with the catalog-level one already on file.
+Read-only against P_020_trades.db and P_300's reference grids. No writes
+to either DB. No sizing change. No matcher/schema change. Answers "how
+many P_300 trades per regime bucket, vs the n=10 bar" -- not the
+keep/carve-out/defer decision itself, which stays Tony's per the WO's
+Acceptance Criteria.

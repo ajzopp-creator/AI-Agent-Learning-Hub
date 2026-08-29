@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-14-WDC-001",
+  "signal_timestamp": "2026-08-17T16:38:48Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "WDC",
+  "asset_class": "stock",
+  "guideline_entry": 508.799987792969,
+  "guideline_stop": 463.167404783151,
+  "guideline_target": 564.659973144531,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 463.167404783151,
+  "intelliscan_support_1": 407.475006103516,
+  "intelliscan_support_2": 564.659973144531,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 508.799987792969,
+    "trailing_volume_30d": 9945700.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 70.0% WR, z=0.75, mean return +6.49% at h=5",
+    "atm_at_signal": 45.632583009817935
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-14",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-14_WDC.md"
+  }
+}

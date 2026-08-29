@@ -169,6 +169,7 @@ def _inject_write_route(schema_name: str, data: dict[str, Any]) -> None:
       P400 → council_verdict
       P020 → outcome (TBD — left as null until P_020 is wired)
       KB   → no write_route (null)
+      P820 → no write_route (null, no verdict concept)
 
     Args:
         schema_name: Schema identifier.
@@ -184,6 +185,7 @@ def _inject_write_route(schema_name: str, data: dict[str, Any]) -> None:
         "P400": "council_verdict",
         "P400_PAPER": "council_verdict",
         "P020": None,   # TBD
+        "P820": None,   # no verdict concept, same as KB
         "KB":   None,   # not applicable
     }
     native_field = native_field_map.get(schema_name)

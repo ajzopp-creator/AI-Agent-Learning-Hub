@@ -46,6 +46,7 @@ $LOG_DIR = "$PROJECT_ROOT\logs"
 if (-not (Test-Path $LOG_DIR)) { New-Item -ItemType Directory -Path $LOG_DIR | Out-Null }
 $LOG = "$LOG_DIR\BulkAddPattern_$(Get-Date -Format 'yyyyMMdd_HHmmss').log"
 Start-Transcript -Path $LOG -ErrorAction SilentlyContinue | Out-Null
+$scriptStart = Get-Date
 
 Write-Host "=======================================================================" -ForegroundColor Cyan
 Write-Host "        P_300 BULK ADD PATTERN  (mine -> ingest -> gate -> promote)" -ForegroundColor Cyan
@@ -95,7 +96,10 @@ if ($latestDate -eq $today) {
 Write-Host ""
 Write-Host "[STEP 1] Running mine-patterns..." -ForegroundColor Cyan
 Write-Host ""
+$step1Start = Get-Date
 & $PYTHON $CLI mine-patterns 2>&1 | Out-String -Stream
+$step1Duration = (Get-Date) - $step1Start
+Write-Host " [STEP 1] duration: $('{0:hh\:mm\:ss}' -f $step1Duration)"
 if ($LASTEXITCODE -ne 0) {
     Write-Host ""
     Write-Host "[ERROR] mine-patterns failed -- see output above." -ForegroundColor Red
@@ -108,7 +112,10 @@ if ($LASTEXITCODE -ne 0) {
 Write-Host ""
 Write-Host "[STEP 2] Running ingest-mined..." -ForegroundColor Cyan
 Write-Host ""
+$step2Start = Get-Date
 & $PYTHON $CLI ingest-mined 2>&1 | Out-String -Stream
+$step2Duration = (Get-Date) - $step2Start
+Write-Host " [STEP 2] duration: $('{0:hh\:mm\:ss}' -f $step2Duration)"
 if ($LASTEXITCODE -ne 0) {
     Write-Host ""
     Write-Host "[ERROR] ingest-mined failed -- see output above. Files NOT archived." -ForegroundColor Red
@@ -121,8 +128,11 @@ if ($LASTEXITCODE -ne 0) {
 Write-Host ""
 Write-Host "[STEP 3] Running promote-gate..." -ForegroundColor Cyan
 Write-Host ""
+$step3Start = Get-Date
 & $PYTHON $CLI promote-gate --staging-db "$STAGING_DB" 2>&1 | Out-String -Stream
 $gateResult = $LASTEXITCODE
+$step3Duration = (Get-Date) - $step3Start
+Write-Host " [STEP 3] duration: $('{0:hh\:mm\:ss}' -f $step3Duration)"
 
 $promoted = $false
 if ($gateResult -eq 0) {
@@ -131,7 +141,10 @@ if ($gateResult -eq 0) {
     Write-Host "[STEP 4] Gate PASSED -- promoting staging to live..." -ForegroundColor Green
     Write-Host "         This can take over an hour on a large batch (topk_cache)."
     Write-Host ""
+    $step4Start = Get-Date
     & $PYTHON $CLI ingest-mined --promote "$STAGING_DB" 2>&1 | Out-String -Stream
+    $step4Duration = (Get-Date) - $step4Start
+    Write-Host "         [STEP 4] duration: $('{0:hh\:mm\:ss}' -f $step4Duration)"
     if ($LASTEXITCODE -ne 0) {
         Write-Host ""
         Write-Host "[ERROR] Promote FAILED -- staging left in place, files NOT archived." -ForegroundColor Red
@@ -167,6 +180,7 @@ if ($promoted) {
     $files = Get-ChildItem -Path $MINE_DIR -Filter "*.xlsx" -ErrorAction SilentlyContinue | Sort-Object Name
     $total = $files.Count
     $i = 0
+    $step5Start = Get-Date
     foreach ($file in $files) {
         $i++
         Write-Host "[$i / $total] $($file.Name)"
@@ -176,6 +190,8 @@ if ($promoted) {
             $archiveFailures++
         }
     }
+    $step5Duration = (Get-Date) - $step5Start
+    Write-Host " [STEP 5] duration: $('{0:hh\:mm\:ss}' -f $step5Duration)"
 } else {
     Write-Host ""
     Write-Host "[STEP 5] SKIPPED -- batch was not promoted, so source files stay" -ForegroundColor Yellow
@@ -198,6 +214,8 @@ if ($promoted) {
     Write-Host "   promote anyway:  $PYTHON $CLI ingest-mined --promote `"$STAGING_DB`""
     Write-Host "   or discard:      delete $STAGING_DB"
 }
+$totalDuration = (Get-Date) - $scriptStart
+Write-Host " Total runtime: $('{0:hh\:mm\:ss}' -f $totalDuration)"
 Write-Host " Log: $LOG"
 Write-Host "=======================================================================" -ForegroundColor Green
 Write-Host ""

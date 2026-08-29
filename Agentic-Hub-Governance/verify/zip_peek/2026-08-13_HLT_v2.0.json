@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-12-HLT-001",
+  "signal_timestamp": "2026-08-13T21:06:48Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "HLT",
+  "asset_class": "stock",
+  "guideline_entry": 322.529998779297,
+  "guideline_stop": 314.5874825233505,
+  "guideline_target": 326.5,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "MEDIUM",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 314.5874825233505,
+  "intelliscan_support_1": 310.450012207031,
+  "intelliscan_support_2": 326.5,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 322.529998779297,
+    "trailing_volume_30d": 2486610.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 65.0% WR, z=0.29, mean return +3.02% at h=5",
+    "atm_at_signal": 7.9425162559464715
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-12",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-12_HLT.md"
+  }
+}

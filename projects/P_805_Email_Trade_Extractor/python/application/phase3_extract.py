@@ -17,6 +17,7 @@ Workflow:
 
 import csv
 import logging
+import sys
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
@@ -152,7 +153,7 @@ def run(account: str | None = None) -> None:
     enabled = load_enabled_senders()
     if not enabled:
         logger.error("No enabled senders loaded — aborting Phase 3.")
-        return
+        sys.exit(1)
     targets = [account] if account else list(config.IMAP_ACCOUNT_ORDER)
     logger.info(f"Phase 3: extracting from {len(targets)} account(s)")
     logger.info(f"Patterns: {[p['name'] for p in config.TICKER_PATTERNS]}")

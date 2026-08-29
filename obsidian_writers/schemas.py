@@ -4,6 +4,9 @@ Root-level imports expose all schema classes for backward-compatible callers.
 Actual schemas split into domain/{vault,signal}_schemas.py (WO-P800-E2 follow-up).
 
 CHANGELOG:
+  v2.5  2026-08-16  Added P820Record + registered "P820" (P_020 session,
+                    Tony directive -- thin signal-source capture for
+                    non-Hub-generated sources).
   v2.4  2026-06-08  Split schemas.py (355 lines) into domain/{vault,signal}_schemas.py.
                     Root now imports + SCHEMA_REGISTRY facade. Maintains backward-compat.
   v2.3  2026-06-07  Fixed SignalV2 option-completeness validation (model_validator).
@@ -21,6 +24,7 @@ from .domain.vault_schemas import (
     P300Record,
     P020Record,
     P400Record,
+    P820Record,
     KBRecord,
 )
 
@@ -46,6 +50,7 @@ SCHEMA_REGISTRY: dict[str, type[BaseModel]] = {
     "P400_PAPER": P400Record,
     "P400SIG":   P400SignalRecord,
     "SIGNAL_V2": SignalV2,
+    "P820":      P820Record,
     "KB":        KBRecord,
 }
 
@@ -54,6 +59,7 @@ __all__ = [
     "P300Record",
     "P020Record",
     "P400Record",
+    "P820Record",
     "KBRecord",
     "SignalContext",
     "SignalMetadata",

@@ -1,0 +1,20 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.12, pytest-9.0.2, pluggy-1.6.0 -- C:\Users\Trader\.conda\envs\p140\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\Trader\AI-Agent-Learning-Hub
+configfile: pyproject.toml
+plugins: anyio-4.12.1
+collecting ... collected 4 items
+
+tests\test_p115_known_bugs.py::test_stop_fields_present_when_supplied PASSED [ 25%]
+tests\test_p115_known_bugs.py::test_stop_fields_none_not_omitted_or_zero PASSED [ 50%]
+tests\test_p115_known_bugs.py::test_emit_signal_computes_atr_adjusted_stop_formula PASSED [ 75%]
+tests\test_p115_known_bugs.py::test_cli_wires_intelliscan_supports_through_to_emit_signal PASSED [100%]
+
+============================== warnings summary ===============================
+projects/P_115_BuytheDipTradingSystem/python/tests/test_p115_known_bugs.py::test_cli_wires_intelliscan_supports_through_to_emit_signal
+  C:\Users\Trader\AI-Agent-Learning-Hub\shared_resources\python_utils\signal_schemas.py:89: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class SignalV2(BaseModel):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 4 passed, 1 warning in 0.54s =========================

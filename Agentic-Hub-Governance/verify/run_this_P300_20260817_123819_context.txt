@@ -1,0 +1,25 @@
+Phase/WO: WO-P300-E5.008 (P_300 -- rewrite/retire orphaned test_eval_incremental.py)
+Date: 2026-08-17
+
+What this script tests:
+Runs the two permanent regression test files this WO produced --
+tests/test_eval_incremental.py (v2.0 rewrite, domain layer only) and
+tests/test_incremental_post_batch.py (new, application layer, real
+sqlite fixture) -- as real subprocesses via the p140 interpreter,
+exactly as documented in each file's own RUN instructions.
+
+Success criteria:
+Both subprocesses exit 0 and print "ALL CHECKS PASSED". This harness
+prints PASS only if both pass; FAIL otherwise, with each file's full
+stdout/stderr surfaced above it.
+
+What to fix on failure:
+Read the failing file's specific OK/FAIL lines in the captured output
+first -- each test names the exact invariant it's checking. If an
+ImportError appears, check for a stale sys.path assumption or a
+production-file signature drift (both test files import directly from
+domain/eval_incremental.py, domain/topk_cache.py, and (application file
+only) application/incremental_post_batch.py -- confirm those still
+match what this WO's own writeup describes). Do not change test
+assertions to make a failure pass -- if an assertion looks wrong,
+report back instead of loosening it.

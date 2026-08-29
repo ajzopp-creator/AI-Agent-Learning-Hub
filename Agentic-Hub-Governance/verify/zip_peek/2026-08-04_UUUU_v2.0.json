@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-03-UUUU-001",
+  "signal_timestamp": "2026-08-04T22:28:50Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "UUUU",
+  "asset_class": "stock",
+  "guideline_entry": 12.1499996185303,
+  "guideline_stop": 11.371083032400508,
+  "guideline_target": 12.7200002670288,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 11.371083032400508,
+  "intelliscan_support_1": 10.6899995803833,
+  "intelliscan_support_2": 12.7200002670288,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 12.1499996185303,
+    "trailing_volume_30d": 5731900.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 80.0% WR, z=1.67, mean return +8.44% at h=5",
+    "atm_at_signal": 0.7789165861297931
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-03",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-03_UUUU.md"
+  }
+}

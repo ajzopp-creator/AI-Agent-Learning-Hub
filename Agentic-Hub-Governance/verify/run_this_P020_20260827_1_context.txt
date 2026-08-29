@@ -1,0 +1,16 @@
+TASK: Tony asked for P_020 win rate / expectancy review on SNT-system trades
+and oil-sector trades, closed since 2026-05-01, following his self-estimate
+of ~1 winner : 4 losers over that period from memory.
+
+SCRIPT: run_this_P020_20260827_1.py
+- Read-only. Connects to P_020_trades.db, prints schema, then all rows from
+  `trades` where close_date >= '2026-05-01'.
+- No writes to the DB. No writes to any other file.
+
+IF THIS TIMES OUT / HANDS OFF TO CLAUDE CODE:
+Run the script with p140:
+C:\Users\Trader\.conda\envs\p140\python.exe run_this_P020_20260827_1.py
+from C:\Users\Trader\AI-Agent-Learning-Hub\Agentic-Hub-Governance\verify\
+and paste the full stdout back. Claude will parse win rate/expectancy for
+system='SNT' and for oil-sector symbols from the raw row dump -- no further
+DB logic needs to run downstream.

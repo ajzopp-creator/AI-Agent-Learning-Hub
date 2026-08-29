@@ -1,0 +1,5 @@
+args.horizon = '10-15 trading days'
+config.DEFAULT_SIGNAL_HORIZON = '10-15 trading days'
+MATCH = True
+override args.horizon = '2-3 weeks'
+OVERRIDE_OK = True

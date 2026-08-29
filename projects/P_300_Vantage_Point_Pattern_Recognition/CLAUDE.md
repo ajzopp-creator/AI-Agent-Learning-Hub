@@ -67,6 +67,7 @@ $PROFILE                      # expect: D:\OneDrive\...\Microsoft.PowerShellISE_
 | Live XLSX input | `data\live\History Grid (<symbol>).xlsx` |
 | Pattern XLSX input | `data\historical_patterns\Pattern_<start>_<end>_<symbol>.xlsx` -- NOT `data\historical\` |
 | Bulk mining input | `data\bulk\mine\` (mine-patterns -> ingest-mined) -- NOT `data\historical_patterns\` |
+| Posture reconstruction grids | `data\reference\10_Pattern_SPY.xlsx` / `10_Pattern_QQQ.xlsx` -- 10yr VP grids for regime reconstruction (WO-P300-E5.006); kept out of `data\bulk\mine\` so BulkAddPattern never scans them |
 | IntelliScan eval-parameters grid | `data\live\P_300_HistoryGrid_IntelliscanEvalParameters.xlsx` |
 | Signal output | `outputs\reports\<date>_<symbol>.txt` |
 | Work order ledger | `Agentic-Hub-Governance\work_orders\` |

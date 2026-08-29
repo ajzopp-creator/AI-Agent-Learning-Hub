@@ -1117,7 +1117,7 @@ Rule:      Always use the chart's displayed PA Stop value as Stop price.
 **Emit command:**
 ```
 cd C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_115_BuytheDipTradingSystem\python
-C:\Users\Trader\.conda\envs\p140\python.exe cli.py --symbol SYMBOL --session-date YYYY-MM-DD --timestamp YYYY-MM-DDTHH:MM:SSZ --strategy dip_buy --entry ENTRY --stop STOP --target TARGET --horizon "3-5 days" --confidence HIGH --close CLOSE --volume VOLUME --rationale "short thesis" --timeframe 1D --source-link "path/to/audit-note.md" --atm ATR14 --source P_115
+C:\Users\Trader\.conda\envs\p140\python.exe cli.py --symbol SYMBOL --session-date YYYY-MM-DD --timestamp YYYY-MM-DDTHH:MM:SSZ --strategy dip_buy --entry ENTRY --stop STOP --target TARGET --horizon "10-15 trading days" --confidence HIGH --close CLOSE --volume VOLUME --rationale "short thesis" --timeframe 1D --source-link "path/to/audit-note.md" --atm ATR14 --source P_115
 ```
 `--source` is always `P_115` -- see Step 3 above. Do not substitute P_116/P_118/P_910/P_920 here.
 
@@ -1277,7 +1277,7 @@ If chart present: assign pattern + reasoning in Comments. If no chart: "--", not
 - Symbol column = ticker only (e.g., ATOM, IBKR) — never expand with company name (breaks P_020 join keys)
 - Date format: M/D/YYYY
 - MarketDirection = risk_mode value from P_010 JSON (OFF/STANDARD/HOT), not narrative labels
-- SignalSource = strategy code only (P_115); scan source goes in Comments as "Source: P_910"
+- SignalSource = actual scan/batch origin (P_115 / P_116 / P_117 / P_118 / P_910 / P_920) -- this is the tracker's provenance identifier, a DIFFERENT thing from the P_400 JSON packet's `signal_source` field, which is always `P_115` regardless of scan origin (Section 8.2 Step 3). Corrected 2026-08-21: this line previously said tracker SignalSource=P_115 always with scan source relegated to Comments, which contradicted established practice -- Tony corrected this live twice (CDNA/V 2026-08-20, INCY/MA/V 2026-08-21) before the doc itself was fixed. See lessons.md 2026-08-21 entry and p115-project-context skill's Signal Source Quick Reference table, both already aligned with this corrected version.
 - PatternType / BreakoutVerdict = "--" for P_115 (these belong to P_118)
 - Step1Verdict values: BUY / ASYM / PASS (PASS replaces "No Signal" as of 2026-05-23)
 

@@ -6,13 +6,30 @@ P_020 owns this write; the file itself is P_000's.
 from __future__ import annotations
 
 import logging
-from datetime import date
+from datetime import date, datetime
 from typing import Optional
 
 from config import P000_PARAMS_FILE
 from domain.params_md_writer import ensure_cash_note, upsert_active_parameter_rows
 
 logger = logging.getLogger(__name__)
+
+
+def _format_pulled_timestamp(now: datetime) -> str:
+    """Human-readable pull timestamp, Windows-safe (no %-d / %-I strftime
+    flags -- mirrors write_full_account_params()'s existing date formatting
+    in this same file).
+
+    Args:
+        now: Timestamp to format, typically datetime.now().
+
+    Returns:
+        e.g. "Aug 19, 2026 4:47 PM".
+    """
+    month_str = now.strftime("%b")
+    hour_12 = now.hour % 12 or 12
+    period = "AM" if now.hour < 12 else "PM"
+    return f"{month_str} {now.day}, {now.year} {hour_12}:{now.minute:02d} {period}"
 
 
 def write_balance_to_p000_params(
@@ -22,7 +39,12 @@ def write_balance_to_p000_params(
 
     Either field may be None (Schwab omits cashAvailableForTrading for some
     margin accounts) -- writes "N/A" for whichever field is missing rather
-    than skipping the whole update.
+    than skipping the whole update. Both fields carry a "(pulled ...)"
+    timestamp (WO-P020-E1.014) since this write is unconditional on every
+    call and the file's "Last Updated" header is owned by the separate,
+    threshold-gated write_full_account_params() -- without its own
+    timestamp this row's value could silently go stale relative to that
+    header with no way to tell from the file alone.
 
     Args:
         buying_power: Current buying power from pull_balance(), or None.
@@ -37,12 +59,18 @@ def write_balance_to_p000_params(
         logger.warning(f"Could not read P_000 params file: {e}")
         return False
 
+    pulled = _format_pulled_timestamp(datetime.now())
+
     updates = {
         "Buying Power": (
-            f"${buying_power:,.2f}" if buying_power is not None else "N/A"
+            f"${buying_power:,.2f} (pulled {pulled})"
+            if buying_power is not None
+            else f"N/A (pulled {pulled})"
         ),
         "Cash Available for Trading": (
-            f"${cash_available:,.2f}" if cash_available is not None else "N/A"
+            f"${cash_available:,.2f} (pulled {pulled})"
+            if cash_available is not None
+            else f"N/A (pulled {pulled})"
         ),
     }
     try:

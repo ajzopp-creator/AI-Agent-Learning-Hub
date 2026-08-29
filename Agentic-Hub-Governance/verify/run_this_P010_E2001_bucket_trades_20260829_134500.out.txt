@@ -1,0 +1,13 @@
+SPY: 2514 bars 2016-08-29 -> 2026-08-28
+QQQ: 2514 bars 2016-08-29 -> 2026-08-28
+posture dates (SPY&QQQ common): 2514
+P_020 trades.db: 28 rows with system='P_300'
+matched: 28  unmatched (no grid date for open_date): 0
+
+P_300-sourced trades by regime bucket (bar = n>=10):
+  OFF   n=  9  BELOW BAR (need 1 more)
+  HALF  n=  4  BELOW BAR (need 6 more)
+  FULL  n= 15  OK
+
+csv: C:\Users\Trader\AI-Agent-Learning-Hub\Agentic-Hub-Governance\verify\p300_trades_bucketed_20260829_134500.csv
+DONE

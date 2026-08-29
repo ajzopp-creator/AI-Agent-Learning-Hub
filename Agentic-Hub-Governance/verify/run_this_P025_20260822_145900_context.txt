@@ -1,0 +1,15 @@
+PEH / P_025 / IRA=True + analysis modes — 2026-08-22
+
+What this tests
+Confirms IRA_FEED_READY is True, LOOKBACK_DAYS_YEARLY=365, resolve_start_date
+for full/yearly/ytd, run_full_build(mode=...), and cli.py --mode.
+
+Does not run a yfinance rebuild.
+
+Success criteria
+Prints PEH PASS. Writes sibling .done with status=PASS, exit_code=0.
+
+On failure
+Fix production code under
+C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_025_AJZ_Institutional_Portfolio_Tracker\python\
+until the script prints PASS. Do not change test assertions.

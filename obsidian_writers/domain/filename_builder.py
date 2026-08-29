@@ -181,6 +181,8 @@ def _get_identifier(schema_name: str, data: dict[str, Any]) -> str:
         raw = f"{symbol}_{trade_id}" if trade_id else symbol
     elif schema_name == "P115":
         raw = data.get("symbol") or "UNKNOWN"
+    elif schema_name == "P820":
+        raw = data.get("symbol") or "UNKNOWN"
     elif schema_name in ("P300", "P400", "P400_PAPER"):
         raw = data.get("ticker") or "UNKNOWN"
     elif schema_name == "KB":

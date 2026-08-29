@@ -1,0 +1,31 @@
+WO-P020-E1.014 -- Buying Power / Cash Available Silently Undated
+P_400 session, 2026-08-19
+
+WHAT THIS TESTS
+write_balance_to_p000_params() in p000_params_writer.py was changed to
+append a "(pulled <timestamp>)" tag to both the Buying Power and Cash
+Available for Trading values it writes into
+P_000_Account_Parameters_Current.md, so the figure is self-dating instead
+of silently drifting under the file's separate "Last Updated" header
+(which a different, unrelated write path owns).
+
+This script:
+1. Compiles infrastructure/p000_params_writer.py under p140 with
+   -W error::SyntaxWarning (syntax-only checks are not sufficient --
+   this catches invalid escape sequences etc. that a plain syntax check
+   misses).
+2. Runs the new tests/test_p000_params_writer.py (4 tests) against a
+   temp file via monkeypatch -- does NOT touch the real
+   P_000_Account_Parameters_Current.md on disk.
+
+SUCCESS CRITERIA
+Script prints "PASS" and exits 0. All 4 tests pass:
+- test_pulled_timestamp_present_in_both_fields
+- test_none_field_still_tagged_na_with_timestamp
+- test_rerun_overwrites_not_duplicates
+- test_format_pulled_timestamp_uses_no_leading_zero_day
+
+IF IT FAILS
+Read the compile error or pytest failure output. Do not change the test
+assertions -- they encode the acceptance criteria from WO-P020-E1.014.
+Propose a fix to p000_params_writer.py itself and ask Tony to re-run.

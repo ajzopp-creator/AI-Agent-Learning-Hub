@@ -77,6 +77,20 @@ VAULT_SHADOW_MODE = True
 # signal_date <= open_date <= signal_date + VAULT_MATCH_FORWARD_DAYS
 VAULT_MATCH_FORWARD_DAYS = 7
 
+# ThinkLog tags are written by Tony himself at/near order time, usually
+# the evening before the fill (real cases: SHEL tag 07-07, fill 07-08;
+# MRK tag 07-12, fill 07-13). Same forward-only reasoning as the vault
+# window above, smaller default since the gap is Tony's own typing habit
+# rather than a multi-day signal-to-fill lag -- 3 days covers a Friday
+# evening note landing on a Monday fill.
+# tag_date <= open_date <= tag_date + THINKLOG_MATCH_FORWARD_DAYS
+THINKLOG_MATCH_FORWARD_DAYS = 3
+
+# P_820 (Order Signal Capture) outranks even ThinkLog -- it is dictated
+# live, structured, with no export-lag or re-parsing risk. Same forward-
+# only reasoning and default window as ThinkLog above.
+P820_MATCH_FORWARD_DAYS = 3
+
 # Only records representing real intent can match. DROPPED is excluded:
 # a BLOCKED/dropped signal means the trade was NOT taken, so matching it
 # to a later fill of the same symbol attributes a trade to a signal that

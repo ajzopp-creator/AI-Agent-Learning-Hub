@@ -78,19 +78,20 @@ def cmd_screen_all(trade_mode: TradeMode = TradeMode.REAL) -> int:
         "open_symbols": list(port.open_symbols),
     }
     results = screen_all(signals, context)
+
+    disposals = dispose_failed(results, result.load.valid, trade_mode)
+    if disposals:
+        print("=" * 70)
+        print("DISPOSAL SUMMARY (auto -- WO-P400-E2.018)")
+        for d in disposals:
+            print(d.summary_line())
+
     print("=" * 70)
     print(f"TIER-1 SCREEN  |  posture={posture.risk_mode}  |  {len(signals)} packets")
     print("=" * 70)
     for r in results:
         print(" ", r.summary_line())
     print("=" * 70)
-
-    disposals = dispose_failed(results, result.load.valid, trade_mode)
-    if disposals:
-        print("DISPOSAL SUMMARY (auto -- WO-P400-E2.018)")
-        for d in disposals:
-            print(d.summary_line())
-        print("=" * 70)
 
     return 0
 

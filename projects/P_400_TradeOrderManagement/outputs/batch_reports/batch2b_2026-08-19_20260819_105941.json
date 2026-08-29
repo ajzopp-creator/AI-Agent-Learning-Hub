@@ -1,0 +1,63 @@
+{
+  "run_timestamp": "2026-08-19T10:59:41.440969-04:00",
+  "session_date": "2026-08-19",
+  "cash_available": 18325.0,
+  "posture": "FULL",
+  "screened_count": 12,
+  "passed_tier1": 12,
+  "evaluated": 12,
+  "candidates": [],
+  "skipped": [
+    {
+      "symbol": "SBLK",
+      "reason": "no earnings calendar entry for SBLK -- skipped, not batch-fatal (WO-P400-E6.004)"
+    },
+    {
+      "symbol": "SBLK",
+      "reason": "no earnings calendar entry for SBLK -- skipped, not batch-fatal (WO-P400-E6.004)"
+    },
+    {
+      "symbol": "STZ",
+      "reason": "verdict=BLOCKED (STOP_TOO_TIGHT)"
+    },
+    {
+      "symbol": "HWM",
+      "reason": "no earnings calendar entry for HWM -- skipped, not batch-fatal (WO-P400-E6.004)"
+    },
+    {
+      "symbol": "NRG",
+      "reason": "no earnings calendar entry for NRG -- skipped, not batch-fatal (WO-P400-E6.004)"
+    },
+    {
+      "symbol": "ALGN",
+      "reason": "no earnings calendar entry for ALGN -- skipped, not batch-fatal (WO-P400-E6.004)"
+    },
+    {
+      "symbol": "APTV",
+      "reason": "no earnings calendar entry for APTV -- skipped, not batch-fatal (WO-P400-E6.004)"
+    },
+    {
+      "symbol": "CAR",
+      "reason": "no earnings calendar entry for CAR -- skipped, not batch-fatal (WO-P400-E6.004)"
+    },
+    {
+      "symbol": "CIFR",
+      "reason": "no earnings calendar entry for CIFR -- skipped, not batch-fatal (WO-P400-E6.004)"
+    },
+    {
+      "symbol": "POWL",
+      "reason": "no earnings calendar entry for POWL -- skipped, not batch-fatal (WO-P400-E6.004)"
+    },
+    {
+      "symbol": "SARK",
+      "reason": "no earnings calendar entry for SARK -- skipped, not batch-fatal (WO-P400-E6.004)"
+    },
+    {
+      "symbol": "TSN",
+      "reason": "no earnings calendar entry for TSN -- skipped, not batch-fatal (WO-P400-E6.004)"
+    }
+  ],
+  "cumulative_risk_if_all_taken": 0.0,
+  "heat_cap": 3761.8068,
+  "heat_warning": null
+}

@@ -31,20 +31,29 @@ def test_cached_symbol_returns_entry_with_live_sector(monkeypatch):
     assert entries["AAPL"].sector == "Health Care"
 
 
-def test_symbol_absent_from_cache_raises(monkeypatch):
-    """WO-P400-E5.002 correction, 2026-08-08: absence is a hard fail, not an
-    honest null. Honest-null was the original design under FMP's free tier,
-    which capped coverage to ~73 large-cap symbols -- absence there meant
-    'not a mega-cap', not 'no earnings', and would have silently disabled
-    the MACRO gate. Switched to Nasdaq's full-coverage public calendar, but
-    the hard-fail stays as the correct default regardless of source."""
+def test_symbol_absent_from_cache_is_confirmed_clear(monkeypatch):
+    """WO-P400-E6.004 Revision 2, 2026-08-19 -- supersedes the original
+    WO-P400-E5.002 hard-fail-on-absence design this test used to assert.
+    That design's fear (FMP's ~73-symbol coverage meant absence was
+    unrelated to earnings timing) no longer applies: the calendar pull
+    window (config.py EARNINGS_CALENDAR_LOOKAHEAD_DAYS/LOOKBACK_BUFFER_DAYS,
+    now 7/5) was narrowed to match MACRO's actual gate
+    (domain/earnings_window.py, fixed 3-forward/2-back). A miss in that
+    narrow, gate-matched window now means 'no report in the only window
+    that matters' -- a confirmed clear, not raised as EarningsDataMissing.
+    Stale test found and fixed same session as WO-P400-E6.003 while
+    running the full suite (2026-08-20) -- E6.004 itself was never updated
+    to match Revision 2's own behavior change."""
     cache = _cache({})
     monkeypatch.setattr(lookup_mod, "load_cache", lambda: cache)
     monkeypatch.setattr(lookup_mod, "is_stale", lambda c: False)
     monkeypatch.setattr(lookup_mod, "_lookup_sector", lambda s: None)
 
-    with pytest.raises(lookup_mod.EarningsDataMissing):
-        lookup_mod.build_entries_for_symbols(["ZZZZ"])
+    entries = lookup_mod.build_entries_for_symbols(["ZZZZ"])
+    assert "ZZZZ" in entries
+    assert entries["ZZZZ"].next_earnings_date is None
+    assert entries["ZZZZ"].source == "nasdaq_calendar_confirmed_clear"
+    assert entries["ZZZZ"].date_confirmed is True
 
 
 def test_stale_cache_still_returns_entries(monkeypatch, capsys):

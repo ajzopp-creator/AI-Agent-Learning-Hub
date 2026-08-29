@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-13-MSCI-001",
+  "signal_timestamp": "2026-08-14T10:10:52Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "MSCI",
+  "asset_class": "stock",
+  "guideline_entry": 575.239990234375,
+  "guideline_stop": 557.7353172604232,
+  "guideline_target": 582.905029296875,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 566.789978027344,
+  "intelliscan_support_1": 566.789978027344,
+  "intelliscan_support_2": 582.905029296875,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 575.239990234375,
+    "trailing_volume_30d": 689800.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 85.0% WR, z=2.13, mean return +6.44% at h=5",
+    "atm_at_signal": 17.504672973951727
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-13",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-13_MSCI.md"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "signal_id": "P115-2026-08-07-NVT-001",
+  "signal_timestamp": "2026-08-07T13:53:53Z",
+  "signal_source": "P_115",
+  "strategy": "dip_buy",
+  "symbol": "NVT",
+  "asset_class": "stock",
+  "guideline_entry": 167.84,
+  "guideline_stop": 130.07,
+  "guideline_target": 181.09,
+  "signal_horizon": "5 days",
+  "confidence_level": "MEDIUM",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": null,
+  "intelliscan_support_1": null,
+  "intelliscan_support_2": null,
+  "target_source": null,
+  "context": {
+    "close_at_signal": 167.59,
+    "trailing_volume_30d": 2137722.0,
+    "signal_rationale": "P_115 BUY (Fund 4, Anal 3, Candle 2, Setup 3, STR -1), HybridTier=7. Fund Verification FAILED: submitted=4, recomputed approx 2 (ROE 12.30pct below 15pct threshold, DebtCap approx 30pct, FCF +371.9M) -- 2 of 3 criteria pass, ROE misses. No post-earnings flag, reported 2026-07-31, 5 sessions clear. Tony explicit override 2026-08-07 to emit despite Fund flag, for P_400 workflow test.",
+    "atm_at_signal": null
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-07",
+    "chart_timeframe": "1D",
+    "signal_source_link": "P_115_chart_review_2026-08-07_NVT.png"
+  }
+}

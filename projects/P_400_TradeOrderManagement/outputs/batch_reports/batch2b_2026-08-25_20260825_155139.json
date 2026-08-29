@@ -1,0 +1,57 @@
+{
+  "run_timestamp": "2026-08-25T15:51:39.234981-04:00",
+  "session_date": "2026-08-25",
+  "cash_available": 17242.0,
+  "posture": "OFF",
+  "screened_count": 10,
+  "passed_tier1": 2,
+  "evaluated": 2,
+  "candidates": [
+    {
+      "symbol": "SGHC",
+      "rank": 1,
+      "score": 0.727,
+      "score_components": {
+        "rr": 0.7758,
+        "atr_headroom": 0.8383,
+        "spread": 0.9641,
+        "liquidity": 0.5936,
+        "drift": 0.0
+      },
+      "vehicle": "STOCK",
+      "vehicle_reason": "Option BLOCKED by options council (SPREAD_TOO_WIDE: spread=28.6% > 10.0% max) -- stock used.",
+      "verdict": "APPROVED",
+      "rr_at_t1": 4.655,
+      "atr_headroom": 2.6766,
+      "spread_pct_of_price": 0.0359,
+      "drift_pct": 6.532,
+      "dollar_risk": 70.28,
+      "quantity": 56
+    },
+    {
+      "symbol": "MA",
+      "rank": 2,
+      "score": 0.6967,
+      "score_components": {
+        "rr": 0.5258,
+        "atr_headroom": 1.0,
+        "spread": 0.9874,
+        "liquidity": 0.6458,
+        "drift": 0.0
+      },
+      "vehicle": "STOCK",
+      "vehicle_reason": "Option BLOCKED by options council (OI_TOO_LOW: open_interest=12 < 150 minimum; SPREAD_TOO_WIDE: spread=27.4% > 10.0% max) -- stock used.",
+      "verdict": "APPROVED",
+      "rr_at_t1": 3.155,
+      "atr_headroom": 3.7679,
+      "spread_pct_of_price": 0.0126,
+      "drift_pct": 2.375,
+      "dollar_risk": 41.97,
+      "quantity": 1
+    }
+  ],
+  "skipped": [],
+  "cumulative_risk_if_all_taken": 112.25,
+  "heat_cap": 3761.8068,
+  "heat_warning": "2 APPROVED candidates -- cumulative risk if all taken $112.25 vs heat cap $3761.81 (within cap). Not enforced -- each evaluate sizes independently (SIP v2.4, RISK never blocks)."
+}

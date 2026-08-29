@@ -41,8 +41,11 @@ if errorlevel 1 (
 echo.
 
 REM Step 3: Import latest pull file into database
+REM ThinkLog: export from TOS and overwrite P_020_ThinkLog_Live_Current.csv
+REM before running -- a matching tag always wins over vault/tracker/default
+REM (Tony directive 2026-08-16). Missing file = safe no-op, just a warning.
 echo [3/5] Importing trades...
-C:\Users\Trader\.conda\envs\p140\python.exe P_020_Trade_Manager.py import --account AJZ
+C:\Users\Trader\.conda\envs\p140\python.exe P_020_Trade_Manager.py import --account AJZ --thinklog "..\..\data\thinklog\live\P_020_ThinkLog_Live_Current.csv"
 if errorlevel 1 (
     echo ERROR: Import failed -- check output above.
     pause

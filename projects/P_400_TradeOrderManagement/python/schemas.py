@@ -43,6 +43,9 @@ class BookRecord(BaseModel):
     realized_pnl: Optional[float] = None   # populated on CLOSED records
     close_date: Optional[str] = None       # YYYY-MM-DD; daily-loss filter
     order_date: Optional[str] = None        # YYYY-MM-DD; from filename prefix (WO-P000-E10.001)
+    source_label: Optional[str] = None  # WO-P400-E6.003: non-P_400-managed external position tag (e.g. "P_116", "P_300", "SNT"); None = P_400-managed
+    vehicle: Optional[str] = None       # WO-P400-E6.003: "STOCK" or "OPTION_CALL <occ_symbol>" / "OPTION_PUT <occ_symbol>" for external-tagged records
+    qty: Optional[float] = None         # WO-P400-E6.003: broker-reported quantity for external-tagged records (shares or contracts)
 
 
 class PostureSnapshot(BaseModel):
@@ -220,6 +223,10 @@ class RankedCandidate(BaseModel):
     score_components: Dict[str, float]
 
     vehicle: Literal["STOCK", "OPTION", "SPREAD", "OPTION_OVERRIDE_ONLY", "NEITHER"]
+    vehicle_reason: str  # WO-P400-E6.006: human-readable why (mirrors compare's
+                          # recommendation_reason) -- batch table was silent on
+                          # this before, e.g. a STOCK fallback with no visible
+                          # options-council block reason.
     verdict: str
 
     rr_at_t1: float

@@ -1,0 +1,33 @@
+{
+  "signal_id": "P115-2026-08-03-FHI-001",
+  "signal_timestamp": "2026-08-03T22:08:30Z",
+  "signal_source": "P_115",
+  "strategy": "support_bounce",
+  "symbol": "FHI",
+  "asset_class": "stock",
+  "guideline_entry": 63.94,
+  "guideline_stop": 56.79,
+  "guideline_target": 76.1,
+  "signal_horizon": "3-5 days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 62.28,
+  "intelliscan_support_1": null,
+  "intelliscan_support_2": null,
+  "target_source": null,
+  "context": {
+    "close_at_signal": 63.94,
+    "trailing_volume_30d": 587835.0,
+    "signal_rationale": "P_920 EOD. BUY: HybridTier 6. Flat Base bounce off 200-SMA with confirmation.",
+    "atm_at_signal": 1.66
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-03",
+    "chart_timeframe": "1D",
+    "signal_source_link": "P_920/2026-08-03_FHI.md"
+  }
+}

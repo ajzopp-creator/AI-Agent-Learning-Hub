@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-07-30-TREX-001",
+  "signal_timestamp": "2026-08-03T22:38:45Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "TREX",
+  "asset_class": "stock",
+  "guideline_entry": 43.9300003051758,
+  "guideline_stop": 41.85882747034223,
+  "guideline_target": 45.7200012207031,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 41.85882747034223,
+  "intelliscan_support_1": 41.7000007629395,
+  "intelliscan_support_2": 45.7200012207031,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 43.9300003051758,
+    "trailing_volume_30d": 2604100.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 75.0% WR, z=1.21, mean return +4.99% at h=5",
+    "atm_at_signal": 2.0711728348335723
+  },
+  "signal_metadata": {
+    "session_date": "2026-07-30",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-07-30_TREX.md"
+  }
+}

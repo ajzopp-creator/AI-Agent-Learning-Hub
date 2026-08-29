@@ -1,0 +1,33 @@
+{
+  "signal_id": "P115-2026-08-05-DLO-001",
+  "signal_timestamp": "2026-08-05T14:28:44Z",
+  "signal_source": "P_115",
+  "strategy": "breakout",
+  "symbol": "DLO",
+  "asset_class": "stock",
+  "guideline_entry": 15.16,
+  "guideline_stop": 13.85,
+  "guideline_target": 20.49,
+  "signal_horizon": "3-5 days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 14.63,
+  "intelliscan_support_1": null,
+  "intelliscan_support_2": null,
+  "target_source": null,
+  "context": {
+    "close_at_signal": 15.48,
+    "trailing_volume_30d": 1654756.0,
+    "signal_rationale": "P_118 Eddie Z breakout, Fund verified 4/4 clean, no earnings conflict, HybridTier=6 BUY, 200-MA NORMAL",
+    "atm_at_signal": 0.53
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-05",
+    "chart_timeframe": "1D",
+    "signal_source_link": "P_118_chart_review_2026-08-05_DLO.png"
+  }
+}

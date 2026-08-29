@@ -1,0 +1,4 @@
+  File "C:\Users\Trader\AI-Agent-Learning-Hub\Agentic-Hub-Governance\verify\\run_this_P115_20260817_094545d.py", line 18
+    out_path = r"C:\Users\Trader\AI-Agent-Learning-Hub\Agentic-Hub-Governance\verify\last_rows_
+               ^
+SyntaxError: unterminated string literal (detected at line 18)

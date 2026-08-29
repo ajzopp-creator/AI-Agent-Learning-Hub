@@ -12,6 +12,7 @@
 !04-Shared-Resources/api-credentials/.gitkeep
 secrets.json
 credentials.json
+**/.secrets/
 **/api_keys.py
 **/config_private.py
 schwab_credentials.txt

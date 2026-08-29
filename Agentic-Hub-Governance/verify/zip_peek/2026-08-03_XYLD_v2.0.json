@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-07-30-XYLD-001",
+  "signal_timestamp": "2026-08-03T22:41:17Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "XYLD",
+  "asset_class": "stock",
+  "guideline_entry": 40.9700012207031,
+  "guideline_stop": 40.71291442248548,
+  "guideline_target": 40.9799995422363,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 40.71291442248548,
+  "intelliscan_support_1": 40.5699996948242,
+  "intelliscan_support_2": 40.9799995422363,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 40.9700012207031,
+    "trailing_volume_30d": 566100.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 75.0% WR, z=1.21, mean return +2.55% at h=5",
+    "atm_at_signal": 0.25708679821761465
+  },
+  "signal_metadata": {
+    "session_date": "2026-07-30",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-07-30_XYLD.md"
+  }
+}

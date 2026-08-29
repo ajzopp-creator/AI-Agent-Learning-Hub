@@ -1,0 +1,28 @@
+=== SBLK (rc=0) ===
+STDOUT:
+2026-08-17 10:46:16 | INFO     | obsidian_writers.infrastructure.json_writer | signal written: 2026-08-17_SBLK_v2.0.json
+2026-08-17 10:46:16 | INFO     | obsidian_writers.application.write_handler | OK schema=SIGNAL_V2 packet=2026-08-17_SBLK_v2.0.json
+Signal written: True
+
+STDERR:
+DEBUG handle_write called: schema=SIGNAL_V2
+DEBUG Validated schema=SIGNAL_V2 symbol/ticker=SBLK
+DEBUG Built filepath: C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\signals\2026-08-17_SBLK_v2.0.json
+INFO signal written: 2026-08-17_SBLK_v2.0.json
+INFO OK schema=SIGNAL_V2 packet=2026-08-17_SBLK_v2.0.json
+
+
+=== DGX (rc=0) ===
+STDOUT:
+2026-08-17 10:46:17 | INFO     | obsidian_writers.infrastructure.json_writer | signal written: 2026-08-17_DGX_v2.0.json
+2026-08-17 10:46:17 | INFO     | obsidian_writers.application.write_handler | OK schema=SIGNAL_V2 packet=2026-08-17_DGX_v2.0.json
+Signal written: True
+
+STDERR:
+DEBUG handle_write called: schema=SIGNAL_V2
+DEBUG Validated schema=SIGNAL_V2 symbol/ticker=DGX
+DEBUG Built filepath: C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\signals\2026-08-17_DGX_v2.0.json
+INFO signal written: 2026-08-17_DGX_v2.0.json
+INFO OK schema=SIGNAL_V2 packet=2026-08-17_DGX_v2.0.json
+
+

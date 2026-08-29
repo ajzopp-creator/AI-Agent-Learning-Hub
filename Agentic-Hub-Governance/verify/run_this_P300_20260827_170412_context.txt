@@ -1,0 +1,36 @@
+WO-P300-E5.006 -- pre-step-3 diagnostic
+Date: 2026-08-27
+
+WHAT THIS TESTS:
+Before building the actual pre-registered stratification script (NEXT
+STEPS step 3), need to know whether historical avg_posture can be
+reconstructed from data already inside the live catalog
+(082626catalog.db) -- schemas.py shows pattern_bars already stores raw
+mtdiff/ltdiff per bar, which is exactly P_010's posture formula
+(posture = (medium_diff + long_diff) / 2, per
+P_010_daily_posture_v5.py's calculate_posture()). If SPY and QQQ are
+already cataloged symbols with adequate date coverage, no fresh VP
+export is needed at all. If they aren't cataloged, or coverage is thin,
+a fresh multi-year VP History Grid export for SPY/QQQ becomes a real,
+separate ask before step 3 can run for real.
+
+Read-only. Opens 082626catalog.db with sqlite3 mode=ro. No writes, no
+schema changes, no touch to Pipeline B or topk_cache.
+
+SUCCESS CRITERIA:
+- Script prints "PASS" at the end regardless of what it finds -- this is
+  a diagnostic, not a pass/fail test of the catalog itself.
+- Reports: catalog-wide anchor_date range, whether SPY/QQQ are cataloged
+  symbols, and if so their own date coverage + a 3-row sample of
+  (bar_date, mtdiff, ltdiff) to confirm the values are real and non-null.
+
+WHAT TO FIX ON FAILURE:
+Read-only against an existing production DB -- if it fails, most likely
+a stale DB_PATH (catalog grows via .bat outside Claude; if 082626catalog.db
+is no longer the newest, confirm the actual newest via:
+  Get-ChildItem "C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\models\*catalog.db" | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+and report the real filename back rather than guessing) or a schema
+column-name mismatch (report the exact error, don't rename a column to
+make it pass).
+
+Do not change test assertions.

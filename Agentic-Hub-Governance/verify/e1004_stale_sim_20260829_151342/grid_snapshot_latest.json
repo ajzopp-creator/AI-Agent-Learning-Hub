@@ -1,0 +1,19 @@
+{
+  "timestamp": "2026-08-29T15:14:21.403714",
+  "spy": {
+    "date": "08/24/2026",
+    "close": 100.0,
+    "pred_high": 102.0,
+    "pred_low": 98.0,
+    "pred_range": 4.0,
+    "posture": 0.5
+  },
+  "qqq": {
+    "date": "08/24/2026",
+    "close": 100.0,
+    "pred_high": 102.0,
+    "pred_low": 98.0,
+    "pred_range": 4.0,
+    "posture": 0.5
+  }
+}

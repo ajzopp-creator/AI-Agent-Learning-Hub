@@ -1,0 +1,11 @@
+WO: WO-P010-E1.004 VERIFY completion (owner responsibility, not
+Independent Review -- Tony flagged the mislabeling 2026-08-29).
+Purpose: run the REAL P_010_daily_posture_v5.py entry point against
+fabricated (fake, 5-day-old) SPY/QQQ grid files in an isolated scratch
+copy of the project tree, to confirm MORNING_RUN_FAILED.flag fires with
+a STALE GRID DATA message naming both symbols, and that
+P_010_RiskConfig.json is still written despite the staleness (per the
+WO's point 3). Zero contact with any live P_010 file -- scratch copy
+only. toast_notify.send_toast is NOT mocked; a real Windows toast will
+fire as part of this verification, that is the intended signal, not a
+side effect.

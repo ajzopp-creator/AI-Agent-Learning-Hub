@@ -171,3 +171,35 @@ def test_paper_trade_routes_to_p400_paper_schema(monkeypatch):
         position_size=3, signal_source="P_300", trade_mode_value="PAPER",
     )
     assert captured["schema_name"] == "P400_PAPER"
+
+
+# ---------------------------------------------------------------------------
+# WO-P020-E1.007 Part 2 / WO-P400-E6.001 -- why_code persisted from signal_source
+# ---------------------------------------------------------------------------
+
+def test_why_code_persisted_from_signal_source(monkeypatch):
+    # Root cause: signal_source was received on every call, used only to
+    # derive p115_linked/p300_linked, then discarded -- why_code stayed
+    # null on all 419 real vault records. This locks in the fix.
+    captured = _capture_vault_write(monkeypatch)
+    write_p400_record(
+        symbol="TEST", verdict="APPROVED", risk_mode="OFF",
+        entry_price=100.0, stop_price=95.0, target_1=115.0,
+        position_size=3, signal_source="P_300", trade_mode_value="REAL",
+    )
+    assert captured["data"]["why_code"] == "P_300"
+
+
+def test_why_code_not_limited_to_p115_p300(monkeypatch):
+    # The linked booleans only ever recognized two sources; why_code must
+    # carry whatever signal_source actually is, so P_020's reader (which
+    # checks why_code first) works for every system, not just those two.
+    captured = _capture_vault_write(monkeypatch)
+    write_p400_record(
+        symbol="TEST", verdict="APPROVED", risk_mode="OFF",
+        entry_price=100.0, stop_price=95.0, target_1=115.0,
+        position_size=3, signal_source="P_116", trade_mode_value="REAL",
+    )
+    assert captured["data"]["why_code"] == "P_116"
+    assert captured["data"]["p115_linked"] is False
+    assert captured["data"]["p300_linked"] is False

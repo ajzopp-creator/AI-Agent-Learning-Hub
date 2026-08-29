@@ -12,7 +12,7 @@ Layer:   domain
 from __future__ import annotations
 
 import re
-from typing import Optional, TypedDict
+from typing import List, Optional, TypedDict
 
 # Pattern: MMDD: [TAG1] [TAG2] rest
 # - Groups 1-4 all optional to survive malformed or legacy entries
@@ -87,6 +87,13 @@ def parse_thinklog_note(text: str) -> ParsedThinkLog:
     Parse a full ThinkLog note. Takes the first non-empty line as the tag line.
 
     Additional lines below the tag line are appended to notes with a pipe separator.
+
+    PAPER-ONLY as of 2026-08-16 -- assumes one tag line per note. Live
+    ThinkLog notes accumulate multiple dated tag lines in one running
+    note per symbol (each new entry gets its own MMDD: [WHY][SIG] line
+    appended below the last) -- use parse_thinklog_entries() for those,
+    never this function. Left unchanged here so paper's existing
+    behavior and tests are not disturbed.
     """
     if not text:
         return ParsedThinkLog(
@@ -112,3 +119,49 @@ def parse_thinklog_note(text: str) -> ParsedThinkLog:
 
     parsed["raw"] = text
     return parsed
+
+
+def parse_thinklog_entries(text: str) -> List[ParsedThinkLog]:
+    """
+    Parse a ThinkLog body into one entry per dated [WHY][SIG] line.
+
+    LIVE-ONLY. Unlike parse_thinklog_note() (paper -- first line only),
+    a live ThinkLog note for one symbol accumulates multiple dated
+    entries over time in a single running note, e.g.:
+
+        0201: [SNT][A] STOP target etc.
+        0712: [OIL][A] SL: CA:VB etc.
+
+    Each MMDD-prefixed line starts a new entry. A line with no date
+    prefix is treated as a continuation of the most recently started
+    entry (wrapped commentary for that same dated line). A stray
+    untagged line before any dated entry has nothing to attach to and
+    is dropped -- a get_override() caller has no date to key it by
+    anyway.
+
+    Args:
+        text: Full ThinkLog record body (may span multiple dated entries).
+
+    Returns:
+        List of ParsedThinkLog, one per dated entry found, in the order
+        they appear. Empty list if no dated line exists anywhere.
+    """
+    entries: List[ParsedThinkLog] = []
+    if not text:
+        return entries
+
+    for raw_line in text.splitlines():
+        line = raw_line.strip()
+        if not line:
+            continue
+        parsed = parse_thinklog_line(line)
+        if parsed["date_token"] is not None:
+            entries.append(parsed)
+        elif entries:
+            prev = entries[-1]
+            tail = parsed["notes"] or line
+            combined = prev["notes"] or ""
+            prev["notes"] = (combined + " | " + tail).strip(" |") if combined else tail
+        # else: untagged line with no prior dated entry -- dropped
+
+    return entries

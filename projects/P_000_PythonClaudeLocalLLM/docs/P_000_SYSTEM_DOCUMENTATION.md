@@ -7,9 +7,9 @@
 |---|---|
 | **Project ID** | P_000 |
 | **Project Name** | Python, Claude & Local LLM Learning Hub |
-| **Version** | 2.0 |
+| **Version** | 2.2 |
 | **Created** | March 8, 2026 |
-| **Last Updated** | 2026-08-15 |
+| **Last Updated** | 2026-08-20 |
 | **Owner** | Tony (Trader) |
 | **Status** | Active |
 
@@ -60,6 +60,7 @@ P_000 is the **foundation project** for the AI-Agent-Learning-Hub. It serves fiv
 | P_400 | Trade Order Management |
 | P_800 | Automation / Note-Taking (Claude–Obsidian MCP) |
 | P_805 | Email Trade Extractor |
+| P_810 | Email Tax Extractor (AJZ Strategies tax emails — peer of P_805, shares mbox/IMAP layer via shared_resources) |
 | P_110 | TradetheBounce OIL analysis |
 
 ### 1.5 Definitions & Acronyms
@@ -375,6 +376,62 @@ Any project with a Python-dependent INIT step (P_115, P_400, P_805, P_800, P_020
 
 ---
 
+### 3.6 Working-State Doc Pattern — CLAUDE.md + tasks/lessons.md+todo.md (added 2026-08-20, ref WO-P000-E8.001)
+
+**Available Hub convention, not a mandatory rule.** Piloted on P_300, then audited project-by-project rather than force-applied — several projects genuinely don't need it yet.
+
+**The pattern:**
+- **`CLAUDE.md`** at project root — a small, edited-in-place current-state file: architecture snapshot, key paths, locked decisions, active stage/next task. Distinct from the append-only session/lesson logs below; does not duplicate whatever a project's own INIT/SIP already reads fresh each session.
+- **`tasks\lessons.md`** — append-only, numbered M-series entries, never deleted.
+- **`tasks\todo.md`** — append-only, one dated entry prepended per session.
+- **Live/archive split, when a project's files are large enough to need it:** `todo.md` live cap ~500 lines / ~100KB; `lessons.md` live cap ~40 entries / ~70KB. Oldest entries move to a sibling `_archive` file (nothing deleted) once a live file crosses its cap. A one-line retention-rule note + archive pointer stays in the live file.
+
+**Why a project might NOT have all three:** the pattern exists to stop paying full read/rewrite cost on files that have grown large from real session history (P_300's `todo.md` hit 1,001 lines/~225KB before the split). A project with a thin session history doesn't have that cost yet, and building `CLAUDE.md` early just duplicates a nearly-empty `todo.md`. Audit before adding, per the table below.
+
+**Hub-wide audit status (ref WO-P000-E8.001, OWNER_DONE 2026-08-20):**
+
+| Project | CLAUDE.md | tasks/todo.md | tasks/lessons.md | Verdict |
+|---|---|---|---|---|
+| P_300 | no (uses CLAUDE.md — see note) | split live/archive, 2026-07-22 | split live/archive, 2026-07-22 | pilot — split applied |
+| P_115 | yes, built independently (2026-06-29) | 2.51KB, far under cap | 180 bytes, far under cap | compliant-as-is |
+| P_400 | yes, built independently (2026-07-28) | 56 lines, far under cap | none | compliant-as-is |
+| P_020 | yes, built independently (2026-06-18) | 27 lines, far under cap | none | compliant-as-is |
+| P_805 | none | 43 lines, far under cap | none | audited-no-action — not enough depth yet to earn a CLAUDE.md |
+| P_010 | none | no tasks/ dir | none | audited-no-action |
+| P_800 | none | 204 lines/13.7KB, far under cap | none | audited-no-action |
+
+Every `CLAUDE.md` currently on disk (P_115, P_400, P_020) was built by the owning project independently of this WO, before the pattern was formally recorded here — this table documents what already exists, it didn't create any of it. Full per-project findings and reasoning: WO-P000-E8.001, PILOT COMPLETION / P_115 ROLLOUT AUDIT / P_400-P_020-P_805-P_010-P_800 ROLLOUT AUDIT sections.
+
+**New projects:** see `MASTER_PROJECT_TEMPLATE_v_2.0.md` Project Directory Structure section — `CLAUDE.md` and `tasks\` are listed there as available, not default-required, following this same audit-first principle.
+
+---
+
+### 3.7 Changelog Retention Standard (added 2026-08-29, ref WO-P000-E4.002)
+
+Every project's live INIT/SIP doc keeps only the current and immediately
+prior version's changelog entries inline. Anything older moves to a sibling
+file: `<ProjectDocsDir>\<SIP_filename_stem>_CHANGELOG_ARCHIVE.md`. The live
+doc's changelog section carries a one-line retention-rule note plus a
+pointer to the archive file, so the convention documents itself and doesn't
+depend on anyone remembering to re-apply it next time the file grows.
+
+Piloted on P_300 (2026-06-18, ref WO-P000-E4.002). Hub-wide audit below.
+
+**Hub-wide audit status (2026-08-29, ref WO-P000-E4.002):**
+
+| Project | SIP / Changelog Doc | Versions Inline | Verdict |
+|---|---|---|---|
+| P_300 | P_300_System_Initialization_Prompt | 2 (v3.3 + v3.2), archive file exists | pilot -- compliant |
+| P_115 | SESSION_INITIALIZATION_PROMPT.md | 3 (v3.6, v3.4, v3.3), archive file exists but v3.3 not yet moved into it | non-compliant -- follow-on filed, WO-P115-E5.002. Footer also stale (reads "End of P_115 SIP v3.4", doc header is v3.6) -- bundled into same follow-on. |
+| P_116 / P_117 / P_118 | none -- TOS scan buckets within P_115, not standalone project folders, no separate SIP | n/a | n/a -- inherits P_115's SIP |
+| P_400 | P_400_SESSION_INITIALIZATION_PROMPT_v2_0.md | 5 (v2.6, v2.5, v2.4, v2.2, v2.1), no archive file exists | non-compliant -- follow-on filed, WO-P400-E6.007 |
+| P_800 | P_800_System_Initialization_Prompt_v1_1.md | 2 (v1.2, v1.0) | compliant -- under the 2-version cap, no archive needed yet |
+
+Corrective archive-split work for P_115 and P_400 happens in each project's
+own session, per this WO's original design (P_000 audits and files the
+follow-on; the owning project executes the split against its own doc).
+
+---
 ## Section 4 — Active Projects Within P_000
 
 ### 4.1 FastAPI Agentic Migration (Claude Summarizer App)
@@ -536,6 +593,7 @@ Thumbs.db
 | `Agentic-Hub-Governance` | Hub root | Governance / ops layer -- real folder since 2026-07-11 (formerly `04-Shared-Resources`, accessed via junction 2026-06-05 to 2026-07-11; junction retired, folder renamed). |
 | Work-order ledger | `Agentic-Hub-Governance\work_orders\` | Single source of truth for all work orders, per HUB_INIT_REFACTOR_AND_WO_GOVERNANCE v1.1. |
 | `CLAUDE_ASSISTANT_INSTRUCTIONS_v2_1_.md` | P_000 docs folder | Hub-wide Claude role/workflow rules across P_115/P_116/P_117/P_118/P_300 (references P_400). Moved from P_115 2026-07-27 -- scope was never P_115-only. Requires Claude.ai Project Knowledge re-attachment (P_115 -> P_000), file move alone does not migrate that. |
+| `MASTER_PROJECT_TEMPLATE_v_2.0.md` | P_000 docs folder | Per-project system-documentation template for starting a new Hub project (formerly `UNIVERSAL_PROJECT_TEMPLATE_v1_1.md`, renamed and updated to reflect real Hub governance -- WO ledger, Completion Gate, CLAUDE.md/tasks pattern, p140. Ref WO-P000-E8.001.). Superseded v1_1 archived, not deleted, in `docs\_archive\`. |
 
 ---
 
@@ -594,3 +652,7 @@ Thumbs.db
 *Version 1.7 — Updated August 6, 2026: Parameter Registry drift corrected against live config.py + running LM Studio server. Batch model key qwen2.5-coder-32b-instruct -> qwen2.5-coder-32b-instruct-abliterated (Sections 1.5, 2.2, 11.1, 11.4). LM Studio endpoint /v1 -> /api/v1 (Sections 1.5, 11.1, 11.4) to match LM_STUDIO_API_BASE in integrations\lm_studio\config.py; Section 2.2 was already correct. Display labels "Qwen2.5-Coder-32B" left unchanged (friendly names, not model keys).*
 *Version 1.8 — Updated August 11, 2026: Section 6 — added EC-007 (Step 0.5 asked Tony directly with no fallback attempt; four-step recovery chain added, ref WO-P000-E17.001, system-doc-initializer SKILL.md EC-006).*
 *Version 1.9 — Updated August 15, 2026: Section 2 — added 2.5 Machines, documenting AJZSTRATEGIESLG (LG Gram) as a secondary, cloud-inference-only machine with no LM Studio tier and no Cowork; qualified the Section 2.2 hardware-context line as ASUS-specific. Ref WO-P000-E10.002/E10.003, Phase 7 of P_000_LG_Laptop_Mirror_Plan_v1_1.md.*
+*Version 1.10 — Updated August 20, 2026: Section 3 — added 3.6 Working-State Doc Pattern (CLAUDE.md + tasks/lessons.md+todo.md), recording the canonical pattern piloted on P_300 and rolled out across P_115/P_400/P_020/P_805/P_010/P_800 (ref WO-P000-E8.001, now OWNER_DONE). Section 10 — added MASTER_PROJECT_TEMPLATE_v_2.0.md, superseding UNIVERSAL_PROJECT_TEMPLATE_v1_1.md.*
+*Version 1.11 — Updated August 20, 2026: Section 1.4 — added P_820 (Email Tax Extractor), new peer project to P_805, scaffolded this session (docs + folder structure only, no code yet). Ref WO-P820-E1.001. Originally created as P_810 and renamed to P_820 later in the same session, before any code existed — see WO Session Notes.*
+*Version 1.12 — Updated August 20, 2026: Section 1.4 — reverted the new peer-project row from P_820 back to P_810. P_820 was a naming mistake — Tony had that ID earmarked for a separate, unrelated future project (Order Signal Capture) and didn't catch the collision until after the v1.11 rename landed. No code existed at any point during the P_810→P_820→P_810 churn. Ref WO-P810-E1.001 (formerly WO-P820-E1.001).*
+*Version 1.13 -- Updated August 29, 2026: Section 3 -- added 3.7 Changelog Retention Standard (Hub-wide audit, ref WO-P000-E4.002). P_300 confirmed compliant (pilot). P_115 and P_400 found non-compliant -- follow-ons filed as WO-P115-E5.002 and WO-P400-E6.007 respectively; corrective archive-split work happens in each project's own session. P_800 confirmed compliant. P_116/P_117/P_118 have no standalone SIP, inherit P_115's.*

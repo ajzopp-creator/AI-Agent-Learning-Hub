@@ -209,11 +209,19 @@ NASDAQ_API_BASE_URL: str = "https://api.nasdaq.com/api"
 NASDAQ_USER_AGENT: str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
 EARNINGS_CALENDAR_CACHE_PATH: Path = HUB_ROOT / "projects" / "P_400_TradeOrderManagement" / "python" / "earnings_calendar_cache.json"
 LAST_SPREAD_CACHE_PATH: Path = HUB_ROOT / "projects" / "P_400_TradeOrderManagement" / "python" / "last_spread_cache.json"  # WO-P400-E5.005
-# Forward window + backward buffer -- no 3-month API cap to respect now (that
-# was FMP-specific), kept at the same size since it still comfortably covers
-# MACRO's tight 3-day-forward/2-day-back gate window with margin.
-EARNINGS_CALENDAR_LOOKAHEAD_DAYS: int = 83
-EARNINGS_CALENDAR_LOOKBACK_BUFFER_DAYS: int = 7
+# Forward window + backward buffer (WO-P400-E6.004, revised 2026-08-19).
+# Was 83/7 -- kept wide "for margin" past FMP's 3-month cap even after
+# switching to Nasdaq, without re-checking that margin against what MACRO's
+# earnings_in_window() actually consumes: a fixed 3-day-forward/2-day-back
+# gate (config below, Tony's call 2026-07-28), not the signal's own holding
+# period. Anything pulled beyond that gate's own reach was always wasted --
+# worse, live-confirmed 2026-08-19 that Nasdaq's calendar coverage density
+# collapses well before 83 days out (49-57 rows/day near-term, 2 rows by
+# day 27), so the wide pull was actively counterproductive, not just
+# excessive. Shrunk to match the real gate with a small buffer, landing
+# entirely inside the dense, reliable part of the coverage curve.
+EARNINGS_CALENDAR_LOOKAHEAD_DAYS: int = 7
+EARNINGS_CALENDAR_LOOKBACK_BUFFER_DAYS: int = 5
 # Fixed-monthly-schedule staleness check (Tony's call, 2026-08-08): trust the
 # pull date, don't spot-check symbols against the live API. ~30-day cadence
 # + 5-day grace before earnings_lookup.py warns.

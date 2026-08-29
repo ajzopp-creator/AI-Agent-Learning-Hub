@@ -1,0 +1,36 @@
+WO-P300-E5.006 -- Sector/Regime Context in Pattern Matching: Measure Before Building
+Date: 2026-08-27
+
+WHAT THIS TESTS:
+E5.006's NEXT STEPS step 1 requires reading WO-P300-E2.002 in full and
+querying sector_stats in bulk_research.db before anything else in that
+WO's plan is valid. E2.002 (CLOSED, independent review 2026-08-10) built
+a sector_stats table -- win rate / mean return / std return, stratified
+by sector_label x detection_tier x horizon_days, with a below_min_n flag
+at N=30 -- against a 126-symbol research catalog (9 GICS sectors + SPY
+as a separate Index/Diversified line). This script confirms that table
+is real, populated, and dumps every row so the sector question ("does
+win rate differ meaningfully across sectors?") can actually be answered
+by reading the numbers, not just confirming the table exists.
+
+Read-only. Opens bulk_research.db with sqlite3 mode=ro. No writes to
+any production DB, no touch to the live *catalog.db, no touch to
+Pipeline B.
+
+SUCCESS CRITERIA:
+- Script prints "PASS" at the end.
+- sector_stats row count matches E2.002's closure note (100 rows expected;
+  not re-run since 2026-07-10 per that WO's independent review, so 100
+  should still hold -- if it doesn't, that itself is worth flagging).
+- sector_stats_dump_20260827_163813.csv lands in this same verify\ folder
+  with one row per sector x tier x horizon cell.
+
+WHAT TO FIX ON FAILURE:
+This is read-only against an existing, closed WO's table -- if it fails,
+the most likely cause is a path typo or a locked DB file, not a real bug.
+Do not change any assertion in this script. If DB_PATH doesn't resolve,
+confirm the real path via:
+  Get-ChildItem "C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\models\research\"
+and report back rather than guessing a fix.
+
+Do not change test assertions.

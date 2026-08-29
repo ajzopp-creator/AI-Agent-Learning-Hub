@@ -10,18 +10,25 @@ Dates come from the monthly-refreshed cache (Nasdaq public calendar, one
 call per day, merged -- see refresh_earnings_calendar.py). Sector is a live
 per-symbol Nasdaq company-profile call at lookup time.
 
-Absence-from-cache handling: a symbol missing from the cache is a HARD FAIL
-(EarningsDataMissing), same as the old file-based design -- NOT an honest
-null. This was originally built as honest-null under the assumption that
-cache absence meant "genuinely nothing in this window," which held for a
-comprehensive data source but did NOT hold for the first data source tried
-(FMP's free tier, capped to ~73 large-cap symbols) -- absence there meant
-"not a mega-cap," unrelated to earnings timing, which would have silently
-disabled the MACRO earnings-BLOCK gate for most real signals. Switched to
-Nasdaq's public calendar (full coverage, confirmed live 2026-08-08) fixes
-the coverage problem, but the hard-fail is kept anyway as the correct
-default: a data-source gap should stop that one symbol's evaluation, never
-silently pass it through as clear. WO-P400-E5.002.
+Absence-from-cache handling (WO-P400-E6.004, twice-revised 2026-08-19):
+a symbol missing from the cache is now treated as genuinely clear --
+next_earnings_date=None, evaluated normally -- not skipped and not
+batch-fatal. This is the second revision same day; the first only fixed
+the batch-abort blast radius (a miss killed every OTHER symbol too), still
+skipping the missed symbol itself. That first fix exposed the real
+question underneath: MACRO's actual gate (domain/earnings_window.py,
+Tony's call 2026-07-28) only ever checks 3 days forward / 2 days back from
+today -- not the signal's holding period, not a wide lookahead. The
+calendar pull's window was cut from 83/7 days to 7/5 (config.py) to match
+that gate with a small buffer, not the old FMP-era caution margin. Given
+that match, "nothing found in this narrow, gate-matched window" IS the
+correct clear signal -- functionally identical to earnings_in_window(None)
+already returning False for an honestly-unknown date. This is different
+from the original FMP-era danger this design was built against: FMP's
+absence meant "not a mega-cap," unrelated to earnings timing, a real blind
+spot. A miss in a 7/5-day Nasdaq pull means "no report in the only window
+that matters," which is the actual answer, not a data-source gap.
+WO-P400-E5.002 (original design), WO-P400-E6.004 (both revisions).
 """
 
 from __future__ import annotations
@@ -63,8 +70,15 @@ def build_entries_for_symbols(symbols: List[str]) -> Dict[str, EarningsEntry]:
     exactly the symbols passed in (today's PASS list) -- not the whole cache.
 
     Raises:
-        EarningsCacheMissing: no cache on disk yet.
-        EarningsDataMissing: a requested symbol has no cache entry.
+        EarningsCacheMissing: no cache on disk yet (the whole cache, not a
+            single symbol -- this one is still batch-fatal by design, since
+            it means the refresh was never run at all).
+
+    Every requested symbol gets an entry in the returned dict -- a symbol
+    missing from the cache gets a constructed EarningsEntry with
+    next_earnings_date=None (confirmed clear, not unknown -- see module
+    docstring) rather than being omitted. No caller-side skip path exists
+    for this case anymore as of WO-P400-E6.004's second revision.
     """
     cache = load_cache()
     if cache is None:
@@ -84,12 +98,22 @@ def build_entries_for_symbols(symbols: List[str]) -> Dict[str, EarningsEntry]:
     for symbol in symbols:
         symbol = symbol.upper()
         cached = cache.entries.get(symbol)
-        if cached is None:
-            raise EarningsDataMissing(
-                f"No earnings calendar entry for {symbol}. Cache pulled "
-                f"{cache.pulled_date} found nothing in its window -- verify "
-                "manually before evaluating this symbol."
-            )
         sector = _lookup_sector(symbol)
+        if cached is None:
+            logger.info(
+                "No earnings calendar entry for %s in the %s pull -- "
+                "narrow window now matches MACRO's actual gate, so this is "
+                "a confirmed clear, not a skip (WO-P400-E6.004, revised).",
+                symbol, cache.pulled_date,
+            )
+            entries[symbol] = EarningsEntry(
+                symbol=symbol,
+                next_earnings_date=None,
+                last_earnings_date=None,
+                sector=sector,
+                source="nasdaq_calendar_confirmed_clear",
+                date_confirmed=True,
+            )
+            continue
         entries[symbol] = cached.model_copy(update={"sector": sector})
     return entries

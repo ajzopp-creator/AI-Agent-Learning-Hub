@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-03-JMIA-001",
+  "signal_timestamp": "2026-08-04T22:13:31Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "JMIA",
+  "asset_class": "stock",
+  "guideline_entry": 6.09000015258789,
+  "guideline_stop": 5.802277176294842,
+  "guideline_target": 6.19000005722046,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 5.802277176294842,
+  "intelliscan_support_1": 5.71000003814697,
+  "intelliscan_support_2": 6.19000005722046,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 6.09000015258789,
+    "trailing_volume_30d": 1363500.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 85.0% WR, z=2.13, mean return +10.15% at h=5",
+    "atm_at_signal": 0.2877229762930474
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-03",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-03_JMIA.md"
+  }
+}

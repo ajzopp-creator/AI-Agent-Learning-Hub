@@ -1,0 +1,23 @@
+WO-P805-E2.001 Entry 014 fix verification
+Date: 2026-08-23
+
+What this tests:
+Entry 014 supersedes Entry 013's keyring-based OAuth token storage
+(Windows Credential Manager's ~1280-char limit failed live with WinError
+1783). Fix: msal-extensions' FilePersistenceWithDataProtection (DPAPI
+file encryption). Compiles all 6 changed/new files under p140 with
+warnings-as-errors, confirms msal + msal_extensions importable, runs the
+mocked unittest suite (no real network/browser/file writes).
+
+Success criteria:
+Script prints PASS and exits 0.
+
+What to fix on failure:
+- Compile error: syntax/import issue in the listed file.
+- msal_extensions import failure: not installed in p140 -- run
+  `C:\Users\Trader\.conda\envs\p140\python.exe -m pip install msal-extensions`.
+- Test failure: read which assertion failed -- likely a mismatch between
+  oauth2_outlook.py's actual _build_cache()/_build_app() signatures and
+  what the tests mock.
+
+Do not change test assertions.

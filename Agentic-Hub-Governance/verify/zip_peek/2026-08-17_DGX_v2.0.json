@@ -1,0 +1,33 @@
+{
+  "signal_id": "P115-2026-08-17-DGX-001",
+  "signal_timestamp": "2026-08-17T14:45:27Z",
+  "signal_source": "P_115",
+  "strategy": "breakout",
+  "symbol": "DGX",
+  "asset_class": "stock",
+  "guideline_entry": 240.1,
+  "guideline_stop": 229.24,
+  "guideline_target": 289.91,
+  "signal_horizon": "10-15 trading days",
+  "confidence_level": "MEDIUM",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 234.9,
+  "intelliscan_support_1": null,
+  "intelliscan_support_2": null,
+  "target_source": null,
+  "context": {
+    "close_at_signal": 236.01,
+    "trailing_volume_30d": 71045.5,
+    "signal_rationale": "P_118 High Handle pattern, shallow tight pullback (~1.7%) off fresh high $240.13 following post-earnings breakout. ASYM (HybridTier=5: Fund2/Anal3/Candle2/Setup3). Fund verified clean: ROE 13.9-14.2%, Debt/Cap 47.4%, FCF+ (2/3 criteria, matches submitted). 200-MA +19.9% NORMAL (well above MA, no penalty). No earnings flag (last 7/23/26, next ~10/27/26). Confidence MEDIUM: RVOL 0.11 very weak, well below Eddie Z's 3x breakout-volume standard.",
+    "atm_at_signal": 5.2
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-17",
+    "chart_timeframe": "1D",
+    "signal_source_link": "TradeOrderManagement/P115"
+  }
+}

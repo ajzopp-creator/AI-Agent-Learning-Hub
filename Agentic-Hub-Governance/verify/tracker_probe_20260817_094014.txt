@@ -1,0 +1,4 @@
+SHEET: Tracker Log | rows=726 | cols=39
+HEADER: Date | Symbol | SignalSource | Step1Verdict | PatternType | BreakoutVerdict | BreakoutVolumeMultiple | DistributionDayCount | FollowThroughDay | MarketDirection | RSvsSPY | FundamentalsTier | AnalysisTier | CandleTier | SetupScore | LiquidityTier | Traded | EntryPrice | TPLevel | SLLevel | StopLevel | RiskPct | AccountBalance | Outcome | RecheckStatus | SimulationNotes | Comments | None | None | None | None | None | None | None | None | None | None | None | None
+SHEET: Audit Log | rows=54 | cols=8
+HEADER: P_115 TRACKER — SIGNAL SOURCE AUDIT LOG | None | None | None | None | None | None | None

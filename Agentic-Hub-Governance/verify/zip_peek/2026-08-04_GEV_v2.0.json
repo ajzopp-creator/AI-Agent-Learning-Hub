@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-03-GEV-001",
+  "signal_timestamp": "2026-08-04T22:06:33Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "GEV",
+  "asset_class": "stock",
+  "guideline_entry": 1006.76000976563,
+  "guideline_stop": 943.1581633221361,
+  "guideline_target": 1140.98999023438,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 943.1581633221361,
+  "intelliscan_support_1": 897.679992675781,
+  "intelliscan_support_2": 1140.98999023438,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 1006.76000976563,
+    "trailing_volume_30d": 2011300.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 70.0% WR, z=0.75, mean return +5.69% at h=5",
+    "atm_at_signal": 63.60184644349385
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-03",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-03_GEV.md"
+  }
+}

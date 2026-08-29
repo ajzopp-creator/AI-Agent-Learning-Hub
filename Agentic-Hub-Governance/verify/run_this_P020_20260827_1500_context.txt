@@ -1,0 +1,24 @@
+Task: Ad-hoc P_020 trades.db introspection + data pull.
+Date: 2026-08-27
+Requested by: Tony, in-session, to check SNT and oil-sector trade performance since 2026-05-01
+before deciding on P_310 (new VantagePoint-based project) and additional VP licenses.
+
+What this script does:
+1. Reads trades table schema (PRAGMA table_info) -- schema not previously confirmed this session.
+2. Prints total row count and per-system row counts (sanity check against known valid systems:
+   P_115, P_116, P_117, P_118, P_910, P_920, SNT, Day, TOS_Import).
+3. Detects a close-date-like column and a P&L-like column by name pattern (not hardcoded --
+   schema wasn't independently verified before writing this script).
+4. Dumps every trade closed since 2026-05-01 as full rows, so win rate / expectancy for the
+   SNT bucket and an oil-sector bucket can be computed accurately in the follow-up step,
+   against real column names rather than assumed ones.
+
+Read-only. SELECT statements only. Does not modify trades.db or any production file.
+
+Success criteria: prints PASS, .done file written with PASS + exit_code=0.
+
+On failure: read the FAIL: <exception repr> line, most likely causes are a wrong DB path,
+a locked DB file (P_020 Weekly Update or another process has it open), or a table/column
+name that doesn't match assumptions. Do not guess a fix -- report the exact exception back.
+Do not change the SELECT logic to "make it pass" if the failure is a genuine missing column;
+surface that instead.

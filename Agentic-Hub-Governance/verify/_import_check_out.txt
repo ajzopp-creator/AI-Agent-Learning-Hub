@@ -1,0 +1,3 @@
+IMPORTS OK
+IMAP_ROOT: C:\Users\Trader\AppData\Roaming\Thunderbird\Profiles\m306ztzh.IETimport\ImapMail
+DATA_DIR: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_805_Email_Trade_Extractor\data

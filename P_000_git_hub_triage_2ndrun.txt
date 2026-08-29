@@ -1,0 +1,1951 @@
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+	modified:   .claude/skills/p010-project-context/SKILL.md
+	modified:   .claude/skills/p020-project-context/SKILL.md
+	modified:   .claude/skills/p115-project-context/SKILL.md
+	new file:   .claude/skills/p115-project-context/p115-project-context_CHANGELOG_ARCHIVE.md
+	modified:   .claude/skills/p400-project-context/SKILL.md
+	new file:   .claude/skills/p800-project-context/SKILL.md
+	modified:   .claude/skills/peh-handoff/SKILL.md
+	modified:   .claude/skills/system-doc-initializer/SKILL.md
+	modified:   .claude/skills/work-order-governance/SKILL.md
+	modified:   .gitignore
+	new file:   Agentic-Hub-Governance/handoffs/HANDOFF_E13001_unblock_2026-08-07.md
+	new file:   Agentic-Hub-Governance/verify/P115_DLO_20260805_stderr.txt
+	new file:   Agentic-Hub-Governance/verify/P115_DLO_20260805_stderr2.txt
+	new file:   Agentic-Hub-Governance/verify/P115_DLO_20260805_stdout.txt
+	new file:   Agentic-Hub-Governance/verify/P115_DLO_20260805_stdout2.txt
+	new file:   Agentic-Hub-Governance/verify/P115_FSLR_20260805_stderr.txt
+	new file:   Agentic-Hub-Governance/verify/P115_FSLR_20260805_stdout.txt
+	new file:   Agentic-Hub-Governance/verify/P115_NUE_20260805_stderr.txt
+	new file:   Agentic-Hub-Governance/verify/P115_NUE_20260805_stdout.txt
+	new file:   Agentic-Hub-Governance/verify/P115_NVT_20260805_stderr.txt
+	new file:   Agentic-Hub-Governance/verify/P115_NVT_20260805_stdout.txt
+	renamed:    Agentic-Hub-Governance/verify/jit_baseline_20260718.json -> Agentic-Hub-Governance/verify/_archive/jit_baseline_20260718.json
+	renamed:    Agentic-Hub-Governance/verify/jit_baseline_out.txt -> Agentic-Hub-Governance/verify/_archive/jit_baseline_out.txt
+	renamed:    Agentic-Hub-Governance/verify/profiling_out.txt -> Agentic-Hub-Governance/verify/_archive/profiling_out.txt
+	renamed:    Agentic-Hub-Governance/verify/run_this_jit_baseline.py -> Agentic-Hub-Governance/verify/_archive/run_this_jit_baseline.py
+	renamed:    Agentic-Hub-Governance/verify/run_this_jit_context.txt -> Agentic-Hub-Governance/verify/_archive/run_this_jit_context.txt
+	renamed:    Agentic-Hub-Governance/verify/run_this_jit_regression.py -> Agentic-Hub-Governance/verify/_archive/run_this_jit_regression.py
+	renamed:    Agentic-Hub-Governance/verify/run_this_jit_regression_context.txt -> Agentic-Hub-Governance/verify/_archive/run_this_jit_regression_context.txt
+	renamed:    Agentic-Hub-Governance/verify/run_this_profiling.py -> Agentic-Hub-Governance/verify/_archive/run_this_profiling.py
+	renamed:    Agentic-Hub-Governance/verify/run_this_profiling_context.txt -> Agentic-Hub-Governance/verify/_archive/run_this_profiling_context.txt
+	new file:   Agentic-Hub-Governance/verify/_guard_content.b64
+	new file:   Agentic-Hub-Governance/verify/_scratch_nfr1_lumn.py
+	new file:   Agentic-Hub-Governance/verify/_toast_diag.ps1
+	new file:   Agentic-Hub-Governance/verify/_toast_fire.ps1
+	new file:   Agentic-Hub-Governance/verify/_toast_install.ps1
+	new file:   Agentic-Hub-Governance/verify/axti_emit_err.txt
+	new file:   Agentic-Hub-Governance/verify/axti_emit_out.txt
+	new file:   Agentic-Hub-Governance/verify/cgon_emit_err.txt
+	new file:   Agentic-Hub-Governance/verify/cgon_emit_out.txt
+	new file:   Agentic-Hub-Governance/verify/check_topk_cache_20260812.py
+	new file:   Agentic-Hub-Governance/verify/fslr_signal_err.txt
+	new file:   Agentic-Hub-Governance/verify/fslr_signal_out.txt
+	new file:   Agentic-Hub-Governance/verify/nvt_emit_err.txt
+	new file:   Agentic-Hub-Governance/verify/nvt_emit_out.txt
+	new file:   Agentic-Hub-Governance/verify/nvt_signal_err.txt
+	new file:   Agentic-Hub-Governance/verify/nvt_signal_out.txt
+	new file:   Agentic-Hub-Governance/verify/p115_skill_current.md
+	modified:   Agentic-Hub-Governance/verify/run_this.py
+	new file:   Agentic-Hub-Governance/verify/run_this_E13001_phase3_20260808_170007.py
+	new file:   Agentic-Hub-Governance/verify/run_this_E13001_phase3_20260808_170007_context.txt
+	new file:   Agentic-Hub-Governance/verify/run_this_E13001_phase4_20260808_170007.py
+	new file:   Agentic-Hub-Governance/verify/run_this_E13001_phase4_20260808_170007_context.txt
+	new file:   Agentic-Hub-Governance/verify/run_this_E13001_phase4_20260808_170007_guard_content.b64
+	new file:   Agentic-Hub-Governance/verify/run_this_P010_20260810_081136.py
+	new file:   Agentic-Hub-Governance/verify/run_this_P010_20260810_081136_context.txt
+	new file:   Agentic-Hub-Governance/verify/run_this_P010_20260810_083940.py
+	new file:   Agentic-Hub-Governance/verify/run_this_P010_20260810_083940_context.txt
+	new file:   Agentic-Hub-Governance/verify/run_this_P010_20260810_085152.py
+	new file:   Agentic-Hub-Governance/verify/run_this_P010_20260810_085152_context.txt
+	new file:   Agentic-Hub-Governance/verify/run_this_P115_20260811_144857.py
+	new file:   Agentic-Hub-Governance/verify/run_this_P115_20260811_144857_context.txt
+	new file:   Agentic-Hub-Governance/verify/run_this_P115_20260811_151546.py
+	new file:   Agentic-Hub-Governance/verify/run_this_P115_20260811_151546_context.txt
+	new file:   Agentic-Hub-Governance/verify/run_this_P115_20260812T173513_output.json
+	new file:   Agentic-Hub-Governance/verify/run_this_P115_20260812T174409_output.json
+	new file:   Agentic-Hub-Governance/verify/run_this_P115_20260812T182339_output.json
+	new file:   Agentic-Hub-Governance/verify/run_this_P115_20260813_191258.py
+	new file:   Agentic-Hub-Governance/verify/run_this_P115_20260813_191258_context.txt
+	new file:   Agentic-Hub-Governance/verify/run_this_P115_20260813_191258_output.json
+	new file:   Agentic-Hub-Governance/verify/run_this_P115_20260813_193500.py
+	new file:   Agentic-Hub-Governance/verify/run_this_P115_20260813_193500_context.txt
+	new file:   Agentic-Hub-Governance/verify/run_this_P115_20260813_193500_output.json
+	new file:   Agentic-Hub-Governance/verify/run_this_P115_20260813_202850.py
+	new file:   Agentic-Hub-Governance/verify/run_this_P115_20260813_202850_context.txt
+	new file:   Agentic-Hub-Governance/verify/run_this_P115_20260813_202850_output.json
+	new file:   Agentic-Hub-Governance/verify/run_this_P115_20260814_102444.py
+	new file:   Agentic-Hub-Governance/verify/run_this_P115_20260814_102444_context.txt
+	new file:   Agentic-Hub-Governance/verify/run_this_P118_20260806_154536.py
+	new file:   Agentic-Hub-Governance/verify/run_this_P118_20260806_154536_context.txt
+	new file:   Agentic-Hub-Governance/verify/run_this_P400_20260813_173021.py
+	new file:   Agentic-Hub-Governance/verify/run_this_P400_20260813_173021_context.txt
+	new file:   Agentic-Hub-Governance/verify/run_this_P_020_20260809_133000.py
+	modified:   Agentic-Hub-Governance/verify/run_this_context.txt
+	new file:   Agentic-Hub-Governance/verify/validate_e5001.ps1
+	new file:   Agentic-Hub-Governance/work_orders/WO-P000-E13.001.md
+	new file:   Agentic-Hub-Governance/work_orders/WO-P000-E14.001.md
+	new file:   Agentic-Hub-Governance/work_orders/WO-P000-E15.001.md
+	new file:   Agentic-Hub-Governance/work_orders/WO-P000-E16.001.md
+	new file:   Agentic-Hub-Governance/work_orders/WO-P000-E17.001.md
+	modified:   Agentic-Hub-Governance/work_orders/WO-P000-E2.001.md
+	modified:   Agentic-Hub-Governance/work_orders/WO-P000-E2.003.md
+	modified:   Agentic-Hub-Governance/work_orders/WO-P000-E3.001.md
+	modified:   Agentic-Hub-Governance/work_orders/WO-P000-E4.001.md
+	modified:   Agentic-Hub-Governance/work_orders/WO-P000-E5.001.md
+	modified:   Agentic-Hub-Governance/work_orders/WO-P000-E7.001.md
+	modified:   Agentic-Hub-Governance/work_orders/WO-P000-E8.001.md
+	modified:   Agentic-Hub-Governance/work_orders/WO-P010-E1.002.md
+	modified:   Agentic-Hub-Governance/work_orders/WO-P010-E1.003.md
+	modified:   Agentic-Hub-Governance/work_orders/WO-P020-E1.010.md
+	modified:   Agentic-Hub-Governance/work_orders/WO-P020-E1.011.md
+	modified:   Agentic-Hub-Governance/work_orders/WO-P020-E1.012.md
+	new file:   Agentic-Hub-Governance/work_orders/WO-P020-E1.013.md
+	modified:   Agentic-Hub-Governance/work_orders/WO-P115-E3.001.md
+	modified:   Agentic-Hub-Governance/work_orders/WO-P300-E1.002.md
+	modified:   Agentic-Hub-Governance/work_orders/WO-P300-E1.003.md
+	modified:   Agentic-Hub-Governance/work_orders/WO-P300-E1.004.md
+	modified:   Agentic-Hub-Governance/work_orders/WO-P300-E2.001.md
+	modified:   Agentic-Hub-Governance/work_orders/WO-P300-E2.002.md
+	modified:   Agentic-Hub-Governance/work_orders/WO-P300-E2.003.md
+	modified:   Agentic-Hub-Governance/work_orders/WO-P300-E3.001.md
+	modified:   Agentic-Hub-Governance/work_orders/WO-P300-E4.006.md
+	modified:   Agentic-Hub-Governance/work_orders/WO-P300-E4.008.md
+	modified:   Agentic-Hub-Governance/work_orders/WO-P300-E4.009.md
+	modified:   Agentic-Hub-Governance/work_orders/WO-P300-E4.010.md
+	modified:   Agentic-Hub-Governance/work_orders/WO-P300-E5.007.md
+	new file:   Agentic-Hub-Governance/work_orders/WO-P300-E5.008.md
+	modified:   Agentic-Hub-Governance/work_orders/WO-P400-E2.016.md
+	modified:   Agentic-Hub-Governance/work_orders/WO-P400-E2.023.md
+	modified:   Agentic-Hub-Governance/work_orders/WO-P400-E5.002.md
+	new file:   Agentic-Hub-Governance/work_orders/WO-P400-E5.003.md
+	new file:   Agentic-Hub-Governance/work_orders/WO-P400-E5.004.md
+	new file:   Agentic-Hub-Governance/work_orders/WO-P400-E5.005.md
+	new file:   Agentic-Hub-Governance/work_orders/WO-P400-E5.006.md
+	new file:   Agentic-Hub-Governance/work_orders/WO-P400-E6.001.md
+	new file:   Agentic-Hub-Governance/work_orders/WO-P400-E6.002.md
+	new file:   Agentic-Hub-Governance/work_orders/WO-P400-E6.003.md
+	modified:   Agentic-Hub-Governance/work_orders/WO-P800-E4.001.md
+	new file:   Agentic-Hub-Governance/work_orders/WO-P800-E4.002.md
+	new file:   Agentic-Hub-Governance/work_orders/WO-P800-E4.003.md
+	new file:   Agentic-Hub-Governance/work_orders/WO-P800-E4.004.md
+	modified:   Agentic-Hub-Governance/work_orders/WO_COMPLETION_GATE.md
+	new file:   GIT_WORKFLOW.md
+	new file:   Gitstatus.txt
+	new file:   P_000_git_hub_triage_2ndrun.txt
+	new file:   P_000_hub_git_triage.ps1
+	modified:   docs/lm_studio/P_000_LM_Studio_Wrapper_Architecture_Overview.md
+	new file:   gitoutputstaty
+	renamed:    projects/P_000_PythonClaudeLocalLLM/python/application/lm_studio_client.py -> integrations/lm_studio/application/lm_studio_client.py
+	renamed:    projects/P_000_PythonClaudeLocalLLM/python/domain/task_router.py -> integrations/lm_studio/domain/task_router.py
+	renamed:    integrations/lm_studio/infrastructure/lm_studio_status.py -> integrations/lm_studio/infrastructure/_archive/2026-08-11_120944_lm_studio_status_DELETED_WO-P000-E5.001.py
+	modified:   integrations/lm_studio/infrastructure/lm_studio_api.py
+	modified:   integrations/lm_studio/infrastructure/lm_studio_launcher.py
+	new file:   outputgit.txt
+	modified:   projects/P_000_PythonClaudeLocalLLM/cli.py
+	deleted:    projects/P_000_PythonClaudeLocalLLM/config.py
+	modified:   projects/P_000_PythonClaudeLocalLLM/config/P_000_Account_Parameters_Current.md
+	modified:   projects/P_000_PythonClaudeLocalLLM/docs/PEH_Python_Execution_Handoff.md
+	modified:   projects/P_000_PythonClaudeLocalLLM/docs/P_000_SYSTEM_DOCUMENTATION.md
+	modified:   projects/P_000_PythonClaudeLocalLLM/docs/P_000_SYSTEM_INITIALIZATION_PROMPT_v1_0.md
+	new file:   projects/P_000_PythonClaudeLocalLLM/python/conftest.py
+	deleted:    projects/P_000_PythonClaudeLocalLLM/python/infrastructure/lm_studio_api.py
+	deleted:    projects/P_000_PythonClaudeLocalLLM/python/infrastructure/lm_studio_launcher.py
+	modified:   projects/P_000_PythonClaudeLocalLLM/python/tests/test_health_check.py
+	modified:   projects/P_000_PythonClaudeLocalLLM/tasks/todo.md
+	modified:   projects/P_010_Current_Market_Posture/P_010_RiskConfig.json
+	modified:   projects/P_010_Current_Market_Posture/P_010_daily_posture.bat
+	new file:   projects/P_010_Current_Market_Posture/P_110_TradeTheBounce_1st.pdf
+	modified:   projects/P_010_Current_Market_Posture/data/excel_exports/History Grid (QQQ)_v3.xlsx
+	modified:   projects/P_010_Current_Market_Posture/data/excel_exports/History Grid (SPY)_v3.xlsx
+	modified:   projects/P_010_Current_Market_Posture/data/excel_exports/History Grid (VXX)_v3.xlsx
+	modified:   projects/P_010_Current_Market_Posture/docs/P_010_Error_Corrections_Log.md
+	modified:   projects/P_010_Current_Market_Posture/grid_snapshot_latest.json
+	new file:   projects/P_010_Current_Market_Posture/outputs/_compile_check_toast2.txt
+	modified:   projects/P_010_Current_Market_Posture/python/P_010_daily_posture_v5.py
+	modified:   projects/P_010_Current_Market_Posture/python/P_010_intraday_vp_check_v4.py
+	modified:   projects/P_010_Current_Market_Posture/python/P_010_write_daily_note.py
+	new file:   projects/P_010_Current_Market_Posture/python/conftest.py
+	new file:   projects/P_010_Current_Market_Posture/python/intraday_risk_logic.py
+	new file:   projects/P_010_Current_Market_Posture/python/note_api_fetchers.py
+	new file:   projects/P_010_Current_Market_Posture/python/note_content_builders.py
+	new file:   projects/P_010_Current_Market_Posture/python/note_template_engine.py
+	new file:   projects/P_010_Current_Market_Posture/python/staleness_check.py
+	new file:   projects/P_010_Current_Market_Posture/python/toast_notify.py
+	modified:   projects/P_020_AJZStrategies_PerformanceAnalysisSystem/P_020_AccountParser.bat
+	modified:   projects/P_020_AJZStrategies_PerformanceAnalysisSystem/P_020_Schwab_Auth.bat
+	modified:   projects/P_020_AJZStrategies_PerformanceAnalysisSystem/config/P_020_Account_Params.json
+	modified:   projects/P_020_AJZStrategies_PerformanceAnalysisSystem/data/api_pulls/P_020_last_run.json
+	modified:   projects/P_020_AJZStrategies_PerformanceAnalysisSystem/docs/P_020_Dashboard.html
+	modified:   projects/P_020_AJZStrategies_PerformanceAnalysisSystem/python/api/test_output.txt
+	new file:   projects/P_020_AJZStrategies_PerformanceAnalysisSystem/python/conftest.py
+	modified:   projects/P_020_AJZStrategies_PerformanceAnalysisSystem/python/database/application/account_commands.py
+	modified:   projects/P_020_AJZStrategies_PerformanceAnalysisSystem/python/database/application/schwab_auth_commands.py
+	modified:   projects/P_020_AJZStrategies_PerformanceAnalysisSystem/python/database/cli.py
+	new file:   projects/P_020_AJZStrategies_PerformanceAnalysisSystem/python/database/domain/account_params_calc.py
+	new file:   projects/P_020_AJZStrategies_PerformanceAnalysisSystem/python/database/domain/params_history_writer.py
+	modified:   projects/P_020_AJZStrategies_PerformanceAnalysisSystem/python/database/domain/params_md_writer.py
+	modified:   projects/P_020_AJZStrategies_PerformanceAnalysisSystem/python/database/infrastructure/p000_params_writer.py
+	deleted:    projects/P_020_AJZStrategies_PerformanceAnalysisSystem/python/parsers/P_020_TOS_Parser_v2.2.py
+	deleted:    projects/P_020_AJZStrategies_PerformanceAnalysisSystem/python/parsers/P_020_TOS_Parser_v2.3.py
+	modified:   projects/P_020_AJZStrategies_PerformanceAnalysisSystem/tests/test_p020_known_bugs.py
+	new file:   projects/P_110_TradetheBounce_OIL/docs/P_110_TradeTheBounce_FirstTrade.pdf
+	new file:   projects/P_110_TradetheBounce_OIL/docs/P_110_TradeTheBounce_FirstTrade.pdf.md
+	new file:   projects/P_110_TradetheBounce_OIL/docs/media/0d85205e7eefe05cf343227d42d8b3d5.jpg
+	new file:   projects/P_110_TradetheBounce_OIL/docs/media/0f6eade9b5e42827b3d5005536a27b65.jpg
+	new file:   projects/P_110_TradetheBounce_OIL/docs/media/1b80d3e6bf71abcc4f608fa90cb9eb39.jpg
+	new file:   projects/P_110_TradetheBounce_OIL/docs/media/270301661982b4e99921303ab10a9c98.jpg
+	new file:   projects/P_110_TradetheBounce_OIL/docs/media/435964c10cca6c24982a0c9aa66ceb6b.jpg
+	new file:   projects/P_110_TradetheBounce_OIL/docs/media/48512e2a83c1f479c2aeb73f47ec2471.jpg
+	new file:   projects/P_110_TradetheBounce_OIL/docs/media/8c8e7344fa30487b811d9da174f7eae8.jpg
+	new file:   projects/P_110_TradetheBounce_OIL/docs/media/9bc8303f92f1506206bc83cde299c105.jpg
+	new file:   projects/P_110_TradetheBounce_OIL/docs/media/a82767894cc0b6883eba3215951d521c.jpg
+	new file:   projects/P_110_TradetheBounce_OIL/docs/media/b53cbf8c8a1fbf9fe4d43720eb60eea8.jpg
+	new file:   projects/P_110_TradetheBounce_OIL/docs/~$110_TradeTheBounce_FirstTrade.pdf.md
+	new file:   projects/P_110_TradetheBounce_OIL/python/conftest.py
+	modified:   projects/P_115_BuytheDipTradingSystem/CLAUDE.md
+	modified:   projects/P_115_BuytheDipTradingSystem/docs/P_115_Project_Instructions.md
+	new file:   projects/P_115_BuytheDipTradingSystem/python/conftest.py
+	new file:   projects/P_120_SupplyDemandScanner/python/conftest.py
+	new file:   projects/P_200_DayTradingStrategy/docs/P_010_Grok_SPY_JournalBook1 (version 1).xlsx
+	new file:   projects/P_200_DayTradingStrategy/docs/P_200_SPY_Trade_Journal.xlsx
+	new file:   projects/P_300_Vantage_Point_Pattern_Recognition/DUplicatePattern080526.txt
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/P_300_DailyEval.bat
+	modified:   projects/P_300_Vantage_Point_Pattern_Recognition/P_300_RunAllDailyEvals.ps1
+	new file:   projects/P_300_Vantage_Point_Pattern_Recognition/P_300_RunBulkAddPattern_KeepAwake.bat
+	modified:   projects/P_300_Vantage_Point_Pattern_Recognition/P_300_RunChaikinBatch.ps1
+	new file:   projects/P_300_Vantage_Point_Pattern_Recognition/battery_report.html
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/mine/10_Pattern_AIQ.xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/mine/10_Pattern_ASTS.xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/mine/10_Pattern_BBAI.xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/mine/10_Pattern_BBBY.xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/mine/10_Pattern_ENPH.xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/mine/10_Pattern_EXP.xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/mine/10_Pattern_FLNC.xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/mine/10_Pattern_GGAL.xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/mine/10_Pattern_HRZN.xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/mine/10_Pattern_IREN.xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/mine/10_Pattern_JMIA.xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/mine/10_Pattern_KEY.xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/mine/10_Pattern_OCSL.xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/mine/10_Pattern_PAVE.xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/mine/10_Pattern_POOL.xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/mine/10_Pattern_PSEC.xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/mine/10_Pattern_RKLB.xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/mine/10_Pattern_RKT.xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/mine/10_Pattern_RY.xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/mine/10_Pattern_VUZI.xlsx
+	new file:   projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/nightly_scan/.gitkeep
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/nightly_scan/10_pattern_CCI.xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/nightly_scan/10_pattern_CIEN.xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/nightly_scan/10_pattern_FIVE.xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/nightly_scan/10_pattern_GAP.xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/nightly_scan/10_pattern_GFI.xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/nightly_scan/10_pattern_HUN.xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/nightly_scan/10_pattern_IVPAF.xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/nightly_scan/10_pattern_LVS.xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/nightly_scan/10_pattern_NBR.xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/nightly_scan/10_pattern_SARK.xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/nightly_scan/10_pattern_SCCO.xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/nightly_scan/10_pattern_STM.xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/nightly_scan/10_pattern_SXC.xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/nightly_scan/10_pattern_TS.xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/nightly_scan/10_pattern_ULTA.xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/nightly_scan/10_pattern_URNM.xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/nightly_scan/10_pattern_WMT.xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (ACH).xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (AIQ).xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (ALB).xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (APP).xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (ASTS).xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (AXP).xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (BBAI).xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (BBBY).xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (CIEN).xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (CW).xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (DECK).xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (ENPH).xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (EXP).xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (FLNC).xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (GEV).xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (GGAL).xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (GSIT).xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (GWH).xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (HRZN).xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (INSG).xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (IREN).xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (JBL).xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (JMIA).xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (KEY).xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (MRCY).xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (OCSL).xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (PAVE).xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (POOL).xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (PSEC).xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (RGTI).xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (RH).xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (RKLB).xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (RKT).xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (RY).xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (SGML).xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (UEC).xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (UUUU).xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (VUZI).xlsx
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (WFG).xlsx
+	modified:   projects/P_300_Vantage_Point_Pattern_Recognition/data/processed/2026-08.zip
+	new file:   projects/P_300_Vantage_Point_Pattern_Recognition/docs/processes/P_300_CLI_Command_Reference.md
+	new file:   projects/P_300_Vantage_Point_Pattern_Recognition/outputs/reports/mine/mine_20260805_192341.md
+	new file:   projects/P_300_Vantage_Point_Pattern_Recognition/outputs/reports/mine/mine_20260814_063900.md
+	modified:   projects/P_300_Vantage_Point_Pattern_Recognition/python/application/daily_evaluate_pipeline.py
+	new file:   projects/P_300_Vantage_Point_Pattern_Recognition/python/conftest.py
+	new file:   projects/P_300_Vantage_Point_Pattern_Recognition/python/infrastructure/lm_studio_status.py
+	renamed:    projects/P_300_Vantage_Point_Pattern_Recognition/python/test_signal_emitter_dry_run.py -> projects/P_300_Vantage_Point_Pattern_Recognition/python/tests/test_signal_emitter_dry_run.py
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/run_daily_posture.bat
+	deleted:    projects/P_300_Vantage_Point_Pattern_Recognition/run_intraday_vp_check.bat
+	modified:   projects/P_300_Vantage_Point_Pattern_Recognition/tasks/lessons.md
+	modified:   projects/P_300_Vantage_Point_Pattern_Recognition/tasks/todo.md
+	new file:   projects/P_301_Bullish_Trend_Pattern_V2.5/python/conftest.py
+	modified:   projects/P_400_TradeOrderManagement/docs/P_400_TradeOrderManagement_Architecture_v2_0.md
+	modified:   projects/P_400_TradeOrderManagement/docs/prompts/P_400_SESSION_INITIALIZATION_PROMPT_v2_0.md
+	new file:   projects/P_400_TradeOrderManagement/outputs/batch_reports/batch2b_2026-08-07_20260807_093116.json
+	new file:   projects/P_400_TradeOrderManagement/outputs/batch_reports/batch2b_2026-08-07_20260807_112631.json
+	new file:   projects/P_400_TradeOrderManagement/outputs/batch_reports/batch2b_2026-08-08_20260808_152644.json
+	new file:   projects/P_400_TradeOrderManagement/outputs/batch_reports/batch2b_2026-08-08_20260808_152949.json
+	new file:   projects/P_400_TradeOrderManagement/outputs/batch_reports/batch2b_2026-08-08_20260808_184338.json
+	new file:   projects/P_400_TradeOrderManagement/outputs/batch_reports/batch2b_2026-08-14_20260814_122239.json
+	new file:   projects/P_400_TradeOrderManagement/python/application/batch_2b.py
+	new file:   projects/P_400_TradeOrderManagement/python/application/batch_2b_disposition.py
+	new file:   projects/P_400_TradeOrderManagement/python/application/batch_2b_scoring.py
+	modified:   projects/P_400_TradeOrderManagement/python/application/commands.py
+	modified:   projects/P_400_TradeOrderManagement/python/application/compare_vehicles.py
+	new file:   projects/P_400_TradeOrderManagement/python/application/earnings_lookup.py
+	modified:   projects/P_400_TradeOrderManagement/python/application/evaluate_signal.py
+	modified:   projects/P_400_TradeOrderManagement/python/application/fetch_chain.py
+	modified:   projects/P_400_TradeOrderManagement/python/application/fetch_snapshot.py
+	new file:   projects/P_400_TradeOrderManagement/python/application/refresh_earnings_calendar.py
+	modified:   projects/P_400_TradeOrderManagement/python/cli.py
+	modified:   projects/P_400_TradeOrderManagement/python/config.py
+	new file:   projects/P_400_TradeOrderManagement/python/conftest.py
+	modified:   projects/P_400_TradeOrderManagement/python/domain/council.py
+	modified:   projects/P_400_TradeOrderManagement/python/domain/council_codes.py
+	modified:   projects/P_400_TradeOrderManagement/python/domain/market_hours.py
+	new file:   projects/P_400_TradeOrderManagement/python/domain/ranking.py
+	new file:   projects/P_400_TradeOrderManagement/python/earnings_2026-08-07.json
+	new file:   projects/P_400_TradeOrderManagement/python/earnings_2026-08-08.json
+	new file:   projects/P_400_TradeOrderManagement/python/earnings_2026-08-11.json
+	new file:   projects/P_400_TradeOrderManagement/python/earnings_calendar_cache.json
+	new file:   projects/P_400_TradeOrderManagement/python/infrastructure/earnings_calendar_cache.py
+	new file:   projects/P_400_TradeOrderManagement/python/infrastructure/earnings_calendar_client.py
+	new file:   projects/P_400_TradeOrderManagement/python/infrastructure/earnings_file.py
+	new file:   projects/P_400_TradeOrderManagement/python/infrastructure/last_spread_cache.py
+	new file:   projects/P_400_TradeOrderManagement/python/last_spread_cache.json
+	modified:   projects/P_400_TradeOrderManagement/python/schemas.py
+	modified:   projects/P_400_TradeOrderManagement/python/snapshot_HAL.json
+	deleted:    projects/P_400_TradeOrderManagement/python/test_earnings_window.py
+	renamed:    projects/P_400_TradeOrderManagement/python/test_build_option_spec.py -> projects/P_400_TradeOrderManagement/python/tests/test_build_option_spec.py
+	renamed:    projects/P_400_TradeOrderManagement/python/test_chain_selector.py -> projects/P_400_TradeOrderManagement/python/tests/test_chain_selector.py
+	renamed:    projects/P_400_TradeOrderManagement/python/test_commands.py -> projects/P_400_TradeOrderManagement/python/tests/test_commands.py
+	renamed:    projects/P_400_TradeOrderManagement/python/test_compare_vehicles.py -> projects/P_400_TradeOrderManagement/python/tests/test_compare_vehicles.py
+	renamed:    projects/P_400_TradeOrderManagement/python/test_council.py -> projects/P_400_TradeOrderManagement/python/tests/test_council.py
+	renamed:    projects/P_400_TradeOrderManagement/python/test_dispose_failed.py -> projects/P_400_TradeOrderManagement/python/tests/test_dispose_failed.py
+	renamed:    projects/P_400_TradeOrderManagement/python/test_e2002.py -> projects/P_400_TradeOrderManagement/python/tests/test_e2002.py
+	renamed:    projects/P_400_TradeOrderManagement/python/test_e2003.py -> projects/P_400_TradeOrderManagement/python/tests/test_e2003.py
+	new file:   projects/P_400_TradeOrderManagement/python/tests/test_earnings_calendar_cache.py
+	new file:   projects/P_400_TradeOrderManagement/python/tests/test_earnings_lookup.py
+	new file:   projects/P_400_TradeOrderManagement/python/tests/test_earnings_window.py
+	renamed:    projects/P_400_TradeOrderManagement/python/test_eval_cache.py -> projects/P_400_TradeOrderManagement/python/tests/test_eval_cache.py
+	renamed:    projects/P_400_TradeOrderManagement/python/test_evaluate_options.py -> projects/P_400_TradeOrderManagement/python/tests/test_evaluate_options.py
+	renamed:    projects/P_400_TradeOrderManagement/python/test_evaluate_signal.py -> projects/P_400_TradeOrderManagement/python/tests/test_evaluate_signal.py
+	renamed:    projects/P_400_TradeOrderManagement/python/test_evaluate_spread.py -> projects/P_400_TradeOrderManagement/python/tests/test_evaluate_spread.py
+	new file:   projects/P_400_TradeOrderManagement/python/tests/test_fetch_snapshot.py
+	new file:   projects/P_400_TradeOrderManagement/python/tests/test_last_spread_cache.py
+	renamed:    projects/P_400_TradeOrderManagement/python/test_levels.py -> projects/P_400_TradeOrderManagement/python/tests/test_levels.py
+	renamed:    projects/P_400_TradeOrderManagement/python/test_market_holidays.py -> projects/P_400_TradeOrderManagement/python/tests/test_market_holidays.py
+	renamed:    projects/P_400_TradeOrderManagement/python/test_market_hours.py -> projects/P_400_TradeOrderManagement/python/tests/test_market_hours.py
+	renamed:    projects/P_400_TradeOrderManagement/python/test_moving_averages.py -> projects/P_400_TradeOrderManagement/python/tests/test_moving_averages.py
+	renamed:    projects/P_400_TradeOrderManagement/python/test_options_council.py -> projects/P_400_TradeOrderManagement/python/tests/test_options_council.py
+	renamed:    projects/P_400_TradeOrderManagement/python/test_options_sizer.py -> projects/P_400_TradeOrderManagement/python/tests/test_options_sizer.py
+	renamed:    projects/P_400_TradeOrderManagement/python/test_oscillators.py -> projects/P_400_TradeOrderManagement/python/tests/test_oscillators.py
+	modified:   projects/P_400_TradeOrderManagement/python/tests/test_p400_known_bugs.py
+	new file:   projects/P_400_TradeOrderManagement/python/tests/test_p400_known_bugs_2.py
+	new file:   projects/P_400_TradeOrderManagement/python/tests/test_ranking.py
+	renamed:    projects/P_400_TradeOrderManagement/python/test_read_signals.py -> projects/P_400_TradeOrderManagement/python/tests/test_read_signals.py
+	renamed:    projects/P_400_TradeOrderManagement/python/test_record_commands.py -> projects/P_400_TradeOrderManagement/python/tests/test_record_commands.py
+	renamed:    projects/P_400_TradeOrderManagement/python/test_record_writer.py -> projects/P_400_TradeOrderManagement/python/tests/test_record_writer.py
+	renamed:    projects/P_400_TradeOrderManagement/python/test_record_writer_derived.py -> projects/P_400_TradeOrderManagement/python/tests/test_record_writer_derived.py
+	new file:   projects/P_400_TradeOrderManagement/python/tests/test_refresh_earnings_calendar.py
+	renamed:    projects/P_400_TradeOrderManagement/python/test_risk_vote.py -> projects/P_400_TradeOrderManagement/python/tests/test_risk_vote.py
+	renamed:    projects/P_400_TradeOrderManagement/python/test_schwab_market_data.py -> projects/P_400_TradeOrderManagement/python/tests/test_schwab_market_data.py
+	renamed:    projects/P_400_TradeOrderManagement/python/test_screen.py -> projects/P_400_TradeOrderManagement/python/tests/test_screen.py
+	renamed:    projects/P_400_TradeOrderManagement/python/test_sizing.py -> projects/P_400_TradeOrderManagement/python/tests/test_sizing.py
+	renamed:    projects/P_400_TradeOrderManagement/python/test_spec_cache.py -> projects/P_400_TradeOrderManagement/python/tests/test_spec_cache.py
+	renamed:    projects/P_400_TradeOrderManagement/python/test_spread_council.py -> projects/P_400_TradeOrderManagement/python/tests/test_spread_council.py
+	renamed:    projects/P_400_TradeOrderManagement/python/test_spread_sizer.py -> projects/P_400_TradeOrderManagement/python/tests/test_spread_sizer.py
+	new file:   projects/P_400_TradeOrderManagement/python/tests/test_tape_price_basis.py
+	renamed:    projects/P_400_TradeOrderManagement/python/test_vehicle_selector.py -> projects/P_400_TradeOrderManagement/python/tests/test_vehicle_selector.py
+	new file:   projects/P_400_TradeOrderManagement/tasks/todo.md
+	modified:   projects/P_800_Automation_Note_Taking/docs/P_800_System_Initialization_Prompt_v1_1.md
+	new file:   projects/P_800_Automation_Note_Taking/python/conftest.py
+	modified:   projects/P_800_Automation_Note_Taking/tasks/todo.md
+	deleted:    projects/P_805_Email_Trade_Extractor/P_805_System_Initialization_v1_5.md
+	modified:   projects/P_805_Email_Trade_Extractor/docs/P_805_System_Initialization_v1_5.md
+	new file:   projects/P_805_Email_Trade_Extractor/python/conftest.py
+	new file:   projects/scriptsout.txt
+	modified:   pyproject.toml
+	modified:   shared_resources/chaikin_enrichment/_last_prompt.txt
+	modified:   shared_resources/chaikin_enrichment/application/run_chaikin_batch.py
+	modified:   shared_resources/chaikin_enrichment/config.py
+	modified:   shared_resources/chaikin_enrichment/domain/candidate_filter.py
+	new file:   shared_resources/chaikin_enrichment/infrastructure/skip_list_reader.py
+	new file:   shared_resources/python_utils/lm_studio_status.py
+	modified:   trading_journal/.obsidian/workspace.json
+	modified:   trading_journal/Bases/KB_Articles.base
+	modified:   trading_journal/Bases/Open_Positions.base
+	modified:   trading_journal/Bases/P020_Performance.base
+	modified:   trading_journal/Bases/P115_Evaluations.base
+	modified:   trading_journal/Bases/P300_Signals.base
+	modified:   trading_journal/Bases/P400_Trades.base
+	modified:   trading_journal/KnowledgeBase/2026-06-20_How to Build an AI Second Brain That Evolves Over Time with Claude Code and Obsidian.md
+	modified:   trading_journal/KnowledgeBase/2026-07-06_How to Build an Obsidian Knowledge Vault That Gets Smarter Every Day Without You Doing Anything.md
+	modified:   trading_journal/KnowledgeBase/2026-07-29_Graph Engineering explained what it is, when to use it and when not to.md
+	new file:   trading_journal/KnowledgeBase/2026-08-06_7 Modern Python Libraries Shaking Up AI Development in 2026.md
+	new file:   trading_journal/KnowledgeBase/2026-08-06_Grok Stock Prompts.md
+	new file:   trading_journal/KnowledgeBase/2026-08-06_The Python Library I Installed for One AI Experiment Ended Up Replacing Thousands of Lines of Prompt Engineering.md
+	new file:   trading_journal/KnowledgeBase/2026-08-07_How to Become a Graph Architect With Zero Experience (Full Course).md
+	new file:   trading_journal/KnowledgeBase/2026-08-07_How to build your first Agentic System (For Personal Use).md
+	new file:   trading_journal/KnowledgeBase/2026-08-09_How to Automate Your Life With Claude (Full System).md
+	new file:   trading_journal/KnowledgeBase/2026-08-09_How to deslop Claude in 2 words.md
+	new file:   trading_journal/KnowledgeBase/Building your first AI Agent.md
+	deleted:    trading_journal/TradeManagement/P115/2024-12-21_CW.md
+	deleted:    trading_journal/TradeManagement/P115/2024-12-21_GPK.md
+	deleted:    trading_journal/TradeManagement/P115/2025-11-06_TSLA.md
+	deleted:    trading_journal/TradeManagement/P115/2025-11-07_PLTR.md
+	deleted:    trading_journal/TradeManagement/P115/2025-11-08_KVUE.md
+	deleted:    trading_journal/TradeManagement/P115/2025-11-09_COGT.md
+	deleted:    trading_journal/TradeManagement/P115/2025-11-10_SLDP.md
+	deleted:    trading_journal/TradeManagement/P115/2025-11-12_CTVA.md
+	deleted:    trading_journal/TradeManagement/P115/2025-11-12_EOSE.md
+	deleted:    trading_journal/TradeManagement/P115/2025-11-12_JEF.md
+	deleted:    trading_journal/TradeManagement/P115/2025-11-12_KVUE.md
+	deleted:    trading_journal/TradeManagement/P115/2025-11-12_MQ.md
+	deleted:    trading_journal/TradeManagement/P115/2025-11-12_SKYT.md
+	deleted:    trading_journal/TradeManagement/P115/2025-11-12_UPWK.md
+	deleted:    trading_journal/TradeManagement/P115/2025-11-21_AKAM.md
+	deleted:    trading_journal/TradeManagement/P115/2025-11-21_BW.md
+	deleted:    trading_journal/TradeManagement/P115/2025-11-21_DAWN.md
+	deleted:    trading_journal/TradeManagement/P115/2025-11-21_IMRX.md
+	deleted:    trading_journal/TradeManagement/P115/2025-11-21_KODK.md
+	deleted:    trading_journal/TradeManagement/P115/2025-11-21_OMER.md
+	deleted:    trading_journal/TradeManagement/P115/2025-11-21_ORGO.md
+	deleted:    trading_journal/TradeManagement/P115/2025-11-21_PRAX.md
+	deleted:    trading_journal/TradeManagement/P115/2025-11-21_PSNL.md
+	deleted:    trading_journal/TradeManagement/P115/2025-11-21_PUMP.md
+	deleted:    trading_journal/TradeManagement/P115/2025-11-21_RIVN.md
+	deleted:    trading_journal/TradeManagement/P115/2025-11-21_STOK.md
+	deleted:    trading_journal/TradeManagement/P115/2025-11-25_AAPL.md
+	deleted:    trading_journal/TradeManagement/P115/2025-11-25_BW.md
+	deleted:    trading_journal/TradeManagement/P115/2025-11-25_CSIQ.md
+	deleted:    trading_journal/TradeManagement/P115/2025-11-25_ES.md
+	deleted:    trading_journal/TradeManagement/P115/2025-11-25_GGAL.md
+	deleted:    trading_journal/TradeManagement/P115/2025-11-25_INV.md
+	deleted:    trading_journal/TradeManagement/P115/2025-11-25_SNDK.md
+	deleted:    trading_journal/TradeManagement/P115/2025-11-26_ATI.md
+	deleted:    trading_journal/TradeManagement/P115/2025-11-26_AVGO.md
+	deleted:    trading_journal/TradeManagement/P115/2025-11-26_CGON.md
+	deleted:    trading_journal/TradeManagement/P115/2025-11-26_CLS.md
+	deleted:    trading_journal/TradeManagement/P115/2025-11-26_NAMS.md
+	deleted:    trading_journal/TradeManagement/P115/2025-11-26_NEE.md
+	deleted:    trading_journal/TradeManagement/P115/2025-11-26_PWR.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-03_BOOT.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-03_LUMN.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-03_MOD.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-03_SYM.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-03_TMC.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-03_ULTA.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-04_AEVA.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-04_APLD.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-04_ATI.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-04_CGON.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-04_CLF.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-04_CLSK.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-04_SERV.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-04_TMC.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-09_AMTM.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-09_AZN.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-09_CLS.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-09_CRS.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-09_LMND.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-09_NVT.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-09_SANM.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-09_TSM.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-09_URBN.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-10_CLF.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-10_DASH.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-10_IRBT.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-10_POET.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-10_RDW.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-10_RKLB.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-10_SERV.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-10_SNDK.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-10_USAR.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-11_AEVA.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-11_FFIV.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-11_MGNI.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-11_POET.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-11_SHLS.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-13_AEVA.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-13_FFIV.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-13_MGNI.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-13_POETI.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-13_SHLS.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-15_AAPL.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-15_AMTMPL.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-15_AZN.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-15_BKV.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-15_GOOGL.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-15_IBM.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-15_PATH.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-15_TSLA.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-15_TSM.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-15_TVTX.md
+	deleted:    trading_journal/TradeManagement/P115/2025-12-16_TVTX.md
+	renamed:    trading_journal/TradeManagement/P115/2024-12-18_AMTM.md -> trading_journal/TradeOrderManagement/P115/2024-12-18_AMTM.md
+	renamed:    trading_journal/TradeManagement/P115/2024-12-18_AXTI.md -> trading_journal/TradeOrderManagement/P115/2024-12-18_AXTI.md
+	renamed:    trading_journal/TradeManagement/P115/2024-12-18_CBRE.md -> trading_journal/TradeOrderManagement/P115/2024-12-18_CBRE.md
+	renamed:    trading_journal/TradeManagement/P115/2024-12-18_CDE.md -> trading_journal/TradeOrderManagement/P115/2024-12-18_CDE.md
+	renamed:    trading_journal/TradeManagement/P115/2024-12-18_CENX.md -> trading_journal/TradeOrderManagement/P115/2024-12-18_CENX.md
+	renamed:    trading_journal/TradeManagement/P115/2024-12-18_CHRW.md -> trading_journal/TradeOrderManagement/P115/2024-12-18_CHRW.md
+	renamed:    trading_journal/TradeManagement/P115/2024-12-18_CLF.md -> trading_journal/TradeOrderManagement/P115/2024-12-18_CLF.md
+	renamed:    trading_journal/TradeManagement/P115/2024-12-18_DG.md -> trading_journal/TradeOrderManagement/P115/2024-12-18_DG.md
+	renamed:    trading_journal/TradeManagement/P115/2024-12-18_LVS.md -> trading_journal/TradeOrderManagement/P115/2024-12-18_LVS.md
+	renamed:    trading_journal/TradeManagement/P115/2024-12-18_MDB.md -> trading_journal/TradeOrderManagement/P115/2024-12-18_MDB.md
+	renamed:    trading_journal/TradeManagement/P115/2024-12-18_PDRT.md -> trading_journal/TradeOrderManagement/P115/2024-12-18_PDRT.md
+	renamed:    trading_journal/TradeManagement/P115/2024-12-18_RDW.md -> trading_journal/TradeOrderManagement/P115/2024-12-18_RDW.md
+	renamed:    trading_journal/TradeManagement/P115/2024-12-18_RKLB.md -> trading_journal/TradeOrderManagement/P115/2024-12-18_RKLB.md
+	renamed:    trading_journal/TradeManagement/P115/2024-12-18_ROKU.md -> trading_journal/TradeOrderManagement/P115/2024-12-18_ROKU.md
+	renamed:    trading_journal/TradeManagement/P115/2024-12-18_TE.md -> trading_journal/TradeOrderManagement/P115/2024-12-18_TE.md
+	renamed:    trading_journal/TradeManagement/P115/2024-12-18_TMC.md -> trading_journal/TradeOrderManagement/P115/2024-12-18_TMC.md
+	renamed:    trading_journal/TradeManagement/P115/2024-12-18_TVTX.md -> trading_journal/TradeOrderManagement/P115/2024-12-18_TVTX.md
+	renamed:    trading_journal/TradeManagement/P115/2024-12-18_TWLO.md -> trading_journal/TradeOrderManagement/P115/2024-12-18_TWLO.md
+	renamed:    trading_journal/TradeManagement/P115/2024-12-18_VOR.md -> trading_journal/TradeOrderManagement/P115/2024-12-18_VOR.md
+	new file:   trading_journal/TradeOrderManagement/P115/2024-12-21_CW.md
+	new file:   trading_journal/TradeOrderManagement/P115/2024-12-21_GPK.md
+	renamed:    trading_journal/TradeManagement/P115/2024-12-22_CBRE.md -> trading_journal/TradeOrderManagement/P115/2024-12-22_CBRE.md
+	renamed:    trading_journal/TradeManagement/P115/2024-12-22_FROG.md -> trading_journal/TradeOrderManagement/P115/2024-12-22_FROG.md
+	renamed:    trading_journal/TradeManagement/P115/2024-12-22_HASI.md -> trading_journal/TradeOrderManagement/P115/2024-12-22_HASI.md
+	renamed:    trading_journal/TradeManagement/P115/2024-12-22_PEGA.md -> trading_journal/TradeOrderManagement/P115/2024-12-22_PEGA.md
+	renamed:    trading_journal/TradeManagement/P115/2024-12-22_PGNY.md -> trading_journal/TradeOrderManagement/P115/2024-12-22_PGNY.md
+	renamed:    trading_journal/TradeManagement/P115/2024-12-22_ROKU.md -> trading_journal/TradeOrderManagement/P115/2024-12-22_ROKU.md
+	renamed:    trading_journal/TradeManagement/P115/2024-12-22_TVTX.md -> trading_journal/TradeOrderManagement/P115/2024-12-22_TVTX.md
+	renamed:    trading_journal/TradeManagement/P115/2024-12-22_TWLO.md -> trading_journal/TradeOrderManagement/P115/2024-12-22_TWLO.md
+	renamed:    trading_journal/TradeManagement/P115/2024-12-22_UTLA.md -> trading_journal/TradeOrderManagement/P115/2024-12-22_UTLA.md
+	renamed:    trading_journal/TradeManagement/P115/2025-01-28_AXSM.md -> trading_journal/TradeOrderManagement/P115/2025-01-28_AXSM.md
+	renamed:    trading_journal/TradeManagement/P115/2025-01-28_BKV2.md -> trading_journal/TradeOrderManagement/P115/2025-01-28_BKV2.md
+	renamed:    trading_journal/TradeManagement/P115/2025-01-28_BWXT.md -> trading_journal/TradeOrderManagement/P115/2025-01-28_BWXT.md
+	renamed:    trading_journal/TradeManagement/P115/2025-01-28_FHN.md -> trading_journal/TradeOrderManagement/P115/2025-01-28_FHN.md
+	renamed:    trading_journal/TradeManagement/P115/2025-01-28_GOOG.md -> trading_journal/TradeOrderManagement/P115/2025-01-28_GOOG.md
+	renamed:    trading_journal/TradeManagement/P115/2025-01-28_HASI.md -> trading_journal/TradeOrderManagement/P115/2025-01-28_HASI.md
+	renamed:    trading_journal/TradeManagement/P115/2025-01-28_IBRX.md -> trading_journal/TradeOrderManagement/P115/2025-01-28_IBRX.md
+	renamed:    trading_journal/TradeManagement/P115/2025-01-28_IMSR.md -> trading_journal/TradeOrderManagement/P115/2025-01-28_IMSR.md
+	renamed:    trading_journal/TradeManagement/P115/2025-01-28_LIVN.md -> trading_journal/TradeOrderManagement/P115/2025-01-28_LIVN.md
+	renamed:    trading_journal/TradeManagement/P115/2025-01-28_LPTH.md -> trading_journal/TradeOrderManagement/P115/2025-01-28_LPTH.md
+	renamed:    trading_journal/TradeManagement/P115/2025-01-28_PLAB.md -> trading_journal/TradeOrderManagement/P115/2025-01-28_PLAB.md
+	renamed:    trading_journal/TradeManagement/P115/2025-01-28_SNDX.md -> trading_journal/TradeOrderManagement/P115/2025-01-28_SNDX.md
+	renamed:    trading_journal/TradeManagement/P115/2025-01-28_SOC.md -> trading_journal/TradeOrderManagement/P115/2025-01-28_SOC.md
+	renamed:    trading_journal/TradeManagement/P115/2025-01-28_VSAT.md -> trading_journal/TradeOrderManagement/P115/2025-01-28_VSAT.md
+	renamed:    trading_journal/TradeManagement/P115/2025-02-11_ANAB.md -> trading_journal/TradeOrderManagement/P115/2025-02-11_ANAB.md
+	renamed:    trading_journal/TradeManagement/P115/2025-02-11_AXSM.md -> trading_journal/TradeOrderManagement/P115/2025-02-11_AXSM.md
+	renamed:    trading_journal/TradeManagement/P115/2025-02-11_BTDR.md -> trading_journal/TradeOrderManagement/P115/2025-02-11_BTDR.md
+	renamed:    trading_journal/TradeManagement/P115/2025-02-11_COMP.md -> trading_journal/TradeOrderManagement/P115/2025-02-11_COMP.md
+	renamed:    trading_journal/TradeManagement/P115/2025-02-11_CRUS.md -> trading_journal/TradeOrderManagement/P115/2025-02-11_CRUS.md
+	renamed:    trading_journal/TradeManagement/P115/2025-02-11_CRVS.md -> trading_journal/TradeOrderManagement/P115/2025-02-11_CRVS.md
+	renamed:    trading_journal/TradeManagement/P115/2025-02-11_ELVN.md -> trading_journal/TradeOrderManagement/P115/2025-02-11_ELVN.md
+	renamed:    trading_journal/TradeManagement/P115/2025-02-11_HUT.md -> trading_journal/TradeOrderManagement/P115/2025-02-11_HUT.md
+	renamed:    trading_journal/TradeManagement/P115/2025-02-11_IBKR.md -> trading_journal/TradeOrderManagement/P115/2025-02-11_IBKR.md
+	renamed:    trading_journal/TradeManagement/P115/2025-02-11_IRDM.md -> trading_journal/TradeOrderManagement/P115/2025-02-11_IRDM.md
+	renamed:    trading_journal/TradeManagement/P115/2025-02-11_NXT.md -> trading_journal/TradeOrderManagement/P115/2025-02-11_NXT.md
+	renamed:    trading_journal/TradeManagement/P115/2025-02-11_PDYN.md -> trading_journal/TradeOrderManagement/P115/2025-02-11_PDYN.md
+	renamed:    trading_journal/TradeManagement/P115/2025-02-11_PLAB.md -> trading_journal/TradeOrderManagement/P115/2025-02-11_PLAB.md
+	renamed:    trading_journal/TradeManagement/P115/2025-02-11_SLB.md -> trading_journal/TradeOrderManagement/P115/2025-02-11_SLB.md
+	renamed:    trading_journal/TradeManagement/P115/2025-02-11_TECX.md -> trading_journal/TradeOrderManagement/P115/2025-02-11_TECX.md
+	renamed:    trading_journal/TradeManagement/P115/2025-02-11_TNGX.md -> trading_journal/TradeOrderManagement/P115/2025-02-11_TNGX.md
+	renamed:    trading_journal/TradeManagement/P115/2025-02-11_USAR.md -> trading_journal/TradeOrderManagement/P115/2025-02-11_USAR.md
+	renamed:    trading_journal/TradeManagement/P115/2025-02-11_UUUU.md -> trading_journal/TradeOrderManagement/P115/2025-02-11_UUUU.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-11-06_TSLA.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-11-07_PLTR.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-11-08_KVUE.md
+	renamed:    trading_journal/Untitled.md -> trading_journal/TradeOrderManagement/P115/2025-11-09_COGT.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-11-10_SLDP.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-11-12_CTVA.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-11-12_EOSE.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-11-12_JEF.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-11-12_KVUE.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-11-12_MQ.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-11-12_SKYT.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-11-12_UPWK.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-11-21_AKAM.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-11-21_BW.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-11-21_DAWN.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-11-21_IMRX.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-11-21_KODK.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-11-21_OMER.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-11-21_ORGO.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-11-21_PRAX.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-11-21_PSNL.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-11-21_PUMP.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-11-21_RIVN.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-11-21_STOK.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-11-25_AAPL.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-11-25_BW.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-11-25_CSIQ.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-11-25_ES.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-11-25_GGAL.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-11-25_INV.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-11-25_SNDK.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-11-26_ATI.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-11-26_AVGO.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-11-26_CGON.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-11-26_CLS.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-11-26_NAMS.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-11-26_NEE.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-11-26_PWR.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-03_BOOT.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-03_CAT.md -> trading_journal/TradeOrderManagement/P115/2025-12-03_CAT.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-03_CDE.md -> trading_journal/TradeOrderManagement/P115/2025-12-03_CDE.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-03_CLF.md -> trading_journal/TradeOrderManagement/P115/2025-12-03_CLF.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-03_FROG.md -> trading_journal/TradeOrderManagement/P115/2025-12-03_FROG.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-03_IBM.md -> trading_journal/TradeOrderManagement/P115/2025-12-03_IBM.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-03_JBL.md -> trading_journal/TradeOrderManagement/P115/2025-12-03_JBL.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-03_LUMN.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-03_MOD.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-03_SYM.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-03_TMC.md
+	renamed:    trading_journal/Untitled 1.md -> trading_journal/TradeOrderManagement/P115/2025-12-03_ULTA.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-04_AEVA.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-04_APLD.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-04_ATI.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-04_CGON.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-04_CLF.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-04_CLSK.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-04_CRDO.md -> trading_journal/TradeOrderManagement/P115/2025-12-04_CRDO.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-04_CSIQ.md -> trading_journal/TradeOrderManagement/P115/2025-12-04_CSIQ.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-04_FROG.md -> trading_journal/TradeOrderManagement/P115/2025-12-04_FROG.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-04_LUMN.md -> trading_journal/TradeOrderManagement/P115/2025-12-04_LUMN.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-04_MOD.md -> trading_journal/TradeOrderManagement/P115/2025-12-04_MOD.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-04_PWR.md -> trading_journal/TradeOrderManagement/P115/2025-12-04_PWR.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-04_SANA.md -> trading_journal/TradeOrderManagement/P115/2025-12-04_SANA.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-04_SERV.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-04_TMC.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-08_EYE.md -> trading_journal/TradeOrderManagement/P115/2025-12-08_EYE.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-08_FIGS.md -> trading_journal/TradeOrderManagement/P115/2025-12-08_FIGS.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-08_LMND.md -> trading_journal/TradeOrderManagement/P115/2025-12-08_LMND.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-08_MU.md -> trading_journal/TradeOrderManagement/P115/2025-12-08_MU.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-08_PWR.md -> trading_journal/TradeOrderManagement/P115/2025-12-08_PWR.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-08_STX.md -> trading_journal/TradeOrderManagement/P115/2025-12-08_STX.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-08_VIAV.md -> trading_journal/TradeOrderManagement/P115/2025-12-08_VIAV.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-08_WDC.md -> trading_journal/TradeOrderManagement/P115/2025-12-08_WDC.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-09_AMTM.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-09_ASTS.md -> trading_journal/TradeOrderManagement/P115/2025-12-09_ASTS.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-09_AZN.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-09_BULL.md -> trading_journal/TradeOrderManagement/P115/2025-12-09_BULL.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-09_CLF.md -> trading_journal/TradeOrderManagement/P115/2025-12-09_CLF.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-09_CLS.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-09_CMG.md -> trading_journal/TradeOrderManagement/P115/2025-12-09_CMG.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-09_CRS.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-09_IONQ.md -> trading_journal/TradeOrderManagement/P115/2025-12-09_IONQ.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-09_LMND.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-09_NVT.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-09_POET.md -> trading_journal/TradeOrderManagement/P115/2025-12-09_POET.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-09_QBTS.md -> trading_journal/TradeOrderManagement/P115/2025-12-09_QBTS.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-09_RDW.md -> trading_journal/TradeOrderManagement/P115/2025-12-09_RDW.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-09_RKLB.md -> trading_journal/TradeOrderManagement/P115/2025-12-09_RKLB.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-09_SANM.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-09_SERV.md -> trading_journal/TradeOrderManagement/P115/2025-12-09_SERV.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-09_SNDK.md -> trading_journal/TradeOrderManagement/P115/2025-12-09_SNDK.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-09_TSM.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-09_URBN.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-09_USAR.md -> trading_journal/TradeOrderManagement/P115/2025-12-09_USAR.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-10_CLF.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-10_DASH.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-10_IRBT.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-10_POET.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-10_RDW.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-10_RKLB.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-10_SERV.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-10_SNDK.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-10_USAR.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-11_AEVA.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-11_FFIV.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-11_MGNI.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-11_POET.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-11_SHLS.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-13_AEVA.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-13_FFIV.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-13_MGNI.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-13_POETI.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-13_SHLS.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-15_AAPL.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-15_AMTMPL.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-15_AZN.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-15_BKV.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-15_GOOGL.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-15_IBM.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-15_PATH.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-15_TSLA.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-15_TSM.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-15_TVTX.md
+	new file:   trading_journal/TradeOrderManagement/P115/2025-12-16_TVTX.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-18_AAOI.md -> trading_journal/TradeOrderManagement/P115/2025-12-18_AAOI.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-18_AMTM.md -> trading_journal/TradeOrderManagement/P115/2025-12-18_AMTM.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-18_ATI.md -> trading_journal/TradeOrderManagement/P115/2025-12-18_ATI.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-18_AXTI.md -> trading_journal/TradeOrderManagement/P115/2025-12-18_AXTI.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-18_CBRE.md -> trading_journal/TradeOrderManagement/P115/2025-12-18_CBRE.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-18_CENX.md -> trading_journal/TradeOrderManagement/P115/2025-12-18_CENX.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-18_CHRW.md -> trading_journal/TradeOrderManagement/P115/2025-12-18_CHRW.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-18_CLF.md -> trading_journal/TradeOrderManagement/P115/2025-12-18_CLF.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-18_COE.md -> trading_journal/TradeOrderManagement/P115/2025-12-18_COE.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-18_HASI.md -> trading_journal/TradeOrderManagement/P115/2025-12-18_HASI.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-18_IGR.md -> trading_journal/TradeOrderManagement/P115/2025-12-18_IGR.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-18_INBS.md -> trading_journal/TradeOrderManagement/P115/2025-12-18_INBS.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-18_JBL.md -> trading_journal/TradeOrderManagement/P115/2025-12-18_JBL.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-18_LVS.md -> trading_journal/TradeOrderManagement/P115/2025-12-18_LVS.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-18_MDB.md -> trading_journal/TradeOrderManagement/P115/2025-12-18_MDB.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-18_PGNY.md -> trading_journal/TradeOrderManagement/P115/2025-12-18_PGNY.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-18_POET.md -> trading_journal/TradeOrderManagement/P115/2025-12-18_POET.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-18_ROKU.md -> trading_journal/TradeOrderManagement/P115/2025-12-18_ROKU.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-18_SOC.md -> trading_journal/TradeOrderManagement/P115/2025-12-18_SOC.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-18_TMC.md -> trading_journal/TradeOrderManagement/P115/2025-12-18_TMC.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-18_TVTX.md -> trading_journal/TradeOrderManagement/P115/2025-12-18_TVTX.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-18_TWLO.md -> trading_journal/TradeOrderManagement/P115/2025-12-18_TWLO.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-18_TXT.md -> trading_journal/TradeOrderManagement/P115/2025-12-18_TXT.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-18_ULTA.md -> trading_journal/TradeOrderManagement/P115/2025-12-18_ULTA.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-19_CLF.md -> trading_journal/TradeOrderManagement/P115/2025-12-19_CLF.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-21_ASIX.md -> trading_journal/TradeOrderManagement/P115/2025-12-21_ASIX.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-21_ASTS.md -> trading_journal/TradeOrderManagement/P115/2025-12-21_ASTS.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-21_AXON.md -> trading_journal/TradeOrderManagement/P115/2025-12-21_AXON.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-21_CDE.md -> trading_journal/TradeOrderManagement/P115/2025-12-21_CDE.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-21_CLF.md -> trading_journal/TradeOrderManagement/P115/2025-12-21_CLF.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-21_EVTL.md -> trading_journal/TradeOrderManagement/P115/2025-12-21_EVTL.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-21_FOXF.md -> trading_journal/TradeOrderManagement/P115/2025-12-21_FOXF.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-21_ITGR.md -> trading_journal/TradeOrderManagement/P115/2025-12-21_ITGR.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-21_M.md -> trading_journal/TradeOrderManagement/P115/2025-12-21_M.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-21_OLMA.md -> trading_journal/TradeOrderManagement/P115/2025-12-21_OLMA.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-21_POET.md -> trading_journal/TradeOrderManagement/P115/2025-12-21_POET.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-21_RILY.md -> trading_journal/TradeOrderManagement/P115/2025-12-21_RILY.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-21_SNDK.md -> trading_journal/TradeOrderManagement/P115/2025-12-21_SNDK.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-21_SOC.md -> trading_journal/TradeOrderManagement/P115/2025-12-21_SOC.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-21_SPC.md -> trading_journal/TradeOrderManagement/P115/2025-12-21_SPC.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-21_TLRY.md -> trading_journal/TradeOrderManagement/P115/2025-12-21_TLRY.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-21_VELO.md -> trading_journal/TradeOrderManagement/P115/2025-12-21_VELO.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-21_WVE.md -> trading_journal/TradeOrderManagement/P115/2025-12-21_WVE.md
+	renamed:    trading_journal/TradeManagement/P115/2025-12-21_WWW.md -> trading_journal/TradeOrderManagement/P115/2025-12-21_WWW.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-03_ACH.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-03_AIQ.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-03_ALB.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-03_APP.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-03_ASTS.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-03_BBAI.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-03_BBBY.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-03_CIEN.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-03_CW.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-03_ENPH.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-03_EXP.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-03_FLNC.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-03_GEV.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-03_GGAL.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-03_GSIT.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-03_GWH.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-03_HRZN.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-03_INSG.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-03_IREN.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-03_JBL.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-03_JMIA.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-03_KEY.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-03_MRCY.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-03_OCSL.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-03_PAVE.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-03_POOL.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-03_RGTI.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-03_RH.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-03_RKLB.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-03_RKT.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-03_RY.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-03_SGML.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-03_UEC.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-03_UUUU.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-03_VUZI.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-04_ACLS.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-04_AMAT.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-04_AOSL.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-04_ARRY.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-04_ASX.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-04_AUOTY.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-04_BB.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-04_CACC.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-04_CC.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-04_CL.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-04_CMPS.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-04_CRNC.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-04_ECHO.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-04_EZPW.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-04_FLEX.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-04_GLAD.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-04_GNTX.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-04_HIMS.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-04_HYLN.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-04_INDI.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-04_INTC.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-04_KMB.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-04_MCHP.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-04_MS.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-04_MSTR.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-04_NSLR.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-04_OPEN.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-04_PZZA.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-04_QS.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-04_RUN.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-04_SEDG.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-04_SHOP.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-04_SIMO.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-04_SOUN.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-04_STEM.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-04_STM.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-04_TAN.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-04_TE.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-04_TSLA.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-04_TSLL.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-04_UMC.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-04_VSH.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-05_AVB.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-05_DX.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-05_LFCR.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-05_MAA.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-05_NVR.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-05_PSKY.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-06_GNL.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-06_HAL.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-06_HTZ.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-06_MSOS.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-06_QCOM.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-06_TMUS.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-07_ALGM.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-07_MGY.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-07_MTDR.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-07_NVR.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-07_ORC.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-07_RIVN.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-07_TLN.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-07_UCTT.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-07_VKTX.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-07_VSH.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-10_LUMN.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-11_CLIX.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-11_NSLR.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-11_RWT.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-11_STLA.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-11_SYNA.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-11_XPO.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-12_FHN.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-12_GDDY.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-12_HLT.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-12_SAIA.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-12_WEAT.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-12_WU.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-13_BBY.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-13_EPD.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-13_FICO.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-13_MSCI.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-13_RBLX.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-13_RDDT.md
+	new file:   trading_journal/TradeOrderManagement/P300/2026-08-13_SMPL.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-03_ACH.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-03_AIQ.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-03_ALB.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-03_APP.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-03_ASTS.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-03_BBAI.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-03_BBBY.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-03_CIEN.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-03_CW.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-03_ENPH.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-03_EXEL.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-03_EXP.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-03_FLNC.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-03_GEV.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-03_GGAL.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-03_GSIT.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-03_GWH.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-03_HRZN.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-03_INSG.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-03_IREN.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-03_JBL.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-03_JMIA.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-03_KEY.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-03_MRCY.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-03_OCSL.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-03_PAVE.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-03_POOL.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-03_RGTI.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-03_RH.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-03_RKLB.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-03_RKT.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-03_RY.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-03_SGML.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-03_UEC.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-03_UUUU.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-03_VUZI.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_ACLS.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_AMAT.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_AOSL.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_ARRY.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_ASX.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_AUOTY.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_BB.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_CACC.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_CC.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_CL.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_CMPS.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_CRNC.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_CRWD.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_ECHO.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_EZPW.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_FLEX.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_GLAD.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_GNTX.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_HIMS.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_HYLN.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_INDI.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_INTC.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_KMB.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_MCHP.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_MS.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_MSTR.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_NSLR.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_OPEN.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_PZZA.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_QS.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_RUN.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_SEDG.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_SHOP.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_SIMO.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_SOUN.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_STEM.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_STM.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_TAN.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_TE.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_TSLA.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_TSLL.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_UMC.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-04_VSH.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-05_AVB.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-05_DLO.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-05_DX.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-05_FSLR.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-05_LFCR.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-05_MAA.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-05_NUE.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-05_NVR.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-05_NVT.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-05_PSKY.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-06_GNL.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-06_HAL.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-06_HTZ.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-06_MSOS.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-06_NVT.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-06_QCOM.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-06_TMUS.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-07_ALGM.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-07_AXTI.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-07_CGON.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-07_MGY.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-07_MTDR.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-07_NVR.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-07_NVT.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-07_ORC.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-07_RIVN.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-07_TLN.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-07_UCTT.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-07_VKTX.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-07_VSH.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-10_LUMN.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-11_AA.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-11_CLIX.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-11_NSLR.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-11_RWT.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-11_STLA.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-11_SYNA.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-11_XPO.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-12_ANET.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-12_DINO.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-12_FHN.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-12_GDDY.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-12_HLT.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-12_NVT.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-12_SAIA.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-12_WEAT.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-12_WU.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-13_BBY.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-13_DAL.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-13_DXYZ.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-13_EPD.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-13_FICO.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-13_FLY.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-13_MSCI.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-13_RBLX.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-13_RDDT.md
+	new file:   trading_journal/TradeOrderManagement/P400/2026-08-13_SMPL.md
+	new file:   trading_journal/TradeOrderManagement/P400/paper/2026-08-11_WSM.md
+	new file:   trading_journal/TradeOrderManagement/P400/paper/2026-08-14_SBLK.md
+	new file:   trading_journal/TradeOrderManagement/_archive/2026-08-06_NTAP_v2.0_PULLED.json
+	new file:   trading_journal/TradeOrderManagement/_archive/2026-08-06_NTAP_v2.0_PULLED_reason.txt
+	deleted:    trading_journal/TradeOrderManagement/signals/2026-08-03_EXEL_v2.0.json
+	deleted:    trading_journal/TradeOrderManagement/signals/2026-08-04_CRWD_v2.0.json
+	modified:   trading_journal/TradeOrderManagement/signals/processed/2608_ProcessedJson.zip
+	deleted:    trading_journal/Untitled.base
+
+
+R  Agentic-Hub-Governance/verify/run_this_jit_baseline.py -> Agentic-Hub-Governance/verify/_archive/run_this_jit_baseline.py
+R  Agentic-Hub-Governance/verify/run_this_jit_context.txt -> Agentic-Hub-Governance/verify/_archive/run_this_jit_context.txt
+R  Agentic-Hub-Governance/verify/run_this_jit_regression.py -> Agentic-Hub-Governance/verify/_archive/run_this_jit_regression.py
+R  Agentic-Hub-Governance/verify/run_this_jit_regression_context.txt -> Agentic-Hub-Governance/verify/_archive/run_this_jit_regression_context.txt
+R  Agentic-Hub-Governance/verify/run_this_profiling.py -> Agentic-Hub-Governance/verify/_archive/run_this_profiling.py
+R  Agentic-Hub-Governance/verify/run_this_profiling_context.txt -> Agentic-Hub-Governance/verify/_archive/run_this_profiling_context.txt
+A  Agentic-Hub-Governance/verify/run_this_E13001_phase3_20260808_170007.py
+A  Agentic-Hub-Governance/verify/run_this_E13001_phase3_20260808_170007_context.txt
+A  Agentic-Hub-Governance/verify/run_this_E13001_phase4_20260808_170007.py
+A  Agentic-Hub-Governance/verify/run_this_E13001_phase4_20260808_170007_context.txt
+A  Agentic-Hub-Governance/verify/run_this_P010_20260810_081136.py
+A  Agentic-Hub-Governance/verify/run_this_P010_20260810_081136_context.txt
+A  Agentic-Hub-Governance/verify/run_this_P010_20260810_083940.py
+A  Agentic-Hub-Governance/verify/run_this_P010_20260810_083940_context.txt
+A  Agentic-Hub-Governance/verify/run_this_P010_20260810_085152.py
+A  Agentic-Hub-Governance/verify/run_this_P010_20260810_085152_context.txt
+A  Agentic-Hub-Governance/verify/run_this_P115_20260811_144857.py
+A  Agentic-Hub-Governance/verify/run_this_P115_20260811_144857_context.txt
+A  Agentic-Hub-Governance/verify/run_this_P115_20260811_151546.py
+A  Agentic-Hub-Governance/verify/run_this_P115_20260811_151546_context.txt
+A  Agentic-Hub-Governance/verify/run_this_P115_20260812T173513_output.json
+A  Agentic-Hub-Governance/verify/run_this_P115_20260812T174409_output.json
+A  Agentic-Hub-Governance/verify/run_this_P115_20260812T182339_output.json
+A  Agentic-Hub-Governance/verify/run_this_P115_20260813_191258.py
+A  Agentic-Hub-Governance/verify/run_this_P115_20260813_191258_context.txt
+A  Agentic-Hub-Governance/verify/run_this_P115_20260813_191258_output.json
+A  Agentic-Hub-Governance/verify/run_this_P115_20260813_193500.py
+A  Agentic-Hub-Governance/verify/run_this_P115_20260813_193500_context.txt
+A  Agentic-Hub-Governance/verify/run_this_P115_20260813_193500_output.json
+A  Agentic-Hub-Governance/verify/run_this_P115_20260813_202850.py
+A  Agentic-Hub-Governance/verify/run_this_P115_20260813_202850_context.txt
+A  Agentic-Hub-Governance/verify/run_this_P115_20260813_202850_output.json
+A  Agentic-Hub-Governance/verify/run_this_P115_20260814_102444.py
+A  Agentic-Hub-Governance/verify/run_this_P115_20260814_102444_context.txt
+A  Agentic-Hub-Governance/verify/run_this_P118_20260806_154536.py
+A  Agentic-Hub-Governance/verify/run_this_P118_20260806_154536_context.txt
+A  Agentic-Hub-Governance/verify/run_this_P400_20260813_173021.py
+A  Agentic-Hub-Governance/verify/run_this_P400_20260813_173021_context.txt
+A  Agentic-Hub-Governance/verify/run_this_P_020_20260809_133000.py
+[main 3cf8c92] Pre-clone sync: P_010/P_020/P_115/P_300/P_400 work, new work orders, journal entries as of 2026-08-14_213253
+ 1003 files changed, 83329 insertions(+), 6814 deletions(-)
+ create mode 100644 .claude/skills/p115-project-context/p115-project-context_CHANGELOG_ARCHIVE.md
+ create mode 100644 .claude/skills/p800-project-context/SKILL.md
+ create mode 100644 Agentic-Hub-Governance/handoffs/HANDOFF_E13001_unblock_2026-08-07.md
+ create mode 100644 Agentic-Hub-Governance/verify/P115_DLO_20260805_stderr.txt
+ create mode 100644 Agentic-Hub-Governance/verify/P115_DLO_20260805_stderr2.txt
+ create mode 100644 Agentic-Hub-Governance/verify/P115_DLO_20260805_stdout.txt
+ create mode 100644 Agentic-Hub-Governance/verify/P115_DLO_20260805_stdout2.txt
+ create mode 100644 Agentic-Hub-Governance/verify/P115_FSLR_20260805_stderr.txt
+ create mode 100644 Agentic-Hub-Governance/verify/P115_FSLR_20260805_stdout.txt
+ create mode 100644 Agentic-Hub-Governance/verify/P115_NUE_20260805_stderr.txt
+ create mode 100644 Agentic-Hub-Governance/verify/P115_NUE_20260805_stdout.txt
+ create mode 100644 Agentic-Hub-Governance/verify/P115_NVT_20260805_stderr.txt
+ create mode 100644 Agentic-Hub-Governance/verify/P115_NVT_20260805_stdout.txt
+ rename Agentic-Hub-Governance/verify/{ => _archive}/jit_baseline_20260718.json (100%)
+ rename Agentic-Hub-Governance/verify/{ => _archive}/jit_baseline_out.txt (100%)
+ rename Agentic-Hub-Governance/verify/{ => _archive}/profiling_out.txt (100%)
+ rename Agentic-Hub-Governance/verify/{ => _archive}/run_this_jit_baseline.py (100%)
+ rename Agentic-Hub-Governance/verify/{ => _archive}/run_this_jit_context.txt (100%)
+ rename Agentic-Hub-Governance/verify/{ => _archive}/run_this_jit_regression.py (100%)
+ rename Agentic-Hub-Governance/verify/{ => _archive}/run_this_jit_regression_context.txt (100%)
+ rename Agentic-Hub-Governance/verify/{ => _archive}/run_this_profiling.py (100%)
+ rename Agentic-Hub-Governance/verify/{ => _archive}/run_this_profiling_context.txt (100%)
+ create mode 100644 Agentic-Hub-Governance/verify/_guard_content.b64
+ create mode 100644 Agentic-Hub-Governance/verify/_scratch_nfr1_lumn.py
+ create mode 100644 Agentic-Hub-Governance/verify/_toast_diag.ps1
+ create mode 100644 Agentic-Hub-Governance/verify/_toast_fire.ps1
+ create mode 100644 Agentic-Hub-Governance/verify/_toast_install.ps1
+ create mode 100644 Agentic-Hub-Governance/verify/axti_emit_err.txt
+ create mode 100644 Agentic-Hub-Governance/verify/axti_emit_out.txt
+ create mode 100644 Agentic-Hub-Governance/verify/cgon_emit_err.txt
+ create mode 100644 Agentic-Hub-Governance/verify/cgon_emit_out.txt
+ create mode 100644 Agentic-Hub-Governance/verify/check_topk_cache_20260812.py
+ create mode 100644 Agentic-Hub-Governance/verify/fslr_signal_err.txt
+ create mode 100644 Agentic-Hub-Governance/verify/fslr_signal_out.txt
+ create mode 100644 Agentic-Hub-Governance/verify/nvt_emit_err.txt
+ create mode 100644 Agentic-Hub-Governance/verify/nvt_emit_out.txt
+ create mode 100644 Agentic-Hub-Governance/verify/nvt_signal_err.txt
+ create mode 100644 Agentic-Hub-Governance/verify/nvt_signal_out.txt
+ create mode 100644 Agentic-Hub-Governance/verify/p115_skill_current.md
+ create mode 100644 Agentic-Hub-Governance/verify/run_this_E13001_phase3_20260808_170007.py
+ create mode 100644 Agentic-Hub-Governance/verify/run_this_E13001_phase3_20260808_170007_context.txt
+ create mode 100644 Agentic-Hub-Governance/verify/run_this_E13001_phase4_20260808_170007.py
+ create mode 100644 Agentic-Hub-Governance/verify/run_this_E13001_phase4_20260808_170007_context.txt
+ create mode 100644 Agentic-Hub-Governance/verify/run_this_E13001_phase4_20260808_170007_guard_content.b64
+ create mode 100644 Agentic-Hub-Governance/verify/run_this_P010_20260810_081136.py
+ create mode 100644 Agentic-Hub-Governance/verify/run_this_P010_20260810_081136_context.txt
+ create mode 100644 Agentic-Hub-Governance/verify/run_this_P010_20260810_083940.py
+ create mode 100644 Agentic-Hub-Governance/verify/run_this_P010_20260810_083940_context.txt
+ create mode 100644 Agentic-Hub-Governance/verify/run_this_P010_20260810_085152.py
+ create mode 100644 Agentic-Hub-Governance/verify/run_this_P010_20260810_085152_context.txt
+ create mode 100644 Agentic-Hub-Governance/verify/run_this_P115_20260811_144857.py
+ create mode 100644 Agentic-Hub-Governance/verify/run_this_P115_20260811_144857_context.txt
+ create mode 100644 Agentic-Hub-Governance/verify/run_this_P115_20260811_151546.py
+ create mode 100644 Agentic-Hub-Governance/verify/run_this_P115_20260811_151546_context.txt
+ create mode 100644 Agentic-Hub-Governance/verify/run_this_P115_20260812T173513_output.json
+ create mode 100644 Agentic-Hub-Governance/verify/run_this_P115_20260812T174409_output.json
+ create mode 100644 Agentic-Hub-Governance/verify/run_this_P115_20260812T182339_output.json
+ create mode 100644 Agentic-Hub-Governance/verify/run_this_P115_20260813_191258.py
+ create mode 100644 Agentic-Hub-Governance/verify/run_this_P115_20260813_191258_context.txt
+ create mode 100644 Agentic-Hub-Governance/verify/run_this_P115_20260813_191258_output.json
+ create mode 100644 Agentic-Hub-Governance/verify/run_this_P115_20260813_193500.py
+ create mode 100644 Agentic-Hub-Governance/verify/run_this_P115_20260813_193500_context.txt
+ create mode 100644 Agentic-Hub-Governance/verify/run_this_P115_20260813_193500_output.json
+ create mode 100644 Agentic-Hub-Governance/verify/run_this_P115_20260813_202850.py
+ create mode 100644 Agentic-Hub-Governance/verify/run_this_P115_20260813_202850_context.txt
+ create mode 100644 Agentic-Hub-Governance/verify/run_this_P115_20260813_202850_output.json
+ create mode 100644 Agentic-Hub-Governance/verify/run_this_P115_20260814_102444.py
+ create mode 100644 Agentic-Hub-Governance/verify/run_this_P115_20260814_102444_context.txt
+ create mode 100644 Agentic-Hub-Governance/verify/run_this_P118_20260806_154536.py
+ create mode 100644 Agentic-Hub-Governance/verify/run_this_P118_20260806_154536_context.txt
+ create mode 100644 Agentic-Hub-Governance/verify/run_this_P400_20260813_173021.py
+ create mode 100644 Agentic-Hub-Governance/verify/run_this_P400_20260813_173021_context.txt
+ create mode 100644 Agentic-Hub-Governance/verify/run_this_P_020_20260809_133000.py
+ create mode 100644 Agentic-Hub-Governance/verify/validate_e5001.ps1
+ create mode 100644 Agentic-Hub-Governance/work_orders/WO-P000-E13.001.md
+ create mode 100644 Agentic-Hub-Governance/work_orders/WO-P000-E14.001.md
+ create mode 100644 Agentic-Hub-Governance/work_orders/WO-P000-E15.001.md
+ create mode 100644 Agentic-Hub-Governance/work_orders/WO-P000-E16.001.md
+ create mode 100644 Agentic-Hub-Governance/work_orders/WO-P000-E17.001.md
+ create mode 100644 Agentic-Hub-Governance/work_orders/WO-P020-E1.013.md
+ create mode 100644 Agentic-Hub-Governance/work_orders/WO-P300-E5.008.md
+ create mode 100644 Agentic-Hub-Governance/work_orders/WO-P400-E5.003.md
+ create mode 100644 Agentic-Hub-Governance/work_orders/WO-P400-E5.004.md
+ create mode 100644 Agentic-Hub-Governance/work_orders/WO-P400-E5.005.md
+ create mode 100644 Agentic-Hub-Governance/work_orders/WO-P400-E5.006.md
+ create mode 100644 Agentic-Hub-Governance/work_orders/WO-P400-E6.001.md
+ create mode 100644 Agentic-Hub-Governance/work_orders/WO-P400-E6.002.md
+ create mode 100644 Agentic-Hub-Governance/work_orders/WO-P400-E6.003.md
+ create mode 100644 Agentic-Hub-Governance/work_orders/WO-P800-E4.002.md
+ create mode 100644 Agentic-Hub-Governance/work_orders/WO-P800-E4.003.md
+ create mode 100644 Agentic-Hub-Governance/work_orders/WO-P800-E4.004.md
+ create mode 100644 GIT_WORKFLOW.md
+ create mode 100644 Gitstatus.txt
+ create mode 100644 P_000_git_hub_triage_2ndrun.txt
+ create mode 100644 P_000_hub_git_triage.ps1
+ create mode 100644 gitoutputstaty
+ rename {projects/P_000_PythonClaudeLocalLLM/python => integrations/lm_studio}/application/lm_studio_client.py (85%)
+ rename {projects/P_000_PythonClaudeLocalLLM/python => integrations/lm_studio}/domain/task_router.py (97%)
+ rename integrations/lm_studio/infrastructure/{lm_studio_status.py => _archive/2026-08-11_120944_lm_studio_status_DELETED_WO-P000-E5.001.py} (100%)
+ create mode 100644 outputgit.txt
+ delete mode 100644 projects/P_000_PythonClaudeLocalLLM/config.py
+ create mode 100644 projects/P_000_PythonClaudeLocalLLM/python/conftest.py
+ delete mode 100644 projects/P_000_PythonClaudeLocalLLM/python/infrastructure/lm_studio_api.py
+ delete mode 100644 projects/P_000_PythonClaudeLocalLLM/python/infrastructure/lm_studio_launcher.py
+ create mode 100644 projects/P_010_Current_Market_Posture/P_110_TradeTheBounce_1st.pdf
+ create mode 100644 projects/P_010_Current_Market_Posture/outputs/_compile_check_toast2.txt
+ create mode 100644 projects/P_010_Current_Market_Posture/python/conftest.py
+ create mode 100644 projects/P_010_Current_Market_Posture/python/intraday_risk_logic.py
+ create mode 100644 projects/P_010_Current_Market_Posture/python/note_api_fetchers.py
+ create mode 100644 projects/P_010_Current_Market_Posture/python/note_content_builders.py
+ create mode 100644 projects/P_010_Current_Market_Posture/python/note_template_engine.py
+ create mode 100644 projects/P_010_Current_Market_Posture/python/staleness_check.py
+ create mode 100644 projects/P_010_Current_Market_Posture/python/toast_notify.py
+ create mode 100644 projects/P_020_AJZStrategies_PerformanceAnalysisSystem/python/conftest.py
+ create mode 100644 projects/P_020_AJZStrategies_PerformanceAnalysisSystem/python/database/domain/account_params_calc.py
+ create mode 100644 projects/P_020_AJZStrategies_PerformanceAnalysisSystem/python/database/domain/params_history_writer.py
+ delete mode 100644 projects/P_020_AJZStrategies_PerformanceAnalysisSystem/python/parsers/P_020_TOS_Parser_v2.2.py
+ delete mode 100644 projects/P_020_AJZStrategies_PerformanceAnalysisSystem/python/parsers/P_020_TOS_Parser_v2.3.py
+ create mode 100644 projects/P_110_TradetheBounce_OIL/docs/P_110_TradeTheBounce_FirstTrade.pdf
+ create mode 100644 projects/P_110_TradetheBounce_OIL/docs/P_110_TradeTheBounce_FirstTrade.pdf.md
+ create mode 100644 projects/P_110_TradetheBounce_OIL/docs/media/0d85205e7eefe05cf343227d42d8b3d5.jpg
+ create mode 100644 projects/P_110_TradetheBounce_OIL/docs/media/0f6eade9b5e42827b3d5005536a27b65.jpg
+ create mode 100644 projects/P_110_TradetheBounce_OIL/docs/media/1b80d3e6bf71abcc4f608fa90cb9eb39.jpg
+ create mode 100644 projects/P_110_TradetheBounce_OIL/docs/media/270301661982b4e99921303ab10a9c98.jpg
+ create mode 100644 projects/P_110_TradetheBounce_OIL/docs/media/435964c10cca6c24982a0c9aa66ceb6b.jpg
+ create mode 100644 projects/P_110_TradetheBounce_OIL/docs/media/48512e2a83c1f479c2aeb73f47ec2471.jpg
+ create mode 100644 projects/P_110_TradetheBounce_OIL/docs/media/8c8e7344fa30487b811d9da174f7eae8.jpg
+ create mode 100644 projects/P_110_TradetheBounce_OIL/docs/media/9bc8303f92f1506206bc83cde299c105.jpg
+ create mode 100644 projects/P_110_TradetheBounce_OIL/docs/media/a82767894cc0b6883eba3215951d521c.jpg
+ create mode 100644 projects/P_110_TradetheBounce_OIL/docs/media/b53cbf8c8a1fbf9fe4d43720eb60eea8.jpg
+ create mode 100644 projects/P_110_TradetheBounce_OIL/docs/~$110_TradeTheBounce_FirstTrade.pdf.md
+ create mode 100644 projects/P_110_TradetheBounce_OIL/python/conftest.py
+ create mode 100644 projects/P_115_BuytheDipTradingSystem/python/conftest.py
+ create mode 100644 projects/P_120_SupplyDemandScanner/python/conftest.py
+ create mode 100644 projects/P_200_DayTradingStrategy/docs/P_010_Grok_SPY_JournalBook1 (version 1).xlsx
+ create mode 100644 projects/P_200_DayTradingStrategy/docs/P_200_SPY_Trade_Journal.xlsx
+ create mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/DUplicatePattern080526.txt
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/P_300_DailyEval.bat
+ create mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/P_300_RunBulkAddPattern_KeepAwake.bat
+ create mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/battery_report.html
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/mine/10_Pattern_AIQ.xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/mine/10_Pattern_ASTS.xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/mine/10_Pattern_BBAI.xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/mine/10_Pattern_BBBY.xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/mine/10_Pattern_ENPH.xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/mine/10_Pattern_EXP.xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/mine/10_Pattern_FLNC.xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/mine/10_Pattern_GGAL.xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/mine/10_Pattern_HRZN.xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/mine/10_Pattern_IREN.xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/mine/10_Pattern_JMIA.xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/mine/10_Pattern_KEY.xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/mine/10_Pattern_OCSL.xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/mine/10_Pattern_PAVE.xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/mine/10_Pattern_POOL.xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/mine/10_Pattern_PSEC.xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/mine/10_Pattern_RKLB.xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/mine/10_Pattern_RKT.xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/mine/10_Pattern_RY.xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/mine/10_Pattern_VUZI.xlsx
+ create mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/nightly_scan/.gitkeep
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/nightly_scan/10_pattern_CCI.xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/nightly_scan/10_pattern_CIEN.xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/nightly_scan/10_pattern_FIVE.xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/nightly_scan/10_pattern_GAP.xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/nightly_scan/10_pattern_GFI.xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/nightly_scan/10_pattern_HUN.xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/nightly_scan/10_pattern_IVPAF.xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/nightly_scan/10_pattern_LVS.xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/nightly_scan/10_pattern_NBR.xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/nightly_scan/10_pattern_SARK.xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/nightly_scan/10_pattern_SCCO.xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/nightly_scan/10_pattern_STM.xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/nightly_scan/10_pattern_SXC.xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/nightly_scan/10_pattern_TS.xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/nightly_scan/10_pattern_ULTA.xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/nightly_scan/10_pattern_URNM.xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/bulk/nightly_scan/10_pattern_WMT.xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (ACH).xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (AIQ).xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (ALB).xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (APP).xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (ASTS).xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (AXP).xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (BBAI).xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (BBBY).xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (CIEN).xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (CW).xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (DECK).xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (ENPH).xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (EXP).xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (FLNC).xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (GEV).xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (GGAL).xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (GSIT).xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (GWH).xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (HRZN).xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (INSG).xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (IREN).xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (JBL).xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (JMIA).xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (KEY).xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (MRCY).xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (OCSL).xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (PAVE).xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (POOL).xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (PSEC).xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (RGTI).xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (RH).xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (RKLB).xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (RKT).xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (RY).xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (SGML).xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (UEC).xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (UUUU).xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (VUZI).xlsx
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/data/live/History Grid (WFG).xlsx
+ create mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/docs/processes/P_300_CLI_Command_Reference.md
+ create mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/outputs/reports/mine/mine_20260805_192341.md
+ create mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/outputs/reports/mine/mine_20260814_063900.md
+ create mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/python/conftest.py
+ create mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/python/infrastructure/lm_studio_status.py
+ rename projects/P_300_Vantage_Point_Pattern_Recognition/python/{ => tests}/test_signal_emitter_dry_run.py (100%)
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/run_daily_posture.bat
+ delete mode 100644 projects/P_300_Vantage_Point_Pattern_Recognition/run_intraday_vp_check.bat
+ create mode 100644 projects/P_301_Bullish_Trend_Pattern_V2.5/python/conftest.py
+ create mode 100644 projects/P_400_TradeOrderManagement/outputs/batch_reports/batch2b_2026-08-07_20260807_093116.json
+ create mode 100644 projects/P_400_TradeOrderManagement/outputs/batch_reports/batch2b_2026-08-07_20260807_112631.json
+ create mode 100644 projects/P_400_TradeOrderManagement/outputs/batch_reports/batch2b_2026-08-08_20260808_152644.json
+ create mode 100644 projects/P_400_TradeOrderManagement/outputs/batch_reports/batch2b_2026-08-08_20260808_152949.json
+ create mode 100644 projects/P_400_TradeOrderManagement/outputs/batch_reports/batch2b_2026-08-08_20260808_184338.json
+ create mode 100644 projects/P_400_TradeOrderManagement/outputs/batch_reports/batch2b_2026-08-14_20260814_122239.json
+ create mode 100644 projects/P_400_TradeOrderManagement/python/application/batch_2b.py
+ create mode 100644 projects/P_400_TradeOrderManagement/python/application/batch_2b_disposition.py
+ create mode 100644 projects/P_400_TradeOrderManagement/python/application/batch_2b_scoring.py
+ create mode 100644 projects/P_400_TradeOrderManagement/python/application/earnings_lookup.py
+ create mode 100644 projects/P_400_TradeOrderManagement/python/application/refresh_earnings_calendar.py
+ create mode 100644 projects/P_400_TradeOrderManagement/python/conftest.py
+ create mode 100644 projects/P_400_TradeOrderManagement/python/domain/ranking.py
+ create mode 100644 projects/P_400_TradeOrderManagement/python/earnings_2026-08-07.json
+ create mode 100644 projects/P_400_TradeOrderManagement/python/earnings_2026-08-08.json
+ create mode 100644 projects/P_400_TradeOrderManagement/python/earnings_2026-08-11.json
+ create mode 100644 projects/P_400_TradeOrderManagement/python/earnings_calendar_cache.json
+ create mode 100644 projects/P_400_TradeOrderManagement/python/infrastructure/earnings_calendar_cache.py
+ create mode 100644 projects/P_400_TradeOrderManagement/python/infrastructure/earnings_calendar_client.py
+ create mode 100644 projects/P_400_TradeOrderManagement/python/infrastructure/earnings_file.py
+ create mode 100644 projects/P_400_TradeOrderManagement/python/infrastructure/last_spread_cache.py
+ create mode 100644 projects/P_400_TradeOrderManagement/python/last_spread_cache.json
+ delete mode 100644 projects/P_400_TradeOrderManagement/python/test_earnings_window.py
+ rename projects/P_400_TradeOrderManagement/python/{ => tests}/test_build_option_spec.py (98%)
+ rename projects/P_400_TradeOrderManagement/python/{ => tests}/test_chain_selector.py (100%)
+ rename projects/P_400_TradeOrderManagement/python/{ => tests}/test_commands.py (100%)
+ rename projects/P_400_TradeOrderManagement/python/{ => tests}/test_compare_vehicles.py (72%)
+ rename projects/P_400_TradeOrderManagement/python/{ => tests}/test_council.py (91%)
+ rename projects/P_400_TradeOrderManagement/python/{ => tests}/test_dispose_failed.py (97%)
+ rename projects/P_400_TradeOrderManagement/python/{ => tests}/test_e2002.py (100%)
+ rename projects/P_400_TradeOrderManagement/python/{ => tests}/test_e2003.py (100%)
+ create mode 100644 projects/P_400_TradeOrderManagement/python/tests/test_earnings_calendar_cache.py
+ create mode 100644 projects/P_400_TradeOrderManagement/python/tests/test_earnings_lookup.py
+ create mode 100644 projects/P_400_TradeOrderManagement/python/tests/test_earnings_window.py
+ rename projects/P_400_TradeOrderManagement/python/{ => tests}/test_eval_cache.py (100%)
+ rename projects/P_400_TradeOrderManagement/python/{ => tests}/test_evaluate_options.py (99%)
+ rename projects/P_400_TradeOrderManagement/python/{ => tests}/test_evaluate_signal.py (94%)
+ rename projects/P_400_TradeOrderManagement/python/{ => tests}/test_evaluate_spread.py (82%)
+ create mode 100644 projects/P_400_TradeOrderManagement/python/tests/test_fetch_snapshot.py
+ create mode 100644 projects/P_400_TradeOrderManagement/python/tests/test_last_spread_cache.py
+ rename projects/P_400_TradeOrderManagement/python/{ => tests}/test_levels.py (100%)
+ rename projects/P_400_TradeOrderManagement/python/{ => tests}/test_market_holidays.py (100%)
+ rename projects/P_400_TradeOrderManagement/python/{ => tests}/test_market_hours.py (100%)
+ rename projects/P_400_TradeOrderManagement/python/{ => tests}/test_moving_averages.py (100%)
+ rename projects/P_400_TradeOrderManagement/python/{ => tests}/test_options_council.py (98%)
+ rename projects/P_400_TradeOrderManagement/python/{ => tests}/test_options_sizer.py (99%)
+ rename projects/P_400_TradeOrderManagement/python/{ => tests}/test_oscillators.py (100%)
+ create mode 100644 projects/P_400_TradeOrderManagement/python/tests/test_p400_known_bugs_2.py
+ create mode 100644 projects/P_400_TradeOrderManagement/python/tests/test_ranking.py
+ rename projects/P_400_TradeOrderManagement/python/{ => tests}/test_read_signals.py (100%)
+ rename projects/P_400_TradeOrderManagement/python/{ => tests}/test_record_commands.py (99%)
+ rename projects/P_400_TradeOrderManagement/python/{ => tests}/test_record_writer.py (99%)
+ rename projects/P_400_TradeOrderManagement/python/{ => tests}/test_record_writer_derived.py (99%)
+ create mode 100644 projects/P_400_TradeOrderManagement/python/tests/test_refresh_earnings_calendar.py
+ rename projects/P_400_TradeOrderManagement/python/{ => tests}/test_risk_vote.py (97%)
+ rename projects/P_400_TradeOrderManagement/python/{ => tests}/test_schwab_market_data.py (100%)
+ rename projects/P_400_TradeOrderManagement/python/{ => tests}/test_screen.py (98%)
+ rename projects/P_400_TradeOrderManagement/python/{ => tests}/test_sizing.py (98%)
+ rename projects/P_400_TradeOrderManagement/python/{ => tests}/test_spec_cache.py (100%)
+ rename projects/P_400_TradeOrderManagement/python/{ => tests}/test_spread_council.py (97%)
+ rename projects/P_400_TradeOrderManagement/python/{ => tests}/test_spread_sizer.py (98%)
+ create mode 100644 projects/P_400_TradeOrderManagement/python/tests/test_tape_price_basis.py
+ rename projects/P_400_TradeOrderManagement/python/{ => tests}/test_vehicle_selector.py (100%)
+ create mode 100644 projects/P_400_TradeOrderManagement/tasks/todo.md
+ create mode 100644 projects/P_800_Automation_Note_Taking/python/conftest.py
+ delete mode 100644 projects/P_805_Email_Trade_Extractor/P_805_System_Initialization_v1_5.md
+ create mode 100644 projects/P_805_Email_Trade_Extractor/python/conftest.py
+ create mode 100644 projects/scriptsout.txt
+ create mode 100644 shared_resources/chaikin_enrichment/infrastructure/skip_list_reader.py
+ create mode 100644 shared_resources/python_utils/lm_studio_status.py
+ create mode 100644 trading_journal/KnowledgeBase/2026-08-06_7 Modern Python Libraries Shaking Up AI Development in 2026.md
+ create mode 100644 trading_journal/KnowledgeBase/2026-08-06_Grok Stock Prompts.md
+ create mode 100644 trading_journal/KnowledgeBase/2026-08-06_The Python Library I Installed for One AI Experiment Ended Up Replacing Thousands of Lines of Prompt Engineering.md
+ create mode 100644 trading_journal/KnowledgeBase/2026-08-07_How to Become a Graph Architect With Zero Experience (Full Course).md
+ create mode 100644 trading_journal/KnowledgeBase/2026-08-07_How to build your first Agentic System (For Personal Use).md
+ create mode 100644 trading_journal/KnowledgeBase/2026-08-09_How to Automate Your Life With Claude (Full System).md
+ create mode 100644 trading_journal/KnowledgeBase/2026-08-09_How to deslop Claude in 2 words.md
+ create mode 100644 trading_journal/KnowledgeBase/Building your first AI Agent.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2024-12-21_CW.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2024-12-21_GPK.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-11-06_TSLA.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-11-07_PLTR.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-11-08_KVUE.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-11-09_COGT.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-11-10_SLDP.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-11-12_CTVA.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-11-12_EOSE.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-11-12_JEF.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-11-12_KVUE.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-11-12_MQ.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-11-12_SKYT.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-11-12_UPWK.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-11-21_AKAM.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-11-21_BW.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-11-21_DAWN.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-11-21_IMRX.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-11-21_KODK.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-11-21_OMER.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-11-21_ORGO.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-11-21_PRAX.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-11-21_PSNL.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-11-21_PUMP.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-11-21_RIVN.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-11-21_STOK.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-11-25_AAPL.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-11-25_BW.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-11-25_CSIQ.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-11-25_ES.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-11-25_GGAL.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-11-25_INV.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-11-25_SNDK.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-11-26_ATI.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-11-26_AVGO.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-11-26_CGON.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-11-26_CLS.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-11-26_NAMS.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-11-26_NEE.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-11-26_PWR.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-03_BOOT.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-03_LUMN.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-03_MOD.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-03_SYM.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-03_TMC.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-03_ULTA.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-04_AEVA.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-04_APLD.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-04_ATI.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-04_CGON.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-04_CLF.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-04_CLSK.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-04_SERV.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-04_TMC.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-09_AMTM.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-09_AZN.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-09_CLS.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-09_CRS.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-09_LMND.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-09_NVT.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-09_SANM.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-09_TSM.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-09_URBN.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-10_CLF.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-10_DASH.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-10_IRBT.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-10_POET.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-10_RDW.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-10_RKLB.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-10_SERV.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-10_SNDK.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-10_USAR.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-11_AEVA.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-11_FFIV.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-11_MGNI.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-11_POET.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-11_SHLS.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-13_AEVA.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-13_FFIV.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-13_MGNI.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-13_POETI.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-13_SHLS.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-15_AAPL.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-15_AMTMPL.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-15_AZN.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-15_BKV.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-15_GOOGL.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-15_IBM.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-15_PATH.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-15_TSLA.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-15_TSM.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-15_TVTX.md
+ delete mode 100644 trading_journal/TradeManagement/P115/2025-12-16_TVTX.md
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2024-12-18_AMTM.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2024-12-18_AXTI.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2024-12-18_CBRE.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2024-12-18_CDE.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2024-12-18_CENX.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2024-12-18_CHRW.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2024-12-18_CLF.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2024-12-18_DG.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2024-12-18_LVS.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2024-12-18_MDB.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2024-12-18_PDRT.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2024-12-18_RDW.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2024-12-18_RKLB.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2024-12-18_ROKU.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2024-12-18_TE.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2024-12-18_TMC.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2024-12-18_TVTX.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2024-12-18_TWLO.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2024-12-18_VOR.md (100%)
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2024-12-21_CW.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2024-12-21_GPK.md
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2024-12-22_CBRE.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2024-12-22_FROG.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2024-12-22_HASI.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2024-12-22_PEGA.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2024-12-22_PGNY.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2024-12-22_ROKU.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2024-12-22_TVTX.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2024-12-22_TWLO.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2024-12-22_UTLA.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-01-28_AXSM.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-01-28_BKV2.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-01-28_BWXT.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-01-28_FHN.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-01-28_GOOG.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-01-28_HASI.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-01-28_IBRX.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-01-28_IMSR.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-01-28_LIVN.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-01-28_LPTH.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-01-28_PLAB.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-01-28_SNDX.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-01-28_SOC.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-01-28_VSAT.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-02-11_ANAB.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-02-11_AXSM.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-02-11_BTDR.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-02-11_COMP.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-02-11_CRUS.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-02-11_CRVS.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-02-11_ELVN.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-02-11_HUT.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-02-11_IBKR.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-02-11_IRDM.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-02-11_NXT.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-02-11_PDYN.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-02-11_PLAB.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-02-11_SLB.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-02-11_TECX.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-02-11_TNGX.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-02-11_USAR.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-02-11_UUUU.md (100%)
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-11-06_TSLA.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-11-07_PLTR.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-11-08_KVUE.md
+ rename trading_journal/{Untitled.md => TradeOrderManagement/P115/2025-11-09_COGT.md} (58%)
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-11-10_SLDP.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-11-12_CTVA.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-11-12_EOSE.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-11-12_JEF.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-11-12_KVUE.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-11-12_MQ.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-11-12_SKYT.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-11-12_UPWK.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-11-21_AKAM.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-11-21_BW.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-11-21_DAWN.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-11-21_IMRX.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-11-21_KODK.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-11-21_OMER.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-11-21_ORGO.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-11-21_PRAX.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-11-21_PSNL.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-11-21_PUMP.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-11-21_RIVN.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-11-21_STOK.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-11-25_AAPL.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-11-25_BW.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-11-25_CSIQ.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-11-25_ES.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-11-25_GGAL.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-11-25_INV.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-11-25_SNDK.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-11-26_ATI.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-11-26_AVGO.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-11-26_CGON.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-11-26_CLS.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-11-26_NAMS.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-11-26_NEE.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-11-26_PWR.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-03_BOOT.md
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-03_CAT.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-03_CDE.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-03_CLF.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-03_FROG.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-03_IBM.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-03_JBL.md (100%)
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-03_LUMN.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-03_MOD.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-03_SYM.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-03_TMC.md
+ rename trading_journal/{Untitled 1.md => TradeOrderManagement/P115/2025-12-03_ULTA.md} (59%)
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-04_AEVA.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-04_APLD.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-04_ATI.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-04_CGON.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-04_CLF.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-04_CLSK.md
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-04_CRDO.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-04_CSIQ.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-04_FROG.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-04_LUMN.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-04_MOD.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-04_PWR.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-04_SANA.md (100%)
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-04_SERV.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-04_TMC.md
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-08_EYE.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-08_FIGS.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-08_LMND.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-08_MU.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-08_PWR.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-08_STX.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-08_VIAV.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-08_WDC.md (100%)
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-09_AMTM.md
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-09_ASTS.md (100%)
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-09_AZN.md
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-09_BULL.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-09_CLF.md (100%)
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-09_CLS.md
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-09_CMG.md (100%)
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-09_CRS.md
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-09_IONQ.md (100%)
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-09_LMND.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-09_NVT.md
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-09_POET.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-09_QBTS.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-09_RDW.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-09_RKLB.md (100%)
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-09_SANM.md
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-09_SERV.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-09_SNDK.md (100%)
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-09_TSM.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-09_URBN.md
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-09_USAR.md (100%)
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-10_CLF.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-10_DASH.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-10_IRBT.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-10_POET.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-10_RDW.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-10_RKLB.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-10_SERV.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-10_SNDK.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-10_USAR.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-11_AEVA.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-11_FFIV.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-11_MGNI.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-11_POET.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-11_SHLS.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-13_AEVA.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-13_FFIV.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-13_MGNI.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-13_POETI.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-13_SHLS.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-15_AAPL.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-15_AMTMPL.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-15_AZN.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-15_BKV.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-15_GOOGL.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-15_IBM.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-15_PATH.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-15_TSLA.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-15_TSM.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-15_TVTX.md
+ create mode 100644 trading_journal/TradeOrderManagement/P115/2025-12-16_TVTX.md
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-18_AAOI.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-18_AMTM.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-18_ATI.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-18_AXTI.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-18_CBRE.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-18_CENX.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-18_CHRW.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-18_CLF.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-18_COE.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-18_HASI.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-18_IGR.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-18_INBS.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-18_JBL.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-18_LVS.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-18_MDB.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-18_PGNY.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-18_POET.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-18_ROKU.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-18_SOC.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-18_TMC.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-18_TVTX.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-18_TWLO.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-18_TXT.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-18_ULTA.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-19_CLF.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-21_ASIX.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-21_ASTS.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-21_AXON.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-21_CDE.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-21_CLF.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-21_EVTL.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-21_FOXF.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-21_ITGR.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-21_M.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-21_OLMA.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-21_POET.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-21_RILY.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-21_SNDK.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-21_SOC.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-21_SPC.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-21_TLRY.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-21_VELO.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-21_WVE.md (100%)
+ rename trading_journal/{TradeManagement => TradeOrderManagement}/P115/2025-12-21_WWW.md (100%)
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-03_ACH.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-03_AIQ.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-03_ALB.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-03_APP.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-03_ASTS.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-03_BBAI.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-03_BBBY.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-03_CIEN.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-03_CW.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-03_ENPH.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-03_EXP.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-03_FLNC.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-03_GEV.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-03_GGAL.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-03_GSIT.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-03_GWH.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-03_HRZN.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-03_INSG.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-03_IREN.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-03_JBL.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-03_JMIA.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-03_KEY.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-03_MRCY.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-03_OCSL.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-03_PAVE.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-03_POOL.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-03_RGTI.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-03_RH.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-03_RKLB.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-03_RKT.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-03_RY.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-03_SGML.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-03_UEC.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-03_UUUU.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-03_VUZI.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-04_ACLS.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-04_AMAT.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-04_AOSL.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-04_ARRY.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-04_ASX.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-04_AUOTY.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-04_BB.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-04_CACC.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-04_CC.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-04_CL.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-04_CMPS.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-04_CRNC.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-04_ECHO.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-04_EZPW.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-04_FLEX.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-04_GLAD.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-04_GNTX.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-04_HIMS.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-04_HYLN.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-04_INDI.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-04_INTC.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-04_KMB.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-04_MCHP.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-04_MS.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-04_MSTR.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-04_NSLR.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-04_OPEN.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-04_PZZA.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-04_QS.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-04_RUN.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-04_SEDG.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-04_SHOP.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-04_SIMO.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-04_SOUN.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-04_STEM.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-04_STM.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-04_TAN.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-04_TE.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-04_TSLA.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-04_TSLL.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-04_UMC.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-04_VSH.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-05_AVB.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-05_DX.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-05_LFCR.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-05_MAA.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-05_NVR.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-05_PSKY.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-06_GNL.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-06_HAL.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-06_HTZ.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-06_MSOS.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-06_QCOM.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-06_TMUS.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-07_ALGM.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-07_MGY.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-07_MTDR.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-07_NVR.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-07_ORC.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-07_RIVN.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-07_TLN.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-07_UCTT.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-07_VKTX.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-07_VSH.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-10_LUMN.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-11_CLIX.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-11_NSLR.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-11_RWT.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-11_STLA.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-11_SYNA.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-11_XPO.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-12_FHN.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-12_GDDY.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-12_HLT.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-12_SAIA.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-12_WEAT.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-12_WU.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-13_BBY.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-13_EPD.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-13_FICO.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-13_MSCI.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-13_RBLX.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-13_RDDT.md
+ create mode 100644 trading_journal/TradeOrderManagement/P300/2026-08-13_SMPL.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-03_ACH.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-03_AIQ.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-03_ALB.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-03_APP.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-03_ASTS.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-03_BBAI.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-03_BBBY.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-03_CIEN.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-03_CW.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-03_ENPH.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-03_EXEL.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-03_EXP.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-03_FLNC.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-03_GEV.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-03_GGAL.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-03_GSIT.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-03_GWH.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-03_HRZN.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-03_INSG.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-03_IREN.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-03_JBL.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-03_JMIA.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-03_KEY.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-03_MRCY.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-03_OCSL.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-03_PAVE.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-03_POOL.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-03_RGTI.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-03_RH.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-03_RKLB.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-03_RKT.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-03_RY.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-03_SGML.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-03_UEC.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-03_UUUU.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-03_VUZI.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_ACLS.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_AMAT.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_AOSL.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_ARRY.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_ASX.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_AUOTY.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_BB.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_CACC.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_CC.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_CL.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_CMPS.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_CRNC.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_CRWD.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_ECHO.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_EZPW.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_FLEX.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_GLAD.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_GNTX.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_HIMS.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_HYLN.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_INDI.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_INTC.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_KMB.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_MCHP.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_MS.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_MSTR.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_NSLR.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_OPEN.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_PZZA.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_QS.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_RUN.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_SEDG.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_SHOP.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_SIMO.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_SOUN.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_STEM.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_STM.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_TAN.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_TE.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_TSLA.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_TSLL.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_UMC.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-04_VSH.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-05_AVB.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-05_DLO.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-05_DX.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-05_FSLR.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-05_LFCR.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-05_MAA.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-05_NUE.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-05_NVR.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-05_NVT.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-05_PSKY.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-06_GNL.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-06_HAL.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-06_HTZ.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-06_MSOS.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-06_NVT.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-06_QCOM.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-06_TMUS.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-07_ALGM.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-07_AXTI.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-07_CGON.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-07_MGY.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-07_MTDR.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-07_NVR.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-07_NVT.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-07_ORC.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-07_RIVN.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-07_TLN.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-07_UCTT.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-07_VKTX.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-07_VSH.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-10_LUMN.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-11_AA.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-11_CLIX.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-11_NSLR.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-11_RWT.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-11_STLA.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-11_SYNA.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-11_XPO.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-12_ANET.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-12_DINO.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-12_FHN.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-12_GDDY.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-12_HLT.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-12_NVT.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-12_SAIA.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-12_WEAT.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-12_WU.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-13_BBY.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-13_DAL.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-13_DXYZ.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-13_EPD.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-13_FICO.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-13_FLY.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-13_MSCI.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-13_RBLX.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-13_RDDT.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/2026-08-13_SMPL.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/paper/2026-08-11_WSM.md
+ create mode 100644 trading_journal/TradeOrderManagement/P400/paper/2026-08-14_SBLK.md
+ create mode 100644 trading_journal/TradeOrderManagement/_archive/2026-08-06_NTAP_v2.0_PULLED.json
+ create mode 100644 trading_journal/TradeOrderManagement/_archive/2026-08-06_NTAP_v2.0_PULLED_reason.txt
+ delete mode 100644 trading_journal/TradeOrderManagement/signals/2026-08-03_EXEL_v2.0.json
+ delete mode 100644 trading_journal/TradeOrderManagement/signals/2026-08-04_CRWD_v2.0.json
+ delete mode 100644 trading_journal/Untitled.base
+Uploading LFS objects: 100% (2/2), 3.5 MB | 0 B/s, done.
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   P_000_git_hub_triage_2ndrun.txt
+
+no changes added to commit (use "git add" and/or "git commit -a")
+

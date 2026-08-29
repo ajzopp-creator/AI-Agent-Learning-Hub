@@ -1,0 +1,7 @@
+usage: cli.py [-h] --symbol SYMBOL --session-date SESSION_DATE --timestamp
+              TIMESTAMP --strategy STRATEGY --entry ENTRY --stop STOP --target
+              TARGET [--horizon HORIZON] --confidence CONFIDENCE --close CLOSE
+              --volume VOLUME --rationale RATIONALE --timeframe TIMEFRAME
+              --source-link SOURCE_LINK [--atm ATM] [--support-1 SUPPORT_1]
+              [--support-2 SUPPORT_2] [--source SOURCE]
+cli.py: error: unrecognized arguments: BUY HybridTier7 Fund4 Anal3 FundVerified TrendStrong ADX54

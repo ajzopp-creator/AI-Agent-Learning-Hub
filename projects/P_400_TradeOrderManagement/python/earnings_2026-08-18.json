@@ -1,0 +1,86 @@
+{
+  "DGX": {
+    "next_earnings_date": null,
+    "last_earnings_date": "2026-07-23",
+    "sector": "Healthcare",
+    "source": "web_search",
+    "date_confirmed": false
+  },
+  "SBLK": {
+    "next_earnings_date": null,
+    "last_earnings_date": "2026-08-05",
+    "sector": "Industrials - Shipping",
+    "source": "web_search",
+    "date_confirmed": false
+  },
+  "STZ": {
+    "next_earnings_date": null,
+    "last_earnings_date": "2026-06-30",
+    "sector": "Consumer Staples",
+    "source": "web_search",
+    "date_confirmed": false
+  },
+  "HWM": {
+    "next_earnings_date": "2026-10-29",
+    "last_earnings_date": "2026-08-06",
+    "sector": "Industrials - Aerospace",
+    "source": "web_search",
+    "date_confirmed": true
+  },
+  "NRG": {
+    "next_earnings_date": null,
+    "last_earnings_date": "2026-08-12",
+    "sector": "Utilities/Energy",
+    "source": "web_search",
+    "date_confirmed": false
+  },
+  "ALGN": {
+    "next_earnings_date": "2026-10-28",
+    "last_earnings_date": "2026-07-29",
+    "sector": "Healthcare - Medical Devices",
+    "source": "web_search",
+    "date_confirmed": true
+  },
+  "APTV": {
+    "next_earnings_date": null,
+    "last_earnings_date": "2026-08-04",
+    "sector": "Consumer Discretionary - Auto Parts",
+    "source": "web_search",
+    "date_confirmed": false
+  },
+  "CAR": {
+    "next_earnings_date": null,
+    "last_earnings_date": "2026-07-28",
+    "sector": "Industrials - Car Rental",
+    "source": "web_search",
+    "date_confirmed": false
+  },
+  "CIFR": {
+    "next_earnings_date": null,
+    "last_earnings_date": "2026-08-04",
+    "sector": "Technology - Bitcoin Mining/HPC",
+    "source": "web_search",
+    "date_confirmed": false
+  },
+  "POWL": {
+    "next_earnings_date": null,
+    "last_earnings_date": "2026-08-03",
+    "sector": "Industrials - Electrical Equipment",
+    "source": "web_search",
+    "date_confirmed": false
+  },
+  "TSN": {
+    "next_earnings_date": null,
+    "last_earnings_date": "2026-08-03",
+    "sector": "Consumer Staples - Food",
+    "source": "web_search",
+    "date_confirmed": false
+  },
+  "SARK": {
+    "next_earnings_date": null,
+    "last_earnings_date": null,
+    "sector": "N/A - Inverse ETF (Tuttle/Tradr Short Innovation, tracks inverse of ARKK). No earnings ever. Tony's directive 2026-08-18: exempt, treat as clear.",
+    "source": "web_search",
+    "date_confirmed": true
+  }
+}

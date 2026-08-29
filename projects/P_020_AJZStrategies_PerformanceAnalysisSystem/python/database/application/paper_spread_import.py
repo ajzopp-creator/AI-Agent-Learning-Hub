@@ -1,8 +1,11 @@
 """paper_spread_import.py -- imports multi-leg spread trades from a raw
 paper AccountStatement.csv directly into the DB (WO-P020-E1.002).
 
-Standalone script, NOT wired into P_020_Weekly_Update.bat -- run manually
-per the WO's hard gate until Tony has reviewed real output against TOS.
+import_spreads() is the reusable entry point -- also called from
+application/paper_import.py's --raw-csv option (WO-P020-E1.002 wiring
+fix, 2026-08-22) so a single weekly run catches both single-leg and
+multi-leg trades. Standalone CLI usage below is unchanged and still
+works for a one-off manual run.
 
 Usage:
     python paper_spread_import.py <path_to_raw_AccountStatement.csv>
@@ -13,6 +16,7 @@ from __future__ import annotations
 import logging
 import sys
 from pathlib import Path
+from typing import Dict
 
 from domain.spread_matcher import compute_realized_pnl, match_spread_opens_closes
 from infrastructure.db_client import get_connection
@@ -29,19 +33,55 @@ logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
 
-def main() -> int:
-    if len(sys.argv) != 2:
-        print("Usage: python paper_spread_import.py <path_to_raw_AccountStatement.csv>")
-        return 1
+def import_spreads(conn, csv_path: Path, commit: bool = True, verbose: bool = True, min_open_date=None) -> Dict:
+    """Detect and import multi-leg spread trades from a raw paper
+    AccountStatement.csv. Reusable core of the standalone CLI below --
+    also called from paper_import.py so one weekly run catches spreads
+    alongside single-leg trades.
 
-    csv_path = Path(sys.argv[1])
+    Args:
+        conn: Open DB connection (caller owns open/close).
+        csv_path: Path to the raw AccountStatement.csv (not the
+            _OPTIONS_IMPORT.csv / _STOCKS_IMPORT.csv -- those never
+            contain multi-leg CUSTOM lines, the old parser drops them
+            before that stage).
+        commit: If False, detect and report but do not write to DB
+            (mirrors paper_import.py's dry-run default).
+        verbose: Print per-trade progress lines.
+        min_open_date: If given (date object), skip any position whose
+            open_fill datetime is before this date -- e.g. excludes
+            trades from before a paper-account reset, which no longer
+            reflect the account's current state (WO-P020-E1.002
+            backfill, 2026-08-22).
+
+    Returns:
+        {"found": int, "imported": int} -- found is the count of
+        matched open/close spread pairs detected AFTER the min_open_date
+        filter, imported is the count actually written (0 if commit=False).
+    """
     fills = read_spread_fills(csv_path)
     matched = match_spread_opens_closes(fills)
 
-    print(f"\nFound {len(matched)} spread position(s) to import:\n")
+    if min_open_date is not None:
+        before_count = len(matched)
+        matched = [
+            pair for pair in matched
+            if pair["open"]["datetime"].date() >= min_open_date
+        ]
+        skipped = before_count - len(matched)
+        if verbose and skipped:
+            print(f"Excluded {skipped} position(s) opened before {min_open_date} "
+                  f"(pre-reset, out of scope).")
 
-    conn = get_connection()
-    imported = 0
+    stats = {"found": len(matched), "imported": 0}
+
+    if verbose:
+        print(f"\nFound {len(matched)} spread position(s) in raw statement.")
+
+    if not commit:
+        if verbose and matched:
+            print("Dry run -- spreads not written. Add --commit to write.")
+        return stats
 
     for pair in matched:
         open_fill = pair["open"]
@@ -76,9 +116,11 @@ def main() -> int:
             # no-op if the trade was already fully complete.
             trade_id = get_trade_id_by_schwab_id(conn, trade.schwab_transaction_id)
             if trade_id is None:
-                print(f"  ERROR: duplicate detected but trade_id not found -- ref={open_fill['ref']}")
+                if verbose:
+                    print(f"  ERROR: duplicate detected but trade_id not found -- ref={open_fill['ref']}")
                 continue
-            print(f"  Existing trade_id={trade_id} found -- completing any missing legs/exit")
+            if verbose:
+                print(f"  Existing trade_id={trade_id} found -- completing any missing legs/exit")
 
         spread_legs = [
             SpreadLeg(
@@ -109,16 +151,29 @@ def main() -> int:
                 hold_days=hold_days,
             )
             insert_exit(conn, exit_)
-            print(f"  IMPORTED (closed): {trade.underlying_symbol} {trade.open_date} -> {exit_.exit_date}  "
-                  f"P&L=${pnl:.2f}  {len(spread_legs)} legs  trade_id={trade_id}")
+            if verbose:
+                print(f"  IMPORTED (closed): {trade.underlying_symbol} {trade.open_date} -> {exit_.exit_date}  "
+                      f"P&L=${pnl:.2f}  {len(spread_legs)} legs  trade_id={trade_id}")
         else:
-            print(f"  IMPORTED (open): {trade.underlying_symbol} {trade.open_date}  "
-                  f"{len(spread_legs)} legs  trade_id={trade_id}")
+            if verbose:
+                print(f"  IMPORTED (open): {trade.underlying_symbol} {trade.open_date}  "
+                      f"{len(spread_legs)} legs  trade_id={trade_id}")
 
-        imported += 1
+        stats["imported"] += 1
 
+    return stats
+
+
+def main() -> int:
+    if len(sys.argv) != 2:
+        print("Usage: python paper_spread_import.py <path_to_raw_AccountStatement.csv>")
+        return 1
+
+    csv_path = Path(sys.argv[1])
+    conn = get_connection()
+    stats = import_spreads(conn, csv_path, commit=True, verbose=True)
     conn.close()
-    print(f"\nDone. {imported} spread trade(s) imported.")
+    print(f"\nDone. {stats['imported']} spread trade(s) imported.")
     return 0
 
 

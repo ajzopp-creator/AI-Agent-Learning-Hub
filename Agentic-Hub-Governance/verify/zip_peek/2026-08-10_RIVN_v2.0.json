@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-07-RIVN-001",
+  "signal_timestamp": "2026-08-10T15:13:18Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "RIVN",
+  "asset_class": "stock",
+  "guideline_entry": 16.0,
+  "guideline_stop": 15.122079868123105,
+  "guideline_target": 17.1800003051758,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 15.122079868123105,
+  "intelliscan_support_1": 15.1000003814697,
+  "intelliscan_support_2": 17.1800003051758,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 16.0,
+    "trailing_volume_30d": 17681000.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 75.0% WR, z=1.21, mean return +7.44% at h=5",
+    "atm_at_signal": 0.8779201318768953
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-07",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-07_RIVN.md"
+  }
+}

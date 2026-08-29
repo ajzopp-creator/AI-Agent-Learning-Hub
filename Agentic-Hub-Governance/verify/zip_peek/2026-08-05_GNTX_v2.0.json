@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-04-GNTX-001",
+  "signal_timestamp": "2026-08-05T16:08:23Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "GNTX",
+  "asset_class": "stock",
+  "guideline_entry": 24.1200008392334,
+  "guideline_stop": 23.387429846249102,
+  "guideline_target": 24.4400005340576,
+  "signal_horizon": "20 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 23.387429846249102,
+  "intelliscan_support_1": 23.1049995422363,
+  "intelliscan_support_2": 24.4400005340576,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 24.1200008392334,
+    "trailing_volume_30d": 2673300.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 75.0% WR, z=1.39, mean return +3.77% at h=20",
+    "atm_at_signal": 0.7325709929842982
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-04",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-04_GNTX.md"
+  }
+}

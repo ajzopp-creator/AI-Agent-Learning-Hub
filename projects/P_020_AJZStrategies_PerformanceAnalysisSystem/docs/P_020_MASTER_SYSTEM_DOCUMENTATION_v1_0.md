@@ -685,6 +685,8 @@ Format: `MMDD: [WHY] [SIG] optional free text` — WHY + SIG required. Vocabular
 
 **WHY — System (Project ID, effective 2026-07-27):** `P_115`=Buy The Dip | `P_116`=Options Income Launchpad | `P_117`=External recs | `P_118`=Eddie Z Breakouts | `P_300`=VantagePoint | `P_910` | `P_920` | `SNT`=BigTrends | `DAY`=intraday-flat
 
+**WHY — `INV` (IRA9885 only, WO-P020-E1.015):** for a generic IRA investment/swing trade with no traceable signal system, use `INV` as the WHY bracket itself: `[INV][SIG] free text` -- system resolves to `INV`. If the trade DOES trace to a real system, put the system in the WHY bracket as normal and mark `INV` as a parenthetical in the free text instead: `[P_117][A] (INV) free text` -- system resolves to `P_117`, `INV` is context only, not a separate tag. No parser change either way -- both are standard two-bracket `[WHY][SIG]` lines.
+
 *Pre-2026-07-27 ThinkLog entries may still use the old shorthand (BTD/OIL/EXT/EZB/VPT) — parser is open-vocabulary and accepts either; this table reflects the current standard going forward.*
 
 **WHY — Situation:** `ASYM`=near-miss BUY | `IFFY`=marginal | `LEARN`=educational | `CROWDED`=at-capacity | `FOMO`=honesty | `REVENGE`=loss-chase

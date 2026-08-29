@@ -1,0 +1,6 @@
+WO-P115-E5.001 verification run.
+Purpose: confirm cli.py --horizon default resolves to config.DEFAULT_SIGNAL_HORIZON
+("10-15 trading days") when omitted, and that explicit --horizon still overrides.
+Argparse-level only -- does NOT call emit_signal()/write_to_vault(), so nothing
+lands in the live signals inbox. Symbol "ZZTEST" is not a real ticker.
+Run: C:\Users\Trader\.conda\envs\p140\python.exe C:\Users\Trader\AI-Agent-Learning-Hub\Agentic-Hub-Governance\verify\run_this_P115_20260818_e5001.py

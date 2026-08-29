@@ -9,6 +9,11 @@ to make the destination folder on iCloud — a real server mutation during
 what was supposed to be a no-op dry run. _ensure_destination_folder() now
 takes a dry_run flag and must never call create() when it's True.
 
+Fix 2 (2026-08-23, Entry 013): outlook moved from Basic Auth to XOAUTH2.
+_xoauth2_string() must build the exact SASL wire format Microsoft's IMAP
+servers expect — a malformed string fails silently as a generic auth
+error, indistinguishable from a bad token.
+
 Uses a fake IMAP connection object — no real network call, no real
 credentials needed to run this test.
 """
@@ -18,7 +23,7 @@ import unittest
 
 sys.path.insert(0, r"C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_805_Email_Trade_Extractor\python")
 
-from infrastructure.imap_mover import _ensure_destination_folder
+from infrastructure.imap_mover import _ensure_destination_folder, _xoauth2_string
 import config
 
 
@@ -68,6 +73,26 @@ class TestEnsureDestinationFolder(unittest.TestCase):
             )
         finally:
             config.EXTRACTED_FOLDER_AUTOCREATE = original_autocreate
+
+
+class TestXOAuth2String(unittest.TestCase):
+    def test_format_matches_microsoft_sasl_spec(self):
+        """Entry 013 fix: exact wire format, not just 'looks close'.
+
+        Microsoft's spec is user=<user>\\x01auth=Bearer <token>\\x01\\x01 —
+        a single missing \\x01 fails auth with no useful error message.
+        """
+        result = _xoauth2_string("ajzopp@outlook.com", "abc123")
+        expected = "user=ajzopp@outlook.com\x01auth=Bearer abc123\x01\x01"
+        self.assertEqual(result, expected)
+
+    def test_string_is_encodable_to_bytes(self):
+        """imaplib.authenticate() requires bytes, not str — must never raise."""
+        result = _xoauth2_string("user@example.com", "token")
+        try:
+            result.encode()
+        except Exception as e:
+            self.fail(f"_xoauth2_string() output must always be encodable: {e}")
 
 
 if __name__ == "__main__":

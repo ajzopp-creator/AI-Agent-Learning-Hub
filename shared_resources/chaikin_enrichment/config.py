@@ -34,9 +34,17 @@ CANDIDATE_WRITE_ROUTES: set[str] = {"BUY", "WATCH"}
 
 # -- LOOKBACK WINDOW -----------------------------------------------------------
 # Days back from today the vault_scanner globs when looking for candidate
-# notes. 1 covers the standard nightly run; raise only to catch up after a
-# missed run.
-LOOKBACK_DAYS: int = 1
+# notes. Was 1 (2026-07-24) -- broken across any weekend: a Friday-anchored
+# note (filename date = last trading day's close, not today) falls outside
+# a 1-day window on a Saturday/Sunday/Monday run. Confirmed real 2026-08-23
+# (Sunday): 7 real BUY/WATCH notes filed 2026-08-21_*.md, all silently
+# missed -- "No BUY/WATCH candidates found" printed with 7 live candidates
+# sitting in the folder. 3 is the minimum that covers Friday-anchor-on-Monday
+# (the worst real gap in a standard trading week). Safe to raise: idempotency
+# (ScannedNote.has_chaikin_section, candidate_filter.is_candidate) already
+# excludes already-enriched notes regardless of window size -- a wider
+# window only means scanning more files, not reprocessing them.
+LOOKBACK_DAYS: int = 3
 
 # -- IDEMPOTENCY MARKER ---------------------------------------------------------
 # Section header note_reader.py checks for before treating a note as a

@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-14-NRG-001",
+  "signal_timestamp": "2026-08-17T16:38:03Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "NRG",
+  "asset_class": "stock",
+  "guideline_entry": 126.23999786377,
+  "guideline_stop": 119.3678268688741,
+  "guideline_target": 140.720001220703,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "MEDIUM",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 119.3678268688741,
+  "intelliscan_support_1": 116.559997558594,
+  "intelliscan_support_2": 140.720001220703,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 126.23999786377,
+    "trailing_volume_30d": 1448100.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 65.0% WR, z=0.29, mean return +4.50% at h=5",
+    "atm_at_signal": 6.872170994895891
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-14",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-14_NRG.md"
+  }
+}

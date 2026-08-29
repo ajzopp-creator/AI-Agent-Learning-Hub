@@ -1,5 +1,5 @@
 # =============================================================================
-# hub_mcp_launcher.ps1  —  v1.0  —  2026-05-29
+# hub_mcp_launcher.ps1  —  v1.1  —  2026-08-28
 # Shared detached-launch helper for all Hub MCP PowerShell wrappers.
 #
 # PURPOSE
@@ -26,6 +26,19 @@
 #   SUCCESS  — bat exited 0
 #   FAILED:N — bat exited non-zero (N = exit code)
 #   TIMEOUT  — job did not finish within TimeoutMinutes
+#
+# v1.1 CHANGE (ref WO-P000-E18.001) — status file was never written on
+# either branch. Invoke-HubBat launched cmd.exe /c with an inline
+# "<bat>" && echo SUCCESS > "<status>" || echo FAILED:%ERRORLEVEL% > "<status>"
+# string. cmd /c only preserves outer quoting under a narrow condition
+# (exactly two quote chars, nothing special between them, quoted text is an
+# executable name). That line has six quote chars, so cmd.exe fell back to
+# stripping only the first and last quote of the whole line — corrupting the
+# inner quoting and silently breaking the && / || chain. Neither branch fired
+# on success or failure, on any wrapper, since v1.0. Fix: generate a small
+# one-off .cmd launcher per call that checks %ERRORLEVEL% with normal batch
+# logic instead of shell chaining, and pass BatPath/StatusFile to it as plain
+# Start-Process arguments (no inline quoting-heavy one-liner).
 # =============================================================================
 
 function Invoke-HubBat {
@@ -45,16 +58,21 @@ function Invoke-HubBat {
     # Remove stale status file from a prior run
     if (Test-Path $StatusFile) { Remove-Item $StatusFile -Force }
 
-    # Wrapper cmd that runs the bat, then writes exit code to the status file.
-    # Using cmd.exe /c so the bat's own internal `call` and `exit /b` work correctly.
-    $cmd = "cmd.exe"
-    $args = @(
-        "/c",
-        "`"$BatPath`" && echo SUCCESS > `"$StatusFile`" || echo FAILED:%ERRORLEVEL% > `"$StatusFile`""
-    )
+    # Generate a one-off .cmd launcher next to the status file. This avoids
+    # the cmd.exe /c multi-quote parsing failure described above (ref
+    # WO-P000-E18.001) — internal batch errorlevel logic instead of an
+    # inline && / || chain.
+    $launcherCmd = Join-Path (Split-Path $StatusFile -Parent) `
+        "_launcher_$([System.IO.Path]::GetFileNameWithoutExtension($StatusFile)).cmd"
+    if (Test-Path $launcherCmd) { Remove-Item $launcherCmd -Force }
 
-    # Launch detached — Start-Process returns immediately
-    Start-Process -FilePath $cmd -ArgumentList $args -WindowStyle Hidden -ErrorAction Stop
+    $launcherBody = "@echo off`r`ncall `"%~1`"`r`nif errorlevel 1 (`r`n    echo FAILED:%errorlevel% > `"%~2`"`r`n) else (`r`n    echo SUCCESS > `"%~2`"`r`n)`r`n"
+    [System.IO.File]::WriteAllText($launcherCmd, $launcherBody, [System.Text.UTF8Encoding]::new($false))
+
+    # Launch detached — Start-Process returns immediately. BatPath and
+    # StatusFile are passed as separate ArgumentList elements so PowerShell
+    # quotes each one correctly — no manual quote embedding.
+    Start-Process -FilePath $launcherCmd -ArgumentList @($BatPath, $StatusFile) -WindowStyle Hidden -ErrorAction Stop
 
     # --- Poll loop ---
     $deadline = (Get-Date).AddMinutes($TimeoutMinutes)

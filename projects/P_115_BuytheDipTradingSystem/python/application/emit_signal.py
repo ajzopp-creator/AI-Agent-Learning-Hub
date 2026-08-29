@@ -64,7 +64,7 @@ def emit_signal(
         guideline_entry: Recommended entry price.
         guideline_stop: Recommended stop-loss price (chart structural stop).
         guideline_target: Recommended profit target price.
-        signal_horizon: e.g. "3-5 days".
+        signal_horizon: e.g. "10-15 trading days" (default: config.DEFAULT_SIGNAL_HORIZON).
         confidence_level: HIGH | MEDIUM | LOW.
         close_at_signal: Closing price at time of signal.
         trailing_volume_30d: 30-day average daily volume.

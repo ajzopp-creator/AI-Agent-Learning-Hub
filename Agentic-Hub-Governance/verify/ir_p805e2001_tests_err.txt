@@ -1,0 +1,42 @@
+test_dry_run_never_calls_create_when_folder_missing (test_imap_mover.TestEnsureDestinationFolder.test_dry_run_never_calls_create_when_folder_missing)
+Entry 010 fix: dry_run=True must not mutate the server, ever. ... ok
+test_live_run_calls_create_when_folder_missing (test_imap_mover.TestEnsureDestinationFolder.test_live_run_calls_create_when_folder_missing)
+Sanity check: the real (non-dry-run) path still works after the fix. ... ok
+test_format_matches_microsoft_sasl_spec (test_imap_mover.TestXOAuth2String.test_format_matches_microsoft_sasl_spec)
+Entry 013 fix: exact wire format, not just 'looks close'. ... ok
+test_string_is_encodable_to_bytes (test_imap_mover.TestXOAuth2String.test_string_is_encodable_to_bytes)
+imaplib.authenticate() requires bytes, not str — must never raise. ... ok
+test_skip_accounts_excluded_even_with_valid_message_id (test_message_selector.TestSelectCandidatesSkipAccounts.test_skip_accounts_excluded_even_with_valid_message_id)
+Entry 011 fix: an account in skip_accounts must never be a candidate. ... ok
+test_creates_parent_directory (test_oauth2_outlook.TestBuildCache.test_creates_parent_directory) ... ok
+test_uses_configured_cache_path (test_oauth2_outlook.TestBuildCache.test_uses_configured_cache_path) ... ok
+test_raises_when_no_cached_accounts (test_oauth2_outlook.TestGetAccessToken.test_raises_when_no_cached_accounts) ... ok
+test_raises_when_silent_refresh_fails (test_oauth2_outlook.TestGetAccessToken.test_raises_when_silent_refresh_fails) ... ok
+test_returns_token_on_success (test_oauth2_outlook.TestGetAccessToken.test_returns_token_on_success) ... ok
+test_logs_error_on_failed_login_without_raising (test_oauth2_outlook.TestInteractiveLogin.test_logs_error_on_failed_login_without_raising) ... Outlook OAuth2 login failed: user cancelled
+ok
+test_exits_nonzero_when_no_signals_loaded (test_phase_exit_codes.TestPhase35ExitCode.test_exits_nonzero_when_no_signals_loaded) ... No signals loaded — aborting Phase 3.5.
+ok
+test_exits_nonzero_when_no_enabled_senders (test_phase_exit_codes.TestPhase3ExitCode.test_exits_nonzero_when_no_enabled_senders) ... No enabled senders loaded — aborting Phase 3.
+ok
+test_exits_nonzero_when_no_signals_loaded (test_phase_exit_codes.TestPhase4ExitCode.test_exits_nonzero_when_no_signals_loaded) ... No signals loaded — aborting Phase 4.
+ok
+test_does_not_exit_when_nothing_to_move (test_phase_exit_codes.TestPhase53ExitCode.test_does_not_exit_when_nothing_to_move)
+Guard against overcorrection: 'nothing to move' (everything ... ok
+test_exits_nonzero_when_no_signals_loaded (test_phase_exit_codes.TestPhase53ExitCode.test_exits_nonzero_when_no_signals_loaded) ... No signals loaded — aborting Phase 5.3.
+ok
+test_phase4_rank_passes_both_params (test_ranker.TestBuildRankedSignalsCallerPropagation.test_phase4_rank_passes_both_params)
+phase4_rank.py must pass real consensus_threshold and sector_map ... ok
+test_accepts_iso_format (test_schemas.TestApprovedSenderDateParsing.test_accepts_iso_format) ... ok
+test_accepts_real_date_object (test_schemas.TestApprovedSenderDateParsing.test_accepts_real_date_object)
+Non-str input (already a date) must pass through untouched. ... ok
+test_accepts_us_format (test_schemas.TestApprovedSenderDateParsing.test_accepts_us_format)
+The exact format Excel silently converted every row to. ... ok
+test_accepts_us_format_single_digit_day_and_month (test_schemas.TestApprovedSenderDateParsing.test_accepts_us_format_single_digit_day_and_month) ... ok
+test_rejects_ambiguous_garbage_that_isnt_a_date_at_all (test_schemas.TestApprovedSenderDateParsing.test_rejects_ambiguous_garbage_that_isnt_a_date_at_all) ... ok
+test_rejects_garbage_with_clear_error (test_schemas.TestApprovedSenderDateParsing.test_rejects_garbage_with_clear_error) ... ok
+
+----------------------------------------------------------------------
+Ran 23 tests in 0.029s
+
+OK

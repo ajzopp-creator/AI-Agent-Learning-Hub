@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-04-ACLS-001",
+  "signal_timestamp": "2026-08-05T15:50:31Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "ACLS",
+  "asset_class": "stock",
+  "guideline_entry": 139.699996948242,
+  "guideline_stop": 129.7087556272167,
+  "guideline_target": 145.009994506836,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 129.7087556272167,
+  "intelliscan_support_1": 111.800003051758,
+  "intelliscan_support_2": 145.009994506836,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 139.699996948242,
+    "trailing_volume_30d": 401700.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 80.0% WR, z=1.67, mean return +9.77% at h=5",
+    "atm_at_signal": 9.9912413210253
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-04",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-04_ACLS.md"
+  }
+}

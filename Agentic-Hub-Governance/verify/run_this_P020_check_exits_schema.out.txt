@@ -1,0 +1,16 @@
+CREATE TABLE exits (
+            exit_id          INTEGER  PRIMARY KEY AUTOINCREMENT,
+            trade_id         INTEGER  NOT NULL REFERENCES trades(trade_id),
+            exit_number      INTEGER  NOT NULL CHECK(exit_number >= 1),
+            exit_date        DATE     NOT NULL,
+            exit_datetime    DATETIME,
+            qty_exited       REAL     NOT NULL,
+            exit_price       REAL     NOT NULL,
+            exit_commissions REAL     NOT NULL DEFAULT 0.0,
+            exit_pnl         REAL     NOT NULL,
+            hold_days        INTEGER  NOT NULL,
+            created_at       DATETIME DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE(trade_id, exit_number)
+        )
+---
+exit rows: 652

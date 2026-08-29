@@ -216,6 +216,7 @@ alongside or immediately after this skill, same session, per
 | E2.018 | Tier-1 FAIL packets had no automated disposal — inbox grew indefinitely | `dispose_failed()` wired into `cmd_screen_all()`; every FAIL gets a `REVIEWED_NO_TRADE` record + archive, same session |
 | E3.005 | Vertical spread legs had no viability gate — a leg that would BLOCK single-leg sized cleanly inside a spread | New `domain\spread_council.py`; either leg failing OI/spread thresholds is a hard BLOCK |
 | E3.010/E3.011 (4th recurrence) | New verdict tier `APPROVED_WITH_SEVERE_WARNING` (2026-07-20) missing from spec-cache gate, `record_commands.py` allow-list, `obsidian_writers\config.py` `VERDICT_MAP` (defaulted PASS instead of BUY), and a test allowlist — same root cause, 4 spots | Each fixed individually; `VERDICT_MAP` P_800-Acked 2026-07-24. **Unfixed structural gap:** no single source of truth enumerates all verdict-tier consumers. |
+| E4.004 | `evaluate_signal.py` computed `half_spread = (ask - bid) / 2` unconditionally and fed it straight into `realistic_fill_rr()` with no sanity check on spread width — a bad Schwab quote (CAE, 2026-07-26: bid=22.60/ask=27.28 on a $25.20 stock, 18.6% spread) corrupted the R:R math into a nonsensical BLOCK number, matching stock viability's blind spot vs. options' existing `SPREAD_TOO_WIDE` gate | New `MAX_PLAUSIBLE_SPREAD_PCT` (config.py, 2.0%), hard BLOCK via `RC_SPREAD_TOO_WIDE` in `evaluate_signal.py` right after `half_spread` is computed, before any R:R math touches it — mirrors options' `SPREAD_TOO_WIDE` gate exactly, no override path (Tony's call). Tests: `test_spread_too_wide_blocks_before_rr_math` (CAE-pattern fixture), `test_spread_under_threshold_not_blocked_by_spread_gate`. |
 | E4.005 | `is_market_open_now()` was Mon-Fri 9:30-16:00 wall-clock only, no holiday check — `market_open: true` on holidays | Fixed with E4.006 (same root gap) |
 | E4.006 | `_sessions_since_earnings()` weekday-count had no holiday awareness — miscounted the `POST_EARNINGS_STABILIZATION_SESSIONS` window by one per holiday | New `domain\market_holidays.py` (rule-based, verified vs. NYSE 2026-2028 calendar); consumed by `market_hours.py` and `evaluate_signal.py`. Also fixed: `test_schwab_market_data.py` mock (`get_quotes` plural for slash-symbols); a weekday-dependent test fixture. |
 | E2.016 | quant_vote()'s RC_RR_BELOW_MIN `reason_detail` stated R:R (spread-adjusted, from `evaluate_signal.py`) and needs >= (clean entry/stop) on the same line with no basis label — read as self-contradictory though the BLOCK itself was always correct | Relabeled both figures in place: (realistic-fill, spread-adjusted) / (clean/guideline basis). No parameter or behavior change. Test: `test_council.py::test_quant_blocks_rr_below_min` asserts both labels present. |
@@ -223,6 +224,8 @@ alongside or immediately after this skill, same session, per
 | E5.005 | `tape_vote()` hard-BLOCKed every evaluate outside 9:30-16:00 ET via `RC_MARKET_CLOSED` unless `pre_market_flag=True` -- hardcoded `False` in `evaluate_signal.py`, never wired anywhere, so it was a 100% block with a dead escape hatch | Replaced `pre_market_flag` with `price_basis` ("live"/"close"). Closed-market path prices off the last daily bar's close (`fetch_snapshot.py`) with bid/ask reconstructed from the symbol's last observed LIVE half-spread (`infrastructure\last_spread_cache.py`, real friction, not synthetic zero) -- CAUTIONs (`RC_USING_CLOSE_DATA`) instead of BLOCKing. No cached spread yet -> fails loud, no file written. Tests: `test_tape_price_basis.py`, `test_fetch_snapshot.py`, `test_last_spread_cache.py`. |
 | E6.001 | `Bases/P400_Trades.base` filtered on `TradeManagement/P400` -- renamed to `TradeOrderManagement/P400` by WO-P800-E3.003 (2026-07-25); dead path returned zero rows silently for 17 days. Also sorted on a `date` field that does not exist in the P400 note schema | Path corrected to `TradeOrderManagement/P400`; sort field corrected to `run_date`. See WO-P400-E6.001 -- also found P_400 order notes never close the lifecycle loop (entry_date/close_date/realized_pnl stay null forever), reconciliation design pending |
 | E5.006 | `cmd_compare()` had zero disposition wiring on any outcome -- a `NEITHER` recommendation (both vehicles fail R:R/viability) printed the comparison table and returned, leaving the packet in the live inbox indefinitely -- no archive, no record, re-fetched (re-billed against live Schwab) every session. Found live 2026-08-11 on HAL and VKTX after a `batch-2b` earnings-cache hard-fail forced the manual `compare` fallback. | `run_comparison()` (`compare_vehicles.py`) gained a `trade_mode` param and a new `_dispose_if_neither()` helper -- on `NEITHER`, calls the existing `drop_signal()` (`drop_reason="RR_INVALID"`), archiving the packet and writing a REVIEWED_NO_TRADE record, mirroring the ENTRY_MISSED path `cmd_evaluate()` already used. Tony's directive (2026-08-11): once a signal reaches P_400 it is either a trade or it is not -- no hold-and-recheck; re-qualification is the trade-selector projects' job (P_115/P_300/P_118), not Order Management's. Test: `test_run_comparison_neither_disposes_packet`. Live-verified same session: inbox count 16 -> 0. |
+| E6.004 | `batch-2b` aborted the WHOLE batch on one earnings-cache miss instead of skipping just that symbol -- `batch_2b_scoring.py` already had a per-symbol skip mechanism for this exact case, but it imported `EarningsDataMissing`/`require_entry` from the OLD dead `infrastructure.earnings_file` module, not the live `application.earnings_lookup` module `build_entries_for_symbols()` actually raises from -- two same-named classes in two modules, the real exception blew past the catch and up into `cmd_batch_2b()`'s top-level abort. Found live 2026-08-19: ALGN cache miss killed a clean 12-symbol batch. | Revision 1 fixed the abort (`build_entries_for_symbols()` omits the symbol instead of raising, `_process_symbol()` catches it into the existing `skipped` list). Revision 2, same session: root cause traced further -- MACRO's real gate (`earnings_in_window()`) only ever checks 3-days-forward/2-days-back from today (Tony's call 2026-07-28, confirmed 2026-08-19 as "the real trading Window"), so the 83-day calendar pull was fetching 12x more than the gate consumes, into a data source that's genuinely sparse past ~2 weeks anyway. `EARNINGS_CALENDAR_LOOKAHEAD_DAYS` cut 83->7 (`config.py`); a missing symbol now gets a confirmed-clear entry (`next_earnings_date=None`) instead of a skip, since absence in a window this narrow IS the real answer, not an unknown. Live-verified 2026-08-19: 11-symbol batch, zero data-availability skips, every symbol reached a real QUANT verdict (2 SBLK APPROVED, 9 genuine BLOCKs). See WO-P400-E6.004. |
+| E6.006 | `batch-2b`'s printed table showed `VEHICLE=STOCK` with zero reason for every candidate -- indistinguishable from options never being checked at all. Tony caught it live: "where is Option evaluation??" Traced and confirmed NOT a correctness bug -- `chain_SBLK.json` proved a real contract was fetched and correctly rejected (spread_pct_of_mid=26.67% vs. 10% max). `compare_vehicles()` already builds a full `recommendation_reason` string; `batch_2b_scoring.py`'s `_vehicle_comparison()` just discarded it before it reached the report. | `RankedCandidate` gained `vehicle_reason: str` (`schemas.py`); `_vehicle_comparison()` returns the reason on every path including the chain-fetch-failure early exit (previously reason-less); `_print_ranked_table()` prints it under each row. Pure reporting fix -- vehicle-selection logic itself untouched. See WO-P400-E6.006. Live-table verification pending next signal batch (today's inbox already fully archived by the time this landed). |
 ---
 
 ## Layer Architecture (Hub Standard)
@@ -399,6 +402,35 @@ is the cautionary example: a log line is not a council verdict.
   "P_400 already knows this happened, the skill file just wasn't told."
 
 ## Changelog
+
+### 2026-08-19 (second entry, same day)
+- WO-P400-E6.006: Bugs Already Fixed row added -- `batch-2b`'s printed
+  table gave no reason for a STOCK vehicle fallback, making a correctly-
+  working options evaluation look indistinguishable from a broken one.
+  Caught live by Tony watching real output, not found proactively.
+
+### 2026-08-19
+- WO-P400-E6.004: Bugs Already Fixed row added -- `batch-2b` all-or-nothing
+  abort on a single earnings-cache miss, root-caused to a dead-module
+  exception mismatch (see table row). Docstring in `earnings_lookup.py`
+  corrected same session -- was still describing the old raise-based
+  behavior after the fix landed, same doc-drift pattern already logged
+  multiple times below; caught this time before it aged.
+- Same session, unrelated: `peh-handoff` skill bumped to v1.8 (Tony's
+  directive) -- existing-file edits now default to a targeted, occurrence-
+  counted PowerShell `.Replace()` instead of a full-file read-and-rewrite.
+  Not a P_400-specific change, noted here only because this session's
+  E6.004 edits were the first real use of the new rule.
+
+### 2026-08-17
+- Independent Review (WO_COMPLETION_GATE.md) closed four WOs sitting at
+  OWNER_DONE with no Completion Gate block: E4.004, E4.005, E4.006,
+  E5.001 -- all confirmed clean (full suite 357 passed/1 skipped, each
+  WO's specific test file re-run and byte-matched against its own
+  claimed count) and moved to CLOSED. Also found: E4.004 never got a
+  Bugs Already Fixed row despite fixing a real live bug and this file's
+  own Update trigger requiring one -- added above, same session
+  (matches this file's own pattern of doc-sync gaps logged below).
 
 ### 2026-08-12
 - WO-P400-E5.001 (OWNER_DONE 2026-07-29, 11/11 live-verified) never got

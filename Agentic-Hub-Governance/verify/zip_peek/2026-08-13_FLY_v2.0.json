@@ -1,0 +1,33 @@
+{
+  "signal_id": "P115-2026-08-13-FLY-001",
+  "signal_timestamp": "2026-08-13T20:28:50Z",
+  "signal_source": "P_115",
+  "strategy": "dip_buy",
+  "symbol": "FLY",
+  "asset_class": "stock",
+  "guideline_entry": 26.9,
+  "guideline_stop": 19.17,
+  "guideline_target": 33.37,
+  "signal_horizon": "10-15 days",
+  "confidence_level": "LOW",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": null,
+  "intelliscan_support_1": null,
+  "intelliscan_support_2": null,
+  "target_source": null,
+  "context": {
+    "close_at_signal": 26.9,
+    "trailing_volume_30d": 2929669.0,
+    "signal_rationale": "P_115 ASYM signal; HybridTier=5 (Anal3+Fund2); AsymmetricSetup confirmed (chart ASYM Setup:Review agrees with LogEntry); POST-EARNINGS OVERRIDE - Tony explicit direction, signal is Day 2/3 post Q2 2026 report (8/11/26 AMC, revenue $117.7M beat vs $15.5M YoY, EPS miss -0.42 vs -0.22 est); Fund Verification weak - recomputed approx tier1 (ROE deeply negative -62 to -269pct range across sources, FCF deeply negative -96M to -257M range, Debt/Equity 0.05 low) vs submitted Fund=2, 1-tier gap; PA Stop 19.17 structure; 200-MA -2pct NORMAL label",
+    "atm_at_signal": null
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-13",
+    "chart_timeframe": "1D",
+    "signal_source_link": "P_115_STEP1_FLY_2026-08-13.md"
+  }
+}

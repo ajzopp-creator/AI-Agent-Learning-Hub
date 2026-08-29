@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-04-ASX-001",
+  "signal_timestamp": "2026-08-05T15:54:53Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "ASX",
+  "asset_class": "stock",
+  "guideline_entry": 38.7000007629395,
+  "guideline_stop": 36.107241129538075,
+  "guideline_target": 40.810001373291,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "MEDIUM",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 36.107241129538075,
+  "intelliscan_support_1": 31.1200008392334,
+  "intelliscan_support_2": 40.810001373291,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 38.7000007629395,
+    "trailing_volume_30d": 10697600.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 65.0% WR, z=0.29, mean return +4.36% at h=5",
+    "atm_at_signal": 2.592759633401425
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-04",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-04_ASX.md"
+  }
+}

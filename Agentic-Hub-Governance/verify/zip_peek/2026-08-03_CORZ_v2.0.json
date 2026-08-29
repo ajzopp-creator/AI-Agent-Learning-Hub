@@ -1,0 +1,33 @@
+{
+  "signal_id": "P115-2026-08-03-CORZ-001",
+  "signal_timestamp": "2026-08-03T22:08:30Z",
+  "signal_source": "P_115",
+  "strategy": "support_bounce",
+  "symbol": "CORZ",
+  "asset_class": "stock",
+  "guideline_entry": 22.83,
+  "guideline_stop": 17.7,
+  "guideline_target": 26.05,
+  "signal_horizon": "3-5 days",
+  "confidence_level": "MEDIUM",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 20.68,
+  "intelliscan_support_1": null,
+  "intelliscan_support_2": null,
+  "target_source": null,
+  "context": {
+    "close_at_signal": 22.83,
+    "trailing_volume_30d": 12983661.0,
+    "signal_rationale": "P_920 EOD. ASYM: Anal 3 + Fund 2, STR -2. Flat Base, bounce from multi-week consolidation.",
+    "atm_at_signal": 2.15
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-03",
+    "chart_timeframe": "1D",
+    "signal_source_link": "P_920/2026-08-03_CORZ.md"
+  }
+}

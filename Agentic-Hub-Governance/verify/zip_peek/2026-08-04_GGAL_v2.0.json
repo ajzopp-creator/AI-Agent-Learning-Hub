@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-03-GGAL-001",
+  "signal_timestamp": "2026-08-04T22:07:43Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "GGAL",
+  "asset_class": "stock",
+  "guideline_entry": 50.5099983215332,
+  "guideline_stop": 48.250337657071405,
+  "guideline_target": 53.3400001525879,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "MEDIUM",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 48.250337657071405,
+  "intelliscan_support_1": 47.9000015258789,
+  "intelliscan_support_2": 53.3400001525879,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 50.5099983215332,
+    "trailing_volume_30d": 510500.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 65.0% WR, z=0.29, mean return +6.11% at h=5",
+    "atm_at_signal": 2.2596606644617947
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-03",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-03_GGAL.md"
+  }
+}

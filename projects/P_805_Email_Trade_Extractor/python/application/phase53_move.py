@@ -15,6 +15,7 @@ live here directly; those stay in infrastructure/.
 """
 
 import logging
+import sys
 from datetime import date, datetime, timezone
 from pathlib import Path
 
@@ -45,7 +46,7 @@ def run(signals_path: Path | None = None) -> None:
     signals = load_signals_csv(signals_path)
     if not signals:
         logger.error("No signals loaded — aborting Phase 5.3.")
-        return
+        sys.exit(1)
 
     moved_log = load_moved_log(config.MOVED_LOG_PATH)
     candidates = select_candidates(signals, moved_log, skip_accounts=frozenset(config.MOVE_SKIP_ACCOUNTS))

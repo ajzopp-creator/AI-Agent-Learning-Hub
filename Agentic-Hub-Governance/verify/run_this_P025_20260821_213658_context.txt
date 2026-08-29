@@ -1,0 +1,34 @@
+P_025 Full Build Test Handoff
+Date: 2026-08-21 21:36
+Project: P_025_AJZ_Institutional_Portfolio_Tracker
+PEH version: adapted for Grok Build
+
+What this does
+--------------
+Runs the full P_025 portfolio build against the live P_020 database
+(422 AJZ6348 trades) + yfinance prices, then verifies that
+P_025_Portfolio_BUILT.xlsx was created with the five Data Lake sheets
+populated.
+
+Prerequisites (already confirmed)
+---------------------------------
+- python\ package deployed from the zip
+- diagnostics showed 422 TradeRecords for AJZ6348
+- IRA_FEED_READY=False (5232-9885 correctly skipped)
+
+Success criteria
+----------------
+1. cli.py build (or equivalent) completes without exception
+2. Workbook exists at:
+   projects\P_025_AJZ_Institutional_Portfolio_Tracker\output\P_025_Portfolio_BUILT.xlsx
+3. Workbook contains sheets: Trade_Log, Market_Data, Reference_Data,
+   Daily_Units, Daily_Cash (and the Analytics placeholders)
+4. Trade_Log has rows > 0
+5. Script prints PASS and writes the .done marker
+
+How to run
+----------
+C:\Users\Trader\.conda\envs\p140\python.exe run_this_P025_20260821_213658.py
+
+Fix any errors until it prints PASS. Paste full output back.
+Do not change the assertions.

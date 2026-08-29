@@ -1,0 +1,32 @@
+WO-P300-E5.006 -- inspect the two files Tony dropped for step 3
+Date: 2026-08-27
+
+WHAT THIS TESTS:
+Tony exported and dropped:
+  data\bulk\mine\10_Pattern_SPY.xlsx
+  data\bulk\mine\10_Pattern_QQQ.xlsx
+Before writing the actual pre-registered stratification script, confirm
+these files actually have what step 3 needs: a real date column, daily
+(not pattern-anchor-sparse) coverage from 2021-08-10 through today, and
+columns equivalent to P_010's Medium Term Difference / Long Term
+Difference (whatever they're literally named in this export -- the
+"10_Pattern_" naming is P_300's own bulk-ingest convention, not
+confirmed yet to carry the same column layout as P_010's single-row
+daily export).
+
+Read-only, does not modify either file or any production DB.
+
+SUCCESS CRITERIA:
+- Script prints "PASS" for both files.
+- Output shows real column names, shape, first/last 3 rows, and (if a
+  literal "Date" column exists) the actual date range and row count.
+- Do NOT assume column names -- print exactly what pandas sees and let
+  Claude read the real output before deciding whether they match what's
+  needed for the posture formula.
+
+WHAT TO FIX ON FAILURE:
+If a column literally named "Date" isn't found, that is real diagnostic
+information, not a bug in this script -- do not rename or guess a column
+to force a match. Report the actual column list back.
+
+Do not change test assertions.

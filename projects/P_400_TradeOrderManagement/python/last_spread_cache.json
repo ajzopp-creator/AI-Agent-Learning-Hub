@@ -26,9 +26,9 @@
       "observed_at": "2026-08-14T15:59:43Z"
     },
     "SBLK": {
-      "half_spread": 0.02000000000000135,
-      "price": 28.92,
-      "observed_at": "2026-08-14T16:00:26Z"
+      "half_spread": 0.009999999999999787,
+      "price": 30.17,
+      "observed_at": "2026-08-19T16:23:41Z"
     },
     "BBY": {
       "half_spread": 0.03499999999999659,
@@ -39,6 +39,181 @@
       "half_spread": 0.015000000000000568,
       "price": 89.52,
       "observed_at": "2026-08-14T16:22:25Z"
+    },
+    "DGX": {
+      "half_spread": 0.5899999999999892,
+      "price": 240.23,
+      "observed_at": "2026-08-19T13:44:02Z"
+    },
+    "STZ": {
+      "half_spread": 0.12999999999999545,
+      "price": 131.15,
+      "observed_at": "2026-08-19T14:59:38Z"
+    },
+    "HWM": {
+      "half_spread": 0.18500000000000227,
+      "price": 285.3,
+      "observed_at": "2026-08-19T16:23:45Z"
+    },
+    "NRG": {
+      "half_spread": 0.11499999999999488,
+      "price": 117.545,
+      "observed_at": "2026-08-19T16:23:47Z"
+    },
+    "ALGN": {
+      "half_spread": 0.5150000000000006,
+      "price": 164.06,
+      "observed_at": "2026-08-19T16:23:49Z"
+    },
+    "APTV": {
+      "half_spread": 0.019999999999999574,
+      "price": 49.29,
+      "observed_at": "2026-08-19T16:23:51Z"
+    },
+    "CAR": {
+      "half_spread": 0.375,
+      "price": 139.32,
+      "observed_at": "2026-08-19T16:23:53Z"
+    },
+    "CIFR": {
+      "half_spread": 0.004999999999999005,
+      "price": 16.1045,
+      "observed_at": "2026-08-19T16:23:55Z"
+    },
+    "POWL": {
+      "half_spread": 0.2950000000000017,
+      "price": 198.13,
+      "observed_at": "2026-08-19T16:23:57Z"
+    },
+    "SARK": {
+      "half_spread": 0.009999999999999787,
+      "price": 25.72,
+      "observed_at": "2026-08-19T16:24:00Z"
+    },
+    "TSN": {
+      "half_spread": 0.019999999999999574,
+      "price": 58.95,
+      "observed_at": "2026-08-19T16:24:02Z"
+    },
+    "TDC": {
+      "half_spread": 0.03500000000000014,
+      "price": 27.89,
+      "observed_at": "2026-08-19T19:57:12Z"
+    },
+    "PLNT": {
+      "half_spread": 0.00999999999999801,
+      "price": 53.82,
+      "observed_at": "2026-08-19T19:57:14Z"
+    },
+    "MNST": {
+      "half_spread": 0.005000000000002558,
+      "price": 47.4169,
+      "observed_at": "2026-08-19T19:57:17Z"
+    },
+    "Z": {
+      "half_spread": 0.010000000000001563,
+      "price": 36.58,
+      "observed_at": "2026-08-19T19:57:19Z"
+    },
+    "ZG": {
+      "half_spread": 0.00999999999999801,
+      "price": 37.47,
+      "observed_at": "2026-08-19T19:57:22Z"
+    },
+    "V": {
+      "half_spread": 0.030000000000001137,
+      "price": 371.33,
+      "observed_at": "2026-08-21T19:42:42Z"
+    },
+    "ARDX": {
+      "half_spread": 0.0050000000000001155,
+      "price": 3.89,
+      "observed_at": "2026-08-20T19:49:57Z"
+    },
+    "ARE": {
+      "half_spread": 0.015000000000000568,
+      "price": 52.91,
+      "observed_at": "2026-08-20T19:49:59Z"
+    },
+    "MA": {
+      "half_spread": 0.07499999999998863,
+      "price": 596.9,
+      "observed_at": "2026-08-25T19:51:35Z"
+    },
+    "INCY": {
+      "half_spread": 0.04999999999999716,
+      "price": 128.21,
+      "observed_at": "2026-08-21T19:37:55Z"
+    },
+    "AGCO": {
+      "half_spread": 0.07500000000000284,
+      "price": 107.15,
+      "observed_at": "2026-08-21T19:37:58Z"
+    },
+    "CBOE": {
+      "half_spread": 0.125,
+      "price": 300.55,
+      "observed_at": "2026-08-21T19:38:00Z"
+    },
+    "CLSK": {
+      "half_spread": 0.004999999999999893,
+      "price": 11.9099,
+      "observed_at": "2026-08-21T19:38:03Z"
+    },
+    "GLPI": {
+      "half_spread": 0.004999999999999005,
+      "price": 43.5,
+      "observed_at": "2026-08-21T19:38:05Z"
+    },
+    "GPK": {
+      "half_spread": 0.004999999999999893,
+      "price": 11.98,
+      "observed_at": "2026-08-21T19:38:07Z"
+    },
+    "MSCI": {
+      "half_spread": 0.33499999999997954,
+      "price": 563.98,
+      "observed_at": "2026-08-21T19:38:10Z"
+    },
+    "RIOT": {
+      "half_spread": 0.005000000000000782,
+      "price": 19.67,
+      "observed_at": "2026-08-21T19:38:12Z"
+    },
+    "YUM": {
+      "half_spread": 0.030000000000001137,
+      "price": 151.8999,
+      "observed_at": "2026-08-21T19:38:14Z"
+    },
+    "SGHC": {
+      "half_spread": 0.004999999999999893,
+      "price": 13.945,
+      "observed_at": "2026-08-25T19:51:31Z"
+    },
+    "IBN": {
+      "half_spread": 0.005000000000000782,
+      "price": 29.91,
+      "observed_at": "2026-08-27T17:45:44Z"
+    },
+    "FFIV": {
+      "half_spread": 0.20999999999997954,
+      "price": 409.7,
+      "observed_at": "2026-08-27T19:28:24Z"
+    },
+    "DOMO": {
+      "half_spread": 0.0050000000000001155,
+      "price": 3.88,
+      "observed_at": "2026-08-27T19:28:28Z"
+    },
+    "XRX": {
+      "half_spread": 0.004999999999999893,
+      "price": 2.995,
+      "observed_at": "2026-08-27T19:28:31Z"
+    },
+    "TE": {
+      "half_spread": 0.004999999999999893,
+      "price": 4.81,
+      "observed_at": "2026-08-28T16:57:33Z"
     }
   }
 }

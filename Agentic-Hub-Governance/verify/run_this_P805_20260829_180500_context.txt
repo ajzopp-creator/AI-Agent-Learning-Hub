@@ -1,0 +1,37 @@
+WO-P000-E2.003 -- sys.path side-channel cleanup, final row (P_805\python\config.py)
+Date: 2026-08-29
+
+WHAT CHANGED
+config.py had a dead sys.path insert (lines ~160-164) pointing at
+C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_800_Automation_Note_Taking\scripts
+-- a folder that does not exist on disk. The actual dependency,
+obsidian_writers.application.write_handler (used by p805_kb_writer.py),
+already resolves through the Hub-root editable install (hub_shared package,
+Option A1, same WO). The insert was dead coupling left over from before that
+install existed. Removed `import sys` (unused elsewhere in the file) and the
+P800_SCRIPTS block; `import os` kept (used by KB_MODE / KB_LOOKBACK_DAYS).
+Backup taken before edit: config.py.backup_2026-08-29_180212.
+
+WHAT THIS SCRIPT TESTS
+1. `import config` succeeds with no sys.path manipulation.
+2. `from obsidian_writers.application.write_handler import handle_write`
+   still resolves (proves the Hub editable install covers this without the
+   removed insert).
+3. config module no longer exposes an unused `sys` name (confirms the dead
+   import was actually removed, not just made unreachable).
+
+SUCCESS CRITERIA
+Prints PASS and writes run_this_P805_20260829_180500.py.done with
+status=PASS. Any import error or the leftover `sys` name is a FAIL.
+
+IF IT FAILS
+Read the traceback in the .done file / console output. Likely causes:
+- p140 environment doesn't have hub_shared installed as editable (re-run
+  `pip install -e .` at Hub root under p140 -- see pyproject.toml).
+- Some other P_805 module still imports something that depended on the
+  removed sys.path insert (search projects\P_805_Email_Trade_Extractor for
+  any other reference to P800_SCRIPTS or P_800_Automation_Note_Taking before
+  assuming this).
+Propose the fix, do not touch test assertions, ask Tony to re-run.
+
+DO NOT change the test assertions in run_this_P805_20260829_180500.py.

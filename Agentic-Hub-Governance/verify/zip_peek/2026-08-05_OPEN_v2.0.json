@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-04-OPEN-001",
+  "signal_timestamp": "2026-08-05T16:19:08Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "OPEN",
+  "asset_class": "stock",
+  "guideline_entry": 4.11999988555908,
+  "guideline_stop": 3.7981896288040327,
+  "guideline_target": 4.90000009536743,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 3.7981896288040327,
+  "intelliscan_support_1": 3.61999988555908,
+  "intelliscan_support_2": 4.90000009536743,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 4.11999988555908,
+    "trailing_volume_30d": 56035200.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 70.0% WR, z=0.75, mean return +5.54% at h=5",
+    "atm_at_signal": 0.32181025675504765
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-04",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-04_OPEN.md"
+  }
+}

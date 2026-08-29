@@ -1,0 +1,1 @@
+Context: emit STZ SIGNAL_V2 packet via cli.py subprocess arg-list (avoids shell quoting issues). P_117-sourced, dip_buy strategy, MEDIUM confidence, horizon 10-15 trading days per Tony 8/17/26 agreement.

@@ -1,0 +1,41 @@
+WO-P300-E5.006 -- verify whether the stale eval_cache is safely reusable
+Date: 2026-08-29
+
+WHAT THIS TESTS:
+Before committing to a ~9-day full uncached walk-forward re-run (real
+number: WALK_FORWARD_SERIAL_MS_PER_PAIR=0.7836ms x 44399x44398/2 pairs
+= ~214.5h), check whether the existing but stale eval_cache
+(catalog_42955_42959_282886144_default.json, 42,959 patterns,
+2026-08-26) can be reused. It's only safe if catalog growth since then
+has been pure forward-append -- i.e., no pattern added after 08-26 has
+an anchor_date at or before the cache's own max covered anchor_date,
+since that would change an already-cached pattern's date-filtered
+corpus (_corpus_pids in eval_scoring.py) and invalidate its cached
+result. Also confirms BUY_MIN_Z_SCORE and other AND-gate thresholds
+haven't changed since the cache was written (already confirmed via
+config.py changelog: last threshold change was 2026-06-28, well before
+this cache).
+
+Read-only. Reads the cache JSON and opens 082626catalog.db mode=ro. No
+writes anywhere.
+
+SUCCESS CRITERIA:
+- Script prints "PASS" at the end.
+- Reports cache row count (expect 42,959), live catalog count (expect
+  44,399), count of new patterns, and -- the actual answer -- whether
+  any new pattern has anchor_date <= the cache's max covered date.
+- If zero backfilled patterns: cache is reusable, only new patterns
+  need scoring (~13.5h estimate, not ~214.5h).
+- If any backfilled patterns exist: report them plainly. Do not treat
+  a nonzero backfill count as a script bug -- it's real information
+  about how BulkAddPattern actually populated the catalog.
+
+WHAT TO FIX ON FAILURE:
+Read-only against an existing cache file and a production DB -- if it
+fails, most likely a stale path (confirm cache filename is still exactly
+catalog_42955_42959_282886144_default.json via
+  Get-ChildItem "C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition\models\eval_cache\"
+and report back) or a JSON key name mismatch (report the actual top-level
+keys via a quick print, don't guess a rename).
+
+Do not change test assertions.

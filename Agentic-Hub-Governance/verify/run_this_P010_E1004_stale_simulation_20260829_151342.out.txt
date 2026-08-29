@@ -1,0 +1,50 @@
+scratch tree built: C:\Users\Trader\AI-Agent-Learning-Hub\Agentic-Hub-Governance\verify\e1004_stale_sim_20260829_151342
+fabricated SPY/QQQ grids written, grid_date=2026-08-24 (today=2026-08-29, deliberately 5 days old, no VXX grid -- script must handle that as it already does in production)
+--- script stdout ---
+======================================================================
+P_010 DAILY POSTURE ANALYZER V5.0
+======================================================================
+Time: 2026-08-29 15:14:19
+
+WARNING: VXX Grid not found -- running without VXX sentiment overlay
+         Expected: C:\Users\Trader\AI-Agent-Learning-Hub\Agentic-Hub-Governance\verify\e1004_stale_sim_20260829_151342\data\excel_exports\History Grid (VXX)_v3.xlsx
+
+Reading SPY Grid : History Grid (SPY)_v3.xlsx
+Reading QQQ Grid : History Grid (QQQ)_v3.xlsx
+
+SPY Grid Date  : 08/24/2026
+SPY Close      : $100.00
+SPY PRANGE     : $98.00 - $102.00
+SPY Medium Diff: 0.5000
+SPY Long Diff  : 0.5000
+
+QQQ Grid Date  : 08/24/2026
+QQQ Close      : $100.00
+QQQ PRANGE     : $98.00 - $102.00
+QQQ Medium Diff: 0.5000
+QQQ Long Diff  : 0.5000
+
+SPY Posture    : 0.5000
+QQQ Posture    : 0.5000
+
+Avg Posture    : 0.5000  (SPY + QQQ only)
+Risk Mode      : HALF
+
+Created  : grid_snapshot_latest.json
+Created  : P_010_RiskConfig.json
+
+======================================================================
+DAILY POSTURE ANALYSIS COMPLETE
+======================================================================
+  Risk Mode   : HALF
+  Sizing      : 50%
+======================================================================
+
+--- exit code: 0 ---
+
+MORNING_RUN_FAILED.flag created: True
+flag content: 'FAILED: 2026-08-29T15:14:20.185345\nSTALE GRID DATA -- QQQ grid_date=2026-08-24 (4d behind expected 2026-08-28); SPY grid_date=2026-08-24 (4d behind expected 2026-08-28)\n'
+P_010_RiskConfig.json still written despite staleness: True
+
+VERDICT: PASS
+(toast_notify.send_toast ran live, unmocked -- check for the actual Windows toast as the other half of this verification)

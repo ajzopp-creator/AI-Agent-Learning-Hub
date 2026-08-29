@@ -1,0 +1,1 @@
+Context: WO-P115-E4.001 test plan steps 4-6 -- run 3 real STEP2 setups (STZ/SBLK/AXTI) through Granite 4.1 8B via LM Studio local API, validate against real SignalV2 pydantic schema, measure latency

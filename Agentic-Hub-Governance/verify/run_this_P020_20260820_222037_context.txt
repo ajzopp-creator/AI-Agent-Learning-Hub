@@ -1,0 +1,32 @@
+WO-P020-E1.014 follow-up -- field-name investigation, 2026-08-20
+
+WHAT THIS TESTS
+Tony's TOS screenshot shows six distinct balance figures (Option Buying
+Power $18,177.96, Net Liq $30,555.94, Intraday Buying Power $91,649.16,
+Cash & Sweep Vehicle $3,689.20, Available Funds For Trading $19,126.85,
+Cash Balance $2,885.84). WO-P020-E1.009's schwab_balance_pull.py only
+ever reads two fields from the raw API response -- cashAvailableForTrading
+and buyingPower -- and cashAvailableForTrading comes back None for this
+margin account. "Available Funds For Trading" on TOS is a real, populated,
+live number and is suspiciously close to the $19,126 Tony types into
+--cash by hand, which suggests it may map to a DIFFERENT Schwab API field
+name we've never looked at, not that the concept is genuinely unavailable.
+
+This script pulls the account balance and prints EVERY field in
+currentBalances and initialBalances, plus the full raw JSON, so the six
+TOS numbers can be matched to real field names by inspection.
+
+READ-ONLY. Does not write to the DB, the P_000 params file, or any
+production file. Only touches the live Schwab API (GET, no mutation).
+
+SUCCESS CRITERIA
+Script prints "PASS" and exits 0, having printed the full field dump.
+
+WHAT TO DO WITH THE OUTPUT
+Paste the full output back to me (the currentBalances field list is what
+matters most -- the full JSON dump is just backup in case something lives
+outside currentBalances/initialBalances). I'll match each TOS figure to
+its real field name and report back whether cashAvailableForTrading is
+genuinely null for this account or whether a different field
+(availableFunds or similar) is the one that should have been read all
+along.

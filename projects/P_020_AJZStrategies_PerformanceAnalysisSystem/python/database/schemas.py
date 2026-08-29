@@ -53,6 +53,8 @@ class Trade(BaseModel):
     notes:                 Optional[str]      = None
     source:                str                = "schwab_api"
     schwab_transaction_id: Optional[str]      = None
+    reason:                Optional[str]      = None
+    signal_strength:       Optional[str]      = None
 
 
 class Exit(BaseModel):

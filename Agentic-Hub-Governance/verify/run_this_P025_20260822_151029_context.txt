@@ -1,0 +1,15 @@
+PEH / P_025 / Analytics Expansion — 2026-08-22
+
+What this tests
+Runs format_analytics against the existing Data Lake workbook and confirms
+Risk_Metrics, Sector_Exposure, and Correlation are populated with real
+formulas (not TBD placeholders). Also enforces the 300-line file limit on
+the four modules in the 2026-08-22 zip.
+
+Success criteria
+Prints PASS. Writes sibling .done with status=PASS, exit_code=0.
+
+On failure
+Fix production code under
+C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_025_AJZ_Institutional_Portfolio_Tracker\python\
+until the script prints PASS. Do not change test assertions.

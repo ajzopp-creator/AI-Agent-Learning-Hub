@@ -65,6 +65,23 @@ def cmd_import(args: argparse.Namespace) -> None:
         start=args.start,
         end=args.end,
         no_export=args.no_export,
+        thinklog=args.thinklog,
+    )
+
+
+# ── ThinkLog backfill (logic in application/thinklog_backfill.py) ─────────
+
+def cmd_thinklog(args: argparse.Namespace) -> None:
+    """Retroactively apply ThinkLog tag overrides to trades already in the DB."""
+    from application.thinklog_backfill import run_backfill
+    symbols = args.symbols.split(",") if args.symbols else None
+    run_backfill(
+        thinklog_path=args.thinklog,
+        date_from=args.start,
+        date_to=args.end,
+        account_id=args.account,
+        symbols=symbols,
+        commit=args.commit,
     )
 
 
@@ -132,6 +149,26 @@ def _build_parser() -> argparse.ArgumentParser:
                           help="End date YYYY-MM-DD for full re-import (requires --start)")
     p_import.add_argument("--no-export", action="store_true",
                           help="Skip CSV export after import")
+    p_import.add_argument("--thinklog",  default=None,
+                          help="Path to live-account ThinkLog CSV export -- "
+                               "a matching tag always overrides the resolved system")
+
+    p_thinklog = sub.add_parser(
+        "thinklog",
+        help="Backfill ThinkLog tag overrides onto trades already in the DB"
+    )
+    p_thinklog.add_argument("--thinklog", required=True,
+                            help="Path to a ThinkLog CSV export")
+    p_thinklog.add_argument("--start", required=True,
+                            help="Start date YYYY-MM-DD (inclusive)")
+    p_thinklog.add_argument("--end", required=True,
+                            help="End date YYYY-MM-DD (inclusive)")
+    p_thinklog.add_argument("--symbols", default=None,
+                            help="Comma-separated symbol allow-list (default: all)")
+    p_thinklog.add_argument("--account", default=None,
+                            help="Filter by account ID, e.g. AJZ6348 (default: all)")
+    p_thinklog.add_argument("--commit", action="store_true",
+                            help="Write the updates (default: dry-run preview only)")
 
     p_balance = sub.add_parser("balance", help="Pull and store Schwab account balance snapshot")
     p_balance.add_argument("--account", default="AJZ", help="Account: AJZ or IRA (default: AJZ)")
@@ -158,6 +195,7 @@ def main() -> None:
         "init-db"  : cmd_init_db,
         "verify"   : cmd_verify,
         "import"   : cmd_import,
+        "thinklog" : cmd_thinklog,
         "export"   : cmd_export,
         "analyze"  : cmd_analyze,
         "balance"  : cmd_balance,

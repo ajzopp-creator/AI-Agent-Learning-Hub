@@ -1,0 +1,37 @@
+WO-P300-E5.006 step 4 -- repeatability + magnitude check on the step 3 result
+Pre-registered 2026-08-29, BEFORE the script was run.
+
+PURPOSE
+Step 3 found BUY win rate 72.8% (OFF) / 73.6% (HALF) / 66.9% (FULL),
+spread 6.67pp, over the 5pp bar. Two questions were left open:
+  (a) Is that spread repeatable across calendar years, or carried by a
+      few clustered stretches? (WO's own BBLZ overfitting caveat)
+  (b) Is the hit-rate edge backed by return magnitude and tail behavior,
+      or is OFF "more small wins, worse losses"?
+This step measures both. INFORMATIONAL -- no new decision bar. It feeds
+Tony's decision on the over-bar result; it does not make it.
+
+DATA SOURCES -- identical to step 3
+- 08-26 walk-forward report, is_chosen_horizon rows (signal, horizon,
+  actual_return_pct, actual_is_profitable). return_pct is a DECIMAL
+  FRACTION in the report; multiplied by 100 at display only (M-020).
+- Posture VP-reconstructed from data\reference\10_Pattern_SPY.xlsx /
+  10_Pattern_QQQ.xlsx via bulk_grid_reader.parse_bulk_file, P_010
+  formula, exact-date join.
+- Buckets = P_010 determine_risk_mode cuts: OFF <0, HALF 0..1, FULL >=1.
+
+WHAT IS PRINTED
+  1. BUY win rate by calendar year x bucket (n shown; n<30 flagged).
+  2. BUY lift = BUY win% - ALL-pattern win%, by year x bucket.
+  3. BUY return magnitude by bucket: mean, median, p10, p90, avg win,
+     avg loss, expectancy = win% x avg win + loss% x avg loss.
+  4. Same magnitude table for WATCH and ALL (context).
+
+SUCCESS
+  Tables printed, step4_yearly_20260829_103000.csv and
+  step4_magnitude_20260829_103000.csv written next to this script, PASS.
+
+ON FAILURE
+  Same rules as step 3: reader errors mean export/manifest drift --
+  report, do not patch the reader. Do not change bucket cuts.
+  Do not change test assertions.

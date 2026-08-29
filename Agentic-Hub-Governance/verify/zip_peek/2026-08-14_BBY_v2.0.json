@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-13-BBY-001",
+  "signal_timestamp": "2026-08-14T10:06:17Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "BBY",
+  "asset_class": "stock",
+  "guideline_entry": 85.3499984741211,
+  "guideline_stop": 82.65846807747654,
+  "guideline_target": 91.2649993896484,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "MEDIUM",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 82.65846807747654,
+  "intelliscan_support_1": 79.0,
+  "intelliscan_support_2": 91.2649993896484,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 85.3499984741211,
+    "trailing_volume_30d": 3083800.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 65.0% WR, z=0.29, mean return +1.59% at h=5",
+    "atm_at_signal": 2.691530396644546
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-13",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-13_BBY.md"
+  }
+}

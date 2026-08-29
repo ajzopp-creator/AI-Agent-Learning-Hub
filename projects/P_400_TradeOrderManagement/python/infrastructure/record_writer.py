@@ -83,6 +83,14 @@ def write_p400_record(
         "target_1": target_1,
         "position_size": position_size,
         "order_id": order_id,
+        # WO-P020-E1.007 Part 2 / WO-P400-E6.001: signal_source was already
+        # being received here on every call (never optional) but was only
+        # ever used to derive the two booleans below, then discarded --
+        # why_code stayed null on every vault record ever written. P_800's
+        # P400Record schema already defines why_code (obsidian_writers\
+        # domain\vault_schemas.py); P_020's vault_system_reader.py already
+        # reads why_code first. No schema change either side, one field add.
+        "why_code": signal_source,
         "p115_linked": signal_source == "P_115",
         "p300_linked": signal_source == "P_300",
         "drop_reason": drop_reason,

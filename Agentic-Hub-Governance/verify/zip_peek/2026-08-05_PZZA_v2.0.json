@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-04-PZZA-001",
+  "signal_timestamp": "2026-08-05T16:20:56Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "PZZA",
+  "asset_class": "stock",
+  "guideline_entry": 30.7199993133545,
+  "guideline_stop": 29.40345725004061,
+  "guideline_target": 31.7600002288818,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 29.8099994659424,
+  "intelliscan_support_1": 29.8099994659424,
+  "intelliscan_support_2": 31.7600002288818,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 30.7199993133545,
+    "trailing_volume_30d": 1408800.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 85.0% WR, z=2.13, mean return +6.46% at h=5",
+    "atm_at_signal": 1.3165420633138905
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-04",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-04_PZZA.md"
+  }
+}

@@ -74,8 +74,8 @@ def insert_trade(conn: sqlite3.Connection, trade: Trade) -> Optional[int]:
             account_id, system, underlying_symbol, asset_type, direction,
             open_date, open_datetime, qty, entry_price, stop_price,
             risk_amount, total_commissions, status, tags, notes,
-            source, schwab_transaction_id
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            source, schwab_transaction_id, reason, signal_strength
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         trade.account_id,
         trade.system,
@@ -94,6 +94,8 @@ def insert_trade(conn: sqlite3.Connection, trade: Trade) -> Optional[int]:
         trade.notes,
         trade.source,
         trade.schwab_transaction_id,
+        trade.reason,
+        trade.signal_strength,
     ))
     conn.commit()
     trade_id = cursor.lastrowid

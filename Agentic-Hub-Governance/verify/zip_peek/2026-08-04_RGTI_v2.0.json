@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-03-RGTI-001",
+  "signal_timestamp": "2026-08-04T22:21:51Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "RGTI",
+  "asset_class": "stock",
+  "guideline_entry": 16.0200004577637,
+  "guideline_stop": 14.839564495496477,
+  "guideline_target": 16.1200008392334,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 14.839564495496477,
+  "intelliscan_support_1": 13.1300001144409,
+  "intelliscan_support_2": 16.1200008392334,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 16.0200004577637,
+    "trailing_volume_30d": 23184800.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 80.0% WR, z=1.67, mean return +13.72% at h=5",
+    "atm_at_signal": 1.180435962267223
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-03",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-03_RGTI.md"
+  }
+}

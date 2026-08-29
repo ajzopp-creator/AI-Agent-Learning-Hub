@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-07-30-DDD-001",
+  "signal_timestamp": "2026-08-03T22:27:51Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "DDD",
+  "asset_class": "stock",
+  "guideline_entry": 2.70000004768372,
+  "guideline_stop": 2.5368202528654713,
+  "guideline_target": 2.8050000667572,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 2.55299997329712,
+  "intelliscan_support_1": 2.55299997329712,
+  "intelliscan_support_2": 2.8050000667572,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 2.70000004768372,
+    "trailing_volume_30d": 2694400.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 70.0% WR, z=0.75, mean return +6.19% at h=5",
+    "atm_at_signal": 0.16317979481824874
+  },
+  "signal_metadata": {
+    "session_date": "2026-07-30",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-07-30_DDD.md"
+  }
+}

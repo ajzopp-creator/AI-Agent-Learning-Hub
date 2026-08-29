@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-13-FICO-001",
+  "signal_timestamp": "2026-08-14T10:09:04Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "FICO",
+  "asset_class": "stock",
+  "guideline_entry": 1110.69995117188,
+  "guideline_stop": 1045.3755118995266,
+  "guideline_target": 1410.17004394531,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 1045.3755118995266,
+  "intelliscan_support_1": 1020.20001220703,
+  "intelliscan_support_2": 1410.17004394531,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 1110.69995117188,
+    "trailing_volume_30d": 307400.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 75.0% WR, z=1.21, mean return +6.15% at h=5",
+    "atm_at_signal": 65.3244392723535
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-13",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-13_FICO.md"
+  }
+}

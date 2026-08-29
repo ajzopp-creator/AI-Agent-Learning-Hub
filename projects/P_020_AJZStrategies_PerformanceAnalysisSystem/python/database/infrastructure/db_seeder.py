@@ -21,6 +21,8 @@ _ACCOUNTS: List[Tuple] = [
 _SYSTEMS: List[Tuple] = [
     ("P_115",      "Buy The Dip",
      "Buy The Dip entries",                           1),
+    ("P_010",      "Current Market Posture",
+     "P_010 market posture / risk-mode signal",        1),
     ("P_116",      "Options Income Launchpad",
      "Options income generation system",              1),
     ("P_117",      "External Recommendations",
@@ -39,6 +41,8 @@ _SYSTEMS: List[Tuple] = [
      "BigTrends email subscription - Sunday Night Trader",  1),
     ("TOS_Import", "TOS Import Default",
      "Default when no Tracker Dashboard match found", 1),
+    ("INV",        "Investment / Swing Trade",
+     "IRA generic investment or swing trade, no specific signal system (WO-P020-E1.015)", 1),
 ]
 
 

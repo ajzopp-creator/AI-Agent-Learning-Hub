@@ -1,0 +1,18 @@
+{
+  "server": {
+    "base_url": "http://127.0.0.1:1234/v1",
+    "api_key": "lm-studio",
+    "timeout_seconds": 60
+  },
+  "model_defaults": {
+    "model_alias": "granite-4.1-8b",
+    "temperature": 0.0,
+    "top_p": 0.95,
+    "max_tokens": 2048,
+    "stream": false
+  },
+  "guardrails": {
+    "max_context_tokens": 8192,
+    "reserve_output_tokens": 1024
+  }
+}

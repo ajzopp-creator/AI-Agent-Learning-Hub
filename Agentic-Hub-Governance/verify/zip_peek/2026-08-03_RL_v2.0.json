@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-07-30-RL-001",
+  "signal_timestamp": "2026-08-03T22:35:24Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "RL",
+  "asset_class": "stock",
+  "guideline_entry": 385.910003662109,
+  "guideline_stop": 373.2557957877388,
+  "guideline_target": 388.160003662109,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 373.2557957877388,
+  "intelliscan_support_1": 366.932495117188,
+  "intelliscan_support_2": 388.160003662109,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 385.910003662109,
+    "trailing_volume_30d": 427500.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 75.0% WR, z=1.21, mean return +4.12% at h=5",
+    "atm_at_signal": 12.65420787437017
+  },
+  "signal_metadata": {
+    "session_date": "2026-07-30",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-07-30_RL.md"
+  }
+}

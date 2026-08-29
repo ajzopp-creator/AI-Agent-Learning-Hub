@@ -1,0 +1,4 @@
+  File "C:\Users\Trader\AI-Agent-Learning-Hub\Agentic-Hub-Governance\verify\\run_this_P115_20260817_094051c.py", line 11
+    f.write(f\"Date={r[idx['Date']]!r} Symbol={r[idx['Symbol']]!r} Source={r[idx['SignalSource']]!r} Verdict={r[idx['Step1Verdict']]!r}\n\")
+              ^
+SyntaxError: unexpected character after line continuation character

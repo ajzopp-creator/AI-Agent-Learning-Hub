@@ -1,0 +1,12 @@
+WO-P115-E5.001 live proof run (upgrade from argparse-only verification).
+Purpose: full end-to-end cli.py invocation with --horizon OMITTED, to prove
+the default actually reaches a written SignalV2 packet, not just args parsing.
+Symbol "ZZTEST" is not a real ticker -- disposable, deleted immediately after
+read-back confirms the field. This WILL write to the live signals inbox
+(trading_journal\TradeOrderManagement\signals\2026-08-18_ZZTEST_v2.0.json)
+for the seconds between write and cleanup -- Tony explicitly requested this
+(2026-08-18, "need proof and cleanup").
+Command:
+C:\Users\Trader\.conda\envs\p140\python.exe cli.py --symbol ZZTEST --session-date 2026-08-18 --timestamp 2026-08-18T16:02:48Z --strategy dip_buy --entry 100.0 --stop 90.0 --target 120.0 --confidence MEDIUM --close 99.5 --volume 500000 --rationale "WO-P115-E5.001 live verification - DELETE, not a real signal" --timeframe 1D --source-link "WO-P115-E5.001-verification"
+(--horizon deliberately omitted)
+Run from: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_115_BuytheDipTradingSystem\python

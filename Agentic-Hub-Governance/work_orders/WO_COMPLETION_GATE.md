@@ -6,6 +6,8 @@
 # Last updated: 2026-08-03 (added Caller Propagation + Imperative Sweep checks -- WO-P115-E2.001 wired support fields into emit_signal() but never into cli.py, the only entry point, and closed anyway; architecture v1.3 removed P_115 sizing but was logged only in changelogs while 9 imperative rules still commanded sizing. Both closed on "the owning layer is done." Ref WO-P115-E3.001)
 # Last updated: 2026-07-29 (added Enforcement section -- Completion Gate block must exist at time OWNER_DONE is set, not backfilled later; ref EC-005, WO-P000-E9.001)
 # Last updated: 2026-08-07 (added Session-Close Reporting Rule -- a session that did OWNER_DONE work on WO-P000-E3.001/E7.001 described that same work as "Independent Review" in its own chat recap; ref EC-006)
+# Last updated: 2026-08-29 (added "What Independent Review Is Not" -- a WOs VERIFY section labeled two unfinished OWNER tasks "left for Independent Review"; ref WO-P010-E1.004)
+# Last updated: 2026-08-29 (added Ack Scope -- doc-only/governance WOs no longer require per-project Acks, only WOs that change something a project's code/config/schema directly depends on; ref WO-P000-E2.001)
 
 ---
 
@@ -38,11 +40,12 @@ Copy this block into the WO before marking OWNER_DONE:
     anti-patterns, workflow command lines, NEVER VIOLATE blocks, and the
     claude.ai Project Instructions -- not only in a changelog entry.
     A changelog is a record, not a rule. (ref WO-P115-E3.001)
-[ ] Downstream projects in Affects: notified (WO comment or session note)
+[ ] Downstream projects in Affects: notified (WO comment or session note) -- Ack only required if Direct per Ack Scope below; doc-only/governance WOs are notified by the ledger entry alone
 [ ] No sys.path side-channels introduced (ref WO-P000-E2.003)
 [ ] If schema/signal contract changed: version bumped, consuming projects notified
 [ ] DRAFT files for this WO deleted from Agentic-Hub-Governance\work_orders\
 [ ] One ledger entry per WO confirmed
+[ ] No open VERIFY/Acceptance Criteria item is deferred to Independent Review by label -- see "What Independent Review Is Not" below
 ```
 
 ---
@@ -58,11 +61,60 @@ Reason: the implementing session grading its own work is how the ten P_400 /
 P_300 WOs sat OWNER_DONE with an empty Completion Gate checklist for weeks --
 nothing forced a second look before self-certifying done.
 
+### What Independent Review Is Not (added 2026-08-29, ref WO-P010-E1.004)
+
+Independent Review re-reads EXISTING evidence against the Acceptance
+Criteria / VERIFY section and confirms each box. It does not run a
+verification the owner skipped, produce new test output, or complete an
+item the owner left undone. If a VERIFY/Acceptance item has no evidence
+yet, that is a gap in OWNER_DONE, not a task to hand to the reviewer.
+
+Concrete rule: before setting OWNER_DONE, every VERIFY/Acceptance item
+must be either (a) checked off with real evidence attached in the WO, or
+(b) explicitly marked a post-close MONITORING item -- something no one,
+owner or reviewer, can produce on demand (e.g. "confirm behavior on the
+next live market holiday"). Monitoring items do not block OWNER_DONE or
+CLOSED. Anything else sitting unchecked with owner work still to do is
+not ready for OWNER_DONE, full stop -- and must never be phrased as
+"left for Independent Review," which is exactly the mislabeling this
+rule exists to catch. (Incident: WO-P010-E1.004's VERIFY section listed
+an unfinished stale-grid integration test as "left for Independent
+Review" -- Tony caught it same session; the item was actually finishable
+by the owner via an isolated scratch-copy test with zero contact with
+live files, and was completed that way instead.)
+
 This applies Hub-wide, to every project, no exceptions for small WOs.
 
 ## Session-Close Reporting Rule (added 2026-08-07, ref EC-006)
 
 A chat-level summary stating a WO has been "reviewed," "closed out with review," or similar is not itself evidence of review -- it must be backed by that WO's own Independent Review section/checkbox, re-read live in the same turn the claim is made. A session that performed OWNER_DONE-level work on a WO (Completion Gate items, fixes, doc corrections) describing that same work as Independent Review in its own summary is the self-certification failure this section already exists to block -- just one layer up, in prose instead of the ledger file. Never collapse "this session did the work" and "a separate session reviewed it" into one claim.
+
+## Ack Scope (added 2026-08-29, ref WO-P000-E2.001)
+
+Not every WO in a project's Affects: list needs that project's explicit
+Ack before CLOSED. The distinction:
+
+- **Direct** -- the WO changes code, config, a schema/signal contract, or a
+  path/skill a project actually imports, reads, or runs. That project must
+  Ack at its own next INIT before the WO can CLOSE (this is the original
+  Cross-Project Completion Gate intent, WO-P000-E3.001).
+- **Doc-only / governance** -- the WO changes a Hub-root reference doc
+  (GIT_WORKFLOW.md, this file, P_000_SYSTEM_DOCUMENTATION.md prose) with
+  nothing any project's runtime depends on. Logging the WO in the ledger
+  IS the notification. No per-project Ack required, no CLOSED-blocking.
+
+Root cause for adding this: WO-P000-E2.001 (git backup strategy, Hub-root
+docs only) sat OWNER_DONE for 25 days waiting on 7 Acks that had nothing to
+confirm except "read it, no action needed" -- a paperwork gate on already-
+live, non-breaking documentation. Tony's own framing: "unless we are
+touching files directly in the project I don't see why the Project has to
+ACK a WO when it has nothing to do."
+
+This does not weaken the Direct case. Schema changes, shared-code edits,
+removed capabilities, and anything CALLER PROPAGATION/IMPERATIVE SWEEP
+below already covers still require the Ack, unchanged. When in doubt
+whether a WO is Direct or doc-only, default to Direct -- this section
+narrows an existing gate, it does not invite skipping it.
 
 ## Why Caller Propagation and Imperative Sweep Exist
 

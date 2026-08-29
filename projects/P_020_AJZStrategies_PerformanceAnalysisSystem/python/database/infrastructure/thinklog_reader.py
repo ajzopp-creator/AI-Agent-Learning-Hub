@@ -25,11 +25,34 @@ from datetime import date, datetime
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
+from domain.thinklog_parser import ParsedThinkLog, parse_thinklog_entries
+
 # Matches "M/D/YY HH:MM:SS" or "MM/DD/YYYY HH:MM:SS"
 _TIMESTAMP_RE = re.compile(
     r"^\s*(\d{1,2})/(\d{1,2})/(\d{2,4})\s+(\d{1,2}):(\d{2})(?::(\d{2}))?\s*$"
 )
 _SYMBOL_LINE_RE = re.compile(r"^\s*Symbol:\s*(\S+)\s*$", re.IGNORECASE)
+
+# TOS's "Symbol:" field carries the full OCC option symbol on option
+# entries, e.g. ".DINO260918C92.5" -- underlying + expiry + C/P + strike.
+# Real trades.underlying_symbol is always the bare ticker ("DINO"), so
+# this must be stripped at read time or every option ThinkLog entry
+# silently fails to match (found 2026-08-16, real export, Tony's DINO
+# entry). Matches an optional leading '.', captures leading letters,
+# requires the OCC date digits to follow -- plain tickers with no
+# trailing digits (SWPPX, QQQ) are untouched.
+_OCC_SYMBOL_RE = re.compile(r"^\.?([A-Z]+)\d")
+
+
+def _normalize_symbol(raw: str) -> str:
+    """Strip OCC option-symbol suffix down to the bare underlying ticker.
+
+    '.DINO260918C92.5' -> 'DINO'. Plain tickers (no trailing digits,
+    e.g. 'IWM', 'SWPPX') pass through unchanged aside from case/dot.
+    """
+    s = raw.strip().upper()
+    m = _OCC_SYMBOL_RE.match(s)
+    return m.group(1) if m else s.lstrip(".")
 
 
 def _parse_timestamp(s: str) -> Optional[datetime]:
@@ -91,7 +114,7 @@ def _parse_record(block: List[str]) -> Optional[Dict]:
     for ln in block:
         m = _SYMBOL_LINE_RE.match(ln)
         if m:
-            symbol = m.group(1).upper()
+            symbol = _normalize_symbol(m.group(1))
             break
     if not symbol:
         return None
@@ -136,7 +159,10 @@ def read_thinklog_csv(path: Path) -> List[Dict]:
 
 def build_lookup(records: List[Dict]) -> Dict[Tuple[str, date], str]:
     """
-    Build {(symbol, date): concatenated_body} from records.
+    Build {(symbol, date): concatenated_body} from records. PAPER-ONLY --
+    keys on the record's own timestamp date, whole body as one string.
+    Live notes need per-line dated entries; see build_multi_entry_lookup().
+
     Multiple entries for same key are joined with ' | ' chronologically.
     """
     grouped: Dict[Tuple[str, date], List[Tuple[datetime, str]]] = {}
@@ -174,3 +200,83 @@ def get_body_for_trade(
         return None
 
     return lookup.get((symbol.upper(), d))
+
+
+def _mmdd_to_month_day(token: str) -> Optional[Tuple[int, int]]:
+    """Parse a 3- or 4-digit MMDD/MDD token into (month, day). None if invalid."""
+    if len(token) == 4:
+        mm, dd = int(token[:2]), int(token[2:])
+    elif len(token) == 3:
+        mm, dd = int(token[0]), int(token[1:])
+    else:
+        return None
+    if not (1 <= mm <= 12 and 1 <= dd <= 31):
+        return None
+    return mm, dd
+
+
+def _resolve_entry_date(mmdd_token: str, record_date: date) -> Optional[date]:
+    """Resolve an embedded MMDD token to a real date, anchored to the
+    record's own timestamp date.
+
+    Tries the record's own year first. A resolved date more than 60 days
+    AFTER the record's own date is implausible (an entry can't post-date
+    the note it's written in by that much) -- falls back to year - 1,
+    which handles a January record still referencing a prior December
+    entry in the same running note.
+    """
+    parsed = _mmdd_to_month_day(mmdd_token)
+    if parsed is None:
+        return None
+    mm, dd = parsed
+    try:
+        candidate = date(record_date.year, mm, dd)
+    except ValueError:
+        return None
+    if (candidate - record_date).days > 60:
+        try:
+            candidate = date(record_date.year - 1, mm, dd)
+        except ValueError:
+            pass
+    return candidate
+
+
+def build_multi_entry_lookup(
+    records: List[Dict],
+) -> Dict[Tuple[str, date], ParsedThinkLog]:
+    """
+    Build a per-line-dated lookup for LIVE ThinkLog notes.
+
+    Unlike build_lookup() (record-level date, whole body as one opaque
+    string -- paper only), this explodes each record's body into one
+    entry per embedded MMDD-prefixed line via
+    domain.thinklog_parser.parse_thinklog_entries(), keyed by that
+    line's own resolved date -- not the record's outer timestamp date.
+
+    Entries with no extracted reason (a dated line whose [WHY] tag
+    failed to parse -- malformed brackets, stray whitespace, etc.) are
+    skipped entirely rather than written to the lookup. Real case found
+    2026-08-16: TOS export had two DINO entries for the same date, one
+    with a valid tag and one with a typo'd '{P_116]' that failed to
+    parse -- without this guard, the broken entry (processed second)
+    silently overwrote the valid one for the same (symbol, date) key.
+
+    Args:
+        records: Output of read_thinklog_csv().
+
+    Returns:
+        {(symbol, resolved_date): ParsedThinkLog} -- values are already
+        fully parsed (reason, signal_strength, notes), no second parse
+        pass needed by the caller. Only entries with a non-empty reason
+        are included.
+    """
+    lookup: Dict[Tuple[str, date], ParsedThinkLog] = {}
+    for rec in records:
+        for entry in parse_thinklog_entries(rec["body"]):
+            if not entry["reason"]:
+                continue
+            resolved = _resolve_entry_date(entry["date_token"], rec["date"])
+            if resolved is None:
+                continue
+            lookup[(rec["symbol"], resolved)] = entry
+    return lookup

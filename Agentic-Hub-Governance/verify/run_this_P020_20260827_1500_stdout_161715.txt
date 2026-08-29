@@ -1,0 +1,49 @@
+---COLUMNS---
+0 trade_id INTEGER
+1 account_id TEXT
+2 system TEXT
+3 underlying_symbol TEXT
+4 asset_type TEXT
+5 direction TEXT
+6 open_date DATE
+7 open_datetime DATETIME
+8 qty REAL
+9 entry_price REAL
+10 stop_price REAL
+11 risk_amount REAL
+12 total_commissions REAL
+13 status TEXT
+14 tags TEXT
+15 notes TEXT
+16 source TEXT
+17 schwab_transaction_id TEXT
+18 created_at DATETIME
+19 updated_at DATETIME
+20 reason TEXT
+21 signal_strength TEXT
+---TOTAL ROWS---
+626
+---SYSTEM COUNTS---
+{'system': 'DAY', 'n': 7}
+{'system': 'INV', 'n': 9}
+{'system': 'P_010', 'n': 4}
+{'system': 'P_115', 'n': 41}
+{'system': 'P_116', 'n': 43}
+{'system': 'P_117', 'n': 26}
+{'system': 'P_118', 'n': 66}
+{'system': 'P_300', 'n': 28}
+{'system': 'P_910', 'n': 7}
+{'system': 'P_920', 'n': 8}
+{'system': 'SNT', 'n': 22}
+{'system': 'TOS_Import', 'n': 365}
+---DETECTED---
+close_date_col: None
+status_col: status
+pnl_candidates: []
+NO close_date-like column found -- dumping full table sample
+{'trade_id': 2126, 'account_id': 'AJZ6348', 'system': 'TOS_Import', 'underlying_symbol': 'DASH', 'asset_type': 'call', 'direction': 'long', 'open_date': '2025-08-19', 'open_datetime': '2025-08-19 09:30:02', 'qty': 2.0, 'entry_price': 2.78, 'stop_price': None, 'risk_amount': 8.34, 'total_commissions': 2.65, 'status': 'closed', 'tags': None, 'notes': None, 'source': 'schwab_api', 'schwab_transaction_id': '101478829789', 'created_at': '2026-03-16 00:04:21', 'updated_at': '2026-03-16T00:04:21.570798', 'reason': None, 'signal_strength': None}
+{'trade_id': 2127, 'account_id': 'AJZ6348', 'system': 'TOS_Import', 'underlying_symbol': 'AFL', 'asset_type': 'put', 'direction': 'long', 'open_date': '2025-08-18', 'open_datetime': '2025-08-18 10:51:46', 'qty': 1.0, 'entry_price': 9.93, 'stop_price': None, 'risk_amount': 14.89, 'total_commissions': 1.32, 'status': 'closed', 'tags': None, 'notes': None, 'source': 'schwab_api', 'schwab_transaction_id': '101426944672', 'created_at': '2026-03-16 00:04:21', 'updated_at': '2026-03-16T00:04:21.585863', 'reason': None, 'signal_strength': None}
+{'trade_id': 2128, 'account_id': 'AJZ6348', 'system': 'TOS_Import', 'underlying_symbol': 'PM', 'asset_type': 'call', 'direction': 'long', 'open_date': '2025-08-18', 'open_datetime': '2025-08-18 10:48:35', 'qty': 1.0, 'entry_price': 9.1, 'stop_price': None, 'risk_amount': 13.65, 'total_commissions': 0.66, 'status': 'open', 'tags': None, 'notes': None, 'source': 'schwab_api', 'schwab_transaction_id': '101426943799', 'created_at': '2026-03-16 00:04:21', 'updated_at': '2026-03-16 00:04:21', 'reason': None, 'signal_strength': None}
+{'trade_id': 2130, 'account_id': 'AJZ6348', 'system': 'TOS_Import', 'underlying_symbol': 'ALTS', 'asset_type': 'stock', 'direction': 'long', 'open_date': '2025-08-13', 'open_datetime': '2025-08-13 12:59:38', 'qty': 100.0, 'entry_price': 6.4892, 'stop_price': None, 'risk_amount': 9.73, 'total_commissions': 0.02, 'status': 'closed', 'tags': None, 'notes': None, 'source': 'schwab_api', 'schwab_transaction_id': '101209780999', 'created_at': '2026-03-16 00:04:21', 'updated_at': '2026-03-16T00:04:21.631004', 'reason': None, 'signal_strength': None}
+{'trade_id': 2131, 'account_id': 'AJZ6348', 'system': 'TOS_Import', 'underlying_symbol': 'IBM', 'asset_type': 'put', 'direction': 'long', 'open_date': '2025-08-12', 'open_datetime': '2025-08-12 10:04:23', 'qty': 1.0, 'entry_price': 4.98, 'stop_price': None, 'risk_amount': 7.47, 'total_commissions': 1.32, 'status': 'closed', 'tags': None, 'notes': None, 'source': 'schwab_api', 'schwab_transaction_id': '101105499124', 'created_at': '2026-03-16 00:04:21', 'updated_at': '2026-03-16T00:04:21.645518', 'reason': None, 'signal_strength': None}
+PASS

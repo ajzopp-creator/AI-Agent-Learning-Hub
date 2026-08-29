@@ -1,0 +1,33 @@
+{
+  "signal_id": "P115-2026-08-17-SBLK-001",
+  "signal_timestamp": "2026-08-17T14:45:27Z",
+  "signal_source": "P_115",
+  "strategy": "breakout",
+  "symbol": "SBLK",
+  "asset_class": "stock",
+  "guideline_entry": 29.31,
+  "guideline_stop": 27.06,
+  "guideline_target": 38.27,
+  "signal_horizon": "10-15 trading days",
+  "confidence_level": "MEDIUM",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 28.39,
+  "intelliscan_support_1": null,
+  "intelliscan_support_2": null,
+  "target_source": null,
+  "context": {
+    "close_at_signal": 29.84,
+    "trailing_volume_30d": 440777.0,
+    "signal_rationale": "P_118 High Handle pattern, stairstep uptrend with tight pullbacks before each push, fresh high $29.91 today. ASYM (HybridTier=5: Fund2/Anal3/Candle2/Setup3). Fund verified clean: ROE 3.41%, Debt/Cap 33.3%, FCF+ (2/3 criteria, matches submitted). 200-MA +26.1% NORMAL (well above MA, no penalty). No earnings flag (last 8/5/26, next ~Nov). Confidence MEDIUM: RVOL 0.34 well below Eddie Z's 3x breakout-volume standard. NOTE: Tony already holds an open paper position in SBLK from the 8/14/26 P_115 ASYM signal (+54sh @28.96) -- this is a second, separate entry on the same ticker.",
+    "atm_at_signal": 0.92
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-17",
+    "chart_timeframe": "1D",
+    "signal_source_link": "TradeOrderManagement/P115"
+  }
+}

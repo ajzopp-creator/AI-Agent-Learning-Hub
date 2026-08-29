@@ -29,21 +29,29 @@ class VaultEntry(BaseModel):
     lifecycle_status: str = ""
     source_schema:    str = ""                # 'P400' or 'P400_PAPER'
     note_name:        str = ""
+    drop_reason:      Optional[str] = None    # populated only when DROPPED
 
 
 class VaultLookup(BaseModel):
     """In-memory lookup built from P_400 vault records.
 
-    Two parallel indexes keyed by symbol:
+    Three parallel indexes keyed by symbol:
       - attributed: entries carrying a usable system value
-      - covered:    every matchable entry, attributed or not
+      - covered:    every matchable (non-excluded-status) entry
+      - all_records: every parsed entry, any status -- diagnostic only,
+        never used for system attribution. Exists so the weekly audit
+        can report *why* a symbol has no attribution (P_400 reviewed
+        and dropped it vs. P_400 never saw it at all) without a second
+        pass over the vault folder.
 
-    The split exists because coverage is measurable today while
-    attribution is not (why_code is null on all 191 current records).
+    The attributed/covered split exists because coverage is measurable
+    today while attribution is not (why_code is null on all 191
+    current records).
     """
 
     attributed:     Dict[str, List[VaultEntry]] = Field(default_factory=dict)
     covered:        Dict[str, List[VaultEntry]] = Field(default_factory=dict)
+    all_records:    Dict[str, List[VaultEntry]] = Field(default_factory=dict)
     total_records:  int = 0
     skipped_status: int = 0
     vault_folder:   str = ""
@@ -79,6 +87,23 @@ class VaultLookup(BaseModel):
         return self._nearest(
             self.covered, symbol, open_date, forward_days
         ) is not None
+
+    def nearest_any(
+        self,
+        symbol: str,
+        open_date: str,
+        forward_days: int,
+    ) -> Optional[VaultEntry]:
+        """Nearest P_400 record for this fill, any status, diagnostic only.
+
+        Used by the weekly audit to explain a TOS_Import default: was
+        there a P_400 record at all, and if so what did it say (e.g.
+        DROPPED / RR_BELOW_MIN)? Never feeds system attribution --
+        that stays on the attributed/covered indexes above.
+        """
+        return self._nearest(
+            self.all_records, symbol, open_date, forward_days
+        )
 
     @staticmethod
     def _nearest(

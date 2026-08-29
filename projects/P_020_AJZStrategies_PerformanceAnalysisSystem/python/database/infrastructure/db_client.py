@@ -138,7 +138,9 @@ def _create_trades_table(conn: sqlite3.Connection) -> None:
             source                 TEXT     NOT NULL DEFAULT 'schwab_api',
             schwab_transaction_id  TEXT     UNIQUE,
             created_at             DATETIME DEFAULT CURRENT_TIMESTAMP,
-            updated_at             DATETIME DEFAULT CURRENT_TIMESTAMP
+            updated_at             DATETIME DEFAULT CURRENT_TIMESTAMP,
+            reason                 TEXT,
+            signal_strength        TEXT
         )
     """)
 

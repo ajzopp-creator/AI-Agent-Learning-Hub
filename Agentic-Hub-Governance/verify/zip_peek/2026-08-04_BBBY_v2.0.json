@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-03-BBBY-001",
+  "signal_timestamp": "2026-08-04T22:00:27Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "BBBY",
+  "asset_class": "stock",
+  "guideline_entry": 5.32000017166138,
+  "guideline_stop": 5.032754346987093,
+  "guideline_target": 5.40000009536743,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 5.032754346987093,
+  "intelliscan_support_1": 4.76999998092651,
+  "intelliscan_support_2": 5.40000009536743,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 5.32000017166138,
+    "trailing_volume_30d": 2038200.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 85.0% WR, z=2.13, mean return +8.64% at h=5",
+    "atm_at_signal": 0.28724582467428633
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-03",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-03_BBBY.md"
+  }
+}

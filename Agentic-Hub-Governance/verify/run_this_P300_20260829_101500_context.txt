@@ -1,0 +1,47 @@
+WO-P300-E5.006 step 3 -- market-regime stratification of BUY win rate
+Pre-registered 2026-08-29, BEFORE the script was run.
+
+PURPOSE
+Tag every catalog pattern's anchor_date with the contemporaneous market
+posture, bucket, and test whether BUY win rate differs across buckets.
+Read-only. No catalog writes, no production file changes.
+
+DATA SOURCES (stated explicitly, per the WO's own requirement)
+- Signal + realized outcome: the 08-26 post-promote walk-forward report
+  outputs\reports\eval\walkforward_staging_ingest_mined_default_20260826_130212.txt
+  (44,399 patterns x 5 horizons; rows with is_chosen_horizon=True carry
+  final_signal_class, chosen_horizon, actual_is_profitable -- the latter is
+  the pattern's real forward_labels outcome at that horizon, per
+  domain/eval_scoring.py score_one()).
+- Posture: VP-RECONSTRUCTED from data\reference\10_Pattern_SPY.xlsx and
+  10_Pattern_QQQ.xlsx via infrastructure/bulk_grid_reader.parse_bulk_file().
+  P_010 keeps no historical record; this is the only available source.
+  Formula copied from P_010_daily_posture_v5.py: posture = (mtdiff+ltdiff)/2,
+  avg_posture = (spy+qqq)/2. Exact date match; unmatched anchors are
+  counted and excluded, never imputed.
+
+PRE-REGISTERED BUCKETS (P_010's own determine_risk_mode cuts, not invented)
+  OFF  : avg_posture <  0.0
+  HALF : 0.0 <= avg_posture < 1.0
+  FULL : avg_posture >= 1.0
+
+PRE-REGISTERED DECISION RULE
+  Primary statistic: BUY win rate (actual_is_profitable) per bucket.
+  Spread = max - min over buckets with n >= 30 BUY signals.
+  Spread <  5.0pp -> regime carries no usable signal at P_300 horizons;
+                     WO recommendation = close, no build.
+  Spread >= 5.0pp -> bring to Tony for a decision before any code
+                     (same gate as WO-P300-E5.004 Part A).
+  WATCH / ALL rows and the quartile view are INFORMATIONAL ONLY and do
+  not feed the decision. Buckets with n < 30 are shown but excluded from
+  the spread.
+
+SUCCESS
+  Prints the bucket table, spread, verdict line, writes
+  posture_strat_20260829_101500.csv next to this script, prints PASS.
+
+ON FAILURE
+  parse_bulk_file raising on a header/column mismatch means the manifest
+  or the export drifted -- report the message, do not patch the reader.
+  Do not change bucket cuts, the 5pp bar, or the n>=30 floor.
+  Do not change test assertions.

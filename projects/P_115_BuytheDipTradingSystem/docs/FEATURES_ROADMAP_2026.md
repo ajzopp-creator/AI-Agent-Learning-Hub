@@ -543,6 +543,26 @@ STEP 2 — Position Sizing:
 
 ## Features Parking Lot (Post-2026)
 
+### Unattended Signal Emission Pipeline (Local LLM)
+
+**Status:** Proposed 2026-08-21 -- surfaced during WO-P115-E4.001 review
+
+**Problem It Solves:** STEP 2 emission currently requires a live Claude Desktop session -- nothing emits while you are away from the desk.
+
+**What It Does:** A local LLM (candidate: Granite 4.1 8B) reads scored setup text and independently builds and emits SIGNAL_V2 packets on a schedule, no live Claude session required.
+
+**Evidence banked:** WO-P115-E4.001 round 2 -- Granite 4.1 8B with schema-constrained decoding ("response_format: json_schema") and verbatim-copy prompting produced 3/3 field-correct packets, ~7.3-7.8s latency. Round 1 (unconstrained) had real failures -- wrong timestamp, dropped ATR, corrupted volume on 1/3 -- so schema-constrained decoding is a hard requirement, not optional.
+
+**Open questions before this becomes buildable:**
+1. Trigger: cron schedule vs. P_920 scan completion vs. something else?
+2. Scope: full STEP1+STEP2 unattended, or only STEP2 emission on setups already scored?
+3. Fund Verification / Post-Earnings Auto-Flag -- currently live judgment calls in-session -- how do they get enforced unattended?
+4. Failure handling -- who or what notices if the local model errors or drifts with nobody watching?
+
+**Dependency:** WO-P115-E4.001 -- reopen as groundwork if this gets picked up, rather than closing no-go.
+
+---
+
 ### Low Priority / Experimental
 
 1. **Machine Learning Signal Generation**
@@ -631,6 +651,11 @@ Strategy Performance -> Action
 ---
 
 ## Version History
+
+### v1.4 - August 21, 2026
+- Added Unattended Signal Emission Pipeline (Local LLM) to Features Parking Lot -- surfaced during WO-P115-E4.001 (Granite 4.1 8B) review
+- Documents banked round-2 evidence (schema-constrained decoding required) and open scoping questions before it becomes buildable
+- WO-P115-E4.001 flagged as reopen-if-picked-up rather than closed no-go
 
 ### v1.3 - April 12, 2026
 - Added Feature 5 (Q3): Morning Star Pattern — PA6 Integration

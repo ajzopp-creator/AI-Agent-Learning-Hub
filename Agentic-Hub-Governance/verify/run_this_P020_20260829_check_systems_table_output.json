@@ -1,0 +1,92 @@
+{
+  "all_tables": [
+    "accounts",
+    "systems",
+    "trades",
+    "sqlite_sequence",
+    "exits",
+    "account_balances",
+    "spread_legs"
+  ],
+  "systems_schema": "CREATE TABLE systems (\n            system_id   TEXT    PRIMARY KEY,\n            system_name TEXT    NOT NULL,\n            description TEXT,\n            active      INTEGER NOT NULL DEFAULT 1\n        )",
+  "systems_columns": [
+    "system_id",
+    "system_name",
+    "description",
+    "active"
+  ],
+  "systems_rows": [
+    [
+      "P_115",
+      "Buy The Dip",
+      "Buy The Dip entries",
+      1
+    ],
+    [
+      "P_116",
+      "Options Income Launchpad",
+      "Options income generation system",
+      1
+    ],
+    [
+      "P_117",
+      "External Recommendations",
+      "External signal recommendations",
+      1
+    ],
+    [
+      "P_118",
+      "Eddie Z Breakouts",
+      "Eddie Z breakout pattern system",
+      1
+    ],
+    [
+      "P_300",
+      "VantagePoint Pattern Recognition",
+      "VantagePoint software signals",
+      1
+    ],
+    [
+      "P_910",
+      "P_910 System",
+      "Additional trading system",
+      1
+    ],
+    [
+      "P_920",
+      "P_920 System",
+      "Additional trading system",
+      1
+    ],
+    [
+      "Day",
+      "Day Trading",
+      "Intraday trades",
+      1
+    ],
+    [
+      "TOS_Import",
+      "TOS Import Default",
+      "Default when no Tracker Dashboard match found",
+      1
+    ],
+    [
+      "SNT",
+      "Sunday Night Trader",
+      "BigTrends email subscription - Sunday Night Trader",
+      1
+    ],
+    [
+      "INV",
+      "Investment / Swing Trade",
+      "IRA generic investment or swing trade, no specific signal system (WO-P020-E1.015)",
+      1
+    ],
+    [
+      "P_010",
+      "Current Market Posture",
+      "P_010 market posture / risk-mode signal",
+      1
+    ]
+  ]
+}

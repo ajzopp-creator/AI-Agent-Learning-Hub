@@ -94,3 +94,44 @@ Verify     : send_toast() only returns True when PowerShell exits 0 AND
              produces a visible False return instead of a silent lie.
 
 ================================================================================
+================================================================================
+
+ERROR 004 -- Intraday .bat False [ERROR] Alongside [SUCCESS] (Unescaped Parens)
+Date Fixed : 2026-08-26
+Severity   : MEDIUM (no data-integrity impact -- P_010_RiskConfig.json was
+             always written correctly -- but trains the operator to ignore
+             [ERROR] output, which defeats the point of WO-P010-E1.003's
+             fail-loud alerting. First flagged 2026-07-17 as a WO-P010-E1.003
+             addendum; sat unfixed for 40 days across two OWNER_DONE passes
+             on that WO until reproduced live and root-caused this session.)
+Symptom    : P_010_run_intraday_vp_check.bat printed
+             "[SUCCESS] Intraday VP validation completed." immediately
+             followed by "[ERROR] Intraday check failed with exit code 0"
+             on a genuinely clean run (correct JSON, correct signal, exit
+             code actually 0).
+Root Cause : One echo line inside the `if %errorlevel% equ 0 ( ... ) else
+             ( ... )` block contained an unescaped, unmatched-looking
+             parenthesis pair in plain text: `(in outputs/)`. cmd.exe's
+             parser reads the whole if/else as one parenthesized unit; the
+             stray `)` after "outputs/" closed the outer `if (` block early.
+             Everything after that point -- the rest of the SUCCESS
+             branch's echoes, the literal `) else (`, and the ELSE branch's
+             echoes -- then ran as ordinary unconditional commands instead
+             of being gated by the if/else, so both branches always
+             printed regardless of the real exit code.
+Fix Applied: Escaped the literal parentheses with carets:
+             `(in outputs/)` -> `^(in outputs/^)`.
+Rule       : Any literal `(` or `)` inside an `echo` line -- or any other
+             command -- that sits inside a parenthesized `if`/`for`/`else`
+             block in a `.bat` file MUST be escaped with `^` or the block
+             will silently mis-parse. This applies even when the
+             parentheses look balanced in the source (`(in outputs/)`
+             reads as balanced to a human, not to cmd.exe inside an
+             already-open block).
+Verify     : Re-ran P_010_run_intraday_vp_check.bat live (2026-08-26,
+             market closed, real grid data) -- output now shows
+             "[SUCCESS] Intraday VP validation completed." alone, no
+             accompanying [ERROR] line.
+
+================================================================================
+

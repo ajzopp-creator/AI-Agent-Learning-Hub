@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-07-30-SMR-001",
+  "signal_timestamp": "2026-08-03T22:36:09Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "SMR",
+  "asset_class": "stock",
+  "guideline_entry": 8.60000038146973,
+  "guideline_stop": 7.8884463930256965,
+  "guideline_target": 8.94999980926514,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 7.8884463930256965,
+  "intelliscan_support_1": 7.21000003814697,
+  "intelliscan_support_2": 8.94999980926514,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 8.60000038146973,
+    "trailing_volume_30d": 34973900.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 80.0% WR, z=1.67, mean return +9.23% at h=5",
+    "atm_at_signal": 0.7115539884440337
+  },
+  "signal_metadata": {
+    "session_date": "2026-07-30",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-07-30_SMR.md"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-14-ADTN-001",
+  "signal_timestamp": "2026-08-17T16:31:30Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "ADTN",
+  "asset_class": "stock",
+  "guideline_entry": 8.39999961853027,
+  "guideline_stop": 7.745792472778762,
+  "guideline_target": 9.20049953460693,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 7.745792472778762,
+  "intelliscan_support_1": 7.40000009536743,
+  "intelliscan_support_2": 9.20049953460693,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 8.39999961853027,
+    "trailing_volume_30d": 2073600.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 75.0% WR, z=1.21, mean return +13.01% at h=5",
+    "atm_at_signal": 0.6542071457515082
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-14",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-14_ADTN.md"
+  }
+}

@@ -15,8 +15,8 @@
 | Risk per Trade | 1.5% = $470.23|
 | Max Position (5%) | $1,567.42 |
 | Options Rule | Use underlying STOCK price as the management trigger for option positions; execute exits with stop-limit logic and bid-aware option pricing to reduce gap-through risk |
-| Buying Power | $35,300.78 |
-| Cash Available for Trading | N/A |
+| Buying Power | $35,965.70 (pulled Aug 29, 2026 9:05 AM) |
+| Cash Available for Trading | $17,982.85 (pulled Aug 29, 2026 9:05 AM) |
 
 ---
 
@@ -37,7 +37,7 @@
 ## Critical Rules
 
 ### Cash Balance (Separate Concept)
-**Note (WO-P020-E1.009):** Buying Power and Cash Available for Trading in the table above are broker-reported reference numbers only. P_400's `--cash` flag stays a manual figure Tony types himself -- never auto-read from these fields.
+**Note (WO-P020-E1.009):** Buying Power and Cash Available for Trading in the table above are broker-reported reference numbers only. P_400's `--cash` flag on evaluate/spec/compare stays a manual figure Tony types himself -- never auto-read from these fields. Exception (2026-08-25): batch-2b auto-reads Cash Available for Trading from this file via P_400_Batch2b_CashPull.bat / P_400_Batch2bCashPull_mcp.ps1, which pulls a fresh balance first. evaluate/spec/compare are unaffected.
 User provides per-trade available buying power. This is NOT account balance.
 - Do NOT subtract trades from cash balance between gates
 - Do NOT track remaining cash across trades

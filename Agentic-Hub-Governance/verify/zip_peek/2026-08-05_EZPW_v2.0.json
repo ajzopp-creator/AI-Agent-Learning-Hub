@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-04-EZPW-001",
+  "signal_timestamp": "2026-08-05T16:04:50Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "EZPW",
+  "asset_class": "stock",
+  "guideline_entry": 31.0,
+  "guideline_stop": 29.343278120148163,
+  "guideline_target": 33.0699996948242,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "MEDIUM",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 29.343278120148163,
+  "intelliscan_support_1": 28.4300994873047,
+  "intelliscan_support_2": 33.0699996948242,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 31.0,
+    "trailing_volume_30d": 879300.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 65.0% WR, z=0.29, mean return +4.12% at h=5",
+    "atm_at_signal": 1.656721879851835
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-04",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-04_EZPW.md"
+  }
+}

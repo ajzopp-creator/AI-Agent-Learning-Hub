@@ -14,10 +14,15 @@ from application.refresh_earnings_calendar import (
 
 
 def test_date_range_spans_lookback_and_lookahead():
+    """Window narrowed by WO-P400-E6.004 Revision 2 (2026-08-19) to match
+    MACRO's actual gate (3-forward/2-back) -- was 7-day back/83-day forward,
+    now 5-day back/7-day forward (config.py
+    EARNINGS_CALENDAR_LOOKBACK_BUFFER_DAYS/LOOKAHEAD_DAYS). Stale expected
+    values found and fixed same session as WO-P400-E6.003 (2026-08-20)."""
     days = _date_range(today=date(2026, 8, 8))
-    assert days[0] == date(2026, 8, 1)     # 7-day backward buffer
-    assert days[-1] == date(2026, 10, 30)  # 83-day forward lookahead
-    assert len(days) == 91                 # inclusive of both ends
+    assert days[0] == date(2026, 8, 3)     # 5-day backward buffer
+    assert days[-1] == date(2026, 8, 15)   # 7-day forward lookahead
+    assert len(days) == 13                 # inclusive of both ends
 
 
 def test_pull_all_records_merges_days(monkeypatch):

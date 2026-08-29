@@ -1,0 +1,33 @@
+{
+  "signal_id": "P115-2026-08-17-NOK-001",
+  "signal_timestamp": "2026-08-17T14:45:27Z",
+  "signal_source": "P_115",
+  "strategy": "dip_buy",
+  "symbol": "NOK",
+  "asset_class": "stock",
+  "guideline_entry": 11.03,
+  "guideline_stop": 9.06,
+  "guideline_target": 11.94,
+  "signal_horizon": "10-15 trading days",
+  "confidence_level": "MEDIUM",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 10.42,
+  "intelliscan_support_1": null,
+  "intelliscan_support_2": null,
+  "target_source": null,
+  "context": {
+    "close_at_signal": 11.03,
+    "trailing_volume_30d": 43339927.0,
+    "signal_rationale": "P_115 dip_buy ASYM (HybridTier=5: Fund2/Anal3/Candle2/Setup3/STR-2). Fund verified clean: ROE 3.45% fails, Debt/Cap ~13% passes, FCF+ passes. 2/3 criteria, recomputed Fund=2 matches submitted exactly -- cleanest Fund match of today's three ASYM picks. 200-MA +17.6% NORMAL. No earnings flag (last ~7/23/26). STR=-2 co-occurs with batch-wide regime signal (14/14 tickers today). NOTE: Daily AND 4H both reading Downtrend on DMI/RegimeCounsel despite BULL price trend -- short-term divergence worth watching. RVOL 0.61. Confidence MEDIUM.",
+    "atm_at_signal": 0.61
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-17",
+    "chart_timeframe": "1D",
+    "signal_source_link": "TradeOrderManagement/P115"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-06-MSOS-001",
+  "signal_timestamp": "2026-08-10T15:08:01Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "MSOS",
+  "asset_class": "stock",
+  "guideline_entry": 4.34999990463257,
+  "guideline_stop": 4.1277111363182035,
+  "guideline_target": 4.42500019073486,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "MEDIUM",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 4.1277111363182035,
+  "intelliscan_support_1": 3.98000001907349,
+  "intelliscan_support_2": 4.42500019073486,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 4.34999990463257,
+    "trailing_volume_30d": 5714406.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 65.0% WR, z=0.29, mean return +4.99% at h=5",
+    "atm_at_signal": 0.2222887683143662
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-06",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-06_MSOS.md"
+  }
+}

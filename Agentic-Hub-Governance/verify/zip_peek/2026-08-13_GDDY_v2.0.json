@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-12-GDDY-001",
+  "signal_timestamp": "2026-08-13T21:05:15Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "GDDY",
+  "asset_class": "stock",
+  "guideline_entry": 91.8199996948242,
+  "guideline_stop": 86.64384277035859,
+  "guideline_target": 93.4499969482422,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 86.64384277035859,
+  "intelliscan_support_1": 73.0999984741211,
+  "intelliscan_support_2": 93.4499969482422,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 91.8199996948242,
+    "trailing_volume_30d": 1919828.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 70.0% WR, z=0.75, mean return +4.00% at h=5",
+    "atm_at_signal": 5.1761569244656105
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-12",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-12_GDDY.md"
+  }
+}

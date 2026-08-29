@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-04-AUOTY-001",
+  "signal_timestamp": "2026-08-05T15:56:07Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "AUOTY",
+  "asset_class": "stock",
+  "guideline_entry": 7.64499998092651,
+  "guideline_stop": 7.23531743192249,
+  "guideline_target": 8.0,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 7.23531743192249,
+  "intelliscan_support_1": 6.63000011444092,
+  "intelliscan_support_2": 8.0,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 7.64499998092651,
+    "trailing_volume_30d": 15898.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 90.0% WR, z=2.59, mean return +11.60% at h=5",
+    "atm_at_signal": 0.40968254900402007
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-04",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-04_AUOTY.md"
+  }
+}

@@ -19,7 +19,7 @@ Two distinct Python entry points exist:
   --symbol AMTM --session-date 2026-06-03 `
   --timestamp 2026-06-03T14:23:00Z --strategy dip_buy `
   --entry 47.50 --stop 45.75 --target 52.00 `
-  --horizon "3-5 days" --confidence HIGH `
+  --horizon "10-15 trading days" --confidence HIGH `
   --close 47.75 --volume 1850000 `
   --rationale "Dip into 20-day MA after earnings" `
   --timeframe 1D --source-link "TradeOrderManagement/P_115/x.md" `
@@ -58,7 +58,7 @@ tracker_writer.py                      # standalone; reads Excel, calls write_to
 |---|---|
 | `confidence_level` | `HIGH` / `MEDIUM` / `LOW` only |
 | `strategy` | `dip_buy`, `breakout`, `mean_reversion`, `support_bounce` |
-| `signal_horizon` | Format: `"3-5 days"` or `"1-2 weeks"` |
+| `signal_horizon` | Default `"10-15 trading days"` (config.DEFAULT_SIGNAL_HORIZON); override per-ticker, e.g. `"1-2 weeks"` |
 | `symbol` | Uppercase, 1–6 chars, matches `^[A-Z][A-Z0-9.]{0,5}$` |
 | `atr_adjusted_stop` | Computed automatically: `entry - atm_at_signal` |
 | `intelliscan_support_1/2` | Optional structural stops; passed through to P_400 gate |

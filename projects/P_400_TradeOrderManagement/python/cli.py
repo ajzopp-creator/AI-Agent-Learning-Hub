@@ -11,7 +11,7 @@ Commands (run from python/ dir, p140 env):
     python cli.py record SYMBOL --order-id ID   -- WO-P400-E3.006, after evaluate/spec APPROVED
     python cli.py record SYMBOL --decline       -- WO-P400-E3.006, Tony skipped an APPROVED signal
     python cli.py fetch-snapshot SYMBOL         -- WO-P400-E4.002, live Schwab snapshot
-    python cli.py refresh-earnings-calendar        -- WO-P400-E5.002, monthly FMP calendar pull
+    python cli.py refresh-earnings-calendar        -- WO-P400-E5.002, monthly Nasdaq calendar pull
     python cli.py fetch-chain SYMBOL --type call|put -- WO-P400-E4.002, auto-select or --strike/--expiration
     python cli.py dossier SYMBOL                -- WO-P400-E4.003, computed technical dossier (items 1-8)
     python cli.py audit-book                    -- book vs. real AJZ Schwab positions, Tony directive 2026-07-24

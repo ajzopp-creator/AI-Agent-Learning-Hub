@@ -1,0 +1,33 @@
+{
+  "signal_id": "P115-2026-08-11-WSM-001",
+  "signal_timestamp": "2026-08-11T14:48:57Z",
+  "signal_source": "P_115",
+  "strategy": "dip_buy",
+  "symbol": "WSM",
+  "asset_class": "stock",
+  "guideline_entry": 253.1,
+  "guideline_stop": 227.82,
+  "guideline_target": 341.64,
+  "signal_horizon": "5-10 days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": null,
+  "intelliscan_support_1": null,
+  "intelliscan_support_2": null,
+  "target_source": null,
+  "context": {
+    "close_at_signal": 252.26,
+    "trailing_volume_30d": 82115.6,
+    "signal_rationale": "HybridTier 7 (Anal3+Fund4) BUY. RSI 68.6, Daily/4H Uptrend, ADX 28.4 Strong. Fund Verification clean: ROE ~51.5%, Debt/Cap ~41.2%, FCF $1.06B positive. PA Stop 227.82 (Structure). 200-MA +25.8% NORMAL, no penalty.",
+    "atm_at_signal": null
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-11",
+    "chart_timeframe": "1D",
+    "signal_source_link": "TOS_Chart/P_115_BuytheDipChart_V16/WSM_2026-08-11"
+  }
+}

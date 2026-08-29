@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-04-BB-001",
+  "signal_timestamp": "2026-08-05T15:57:03Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "BB",
+  "asset_class": "stock",
+  "guideline_entry": 8.86999988555908,
+  "guideline_stop": 8.283713159296253,
+  "guideline_target": 11.6598997116089,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 8.283713159296253,
+  "intelliscan_support_1": 7.71000003814697,
+  "intelliscan_support_2": 11.6598997116089,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 8.86999988555908,
+    "trailing_volume_30d": 13051600.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 80.0% WR, z=1.67, mean return +11.48% at h=5",
+    "atm_at_signal": 0.5862867262628272
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-04",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-04_BB.md"
+  }
+}

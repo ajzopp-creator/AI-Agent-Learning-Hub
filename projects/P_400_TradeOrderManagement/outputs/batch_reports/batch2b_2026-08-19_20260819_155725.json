@@ -1,0 +1,35 @@
+{
+  "run_timestamp": "2026-08-19T15:57:25.868551-04:00",
+  "session_date": "2026-08-19",
+  "cash_available": 19126.0,
+  "posture": "HALF",
+  "screened_count": 5,
+  "passed_tier1": 5,
+  "evaluated": 5,
+  "candidates": [],
+  "skipped": [
+    {
+      "symbol": "TDC",
+      "reason": "verdict=BLOCKED (STOP_TOO_TIGHT)"
+    },
+    {
+      "symbol": "PLNT",
+      "reason": "verdict=BLOCKED (RR_BELOW_MIN)"
+    },
+    {
+      "symbol": "MNST",
+      "reason": "verdict=BLOCKED (RR_BELOW_MIN)"
+    },
+    {
+      "symbol": "Z",
+      "reason": "verdict=BLOCKED (ADVERSE_DRIFT)"
+    },
+    {
+      "symbol": "ZG",
+      "reason": "verdict=BLOCKED (ADVERSE_DRIFT)"
+    }
+  ],
+  "cumulative_risk_if_all_taken": 0.0,
+  "heat_cap": 3761.8068,
+  "heat_warning": null
+}

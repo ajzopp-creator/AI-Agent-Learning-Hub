@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-11-CLIX-001",
+  "signal_timestamp": "2026-08-12T17:33:14Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "CLIX",
+  "asset_class": "stock",
+  "guideline_entry": 60.594799041748,
+  "guideline_stop": 59.70623342650426,
+  "guideline_target": 61.8199996948242,
+  "signal_horizon": "15 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 59.8344993591309,
+  "intelliscan_support_1": 59.8344993591309,
+  "intelliscan_support_2": 61.8199996948242,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 60.594799041748,
+    "trailing_volume_30d": 1900.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 80.0% WR, z=1.68, mean return +5.38% at h=15",
+    "atm_at_signal": 0.8885656152437352
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-11",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-11_CLIX.md"
+  }
+}

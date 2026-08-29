@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-03-ASTS-001",
+  "signal_timestamp": "2026-08-04T21:57:30Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "ASTS",
+  "asset_class": "stock",
+  "guideline_entry": 63.5200004577637,
+  "guideline_stop": 57.87088023028744,
+  "guideline_target": 64.629997253418,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 57.87088023028744,
+  "intelliscan_support_1": 52.7999992370605,
+  "intelliscan_support_2": 64.629997253418,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 63.5200004577637,
+    "trailing_volume_30d": 12578200.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 75.0% WR, z=1.21, mean return +9.43% at h=5",
+    "atm_at_signal": 5.649120227476263
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-03",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-03_ASTS.md"
+  }
+}

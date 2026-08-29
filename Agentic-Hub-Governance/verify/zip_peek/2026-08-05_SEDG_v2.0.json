@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-04-SEDG-001",
+  "signal_timestamp": "2026-08-05T16:23:58Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "SEDG",
+  "asset_class": "stock",
+  "guideline_entry": 48.7599983215332,
+  "guideline_stop": 44.75098948823986,
+  "guideline_target": 58.0499992370605,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 44.75098948823986,
+  "intelliscan_support_1": 38.0,
+  "intelliscan_support_2": 58.0499992370605,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 48.7599983215332,
+    "trailing_volume_30d": 3575000.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 80.0% WR, z=1.67, mean return +11.47% at h=5",
+    "atm_at_signal": 4.0090088332933425
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-04",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-04_SEDG.md"
+  }
+}

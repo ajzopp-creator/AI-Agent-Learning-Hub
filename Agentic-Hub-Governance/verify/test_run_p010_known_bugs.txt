@@ -1,0 +1,11 @@
+[FAIL] (ERROR) test_error001_upgrade_off_to_half -- ModuleNotFoundError("No module named 'intraday_risk_logic'")
+[FAIL] (ERROR) test_error001_downgrade_full_to_half -- ModuleNotFoundError("No module named 'intraday_risk_logic'")
+[FAIL] (ERROR) test_error001_confirm_preserves_morning_baseline -- ModuleNotFoundError("No module named 'intraday_risk_logic'")
+[PASS] (SOURCE) error001_source_reads_morning_risk_mode_not_risk_mode
+[PASS] (SOURCE) error002_no_start_process_nonewwindow
+[PASS] (BEHAVIOR) e1004_expected_day_tuesday_to_friday_is_yesterday
+[PASS] (BEHAVIOR) e1004_expected_day_monday_is_last_friday
+[PASS] (BEHAVIOR) e1004_fresh_grids_do_not_false_positive
+[PASS] (BEHAVIOR) e1004_stale_grid_detected_and_named
+
+6/9 passed

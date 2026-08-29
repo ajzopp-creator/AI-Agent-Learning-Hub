@@ -29,7 +29,7 @@ REM Use full path to Python in venv
 if %errorlevel% equ 0 (
     echo [SUCCESS] Intraday VP validation completed.
     echo Created:
-    echo   - intraday_vp_check_YYYYMMDD_HHMMSS.json (in outputs/)
+    echo   - intraday_vp_check_YYYYMMDD_HHMMSS.json ^(in outputs/^)
     echo Check logs\*.log and outputs\ for results.
     echo Log file: %logfile%
 ) else (
@@ -40,3 +40,4 @@ if %errorlevel% equ 0 (
 echo.
 echo ================================================================================
 echo.
+

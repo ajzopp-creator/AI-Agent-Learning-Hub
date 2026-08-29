@@ -1,0 +1,111 @@
+{
+  "run_timestamp": "2026-08-21T15:38:16.109543-04:00",
+  "session_date": "2026-08-21",
+  "cash_available": 19630.16,
+  "posture": "OFF",
+  "screened_count": 11,
+  "passed_tier1": 11,
+  "evaluated": 11,
+  "candidates": [
+    {
+      "symbol": "V",
+      "rank": 1,
+      "score": 0.8097,
+      "score_components": {
+        "rr": 0.9888,
+        "atr_headroom": 0.4532,
+        "spread": 0.9892,
+        "liquidity": 0.8083,
+        "drift": 0.984
+      },
+      "vehicle": "STOCK",
+      "vehicle_reason": "Option BLOCKED by options council (OI_TOO_LOW: open_interest=17 < 150 minimum; SPREAD_TOO_WIDE: spread=10.5% > 10.0% max) -- stock used.",
+      "verdict": "APPROVED",
+      "rr_at_t1": 5.933,
+      "atr_headroom": 1.9064,
+      "spread_pct_of_price": 0.0108,
+      "drift_pct": 0.024,
+      "dollar_risk": 26.92,
+      "quantity": 2
+    },
+    {
+      "symbol": "MA",
+      "rank": 2,
+      "score": 0.7439,
+      "score_components": {
+        "rr": 0.7922,
+        "atr_headroom": 0.635,
+        "spread": 0.9802,
+        "liquidity": 0.6441,
+        "drift": 0.6467
+      },
+      "vehicle": "STOCK",
+      "vehicle_reason": "Option BLOCKED by options council (SPREAD_TOO_WIDE: spread=19.4% > 10.0% max) -- stock used.",
+      "verdict": "APPROVED",
+      "rr_at_t1": 4.753,
+      "atr_headroom": 2.27,
+      "spread_pct_of_price": 0.0198,
+      "drift_pct": -0.53,
+      "dollar_risk": 24.98,
+      "quantity": 1
+    },
+    {
+      "symbol": "INCY",
+      "rank": 3,
+      "score": 0.7411,
+      "score_components": {
+        "rr": 0.6728,
+        "atr_headroom": 0.977,
+        "spread": 0.961,
+        "liquidity": 0.5512,
+        "drift": 0.1327
+      },
+      "vehicle": "STOCK",
+      "vehicle_reason": "Option BLOCKED by options council (SPREAD_TOO_WIDE: spread=13.0% > 10.0% max) -- stock used.",
+      "verdict": "APPROVED",
+      "rr_at_t1": 4.037,
+      "atr_headroom": 2.954,
+      "spread_pct_of_price": 0.039,
+      "drift_pct": -1.301,
+      "dollar_risk": 66.18,
+      "quantity": 6
+    }
+  ],
+  "skipped": [
+    {
+      "symbol": "AGCO",
+      "reason": "verdict=BLOCKED (ADVERSE_DRIFT)"
+    },
+    {
+      "symbol": "CBOE",
+      "reason": "verdict=BLOCKED (ADVERSE_DRIFT)"
+    },
+    {
+      "symbol": "CLSK",
+      "reason": "verdict=BLOCKED (STOP_TOO_TIGHT)"
+    },
+    {
+      "symbol": "GLPI",
+      "reason": "verdict=BLOCKED (STOP_TOO_TIGHT)"
+    },
+    {
+      "symbol": "GPK",
+      "reason": "verdict=BLOCKED (ADVERSE_DRIFT)"
+    },
+    {
+      "symbol": "MSCI",
+      "reason": "verdict=BLOCKED (STOP_TOO_TIGHT)"
+    },
+    {
+      "symbol": "RIOT",
+      "reason": "verdict=BLOCKED (STOP_TOO_TIGHT)"
+    },
+    {
+      "symbol": "YUM",
+      "reason": "verdict=BLOCKED (STOP_TOO_TIGHT)"
+    }
+  ],
+  "cumulative_risk_if_all_taken": 118.08,
+  "heat_cap": 3761.8068,
+  "heat_warning": "3 APPROVED candidates -- cumulative risk if all taken $118.08 vs heat cap $3761.81 (within cap). Not enforced -- each evaluate sizes independently (SIP v2.4, RISK never blocks)."
+}

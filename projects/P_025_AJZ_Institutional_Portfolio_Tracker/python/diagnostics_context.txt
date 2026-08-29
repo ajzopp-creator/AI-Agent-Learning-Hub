@@ -1,0 +1,30 @@
+P_025 Diagnostics Handoff
+Date: 2026-08-21
+Project: P_025_AJZ_Institutional_Portfolio_Tracker
+
+What this script tests
+----------------------
+Read-only inspection of the live P_020 SQLite database using the real
+p020_reader and config from the P_025 Python package.
+
+Checks performed:
+1. Database file exists at the path in config.py
+2. Expected tables/views are present and row counts are reported
+3. infrastructure.p020_reader.read_trades() returns valid TradeRecord objects
+4. Account breakdown respects IRA_FEED_READY=False (5232-9885 excluded)
+5. Date range and unique symbols are extracted
+6. Critical fields (qty, entry_price, status) are sane
+
+Success criteria
+----------------
+Script prints the single word PASS at the end and exits 0.
+Any failure prints FAIL: <reason> and exits 1.
+
+How to run (Windows / p140)
+---------------------------
+cd C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_025_AJZ_Institutional_Portfolio_Tracker\python
+C:\Users\Trader\.conda\envs\p140\python.exe diagnostics.py
+
+Do not change the test assertions.
+If it fails, fix the underlying production code (config path, reader, schemas)
+and re-run until PASS.

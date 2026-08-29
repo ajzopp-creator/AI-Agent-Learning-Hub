@@ -1,8 +1,8 @@
-# P_300 System Initialization Prompt (SIP) v3.5
+# P_300 System Initialization Prompt (SIP) v3.6
 
 **File:** `docs/P_300_System_Initialization_Prompt_v3_1.md`  
-**Version:** 3.5  
-**Last Updated:** 2026-07-28  
+**Version:** 3.6  
+**Last Updated:** 2026-08-29  
 **Pairs With:** `docs/P_300_System_Architecture_v2.7.md` + `p300-project-context/SKILL.md` + `CLAUDE.md`
 
 ---
@@ -25,7 +25,7 @@ INIT  |  P_300  |  P_300 INIT
 
 **RULE: Complete Steps 0 through 7 before writing code or taking action. Steps 4–5c are uninterruptible.**
 
-> Step order: 0 → 0.5 → 0.6 → 1 → 1A → 2 → 3 → 4 → 5 → 5b → 5c → 6 → 7.
+> Step order: 0 → 0.5 → 0.6 → 1 → 1A → 1B → 2 → 3 → 4 → 5 → 5b → 5c → 6 → 7.
 
 ### Step 0 — Environment Discovery
 Call `tool_search` for `windows-mcp:FileSystem`/`PowerShell`. Available → Step 0.5. Unavailable → skip 5b/5c, warn in Step 6.
@@ -56,6 +56,19 @@ Non-authoritative nudge (Step 5b reconciles for real). Never HALTs. Read `<proje
 - Missing → `REMINDER: P_300_preflight_status.json not found -- run P_300_Preflight.bat now.`
 - `generated_at` = today → no reminder.
 - `generated_at` < today → `REMINDER: preflight status is from <date> -- re-run P_300_Preflight.bat.`
+
+### Step 1B — Working-State Size Reminder
+Non-authoritative nudge, same pattern as Step 1A. Never HALTs. No Python subprocess — read via `windows-mcp:FileSystem`.
+
+`tasks/todo.md` — get size via `mode=info`; get line count by reading the file:
+- Lines > 500 or size > 100KB → `REMINDER: tasks/todo.md is <N> lines / <KB> -- archive pass due (WO-P000-E8.001).`
+- Under both caps → no output.
+
+`tasks/lessons.md` — same size/line read, plus count entries matching `^#{2,3} (M|O|S)-\d+`:
+- Entries > 40 or size > 70KB → `REMINDER: tasks/lessons.md is <N> lines / <E> entries / <KB> -- archive pass due (WO-P000-E8.001).`
+- Under both caps → no output.
+
+Each file's check is independent — one can fire while the other stays silent.
 
 ### Step 2 — Verify SKILL Loaded
 Confirm `p300-project-context` active by referencing one rule unprompted. Missing → request manual paste; do not proceed.
@@ -166,30 +179,18 @@ Load full architecture (on demand only), duplicate SKILL content, write code/fil
 
 *Retention rule: this section keeps only the current + prior version. Older entries live in `docs/P_300_SIP_CHANGELOG_ARCHIVE.md`.*
 
+### v3.6 — 2026-08-29
+- **Step 1B added — Working-State Size Reminder** (WO-P300-E5.009). Non-HALTing nudge, same pattern as Step 1A: reads `tasks/todo.md` (lines/size) and `tasks/lessons.md` (lines/entries/size) via `windows-mcp:FileSystem`, no Python subprocess. Over cap (todo.md: >500 lines or >100KB; lessons.md: >40 entries or >70KB) → prints an archive-pass-due reminder referencing WO-P000-E8.001; under both caps → silent. The two checks are independent of each other.
+- **Step order updated** to insert `1B` between `1A` and `2`.
+- **Changelog retention enforced.** This section had drifted to three live entries (v3.5/v3.4/v3.3) against its own stated two-version rule. v3.4 and v3.3 moved to `docs/P_300_SIP_CHANGELOG_ARCHIVE.md`; back to current + prior only.
+
 ### v3.5 — 2026-07-28
 - **Step 0.6 added — Promote Marker Check** (WO-P300-E5.005). Reads `P_300_promote_marker.json`. `STOP` severity HALTs; `WAIVED` displays without halting; present-but-unparseable HALTs. Placed immediately after the work-order review because both answer the same question: is there unresolved work from a previous session that must be handled before anything new begins.
 - **Two fail-fast rows added** for the marker; marker path added to Quick Reference.
 - **Why HALT rather than warn:** a STOP marker means a staged batch is sitting on disk and the next `ingest-mined` run rebuilds staging from live, destroying it. Unlike a stale preflight — recoverable any time by re-running a script — this one has a deadline. Precedent: the 2026-07-25 batch staged at 16:15, was never promoted, and was silently overwritten on 2026-07-28.
 
-### v3.4 -- 2026-07-22
-- **WO-P000-E8.001 pilot: working-state doc retention.** `CLAUDE.md` added at
-  project root (architecture snapshot + Locked Decisions, edited in place) --
-  Step 4 now reads it alongside `tasks/lessons.md`/`tasks/todo.md`. Both of
-  those files split live/archive (`tasks/lessons_archive.md`,
-  `tasks/todo_archive.md`) to stay under a size cap after growing large
-  enough to hit real tool-read limits this session.
-- **v3.2 entry moved to `docs/P_300_SIP_CHANGELOG_ARCHIVE.md`** per the
-  two-version retention rule this section already states -- see archive
-  file for that history.
-
-### v3.3 — 2026-06-18
-- **Decision flags line made real.** Step 5 now actually greps `config.py`; Step 6 template gained the `Decision flags:` line — both were claimed-but-missing since 2026-06-09, caught during a live INIT dry run.
-- **Step 1A added** — non-HALTing preflight freshness reminder right after the session header.
-- **Compression pass:** ~20% shorter (tightened step prose, no rule/path/condition removed). Top RULE line corrected: "Steps 0 through 6" → "Steps 0 through 7" (matches SKILL Must-rule #14 and Step 7's actual gate).
-- **Header separator dropped** (WO-P000-E4.001 v1.1): Hub canonical header no longer requires `--` between date and time, after auditing P_115's older format. Step 1 updated to match.
-
-### Pre-v3.2 history
-See `docs/P_300_SIP_CHANGELOG_ARCHIVE.md` (v2.8-v3.2).
+### Pre-v3.5 history
+See `docs/P_300_SIP_CHANGELOG_ARCHIVE.md` (v2.8-v3.4).
 
 ---
 
@@ -201,4 +202,4 @@ See `docs/P_300_SIP_CHANGELOG_ARCHIVE.md` (v2.8-v3.2).
 
 ---
 
-**End of P_300 System Initialization Prompt v3.5**
+**End of P_300 System Initialization Prompt v3.6**

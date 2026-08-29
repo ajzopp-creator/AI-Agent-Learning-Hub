@@ -3,6 +3,11 @@ paper_import.py -- Application layer (orchestration only).
 
 Reads options/stocks CSVs via infrastructure/paper_csv_reader.py, joins
 ThinkLog tags, previews, and writes via application/paper_writer.py.
+Optionally also detects and imports multi-leg spread trades from the raw
+AccountStatement.csv in the same run (--raw-csv, WO-P020-E1.002) -- the
+options/stocks IMPORT CSVs never contain spread data since the old TOS
+parser drops CUSTOM/multi-leg lines before that stage, so spreads must
+be read from the raw statement directly.
 
 Save path: C:\\Users\\Trader\\AI-Agent-Learning-Hub\\projects\\
            P_020_AJZStrategies_PerformanceAnalysisSystem\\python\\
@@ -10,9 +15,11 @@ Save path: C:\\Users\\Trader\\AI-Agent-Learning-Hub\\projects\\
 
 Usage:
     python paper_import.py --options OPTIONS_CSV --stocks STOCKS_CSV \\
-        --thinklog THINKLOG_CSV [--commit]
+        --thinklog THINKLOG_CSV --raw-csv RAW_ACCOUNTSTATEMENT_CSV [--commit]
 
 Run without --commit for a preview. Add --commit to actually write to DB.
+--raw-csv is optional -- omit it to import single-leg trades only, exactly
+as before this option existed.
 
 Part of: P_020 AJZ Strategies Performance Analysis System
 Layer:   application
@@ -96,11 +103,42 @@ def print_preview(trades: List[Dict], join_stats: Dict) -> None:
     print(f"Tags extracted:     {join_stats['tagged']}")
 
 
+def run_spread_import(raw_csv: Path, commit: bool) -> Dict:
+    """Detect and import multi-leg spread trades from the raw
+    AccountStatement.csv (WO-P020-E1.002). Separate DB connection from
+    write_trades()'s internal one -- same pattern paper_spread_import.py's
+    own CLI already uses.
+
+    Args:
+        raw_csv: Path to the raw (unparsed) AccountStatement.csv.
+        commit: Write to DB if True, dry-run preview only if False.
+
+    Returns:
+        {"found": int, "imported": int} from import_spreads().
+    """
+    from infrastructure.db_client import get_connection
+    from paper_spread_import import import_spreads
+
+    if not raw_csv.exists():
+        print(f"ERROR: {raw_csv} not found -- skipping spread detection")
+        return {"found": 0, "imported": 0}
+
+    conn = get_connection()
+    try:
+        return import_spreads(conn, raw_csv, commit=commit, verbose=True)
+    finally:
+        conn.close()
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="Import paper trades with ThinkLog enrichment")
     ap.add_argument("--options", type=Path, help="Path to _OPTIONS_IMPORT.csv")
     ap.add_argument("--stocks", type=Path, help="Path to _STOCKS_IMPORT.csv")
     ap.add_argument("--thinklog", type=Path, help="Path to TOS ThinkLog CSV export")
+    ap.add_argument("--raw-csv", type=Path, default=None,
+                     help="Path to the raw AccountStatement.csv -- catches multi-leg "
+                          "spread trades the options/stocks IMPORT CSVs never contain "
+                          "(WO-P020-E1.002). Omit to import single-leg trades only.")
     ap.add_argument("--commit", action="store_true", help="Write to DB (default = dry run)")
     ap.add_argument("--dry-run", action="store_true", help="Preview only, do not write")
     args = ap.parse_args()
@@ -121,12 +159,20 @@ def main() -> int:
     join_stats = join_thinklog(trades, args.thinklog)
     print_preview(trades, join_stats)
 
-    if args.commit and not args.dry_run:
+    do_commit = args.commit and not args.dry_run
+
+    if do_commit:
         stats = write_trades(trades)
         print(f"\nDB write: inserted={stats['inserted']} skipped_dup={stats['skipped_dup']} "
               f"errors={stats['errors']} exits_inserted={stats['exits_inserted']}")
     else:
         print("\nDry run - no DB writes. Add --commit to write.")
+
+    if args.raw_csv:
+        spread_stats = run_spread_import(args.raw_csv, commit=do_commit)
+        print(f"\nSpread detection: {spread_stats['found']} found, "
+              f"{spread_stats['imported']} imported")
+
     return 0
 
 

@@ -1,0 +1,15 @@
+WO-P300-E5.006 step 3 pre-check -- 2026-08-29
+
+What it tests: reads data\reference\10_Pattern_SPY.xlsx and 10_Pattern_QQQ.xlsx
+(re-exported VP History Grids) and confirms each has Date, Close Price, Medium
+Term Difference, Long Term Difference (header whitespace/newlines normalized),
+at least 1,250 rows, first Date on or before 2021-08-10, and no nulls in those
+four columns. Read-only; touches no production file.
+
+Success: prints per-file rows/columns/date range/null counts, then PASS.
+
+On failure: if a column is missing, print the actual column list and stop --
+the export needs to be redone, do not rename columns in the script. If pandas
+or openpyxl is missing in p140, report it; do not pip install.
+
+Do not change test assertions.

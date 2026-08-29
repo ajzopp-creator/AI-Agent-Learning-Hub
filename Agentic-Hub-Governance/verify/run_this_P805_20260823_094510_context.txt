@@ -1,0 +1,24 @@
+WO-P805-E2.001 — Outlook OAuth2 IMAP Support
+Date: 2026-08-23
+
+What this tests:
+Compiles config.py, cli.py, infrastructure/oauth2_outlook.py (new),
+infrastructure/imap_mover.py (edited), and both test files under p140
+with warnings-as-errors. Confirms msal is importable. Runs the mocked
+unittest suite for the new XOAUTH2 string builder and the OAuth token
+cache lifecycle (no real network call, no browser, no live keyring entry
+touched).
+
+Success criteria:
+Script prints PASS and exits 0.
+
+What to fix on failure:
+- Compile error: syntax/import issue in the listed file — read the
+  traceback, fix the specific file, don't touch test assertions.
+- msal import failure: msal not installed in p140 — run
+  `C:\Users\Trader\.conda\envs\p140\python.exe -m pip install msal`.
+- Test failure: read which assertion failed — likely a real logic bug in
+  oauth2_outlook.py or the _xoauth2_string() format in imap_mover.py.
+
+Do not change test assertions — they encode the exact bug fixes and spec
+requirements from Entry 013 (P_805_SYSTEM_DOCUMENTATION.md).

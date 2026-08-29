@@ -21,6 +21,7 @@ from email.utils import quote
 import keyring
 
 import config
+from infrastructure import oauth2_outlook
 
 logger = logging.getLogger("p805")
 
@@ -29,24 +30,43 @@ class ImapMoveError(Exception):
     """Raised when a connection, search, or move step fails."""
 
 
+def _xoauth2_string(username: str, access_token: str) -> str:
+    """Build the raw XOAUTH2 SASL string per the Microsoft IMAP spec."""
+    return f"user={username}\x01auth=Bearer {access_token}\x01\x01"
+
+
 def _connect(account: str) -> imaplib.IMAP4_SSL:
-    """Open and login an IMAP connection for one account. Raises ImapMoveError."""
+    """Open and login an IMAP connection for one account. Raises ImapMoveError.
+
+    OAuth2 accounts (config.OAUTH_ACCOUNTS, currently just 'outlook') use
+    AUTHENTICATE XOAUTH2 via oauth2_outlook.get_access_token() instead of
+    LOGIN — Entry 013 reverses Entry 011 (Basic Auth rejected server-side).
+    All other accounts are unchanged: keyring app-password LOGIN.
+    """
     server = config.IMAP_SERVERS.get(account)
     username = config.IMAP_USERNAMES.get(account)
     if not server or not username:
         raise ImapMoveError(f"No IMAP server/username configured for '{account}'")
 
-    password = keyring.get_password(config.KEYRING_SERVICE_NAME, account)
-    if not password:
-        raise ImapMoveError(
-            f"No keyring credential for account '{account}' "
-            f"(service={config.KEYRING_SERVICE_NAME!r}). Run keyring.set_password() first."
-        )
-
     host, port = server
     try:
         conn = imaplib.IMAP4_SSL(host, port, timeout=config.IMAP_CONNECT_TIMEOUT)
-        conn.login(username, password)
+        if account in config.OAUTH_ACCOUNTS:
+            access_token = oauth2_outlook.get_access_token()
+            auth_string = _xoauth2_string(username, access_token)
+            conn.authenticate("XOAUTH2", lambda _: auth_string.encode())
+        else:
+            password = keyring.get_password(config.KEYRING_SERVICE_NAME, account)
+            if not password:
+                raise ImapMoveError(
+                    f"No keyring credential for account '{account}' "
+                    f"(service={config.KEYRING_SERVICE_NAME!r}). Run keyring.set_password() first."
+                )
+            conn.login(username, password)
+    except ImapMoveError:
+        raise
+    except oauth2_outlook.OAuthError as e:
+        raise ImapMoveError(f"[{account}] OAuth2 error: {e}") from e
     except Exception as e:
         raise ImapMoveError(f"[{account}] connect/login failed: {e}") from e
     return conn

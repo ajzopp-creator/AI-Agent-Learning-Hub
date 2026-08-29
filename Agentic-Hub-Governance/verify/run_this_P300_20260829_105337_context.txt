@@ -1,0 +1,33 @@
+WO-P300-E5.006 -- Independent Review (fresh session, per WO_COMPLETION_GATE.md)
+Pre-registered 2026-08-29, BEFORE the script was run.
+
+PURPOSE
+Two of the reviewer's four required checks cannot be done by reading text
+files alone and need real execution:
+  (a) confirm data\reference\10_Pattern_SPY.xlsx and 10_Pattern_QQQ.xlsx
+      independently show 2,514 bars each, 2016-08-29..2026-08-28, as the
+      WO claims -- checked directly with openpyxl, NOT via the project's
+      own bulk_grid_reader.parse_bulk_file (the function under review) --
+      genuine independence from the code being checked.
+  (b) confirm no file under P_300\python\ has an mtime on or after
+      2026-08-27 00:00 ET (when this WO's step-3/4 work started), i.e.
+      no production module was touched by this WO.
+The other two reviewer checks (08-26 report line count; context files vs.
+printed results) were already done by direct file reads this session --
+report line count = 221,996 (confirmed), CSV outputs match the WO's
+printed tables exactly (confirmed). Not repeated here.
+
+READ-ONLY. Writes nothing under P_300\. No production file touched.
+
+SUCCESS
+  Prints n/date-range for both grid files, prints PASS/mismatch verdict
+  against the WO's claimed 2,514 / 2016-08-29..2026-08-28.
+  Prints any python\ file with mtime >= 2026-08-27 00:00 (informational --
+  does not fail the script; the reviewer interprets the list).
+  Writes its own .done marker. Prints PASS at the end regardless of the
+  mtime-list contents (that list is reviewer input, not a pass/fail gate).
+
+ON FAILURE
+  Grid file missing, or n/date-range mismatch vs. WO's claim -> FAIL,
+  report exactly what was found. Do not adjust the expected values to
+  match the output.

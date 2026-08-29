@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-07-UCTT-001",
+  "signal_timestamp": "2026-08-10T15:17:14Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "UCTT",
+  "asset_class": "stock",
+  "guideline_entry": 87.25,
+  "guideline_stop": 77.18351225703044,
+  "guideline_target": 98.6750030517578,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 77.18351225703044,
+  "intelliscan_support_1": 69.3199996948242,
+  "intelliscan_support_2": 98.6750030517578,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 87.25,
+    "trailing_volume_30d": 1363800.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 75.0% WR, z=1.21, mean return +12.02% at h=5",
+    "atm_at_signal": 10.066487742969558
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-07",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-07_UCTT.md"
+  }
+}

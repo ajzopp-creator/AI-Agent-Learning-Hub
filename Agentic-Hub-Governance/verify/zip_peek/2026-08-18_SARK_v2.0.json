@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-17-SARK-001",
+  "signal_timestamp": "2026-08-18T18:39:48Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "SARK",
+  "asset_class": "stock",
+  "guideline_entry": 26.2628002166748,
+  "guideline_stop": 25.43162428541631,
+  "guideline_target": 27.925152079191786,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 25.43162428541631,
+  "intelliscan_support_1": null,
+  "intelliscan_support_2": null,
+  "target_source": "atr_extension",
+  "context": {
+    "close_at_signal": 26.2628002166748,
+    "trailing_volume_30d": 64900.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 70.0% WR, z=0.75, mean return +5.02% at h=5",
+    "atm_at_signal": 0.8311759312584928
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-17",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-17_SARK.md"
+  }
+}

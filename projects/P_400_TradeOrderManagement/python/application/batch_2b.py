@@ -37,7 +37,6 @@ from domain.screen import screen_all
 from infrastructure.book_loader import load_book
 from application.earnings_lookup import (
     EarningsCacheMissing,
-    EarningsDataMissing,
     build_entries_for_symbols,
 )
 from infrastructure.params_reader import read_params
@@ -141,7 +140,7 @@ def run_batch_2b(cash: float, session_date: Optional[str] = None,
     session_date = session_date or _today_session_date()
     screen_results, packets, posture, params = _run_tier1_screen(trade_mode)
     pass_symbols = _select_pass_symbols(screen_results)
-    entries = build_entries_for_symbols(pass_symbols)  # WO-P400-E5.002: FMP cache, not the manual file
+    entries = build_entries_for_symbols(pass_symbols)  # WO-P400-E5.002: Nasdaq cache, not the manual file
 
     scored, skipped = evaluate_pass_symbols(
         pass_symbols, packets, entries, cash, trade_mode, params, posture,
@@ -168,6 +167,7 @@ def _print_ranked_table(report: BatchReport) -> None:
         for c in report.candidates:
             print(f"  {c.rank:<3}{c.symbol:<7}{c.score:<7.3f}{c.vehicle:<10}{c.quantity:<6}"
                   f"{c.rr_at_t1:<7.2f}{c.atr_headroom:<8.2f}{c.drift_pct:<8.2f}${c.dollar_risk:<9.2f}")
+            print(f"        -> {c.vehicle_reason}")
     print("=" * 70)
     if report.heat_warning:
         print(f"  HEAT: {report.heat_warning}")
@@ -196,9 +196,6 @@ def cmd_batch_2b(cash: float, earnings_date: Optional[str] = None,
         print(f"[ERROR] {exc}")
         return 1
     except EarningsCacheMissing as exc:
-        print(f"[ERROR] {exc}")
-        return 1
-    except EarningsDataMissing as exc:
         print(f"[ERROR] {exc}")
         return 1
     except ValueError as exc:

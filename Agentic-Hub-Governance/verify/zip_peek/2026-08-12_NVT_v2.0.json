@@ -1,0 +1,33 @@
+{
+  "signal_id": "P115-2026-08-12-NVT-001",
+  "signal_timestamp": "2026-08-12T17:44:09Z",
+  "signal_source": "P_115",
+  "strategy": "breakout",
+  "symbol": "NVT",
+  "asset_class": "stock",
+  "guideline_entry": 168.19,
+  "guideline_stop": 139.59,
+  "guideline_target": 184.96,
+  "signal_horizon": "5-8 days",
+  "confidence_level": "MEDIUM",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 159.54,
+  "intelliscan_support_1": null,
+  "intelliscan_support_2": null,
+  "target_source": null,
+  "context": {
+    "close_at_signal": 171.99,
+    "trailing_volume_30d": 2166499.0,
+    "signal_rationale": "P_118 Double Bottom breakout; ASYM (Anal3+Fund2, 4H MTF uptrend confirms); Fund recomputed 2 (ROE 12.3pct fail, D/C 31.5pct pass, FCF+ pass), Tony accepted recomputed value over submitted 4; vol 2.23x avg20; BULL trend above 200-SMA",
+    "atm_at_signal": 8.65
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-12",
+    "chart_timeframe": "1D",
+    "signal_source_link": "P_118_EddieZ_STEP1_NVT_2026-08-12.md"
+  }
+}

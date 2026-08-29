@@ -1,0 +1,1 @@
+Context: dump last 20 tracker rows to diagnose zero-BUY-since-cutover result / check date format

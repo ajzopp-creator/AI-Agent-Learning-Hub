@@ -1,3 +1,72 @@
+## Current State -- 2026-08-29 (session close)
+
+NEXT SESSION -- START HERE: no blocking priority. Every WO on the P_000
+ledger is now either CLOSED, OWNER_DONE awaiting Independent Review, or
+awaiting downstream Acks -- nothing PENDING or BLOCKED. Heaviest open item
+is IR backlog: 7 P_000 WOs plus 2 cross-project follow-ons all need a
+fresh-session Independent Review pass.
+
+CLOSED TODAY (verified against live disk state):
+- WO-P000-E2.001 -- Git/GitHub strategy. Closed on Tony's direct
+  instruction (downstream-Ack requirement waived, doc-only WO, nothing
+  any project's runtime depended on). Override documented in the WO.
+- WO-P000-E3.001 -- Cross-Project Completion Gate. Closed under the NEW
+  Ack Scope rule (below) -- reclassified doc-only in the same session that
+  rule was written. Self-referential note recorded in the WO: this is the
+  WO that created the Ack mechanism, closing without full Acks under a
+  rule its own closure motivated.
+- WO-P000-E12.001 -- PEH handoff completion signal. Closed via genuine
+  Independent Review this session (this session did not implement it,
+  2026-08-04 did) -- confirmed live via actual use (P_805 verification
+  handoff this same session produced a real .done PASS marker) and
+  confirmed the live skill already loads v1.8+, resolving the WO's own
+  stale OUTSTANDING note.
+
+BUILT TODAY, OWNER_DONE, AWAITING INDEPENDENT REVIEW:
+- WO-P000-E2.003 -- sys.path cleanup. Final row (P_805\python\config.py,
+  dead insert to a folder that doesn't exist) fixed and PASS-confirmed via
+  staged verification (run_this_P805_20260829_180500.py, exit 0).
+- WO-P000-E4.002 -- Changelog retention standard. Hub-wide audit run:
+  P_300/P_800 compliant, P_115/P_400 non-compliant (follow-ons filed:
+  WO-P115-E5.002, WO-P400-E6.007 -- both also now OWNER_DONE, built same
+  day in their own sessions, each with clean test results). Canonical
+  pattern recorded as new Section 3.7 in P_000_SYSTEM_DOCUMENTATION.md
+  (version bumped to 1.13).
+- WO-P000-E19.001 (new) -- Protocol F4 added to system-doc-initializer:
+  mandatory git session-end reminder, since GIT_WORKFLOW.md's own
+  status/stage/commit/push routine had no session-close trigger anywhere
+  (same failure shape as P_115's orphaned lessons.md). Logged as EC-008.
+  Tony confirmed re-upload via Customize -> Skills same session.
+
+GOVERNANCE RULE CHANGE TODAY:
+- WO_COMPLETION_GATE.md -- new "Ack Scope" section. Downstream Acks are
+  now only required for WOs that change code/config/schema/a path a
+  project's runtime directly depends on ("Direct"). Doc-only/governance
+  WOs are notified by the ledger entry alone, no per-project Ack, no
+  CLOSED-blocking. Direct-case requirements (schema, CALLER PROPAGATION,
+  IMPERATIVE SWEEP) unchanged. Root cause: WO-P000-E2.001 sat OWNER_DONE
+  25 days on 7 Acks that had nothing to confirm.
+
+LESSON LOGGED TODAY:
+- peh-handoff bumped v1.8 -> v1.9: Unicode punctuation (em-dash, arrow)
+  typed directly into a .ps1 anchor string can silently fail to match
+  content read via [System.IO.File]::ReadAllText() -- 0 occurrences, no
+  error. Hit twice this session before root-causing it via a live
+  occurrence-count probe. Remedy documented: ASCII-only anchors +
+  IndexOf/Substring splicing.
+
+NOT DONE, FLAGGED FOR NEXT SESSION:
+- IR backlog (9 WOs: E2.003, E4.002, E16.001, E18.001, E19.001, plus
+  WO-P115-E5.002, WO-P400-E6.007, and re-confirm E2.003's P_805 fix under
+  a genuinely fresh session).
+- WO-P000-E2.001's Acks field intentionally left blank (override, not a
+  backfilled fake Ack) -- do not "clean this up" later without knowing why.
+- Note for whoever runs the next P_115 or P_400 session: their SIP
+  changelog archive splits (WO-P115-E5.002, WO-P400-E6.007) already landed
+  from a background session today -- don't redo the work, just IR it.
+
+---
+
 ## Current State -- 2026-08-07 (session close, ~21:30 ET)
 
 NEXT SESSION -- START HERE: no single blocking priority. Several threads

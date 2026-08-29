@@ -44,7 +44,10 @@ def build_portfolio_state(
 ) -> PortfolioState:
     """Compute portfolio state from open-position book records.
 
-    OPEN_STATUSES records contribute to heat, count, sectors, and symbols.
+    OPEN_STATUSES records contribute to heat, count, sectors, and symbols --
+    except source_label-tagged external records (WO-P400-E6.003), which
+    contribute to symbols only (duplicate detection) and are excluded from
+    heat/count/sector math since P_400 never sized them.
     CLOSED records with today's close_date and negative realized_pnl contribute
     to realized_day_loss_dollars (circuit-breaker input).
 
@@ -69,9 +72,14 @@ def build_portfolio_state(
         upper_status = rec.status.upper()
 
         if upper_status in OPEN_STATUSES:
+            symbols.add(rec.symbol.upper())
+            if rec.source_label:
+                # External position (WO-P400-E6.003): counts for duplicate
+                # detection only -- never sized by P_400, must not inflate
+                # RISK's heat/position-count/sector caps.
+                continue
             heat += rec.open_risk_dollars
             count += 1
-            symbols.add(rec.symbol.upper())
             if rec.sector:
                 sectors[rec.sector] = sectors.get(rec.sector, 0) + 1
 

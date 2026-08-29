@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-03-MRCY-001",
+  "signal_timestamp": "2026-08-04T22:16:50Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "MRCY",
+  "asset_class": "stock",
+  "guideline_entry": 105.790000915527,
+  "guideline_stop": 99.08688880125246,
+  "guideline_target": 108.327796936035,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 99.08688880125246,
+  "intelliscan_support_1": 89.9199981689453,
+  "intelliscan_support_2": 108.327796936035,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 105.790000915527,
+    "trailing_volume_30d": 678200.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 85.0% WR, z=2.13, mean return +10.77% at h=5",
+    "atm_at_signal": 6.703112114274539
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-03",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-03_MRCY.md"
+  }
+}

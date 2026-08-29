@@ -58,7 +58,7 @@ def resolve_account_id(account_arg: str, account_label: str) -> str:
     return mapping.get(key, "AJZ6348")
 
 
-def _resolve_orphans_against_db(orphans: List[Dict], account_id: str) -> int:
+def _resolve_orphans_against_db(orphans: List[Dict], account_id: str, dry_run: bool = False) -> int:
     """Attempt to attach orphaned exits to already-open trades in the DB.
 
     Orphans have no matching entry within the current pull batch -- this
@@ -91,7 +91,7 @@ def _resolve_orphans_against_db(orphans: List[Dict], account_id: str) -> int:
             )
             continue
 
-        outcome, trade_id, new_exits = attach_orphan_exit(conn, orphan, open_trade, params)
+        outcome, trade_id, new_exits = attach_orphan_exit(conn, orphan, open_trade, params, dry_run=dry_run)
         if outcome == "updated" and new_exits > 0:
             resolved += 1
             print(f"  Resolved orphan: {symbol} exit {orphan.get('open_date')} -> trade_id={trade_id}")
@@ -107,6 +107,7 @@ def run_import_command(
     start: Optional[str],
     end: Optional[str],
     no_export: bool,
+    thinklog: Optional[str] = None,
 ) -> None:
     """Run the full import pipeline: pull file -> map -> ingest -> export.
 
@@ -117,6 +118,9 @@ def run_import_command(
         start: Start date for full re-import date override.
         end: End date for full re-import date override.
         no_export: If True, skip CSV export after import.
+        thinklog: Optional path to a live-account ThinkLog CSV export --
+                see application.ingest_pipeline.run_ingest() for override
+                semantics. None = no-op, identical to today's behavior.
 
     Prints results and exits(1) on unrecoverable errors -- matches the
     original cmd_import behavior.
@@ -158,7 +162,7 @@ def run_import_command(
     account_label, trade_dicts, orphans = map_pull_file(pull_path)
     account_id = resolve_account_id(account, account_label)
 
-    resolved = _resolve_orphans_against_db(orphans, account_id) if orphans else 0
+    resolved = _resolve_orphans_against_db(orphans, account_id, dry_run=dry_run) if orphans else 0
     if orphans:
         print(
             f"\nOrphaned exits: {len(orphans)} found, "
@@ -181,10 +185,12 @@ def run_import_command(
         raw_trades=trade_dicts,
         account_id=account_id,
         save_run_date=not dry_run,
+        thinklog_path=thinklog,
     )
 
+    dry_run_tag = "[DRY RUN -- nothing written] " if dry_run else ""
     print(
-        f"\nImport complete — inserted: {inserted}  updated: {updated}  "
+        f"\n{dry_run_tag}Import complete — inserted: {inserted}  updated: {updated}  "
         f"skipped: {skipped}  orphans: {db_orphans}"
     )
 

@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-07-30-UEC-001",
+  "signal_timestamp": "2026-08-03T22:40:21Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "UEC",
+  "asset_class": "stock",
+  "guideline_entry": 9.73999977111816,
+  "guideline_stop": 9.156010833235147,
+  "guideline_target": 10.1199998855591,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 9.156010833235147,
+  "intelliscan_support_1": 8.90499973297119,
+  "intelliscan_support_2": 10.1199998855591,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 9.73999977111816,
+    "trailing_volume_30d": 7190400.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 75.0% WR, z=1.21, mean return +6.31% at h=5",
+    "atm_at_signal": 0.583988937883013
+  },
+  "signal_metadata": {
+    "session_date": "2026-07-30",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-07-30_UEC.md"
+  }
+}

@@ -156,12 +156,13 @@ EXCLUDED_SENDER_SUBSTRINGS: list[str] = ["impens", "andreessen", "gaud"]
 DAILY_OUTPUT_CSV: str = "{date}_signals.csv"
 
 # ── KB INTEGRATION (P_805 → P_800 Obsidian Interface) ────────────────────────
-# Path wiring to P_800 write handler (required before first KB write)
-import sys
+# obsidian_writers resolves via Hub editable install -- no path wiring needed
 import os
-P800_SCRIPTS: str = r"C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_800_Automation_Note_Taking\scripts"
-if P800_SCRIPTS not in sys.path:
-    sys.path.insert(0, P800_SCRIPTS)
+# WO-P000-E2.003 (2026-08-29): removed dead sys.path insert to
+# P_800 scripts folder -- target folder does not exist and obsidian_writers
+# already resolves via the Hub editable install (Option A1, WO-P000-E2.003).
+# p805_kb_writer.py's "from obsidian_writers.application.write_handler import
+# handle_write" import needs no path wiring.
 
 # KB processing modes
 KB_MODE: str = os.getenv("KB_MODE", "full")  # "full" or "summary"
@@ -228,12 +229,39 @@ IMAP_CONNECT_TIMEOUT: int = 30
 MOVED_LOG_PATH: Path = DATA_DIR / "moved_messages.csv"
 
 # Accounts excluded from Phase 5.3 IMAP move (Entry 011, 2026-07-14).
-# 'outlook' is OAuth2-only in this Microsoft 365 tenant — Basic Auth
-# (plain IMAP LOGIN with an app password) is rejected server-side with a
-# generic 'AUTHENTICATE failed', regardless of credential correctness.
-# Thunderbird itself uses OAuth2 for this account (see its Server Settings).
-# Building OAuth2 support (msal + browser consent + token cache) is real
-# scope, deferred. Outlook mail is still fully scanned/extracted by Phase 3
-# (mbox read, unaffected) — it just never gets auto-filed to
-# ExtractedNewsletterFolder; those messages stay in Inbox.
-MOVE_SKIP_ACCOUNTS: set[str] = {"outlook"}
+# Superseded for 'outlook' by Entry 013 (OAuth2 support, 2026-08-23) — left
+# empty by default now that outlook authenticates via XOAUTH2 instead of
+# Basic Auth. Kept as a named set (not deleted) in case a future account
+# needs the same skip treatment.
+MOVE_SKIP_ACCOUNTS: set[str] = set()
+
+# ── OUTLOOK OAUTH2 (Entry 013, 2026-08-23 — reverses Entry 011) ──────────────
+# Entry 011 found the Microsoft 365 tenant rejects Basic Auth (plain IMAP
+# LOGIN) entirely for 'outlook'. Fix: msal + one-time browser consent +
+# cached refresh token, then AUTHENTICATE XOAUTH2 instead of LOGIN — for
+# the outlook account only. All other accounts still use IMAP_USERNAMES +
+# keyring app-password LOGIN, unchanged.
+#
+# App registered in Tony's own Azure AD tenant (ajzoppoutlook.onmicrosoft.com).
+# Client ID is not a secret — safe to store here like IMAP_USERNAMES.
+# Registered as "Any Entra ID Tenant + Personal Microsoft accounts" so
+# ajzopp@outlook.com (a personal account, not a work/school account) can
+# sign in.
+OAUTH_ACCOUNTS: set[str] = {"outlook"}
+OUTLOOK_OAUTH_CLIENT_ID: str = "20df0d61-7668-4b75-a778-b67d22fe841b"
+OUTLOOK_OAUTH_AUTHORITY: str = "https://login.microsoftonline.com/common"
+# Legacy-protocol resource scope. NOT a Microsoft Graph scope — despite
+# being added via the Graph picker in the Entra admin center, this is the
+# actual token audience IMAP authentication checks against.
+OUTLOOK_OAUTH_SCOPES: list[str] = ["https://outlook.office.com/IMAP.AccessAsUser.All"]
+# Token cache storage (Entry 014, 2026-08-23 — supersedes the keyring
+# approach from Entry 013). Windows Credential Manager caps a stored
+# credential at ~1280 characters (hit live: WinError 1783 "The stub
+# received bad data") — an MSAL token cache (access + refresh token +
+# account info) runs several times larger. Fix: msal-extensions'
+# FilePersistenceWithDataProtection, which encrypts the cache file with
+# Windows DPAPI, tied to Tony's Windows login — same security property as
+# Credential Manager, no size limit. This is Microsoft's own recommended
+# pattern for MSAL Python desktop/public-client persistence.
+OAUTH_CACHE_DIR: Path = PROJECT_ROOT / "python" / ".secrets"
+OAUTH_CACHE_PATH: Path = OAUTH_CACHE_DIR / "outlook_oauth_cache.bin"

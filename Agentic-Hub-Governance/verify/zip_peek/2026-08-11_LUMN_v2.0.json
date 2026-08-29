@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-10-LUMN-001",
+  "signal_timestamp": "2026-08-11T16:28:51Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "LUMN",
+  "asset_class": "stock",
+  "guideline_entry": 6.6399998664856,
+  "guideline_stop": 6.263789738833616,
+  "guideline_target": 6.86999988555908,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 6.263789738833616,
+  "intelliscan_support_1": 5.76000022888184,
+  "intelliscan_support_2": 6.86999988555908,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 6.6399998664856,
+    "trailing_volume_30d": 19167798.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 80.0% WR, z=1.67, mean return +10.16% at h=5",
+    "atm_at_signal": 0.3762101276519843
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-10",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-10_LUMN.md"
+  }
+}

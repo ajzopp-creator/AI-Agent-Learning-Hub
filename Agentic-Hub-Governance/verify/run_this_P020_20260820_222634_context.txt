@@ -1,0 +1,36 @@
+WO-P020-E1.016 -- cash_available Read the Wrong Schwab Field
+P_400 session, 2026-08-20
+
+WHAT THIS TESTS
+pull_balance() in schwab_balance_pull.py was reading only
+cashAvailableForTrading, which is absent entirely from currentBalances
+for this margin account. Confirmed via live field dump that TOS's
+"Available Funds For Trading" maps to availableFunds instead. The fix
+changes cash_available extraction to:
+  curr.get("cashAvailableForTrading") or curr.get("availableFunds")
+
+This script:
+1. Compiles infrastructure/schwab_balance_pull.py under p140 with
+   -W error::SyntaxWarning.
+2. Runs the new tests/test_schwab_balance_pull.py (4 tests). These do
+   NOT call the live Schwab API -- they test the extraction expression
+   against fake dicts only.
+
+SUCCESS CRITERIA
+Script prints "PASS" and exits 0. All 4 tests pass:
+- test_falls_back_to_available_funds_when_cash_available_absent
+- test_falls_back_to_available_funds_when_cash_available_is_none
+- test_prefers_cash_available_when_present_and_nonzero
+- test_both_absent_returns_none_not_fabricated_value
+
+IF IT FAILS
+Read the compile error or pytest failure output. Do not change the test
+assertions -- they encode the acceptance criteria from WO-P020-E1.016.
+Propose a fix to schwab_balance_pull.py itself and ask Tony to re-run.
+
+AFTER THIS PASSES
+This only verifies the extraction logic in isolation. To see the real
+fix take effect in the actual P_000 params file, Tony still needs to
+run a live `cli.py balance --account AJZ` separately -- that's a
+different command, not part of this script, since this script
+deliberately avoids touching the live API or any production file.

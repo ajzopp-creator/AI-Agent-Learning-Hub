@@ -16,6 +16,10 @@ IMAP auth check (connect+login+logout only, no search/move; safe any time):
     python cli.py --check-imap-auth
     python cli.py --check-imap-auth --account gmail
 
+Outlook OAuth2 one-time browser login (run this yourself, once, before
+using outlook with --phase 53 or --check-imap-auth --account outlook):
+    python cli.py --outlook-oauth-login
+
 This file adds its own directory (python/) to sys.path at startup so
 that sibling modules (config, domain/, infrastructure/, application/)
 resolve with bare imports regardless of which directory you run from.
@@ -36,6 +40,7 @@ from application.phase35_enrich import run as run_phase35  # noqa: E402
 from application.phase53_move import run as run_phase53  # noqa: E402
 from application.imap_auth_check import run as run_imap_auth_check  # noqa: E402
 from application.p805_kb_writer import scan_kb_inbox  # noqa: E402
+from application.outlook_oauth_login import run as run_outlook_oauth_login  # noqa: E402
 
 
 def parse_args() -> argparse.Namespace:
@@ -71,12 +76,19 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Connect+login+logout to verify IMAP credentials only. No search, no move.",
     )
+    parser.add_argument(
+        "--outlook-oauth-login",
+        action="store_true",
+        help="One-time interactive browser login for Outlook OAuth2. Run this yourself, once.",
+    )
     return parser.parse_args()
 
 
 if __name__ == "__main__":
     args = parse_args()
-    if args.check_imap_auth:
+    if args.outlook_oauth_login:
+        run_outlook_oauth_login()
+    elif args.check_imap_auth:
         run_imap_auth_check(account=args.account)
     elif args.kb_mode:
         # KB write mode

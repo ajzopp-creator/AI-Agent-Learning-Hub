@@ -20,6 +20,9 @@ from pathlib import Path
 PROJECT_ROOT = Path(r"C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_010_Current_Market_Posture")
 HUB_ROOT = Path(r"C:\Users\Trader\AI-Agent-Learning-Hub")
 
+if str(PROJECT_ROOT / "python") not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT / "python"))
+
 RESULTS = []
 
 
@@ -104,6 +107,72 @@ def test_error002_no_start_process_nonewwindow():
     src = launcher.read_text(encoding="utf-8")
     ok = "-NoNewWindow" not in src and "Start-Process" in src
     check("error002_no_start_process_nonewwindow", "SOURCE", ok)
+
+
+def _load_freshness_module():
+    """Load grid_freshness_check.py by path -- keeps this test file
+    consistent with the intraday-module loader above (import by spec,
+    not plain import, in case sys.path ever differs at runtime)."""
+    path = PROJECT_ROOT / "python" / "grid_freshness_check.py"
+    spec = importlib.util.spec_from_file_location("p010_grid_freshness", path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def test_e1004_expected_day_tuesday_to_friday_is_yesterday():
+    """BEHAVIOR -- Tue-Fri mornings expect yesterday's grid_date, not
+    today's (WO-P010-E1.004)."""
+    from datetime import date
+    mod = _load_freshness_module()
+    # 2026-08-27 is a Thursday
+    got = mod.expected_trading_day(date(2026, 8, 27))
+    ok = got == date(2026, 8, 26)
+    check("e1004_expected_day_tuesday_to_friday_is_yesterday", "BEHAVIOR", ok,
+          f"got {got!r}")
+
+
+def test_e1004_expected_day_monday_is_last_friday():
+    """BEHAVIOR -- a Monday morning expects last Friday's grid_date,
+    not Sunday's (grid_date legitimately lags 3 calendar days on
+    Mondays -- the exact false-positive class this WO must avoid)."""
+    from datetime import date
+    mod = _load_freshness_module()
+    # 2026-08-31 is a Monday
+    got = mod.expected_trading_day(date(2026, 8, 31))
+    ok = got == date(2026, 8, 28)
+    check("e1004_expected_day_monday_is_last_friday", "BEHAVIOR", ok,
+          f"got {got!r}")
+
+
+def test_e1004_fresh_grids_do_not_false_positive():
+    """BEHAVIOR -- grid_dates exactly matching expected_trading_day must
+    NOT be flagged stale (the E1.004 fix must not become a new source
+    of false halts on an ordinary morning)."""
+    from datetime import date
+    mod = _load_freshness_module()
+    today = date(2026, 8, 27)  # Thursday -> expects 2026-08-26
+    grid_dates = {"SPY": date(2026, 8, 26), "QQQ": date(2026, 8, 26),
+                  "VXX": date(2026, 8, 26)}
+    stale, detail = mod.check_grid_freshness(grid_dates, today)
+    check("e1004_fresh_grids_do_not_false_positive", "BEHAVIOR", not stale,
+          f"stale={stale} detail={detail!r}")
+
+
+def test_e1004_stale_grid_detected_and_named():
+    """BEHAVIOR -- a grid_date older than expected must be flagged
+    stale, and the offending symbol named in the detail string (this is
+    the exact miss from 2026-08-28: script ran clean on 3-day-old
+    QQQ/SPY/VXX data with nothing catching it)."""
+    from datetime import date
+    mod = _load_freshness_module()
+    today = date(2026, 8, 28)  # Friday -> expects 2026-08-27
+    grid_dates = {"SPY": date(2026, 8, 25), "QQQ": date(2026, 8, 25),
+                  "VXX": date(2026, 8, 25)}
+    stale, detail = mod.check_grid_freshness(grid_dates, today)
+    ok = stale and "SPY" in detail and "QQQ" in detail and "VXX" in detail
+    check("e1004_stale_grid_detected_and_named", "BEHAVIOR", ok,
+          f"stale={stale} detail={detail!r}")
 
 
 def main():

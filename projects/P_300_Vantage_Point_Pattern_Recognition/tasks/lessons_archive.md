@@ -1177,3 +1177,156 @@ first real --promote)
 ---
 
 
+
+
+---
+
+## Third archive pass -- 2026-08-29 (age-based: oldest Section 1 entries not referenced in SKILL/SIP/CLAUDE.md)
+
+**Archived Last-Updated history line from lessons.md:**
+
+**Last Updated:** 2026-07-12 (WO-P300-E3.001 Scanner Loop built + PEH-verified 7/7 -- 5 files: archive_scanner_file.py NEW, scanner_report_writer.py NEW, scanner_loop.py NEW, cli.py v1.11 +scanner-loop, config.py v1.12 +SCANNER LOOP section. Data-source decision resolved same-day: reuses IntelliScan's native crossover screen + existing bulk_grid_reader.py/bulk_pattern_detector.py unchanged, point-in-time only, STRICT-only, report-only (no catalog write). M-080 added: missing reports_dir override forced test monkeypatching, same family as M-075 -- fixed at the source, not just in the test. data/bulk/nightly_scan/ folder created; real nightly-export run is next, separate step.) | 2026-07-08 (WO-P300-E2.001 Bulk Extraction: spec reviewed, scan decoded from .isc, Phase 0 verified on SPY/AAPL/DE exports (VP backfills predictions only 5 yr, boundary 2021-07-14), config.py v1.9 shipped + PEH-verified 11/11. M-070 added: PEH is a two-file contract -- run_this.py + run_this_context.txt written together, always. PowerShell MCP wedged mid-session per M-030; recovery = Claude Desktop restart.) | 2026-06-29 (ledger-fill produced its first real output ever: 4 stacked bugs found and fixed in one session -- M-060 date format, M-061 yfinance MultiIndex columns, M-062 query_unfilled checked the wrong column, M-064 persist-only-on-full-fill discarded every partial outcome. M-063 widened the fetch window. Result: h5=115/h7=97/h10=58/h15=2/h20=0 fully real, verified via before/after counts. See M-060 through M-064.) | 2026-06-29 (Ledger dedup: 175->142 rows, 33 duplicates removed across 26 groups -- COHR fired 6x, an entire 06-12 batch re-fired wholesale on 06-13/06-15. M-059 added: insert_fired_signal() has no uniqueness guard; code fix still OWED. Backup saved before delete; live-recount safety check matched dry-run exactly.) | 2026-06-28 (AddPattern batch: 31/32 ingested clean, 1 rejected as true duplicate (DOCU, source_file_id=277) -- catalog 331->362 patterns / 245 symbols. DailyEval batch: 22/22 clean, 9 BUY/12 WATCH/1 PASS, first live run under config v1.8 z>1.0. M-058 added: failed ingests leave the source file in historical_patterns\, blocking re-runs until the operator removes it. Pairs with O-009.) | 2026-06-17 (M-051 REAL fix landed: report_writer.py v1.8 -- print_signal_report_clean() no longer hardcodes [OK] written to vault / ARCHIVE OK; gated on LEDGER_LOG_CLASSES, fabricated archive block removed. Paired daily_evaluate_pipeline.py v1.20 M-043 fix -- _obsidian_write() False return now logged. M-054 added: the 2026-06-12 todo.md/lessons.md closure note for this exact bug was never verified against the file -- bug ran live in production 2026-06-12 through 2026-06-17 undetected. Caught via operator-uploaded live DailyEval console log.) | 2026-06-16 (WO-P300-E1.001 IntelliScan stop integration SHIPPED. intelliscan_reader.py v1.0 NEW; signal_schemas.py v2.1 (3 new SignalV2 fields); signal_emitter.py v2.1; daily_evaluate_pipeline.py v1.18. Smoke test PASS: 12 symbols, both support levels correct. M-052 added. WO-P115-E2.001 OPEN -- same pattern needed for P_115.) | 2026-06-12 (M-051 added -- hardcoded success string anti-pattern; falsified functional test captured in report_writer.py print_signal_report_clean().) | 2026-06-11 (M-019 instance: ledger_record.py Unicode arrow fixed; NFR-1 + report_writer smoke PASS; Enhancement 2 gate-on 3/4 done.) | 2026-06-09 (Enhancement 2 shipped -- Certainty-Equivalent BUY gate. CARA exponential utility (Kochenderfer Ch. 6) computes a risk-adjusted CE return per horizon; gates BUY when CE_GATE_ENABLED=True. Shipped OFF (observe-only). config v1.7 + schemas_pipeline_b v1.3 + domain/utility.py v1.0 NEW + aggregator v1.1 + signal_classifier v1.1 + report_writer v1.7. M-046 + M-047 added. utility.py smoke PASS verified.) | 2026-06-08 (Enhancement 1 shipped -- P_300 -> P_400 SIGNAL_V2 signal packet via the P_800 Hub interface. signal_emitter v2.0 + daily_evaluate_pipeline v1.15. M-045 added. COHR live BUY validated -> packet written to TradeOrderManagement/signals/. Architecture v2.7 Enhancement Log + Change Log updated.) | 2026-06-03 SEALED (Phase 3 Ledger Calibration System COMPLETE. M-040 through M-044 added. Ledger verified: COHR + DE signals captured. Next: 20-day wait, then ledger-fill.)
+
+### M-001 -- "You write, I review" pattern
+**Rule:** For all file deliveries (Python, docs, configs), the AI writes the file directly to its target Windows path via `windows-mcp:FileSystem`. The operator reviews. The AI never asks the operator to copy-paste code from chat. (Confirmed 2026-05-13.)
+
+### M-003 -- Plan before write
+**Rule:** Any task involving 3+ files or architectural decisions requires a written file plan with line-count estimates *before* any code is written. Wait for explicit operator approval.
+
+### M-005 -- Match operator message length
+**Rule:** Short user message -> short AI response. Substantive decisions warrant substantive answers; trivial pings get trivial replies. Never lecture. Never restate the operator's question.
+
+### M-006 -- Honest accountability over defensive recovery
+**Rule:** When the AI misses something, acknowledge it directly. No padding, no apology spirals. State what was missed, what's being corrected, and move on.
+
+### M-009 -- Architecture doc contains only canonical statements
+**Rule:** The P_300 architecture doc states facts, not suggestions. Hedge phrases are forbidden unless explicitly marked illustrative. (Identified 2026-05-13.)
+
+### M-010 -- Catch vestigial planning artifacts at architecture transitions
+**Rule:** When project strategy shifts, audit prior plan artifacts for items that no longer fit. Plan revisions must update downstream artifacts in the same pass. (Identified 2026-05-13.)
+
+**Instances caught so far:**
+- (1) Preservation CSV concept survived Path A->B fresh-start decision (Stage 2->3, 2026-05-13)
+- (2) `ONEDRIVE_ROOT` constant survived D3 converter scope trim (Stage 4, 2026-05-15)
+- (3) `History Grid (*).csv` live-format reference survived Stage 4 XLSX standardization (Stage 6 pre-work, 2026-05-16)
+
+### M-011 -- Route Python logging to stdout in scripts called from PowerShell
+**Rule:** All Python scripts from PowerShell must configure `logging.basicConfig()` with `stream=sys.stdout`. PowerShell flags any stderr output as red NativeCommandError even when exit code is 0. (Identified 2026-05-13.)
+
+**Extension (Stage 6, 2026-05-17):** ANY stderr output renders red, including SyntaxWarning, DeprecationWarning, `sys.stderr.write()`, and third-party library warnings. Defenses: forward slashes in path literals; `warnings.filterwarnings("ignore", ...)`; `2>&1` redirection as last resort.
+
+### M-013 -- Cross-field invariants in Pydantic v2 go in `@model_validator(mode="after")`
+**Rule:** Pydantic v2 field validators run in declaration order and see only earlier fields. Cross-field invariants belong in `@model_validator(mode="after")`. (Identified 2026-05-14.)
+
+### M-014 -- Validate config artifacts against a real source-data sample before commit
+**Rule:** For any config claiming alignment with vendor data, run a verification pass against an actual example file BEFORE writing to the final location. (Identified 2026-05-14.)
+
+### M-021 -- Pydantic v2 `model_copy(update=...)` skips re-validation
+**Rule:** `model_copy(update=...)` does NOT run validators. Use full re-construction in validator negative tests. (Identified 2026-05-17.)
+
+### M-024 -- Pipeline A filename date format is strict YYYYMMDD; no capture-date sanity check
+**Rule:** Pipeline A does NOT check that capture date is not in the future or that target precedes capture. Double-check capture date before running `add-pattern`. (Identified 2026-05-18.)
+
+### M-026 -- Date-validity pre-checks for date-driven pick lists
+**Rule:** Validate every proposed date against weekends and US market holidays before publishing any date-driven pick list. Use `pandas.tseries.holiday.USFederalHolidayCalendar` + `weekday() < 5` check. (Identified 2026-05-18.)
+
+### M-027 -- Cost-estimate discipline: measure or admit unknown, never extrapolate from feel
+**Rule:** When asked for cost, token, time, or performance estimates, either (a) measure the actual value, or (b) state "unknown" with the specific reason. Never extrapolate from intuition. (Identified 2026-05-19.)
+
+### M-029 -- Don't interpret domain data without confirming domain semantics
+**Rule:** State what the measurement says (numeric, value-neutral). Only label features as "signal"/"noise" when domain meaning is confirmed. (Identified 2026-05-19.)
+
+### M-030 -- `windows-mcp:PowerShell` + `python -c` with embedded code hangs reliably
+**Rule:** Do not invoke `python -c "<embedded code>"` via `windows-mcp:PowerShell`. Hangs ~75-100% of attempts. Use `python script.py` instead. (Identified 2026-05-20.)
+
+### M-031 -- File-size accretion crossing §8.4.2 is a signal to split, not a license to slim docstrings
+**Rule:** When a file grows past 300 lines through legitimate accretion, split at a natural boundary. Don't compress docstrings. Current breaches: `schemas_pipeline_b.py` 408, `daily_evaluate_pipeline.py` 417, `report_writer.py` 373. (Identified 2026-05-20.)
+
+### M-032 -- Windows CMD batch: `SETLOCAL ENABLEDELAYEDEXPANSION` + `!VAR!` breaks parser on this system
+
+**Rule:** Do not use `SETLOCAL ENABLEDELAYEDEXPANSION` combined with `!VAR!` in Windows batch files on this workstation -- produces `: was unexpected at this time.` even on syntactically correct files. Use `%date%` string slicing for dates; `goto` label pattern to break for loops. Generalized: don't set-and-use a `%VAR%` inside the same `(...)` block, period -- plain percent-expansion is parse-time-bound within a block regardless of delayed expansion.
+
+**Recurrence (2026-07-07):** `P_300_AddPattern.bat`'s day-rollover backup copy silently no-op'd since the 2026-06-23 rebuild -- `NEWCATALOG` was set and referenced inside the same parenthesized `if/else (...)` block, so `%NEWCATALOG%` evaluated empty; `copy /y "...\%LATEST%" "...\"` (empty destination) silently failed with no errorlevel check. No data damage (ingest still wrote to the existing catalog correctly via `get_latest_catalog()`), but the daily-snapshot naming convention never fired for at least 2 weeks. Fixed via the goto-label pattern M-032 already prescribes -- `NEWCATALOG` set at top-level, not inside a block.
+
+(Identified 2026-05-21; recurrence 2026-07-07)
+### M-034 -- Feature ablation at N=116: volume_zscore is noise; z_score not discriminating at this catalog size
+
+**Rule:** Run feature ablation and threshold sweep at meaningful catalog size (N>=50) before treating default similarity features/thresholds as production-ready.
+
+**Finding 1 (2026-05-28, N=116):** Removing `volume_zscore` from SIMILARITY_FEATURES raised BUY precision 54.0% -> 70.5% (+16.5pp) with +42 BUY count -- volume is noisy cross-symbol/cross-time. All other 9 features within +-1.3pp. Shipped config.py v1.4.
+
+**Finding 2 (same date):** `BUY_MIN_Z_SCORE` lowered 1.0 -> 0.0 (config.py v1.5) -- at N=116/58% baseline WR, z_score wasn't discriminating (z=-0.5/0.0/0.5 all produced identical buy_count=49, precision=79.6%). Production thresholds post-2026-05-28: BUY n>=5/wr>=0.70/z>0.0 (79.6% precision, +6.4% mean h=5), WATCH n>=3/wr>=0.60/z>0.0.
+
+**Addendum (2026-06-28, re-eval trigger fired at N=331):** Walk-forward eval (strictly-earlier-anchor corpus, not LOO) on the full 331-pattern catalog: z>0.0 gave BUY=155 (60.0% accuracy); z>1.0 gave BUY=97 (62.9% accuracy). WATCH absorbed exactly the 58-pattern difference; PASS bit-for-bit identical across both -- confirms the override touches only the BUY boundary. The 58 demoted patterns ran 55.2% WR (below the 60% BUY-pool average) -- a real, modest edge cut. Decision: re-tightened `BUY_MIN_Z_SCORE` 0.0 -> 1.0 (config.py v1.8). Trigger closed.
+
+(Captured 2026-05-28 / 2026-06-28)
+### M-035 -- AI must verify python interpreter BEFORE issuing any python invocation to the operator
+**Rule:** M-016 is not only a diagnostic the operator runs when something breaks. The AI must proactively run `(Get-Command python).Source` via `windows-mcp:PowerShell` and confirm it returns `C:\Users\Trader\.conda\envs\p140\python.exe` BEFORE telling the operator to run any `python` command. If the check fails, fix the interpreter first. Never issue a `python` command to the operator on an unverified interpreter.
+
+**Failure mode captured 2026-05-29:** AI instructed operator to run `python integrations\lm_studio\examples\p300_status_check.py` without checking interpreter. Python 3.14 (system) was active; ImportError on `idna` followed. M-016 was in the SKILL but AI treated it as operator-only guidance rather than a pre-flight gate on every AI-issued python invocation.
+
+(Captured 2026-05-29)
+
+### M-038 -- Always verify the Hub interface before proposing any cross-project call
+**Rule:** Before writing or proposing any code that calls from one project into another, read the actual source file of the calling module to confirm how it currently imports the target. Then check `shared_resources/python_utils/` for a published Hub interface. If one exists, use it -- never reach into another project's internals via a hardcoded `sys.path` injection.
+
+**The Hub interface for Obsidian writes is:**
+```python
+from shared_resources.python_utils.vault_interface import write_to_vault
+```
+located at `C:\Users\Trader\AI-Agent-Learning-Hub\shared_resources\python_utils\vault_interface.py`.
+
+**Failure mode captured 2026-05-31:** AI proposed a backfill script that would have called `handle_write()` from P_800's internal `obsidian_writers.application.write_handler` directly, bypassing the published Hub interface `write_to_vault()` in `shared_resources/python_utils/vault_interface.py`. The existing `write_signal_to_obsidian.py` was already violating this boundary via `sys.path` injection. Both corrected to use the Hub interface.
+
+**Check sequence before any cross-project import:**
+1. Read the calling module's current import block
+2. Check `shared_resources/python_utils/` for an existing interface
+3. Read the interface README if present
+4. Use the published interface -- never bypass it
+
+(Captured 2026-05-31)
+
+### M-039 -- Pipe multi-line script output to UTF-8 file; read it back directly
+**Rule:** When a Python script will produce more than one screen of output, always pipe to a UTF-8 file and read it back via `windows-mcp:FileSystem`. Never ask the operator to paste it and never use bare `>` redirection -- PowerShell default `>` writes UTF-16 LE which produces garbled text and is unreadable by Claude.
+
+**Correct pattern for any long-output script:**
+```powershell
+python python\script.py 2>&1 | Out-File -Encoding utf8 output.txt
+```
+Claude then reads `output.txt` directly via `windows-mcp:FileSystem` without operator involvement.
+
+**Applies to:** catalog-summary, feature ablation, threshold sweep, backfill, LOO replay, and any other script with unbounded output.
+
+**Failure mode captured 2026-05-31:** Backfill script produced 750 lines. AI told operator to run and paste output. Operator uploaded a file written with bare `>` which produced UTF-16 LE. Claude had to decode around the encoding artifact rather than reading clean UTF-8 directly.
+
+(Captured 2026-05-31)
+
+### M-040 -- Test execution paths, not just imports; end-to-end before marking complete
+**Rule:** Module-level imports and parser registration pass tests; handler execution is different. When adding new CLI subcommands, ledger hooks, or any stateful feature, test ACTUAL EXECUTION: call the handler, invoke the workflow, verify output. Don't just test that imports work or that the parser builds.
+
+**Procedure before marking any feature "production-ready":**
+1. Write test that imports the handler function AND calls it (not just `build_parser()`)
+2. Run the actual user workflow end-to-end
+3. For multi-step processes (capture -> wait -> fill -> report), test at least one minimal cycle
+4. Verify the output is correct
+5. **CRITICAL:** Verify that non-blocking error paths actually succeed, not just that errors are logged
+
+**Failure mode captured 2026-06-03:** Phase 3 ledger system (calibration, ledger-fill, ledger-calibration subcommands) passed a test suite that only verified `build_parser()` succeeded and subcommands were registered. The test never called `_cmd_daily_evaluate()` which triggers lazy imports. Result: `ledger_record.py` had a broken import (`infrastructure.catalog_db` doesn't exist) that passed all tests but failed on first real execution when Tony ran `P_300_DailyEval_v2.bat COHR`. Root cause: incomplete test coverage of execution paths.
+
+**Second failure (same session, 2026-06-03):** After fixing the import error, the ledger_record hook runs non-blocking (good design), but `get_latest_catalog()` call returns wrong path -> queries wrong DB -> `sqlite3.OperationalError: no such table: patterns`. Hook fails silently; signal still fires. Good error handling masks the real bug: catalog path resolution is broken. Lesson: test non-blocking error paths to verify they actually SUCCEED, not just that they're handled.
+
+**Applies to:** Any new CLI handler, ledger hook, pipeline stage, or cross-module orchestration. Especially important for non-blocking error handlers -- verify the happy path works, not just that errors are caught.
+
+(Captured 2026-06-03)
+
+### M-041 -- Verify utility function signatures before using them in integration points
+**Rule:** When adding a new feature that calls an existing utility function (especially from `utilities/`), verify the function exists, understand what it returns, and test it in isolation FIRST. Don't assume a function with a suggestive name does what you expect. Broken utility calls in integration points can hide under non-blocking error handlers.
+
+**Failure mode captured 2026-06-03:** After fixing the import error in ledger_record.py, the code called `get_latest_catalog()` from `utilities/db_utils.py` -- a function that either doesn't exist or returns the wrong type/path. The failure was silent due to non-blocking error handling; the ledger hook failed but the daily eval continued and the signal fired. No indication to operator that the ledger record failed until examining logs.
+
+**Fix:** Use explicit path construction (glob + mtime sort) instead of relying on a utility function that wasn't verified. After fix confirmed working (COHR eval 2026-06-03 12:11:26).
+
+**Applies to:** Any new cross-module call, especially to utilities or infrastructure layers. Always verify by reading the source before use.
+
+(Captured 2026-06-03)
+

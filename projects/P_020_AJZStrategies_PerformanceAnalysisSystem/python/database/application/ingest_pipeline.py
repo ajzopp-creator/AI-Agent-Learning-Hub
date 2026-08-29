@@ -16,7 +16,9 @@ from domain.trade_logic import (
 from infrastructure.db_client import get_connection
 from infrastructure.tracker_reader import load_tracker_lookup
 from infrastructure.vault_system_reader import load_vault_lookup
-from application.system_attribution import apply_system_names
+from infrastructure.p820_reader import load_p820_lookup
+from application.system_attribution import run_full_attribution, explain_default
+from application.live_thinklog import load_live_thinklog_lookup
 from domain.matcher import match_system
 from infrastructure.tracker_reader import match_stop_price
 from application.trade_writer import write_trade
@@ -69,9 +71,6 @@ def save_last_run_date(run_date: str) -> None:
         logger.warning(f"Could not save last run date: {e}")
 
 
-# ── System name matching ─────────────────────────────────────────────────
-
-
 # ── Trade building ───────────────────────────────────────────────────────
 
 def _build_trade(raw: Dict, params: Dict, account_id: str) -> Optional[Trade]:
@@ -111,6 +110,8 @@ def _build_trade(raw: Dict, params: Dict, account_id: str) -> Optional[Trade]:
             notes=raw.get("notes"),
             source=raw.get("source", "schwab_api"),
             schwab_transaction_id=raw.get("schwab_transaction_id"),
+            reason=raw.get("reason"),
+            signal_strength=raw.get("signal_strength"),
         )
     except (KeyError, ValueError, TypeError) as e:
         logger.warning(f"Skipping malformed trade record: {e} — {raw}")
@@ -154,6 +155,8 @@ def run_ingest(
     raw_trades: List[Dict],
     account_id: str,
     save_run_date: bool = True,
+    thinklog_path=None,
+    dry_run: bool = False,
 ) -> Tuple[int, int, int, int]:
     """Full ingest pipeline: match → validate → write to DB.
 
@@ -162,6 +165,17 @@ def run_ingest(
                     qty-aware exit-matched — see domain.exit_allocator).
         account_id: Target account ID (e.g. 'AJZ6348').
         save_run_date: Whether to update P_020_last_run.json on success.
+        dry_run: If True, preview only -- write_trade() takes a read-only
+                    path, no insert_trade/insert_exit/update_trade_status
+                    call happens (WO-P020-E1.015 fix, 2026-08-22 -- prior to
+                    this, --dry-run only skipped save_run_date, every write
+                    still committed).
+        thinklog_path: Optional path to a live-account ThinkLog CSV export.
+                    Attribution priority is P_820 > ThinkLog > vault/
+                    Tracker/default (Tony directive 2026-08-16) -- see
+                    application.system_attribution.run_full_attribution().
+                    None or a missing file is a safe no-op, identical to
+                    today.
 
     Returns:
         Tuple of (inserted_count, updated_count, skipped_count, orphan_count).
@@ -177,6 +191,8 @@ def run_ingest(
     conn   = get_connection()
     lookup = load_tracker_lookup()
     vault_lookup = load_vault_lookup()
+    thinklog_lookup = load_live_thinklog_lookup(thinklog_path)
+    p820_lookup = load_p820_lookup()
 
     if lookup:
         audit.append(f"Tracker Dashboard: loaded ({len(lookup.entries)} entries)")
@@ -187,6 +203,14 @@ def run_ingest(
         audit.append(f"P_400 vault: {vault_lookup.summary()}")
     else:
         audit.append("P_400 vault: unavailable — tracker-only matching")
+
+    if thinklog_lookup:
+        audit.append(f"Live ThinkLog: loaded ({len(thinklog_lookup)} symbol/date entries)")
+    elif thinklog_path:
+        audit.append(f"Live ThinkLog: path given but unusable — {thinklog_path}")
+
+    if p820_lookup:
+        audit.append(f"P_820: loaded ({len(p820_lookup)} entries)")
 
     # NOTE: raw_trades arriving from schwab_mapper.map_pull_file() are already
     # entry dicts with exit_1/2/3 attached (direction == 'long' for all of
@@ -211,11 +235,9 @@ def run_ingest(
         )
 
     all_trades = consolidated + [t for t in exits_raw if t not in orphans]
-    apply_system_names(
-        all_trades,
-        lookup,
-        params["default_system_name"],
-        vault_lookup=vault_lookup,
+    run_full_attribution(
+        all_trades, lookup, vault_lookup, thinklog_lookup, p820_lookup, params, audit,
+        account_id=account_id,
     )
     _apply_stop_prices(all_trades, lookup, account_id)
 
@@ -227,7 +249,7 @@ def run_ingest(
             skipped += 1
             continue
 
-        outcome, trade_id, new_exits = write_trade(conn, raw, trade, params)
+        outcome, trade_id, new_exits = write_trade(conn, raw, trade, params, dry_run=dry_run)
 
         if outcome == "inserted":
             inserted += 1
@@ -235,6 +257,9 @@ def run_ingest(
                 f"OK: {raw.get('underlying_symbol')} {raw.get('open_date')} "
                 f"system={raw.get('system')} exits={new_exits} (new trade)"
             )
+            diag = explain_default(raw, vault_lookup, params["default_system_name"])
+            if diag:
+                audit.append(diag)
         elif outcome == "updated":
             updated += 1
             audit.append(

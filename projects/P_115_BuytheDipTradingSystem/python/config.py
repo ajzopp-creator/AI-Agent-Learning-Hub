@@ -33,6 +33,10 @@ SIGNAL_ID_PATTERN: str = "P115-{date}-{symbol}-{seq:03d}"
 
 # --- Enumerations -----------------------------------------------------------
 DEFAULT_SOURCE: str = "P_115"
+# 2026-08-17: real trade duration (CPAY ~11 trading days) superseded the
+# undocumented "3-5 days" that nothing in code/docs ever actually sourced
+# (WO-P115-E5.001). Overridable per-ticker via cli.py --horizon.
+DEFAULT_SIGNAL_HORIZON: str = "10-15 trading days"
 # UNUSED as of 2026-07-24 -- was only consumed by schemas.py's
 # P400SignalRecord.signal_source validator, now archived
 # (_archive\schemas_RETIRED_2026-07-24.py). The live emit path

@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-04-CACC-001",
+  "signal_timestamp": "2026-08-05T15:58:03Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "CACC",
+  "asset_class": "stock",
+  "guideline_entry": 587.849975585938,
+  "guideline_stop": 566.4364902926827,
+  "guideline_target": 642.320007324219,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 566.4364902926827,
+  "intelliscan_support_1": 550.200012207031,
+  "intelliscan_support_2": 642.320007324219,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 587.849975585938,
+    "trailing_volume_30d": 121400.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 75.0% WR, z=1.21, mean return +6.41% at h=5",
+    "atm_at_signal": 21.413485293255196
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-04",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-04_CACC.md"
+  }
+}

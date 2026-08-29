@@ -55,7 +55,7 @@ IF ERRORLEVEL 1 (
 REM Step 3: Import into database
 echo. >> "%LOGFILE%"
 echo [3/5] Importing trades... >> "%LOGFILE%"
-"%PYTHON%" P_020_Trade_Manager.py import --account AJZ >> "%LOGFILE%" 2>&1
+"%PYTHON%" P_020_Trade_Manager.py import --account AJZ --thinklog "%ROOT%\data\thinklog\live\P_020_ThinkLog_Live_Current.csv" >> "%LOGFILE%" 2>&1
 IF ERRORLEVEL 1 (
     echo ERROR: Import failed. >> "%LOGFILE%"
     echo FAILED Step 3 Import %RUNTIME% > "%STATUS_FILE%"

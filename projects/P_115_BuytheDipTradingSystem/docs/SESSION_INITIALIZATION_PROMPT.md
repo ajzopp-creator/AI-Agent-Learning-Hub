@@ -1,7 +1,7 @@
-# P_115 System Initialization Prompt (SIP) v3.5
+# P_115 System Initialization Prompt (SIP) v3.6
 **File:** `docs/SESSION_INITIALIZATION_PROMPT.md`
-**Version:** 3.5
-**Last Updated:** 2026-07-24
+**Version:** 3.6
+**Last Updated:** 2026-08-17
 **Pairs With:** `docs/P_115_System_Architecture.v1.0.md`
 
 ---
@@ -27,11 +27,13 @@ INIT  |  P_115  |  P_115 INIT
 ### Step 0 — Environment Discovery
 Call `tool_search("PowerShell")`. Present = Claude Desktop → proceed. Absent = web → STOP; ask user to switch to Desktop. Never claim web/Desktop status before running this check.
 
-### Step 0.5 — Work Order Review
+### Step 0.5 — Work Order + Lessons Review
 Read `Agentic-Hub-Governance\work_orders\` for Owner=P_115 or P_115 in Affects, Status not CLOSED.
 - BLOCKED → HALT; show Depends-On.
 - PENDING → warn; ask proceed? (y/n).
 - IN_PROGRESS or COMPLETE → note; proceed.
+
+Also read `tasks\lessons.md` in the same PowerShell call as the WO grep (preserves the INIT Fast Path 2-call target). Surface any entries from the last 14 days in the Step 4 summary as a `Lessons:` line. This file's own header says "read at every INIT" but was never wired into this step from 2026-06-09 creation until 2026-08-17 -- do not let this happen again; the file is worthless if nothing reads it.
 
 ### Step 1 — Session Header  ⛔ MANDATORY — NEVER SKIP, NEVER SUBSTITUTE
 **Emit this exact formatted line as Step 1. A bare `Date: ...` line is NOT a substitute and does not satisfy this step. If the Step 4 summary has appeared without this header line shown first, Step 1 was skipped — stop and emit it.**
@@ -59,6 +61,7 @@ P_115 SESSION INITIALIZED
 Architecture:    v1.0
 Filesystem MCP:  [available | unavailable]
 Work Orders:     [status or OK]
+Lessons:         [N recent entries (14d) or OK if none new]
 Account:         $<balance>  Risk: $<risk>  MaxPos: $<maxpos>  Review: <date>
 Market posture:  SPY <p> / QQQ <p>  Avg <avg>  risk_mode: <MODE>  <intraday if present>
 Trading mode:    [HOT | STANDARD | CORRECTION]
@@ -110,16 +113,15 @@ Carry domain rules. All scoring (HybridTier, FundamentalsTier, 200-MA penalty, C
 
 *Retention rule: this section keeps only the current + prior version. Older entries live in `docs/P_115_SIP_CHANGELOG_ARCHIVE.md`.*
 
+### v3.6 — 2026-08-17
+- **Step 0.5 now also reads `tasks\lessons.md`** (renamed to "Work Order + Lessons Review"), and Step 4 summary gained a `Lessons:` line. Root cause: `lessons.md` was created 2026-06-09 with its own header instructing "read at every INIT," but nothing in the actual SIP ever did so -- it sat orphaned for over two months. Same failure shape as the changelog-vs-rule problem this project has hit before (a written instruction is not the same as an executed step). Trigger: two real process failures same session (8/17/26) that a maintained lessons file should have prevented -- wrong tracker file path assumed instead of verified, and a false "emitter never worked" conclusion from an unopened archive zip.
+
 ### v3.4 — 2026-06-19
 - **Step 1 hardened against runtime skip.** A live INIT run produced the Step 4 summary but never emitted the Step 1 header line, substituting a bare `Date:` line. Step 1 now marked MANDATORY / no-substitute with an explicit self-check, and the top RULE states no step may be silently skipped and that Step 1 and Step 4 are independently required output. Header format updated to the canonical Hub standard with the optional session-type label slot (WO-P000-E4.001 v1.1): `P_115 [Weekday, Month DD, YYYY] [HH:MM] ET [optional label]`.
 
-### v3.3 — 2026-06-18
-- Full rewrite to P_300 SIP pattern. Domain rules migrated to architecture doc Sections 2.4, 8.2, 8.4, 8.5. SIP is now steps-only.
-- Content migrated: FundTier map, 200-MA penalty table, AsymmetricSetup conditions, CandleTier pattern names, 2-Tranche exit rule, Fund Verification protocol, P_118 chart pattern definitions (4 patterns).
-
-### Pre-v3.3 history
-See `docs/P_115_SIP_CHANGELOG_ARCHIVE.md` (v3.2 and earlier).
+### Pre-v3.4 history
+See `docs/P_115_SIP_CHANGELOG_ARCHIVE.md` (v3.3 and earlier).
 
 ---
 
-**End of P_115 SIP v3.4**
+**End of P_115 SIP v3.6**

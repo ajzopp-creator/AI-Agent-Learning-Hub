@@ -1,9 +1,9 @@
-﻿# P_400 Trade Order Management ? System Architecture
+# P_400 Trade Order Management ? System Architecture
 **Project ID:** P_400
-**Version:** 2.4 (Council Evidence Frameworks, Two-Tier Signal Flow, Deterministic Python Core, Guidelines Merged, Systems Lens, Phase E4 Live Data Automation, Post-Earnings Stabilization Check)
-**Last Updated:** 2026-08-14
+**Version:** 2.5 (Adds Phase E5/E6 body sync: Tier-2B batch runner, options-first vehicle selection, TAPE price_basis, record trade_mode-at-fill, compare() NEITHER terminal disposal, Bases path fix)
+**Last Updated:** 2026-08-20
 **Maintained By:** Anthony Zoppi
-**Status:** Phase E4 CLOSED ? Phase E5/E6 IN_PROGRESS (Tier-2B batch runner, Bases reconciliation)
+**Status:** Phase E4 CLOSED ? Phase E5 batch runner IN_PROGRESS (8/11 criteria) ? Phase E6 Bases fix applied, reconciliation design pending
 **Supersedes:** Architecture v1.0 (2026-06-03); P_400_TradeordermanagementGuidelines_v1.1 (merged into Section 3)
 
 ---
@@ -326,7 +326,8 @@ Evidence framework adapted from earnings-analysis practice: next earnings date, 
 
 ### 4.5 Momentum & Tape
 
-- **Blocks:** adverse directional drift past threshold with collapsed R:R; price staleness beyond `price_staleness_threshold_sec`; market closed without explicit pre-market flag.
+- **Blocks:** adverse directional drift past threshold with collapsed R:R; price staleness beyond `price_staleness_threshold_sec`.
+- **Market hours (WO-P400-E5.005, 2026-08-10):** outside 9:30-16:00 ET no longer hard-blocks. `fetch_snapshot.py` prices off the last completed daily bar's close instead of a live quote, with bid/ask reconstructed from the symbol's last observed live half-spread (`infrastructure\last_spread_cache.py`, updated on every market-open fetch -- real friction, not a synthetic zero). `tape_vote()` reads this as `price_basis` ("live" | "close"): closed market + `price_basis=="close"` -> CAUTION (`RC_USING_CLOSE_DATA`), not BLOCK. No cached spread yet for a symbol (never fetched live before) -> `fetch_snapshot.py` fails loud, no file written. The old `pre_market_flag` param is gone (was dead -- hardcoded `False`, never wired to anything).
 - **Annotates:** volume character, relative strength vs SPY/QQQ posture, gap risk.
 
 ### 4.6 Behavioral Judge ? Annotate Only
@@ -336,6 +337,8 @@ Never blocks. Flags revenge-trade patterns (new signal in a symbol that just sto
 ### 4.7 Vehicle Selection Gate (C5) ? Options Structuring Framework
 
 Phase E2: pass-through of Tony's instrument choice plus the IV-rank gate ? IV rank above 50 on a long single-leg flags expensive premium and recommends a defined-risk spread. Phase 2 adds structure scoring adapted from options-desk practice: outlook translated to structure category, exact strikes/expiry, max profit / max loss / breakeven, probability of profit from IV, Greeks exposure, adjustment plan, exit rules. Structure choice maximizes expected R:R per unit of capital subject to the viability gates in 3.8.
+
+**Options-first selection (WO-P400-E5.003, 2026-08-07):** for every approved stock-based (`asset_class="stock"`) signal, `compare_vehicles()` (`domain\vehicle_selector.py`) runs before `evaluate` and its recommended field -- STOCK, OPTION, SPREAD, OPTION_OVERRIDE_ONLY, or NEITHER -- routes into the matching command. Applies to both the manual CLI flow and `batch-2b`'s internal per-symbol loop (`application\batch_2b_scoring.py`), which calls `compare_vehicles()` directly rather than the manual `compare` command.
 
 ### 4.8 Verdict Assembly
 
@@ -506,6 +509,8 @@ The P_400 record field set (lifecycle, council verdicts, sizing fields, options 
 > **Last Updated:** 2026-06-03
 
 Two Pydantic models remain separate by design: `P400SignalRecord`-lineage signal packet (`SignalV2`) and the lifecycle record (`P400Record`). Different lifecycle stages, different fields, different write formats. Never merge them.
+
+**Trade mode at fill time (WO-P400-E5.001, 2026-07-29):** `record` accepts `--paper` independently of whatever `evaluate`/`spec` cached. `cmd_record_submit()` builds a call-scoped override to PAPER before `write_p400_record()` -- the `eval_cache` file itself is never mutated. Fill time is when Tony typically knows paper-vs-real; there is no requirement to set `--paper` on an earlier `evaluate`/`spec` call.
 
 ### 6.4 Data Integrity Rules
 
@@ -726,6 +731,18 @@ No longer deferred. `fetch-snapshot SYMBOL` and `fetch-chain SYMBOL --type call|
 
 ---
 
+### 7.6 Phase E5/E6 ? Batch Automation, Compare-Time Disposal, Bases Reconciliation (IN_PROGRESS)
+
+**Tier-2B batch runner (WO-P400-E5.003):** `batch-2b --cash DOLLARS` runs Tier-1 screen, loops every PASS symbol through fetch-snapshot -> compare (options-first) -> evaluate -> score, and prints one ranked table in a single invocation -- replacing N separate manual round-trips. Ranked output orders on a "score" column (ATR headroom breaks ties among equal APPROVED candidates); a cumulative-heat warning prints whenever two or more rows are APPROVED. IN_PROGRESS -- 8 of 11 acceptance criteria live-verified as of 2026-08-20; remaining: a live case where the option leg actually qualifies (reported as vehicle, not just attempted and blocked), the 2+-APPROVED heat warning triggering live, and verbatim confirmation of the fetch-chain viability WARN console line.
+
+**Earnings source, batch-2b only (WO-P400-E5.002, OWNER_DONE 2026-08-08):** `application\earnings_lookup.py` reads `earnings_calendar_cache.json` (Nasdaq public calendar) exclusively -- it does NOT use Bucket B web-search or the old manual `earnings_YYYY-MM-DD.json` bridge file (`infrastructure/earnings_file.py`, dead code for this path). A PASS symbol absent from the cache hard-fails the whole batch (`EarningsDataMissing`); no per-symbol skip or override exists. Running `refresh-earnings-calendar` does not help if Nasdaq itself has not posted a date yet. The manual per-symbol `fetch-snapshot`/`fetch-chain`/`compare` flow (Bucket B web-search-sourced earnings) remains the only path around a cache miss.
+
+**Compare-time terminal disposal (WO-P400-E5.006, CLOSED):** a `NEITHER` recommendation from `compare_vehicles()` (both vehicles fail R:R/viability) now disposes the packet via the existing `drop_signal()` path (`drop_reason="RR_INVALID"`) instead of leaving it in the live inbox indefinitely. Once a signal reaches P_400 it is either a trade or it is not -- no hold-and-recheck state; re-qualification is upstream (P_115/P_300/P_118), not Order Management's.
+
+**Bases path fix (WO-P400-E6.001, IN_PROGRESS):** `Bases/P400_Trades.base` was filtering on the retired `TradeManagement/P400` path (renamed to `TradeOrderManagement/P400` by WO-P800-E3.003, 2026-07-25) and sorting on a `date` field that does not exist in the P400 note schema -- both corrected (path -> `TradeOrderManagement/P400`, sort -> `run_date`). Same investigation found P_400 order notes never close the lifecycle loop -- `entry_date`/`close_date`/`realized_pnl` stay null forever. A reconciliation design (extending P_020's SQLite-as-source-of-truth pattern) is recommended but **not yet approved for build** -- treat as provisional until WO-P400-E6.001 itself closes.
+
+---
+
 ## 8. CONFIGURATION REFERENCE & VERSION CONTROL
 
 ### 8.1 Configuration (v2.0)
@@ -780,6 +797,8 @@ overwrite_records       = true
 | 2.3 | 2026-07-24 | Anthony Zoppi / Claude | Phase E4 Live Data Automation: WO-P400-E4.001 (shared Schwab API client, shared_resources\python_utils\schwab_auth.py/schwab_client.py, OWNER_DONE, live-verified); WO-P400-E4.002 (automated snapshot/chain fetch, domain\chain_selector.py auto-select at 0.50 delta / 21-45 DTE, OWNER_DONE, live-verified); WO-P400-E4.003 (technical dossier -- SMA/RSI/MACD/Bollinger/pivot-S-R/Fibonacci computed via cli.py dossier, item 9 chart-pattern-ID remains Claude-narrated-only by explicit design, never auto-computed) |
 
 | 2.4 | 2026-07-24 | Anthony Zoppi / Claude | WO-P400-E2.023: backward-looking post-earnings stabilization check added to MACRO role -- CAUTION-only, never BLOCK (Tony's call), config-driven threshold (POST_EARNINGS_STABILIZATION_SESSIONS, default 3, matches P_115 V110.3 precedent). Snapshot Dict Contract (6.2) gains last_earnings_date. Found live same session: SXT (P_115, same-day earnings, BLOCKED on drift) and CLF (P_300, 1-session-old earnings, R:R at the bare 2.0 floor pre-move) both slipped through Tier-1 screen with no deterministic catch. |
+
+| 2.5 | 2026-08-20 | Anthony Zoppi / Claude | Phase E5/E6 body sync (WO-P400-E6.002): E5.001 record --paper sets trade_mode at fill time, independent of evaluate/spec cache. E5.002 batch-2b earnings source is Nasdaq calendar cache only (not Bucket B web-search) -- a PASS symbol missing from cache hard-fails the whole batch, no per-symbol override, OWNER_DONE. E5.003 Tier-2B batch runner (batch-2b --cash DOLLARS), options-first vehicle selection (compare_vehicles() runs before every stock-based evaluate, both manual flow and batch-2b) -- IN_PROGRESS, 8/11 acceptance criteria live-verified. E5.005 TAPE no longer hard-blocks outside market hours -- price_basis ("live"/"close") with bid/ask reconstructed from last_spread_cache.json, CLOSED. E5.006 compare() NEITHER outcome now disposes the packet via drop_signal(), no hold-and-recheck state, CLOSED. E6.001 Bases/P400_Trades.base path corrected to TradeOrderManagement/P400 (was pointed at retired TradeManagement/P400), sort field corrected to run_date -- IN_PROGRESS, reconciliation design (entry_date/close_date/realized_pnl never populated) recommended but not yet approved for build. |
 
 **Review Schedule:** after every 5 completed trades, then monthly
 **Next Review:** after 5 Phase-E2 trades

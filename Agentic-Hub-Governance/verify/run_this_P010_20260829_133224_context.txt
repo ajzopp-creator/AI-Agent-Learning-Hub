@@ -1,0 +1,6 @@
+WO: WO-P010-E2.001 (Question 2 groundwork)
+Purpose: Read-only check of P_020_trades.db -- does any column identify
+trades as P_300-sourced, and if so how many? Also basic count-by-system
+and total trade count for context.
+No writes. No schema changes. No sizing/policy decisions made here.
+Run by Claude via peh-handoff, session 2026-08-29.

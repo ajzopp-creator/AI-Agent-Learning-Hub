@@ -1,0 +1,17 @@
+Total non-blank rows: 701
+Last 15 non-blank rows:
+Date=2026-02-18 00:00:00 Symbol=XP Source=P_118 Verdict=No Signal
+Date=2026-02-19 00:00:00 Symbol=XP Source=P_118 Verdict=BUY
+Date=2026-01-20 00:00:00 Symbol=XRAY Source=P_910 Verdict=No Signal
+Date=2026-02-12 00:00:00 Symbol=ZBIO Source=P_115 Verdict=NO
+Date=2026-02-23 00:00:00 Symbol=MDT Source=P_117 Verdict=ASYM
+Date=2026-02-24 00:00:00 Symbol=ALB Source=P_116 Verdict=BUY
+Date=2026-02-24 00:00:00 Symbol=STRL Source=P_118 Verdict=No Signal
+Date=2026-02-24 00:00:00 Symbol=ELVN Source=P_118 Verdict=No Signal
+Date=2026-02-24 00:00:00 Symbol=ASO Source=P_118 Verdict=No Signal
+Date=2026-02-24 00:00:00 Symbol=STRL Source=P_118 Verdict=No Signal
+Date=2026-02-24 00:00:00 Symbol=PLAB Source=P_118 Verdict=No Signal
+Date=2026-02-24 00:00:00 Symbol=MEOH Source=P_118 Verdict=No Signal
+Date=2026-02-24 00:00:00 Symbol=DG Source=P_118 Verdict=No Signal
+Date=2026-02-24 00:00:00 Symbol=NVDA Source=P_118 Verdict=BUY
+Date=2026-02-24 00:00:00 Symbol=CRUS Source=P_118 Verdict=BUY

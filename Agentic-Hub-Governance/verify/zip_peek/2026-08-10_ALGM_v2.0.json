@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-07-ALGM-001",
+  "signal_timestamp": "2026-08-10T15:03:52Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "ALGM",
+  "asset_class": "stock",
+  "guideline_entry": 43.7700004577637,
+  "guideline_stop": 40.40554059927698,
+  "guideline_target": 44.4900016784668,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 40.40554059927698,
+  "intelliscan_support_1": 38.1500015258789,
+  "intelliscan_support_2": 44.4900016784668,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 43.7700004577637,
+    "trailing_volume_30d": 1607400.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 85.0% WR, z=2.13, mean return +11.98% at h=5",
+    "atm_at_signal": 3.3644598584867205
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-07",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-07_ALGM.md"
+  }
+}

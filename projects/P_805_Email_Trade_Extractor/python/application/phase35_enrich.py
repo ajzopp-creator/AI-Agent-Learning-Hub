@@ -13,6 +13,7 @@ by infrastructure/lm_studio_caller.py. This layer passes no LLM params.
 
 import csv
 import logging
+import sys
 from datetime import date
 from pathlib import Path
 
@@ -77,7 +78,7 @@ def run(signals_path: Path | None = None) -> None:
     signals = load_signals_csv(signals_path)
     if not signals:
         logger.error("No signals loaded — aborting Phase 3.5.")
-        return
+        sys.exit(1)
 
     unknown_count = sum(1 for s in signals if s.direction == "unknown")
     logger.info(f"Signals: {len(signals)} total, {unknown_count} unknown direction")

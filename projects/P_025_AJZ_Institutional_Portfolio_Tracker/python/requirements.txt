@@ -1,0 +1,8 @@
+# P_025 AJZ Institutional Portfolio Tracker
+# Install with:  C:\Users\Trader\.conda\envs\p140\python.exe -m pip install -r requirements.txt
+
+openpyxl>=3.1.0
+yfinance>=0.2.40
+pydantic>=2.5
+pandas>=2.0
+python-dateutil>=2.8

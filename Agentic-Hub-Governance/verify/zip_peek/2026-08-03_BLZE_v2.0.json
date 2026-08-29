@@ -1,0 +1,33 @@
+{
+  "signal_id": "P115-2026-08-03-BLZE-001",
+  "signal_timestamp": "2026-08-03T22:18:45Z",
+  "signal_source": "P_115",
+  "strategy": "support_bounce",
+  "symbol": "BLZE",
+  "asset_class": "stock",
+  "guideline_entry": 15.51,
+  "guideline_stop": 10.85,
+  "guideline_target": 17.59,
+  "signal_horizon": "3-5 days",
+  "confidence_level": "MEDIUM",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 14.18,
+  "intelliscan_support_1": null,
+  "intelliscan_support_2": null,
+  "target_source": null,
+  "context": {
+    "close_at_signal": 15.51,
+    "trailing_volume_30d": 0.0,
+    "signal_rationale": "P_115 chart review. ASYM: Anal 3 + Fund 2, STR -2. Flat Base breakout from 11-13 consolidation.",
+    "atm_at_signal": 1.33
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-03",
+    "chart_timeframe": "1D",
+    "signal_source_link": "P_115/2026-08-03_BLZE.md"
+  }
+}

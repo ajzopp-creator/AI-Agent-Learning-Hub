@@ -130,15 +130,18 @@ def _build_entry(
         lifecycle_status=fields.get("lifecycle_status", "").strip().upper(),
         source_schema=schema,
         note_name=path.name,
+        drop_reason=fields.get("drop_reason", "").strip() or None,
     )
 
 
 def load_vault_lookup() -> Optional[VaultLookup]:
     """Read all P_400 vault records into a VaultLookup.
 
-    DROPPED records are excluded: a dropped signal means the trade was
-    not taken, so matching it to a later fill of the same symbol would
-    attribute a real trade to a signal that was passed on.
+    DROPPED records are excluded from attributed/covered: a dropped
+    signal means the trade was not taken, so matching it to a later
+    fill of the same symbol would attribute a real trade to a signal
+    that was passed on. They are still retained in all_records for
+    audit diagnostics (see VaultLookup.nearest_any).
 
     Returns:
         Populated VaultLookup, or None if no vault folder resolved.
@@ -165,6 +168,8 @@ def load_vault_lookup() -> Optional[VaultLookup]:
                 continue
 
             lookup.total_records += 1
+            lookup.all_records.setdefault(entry.symbol, []).append(entry)
+
             if entry.lifecycle_status not in VAULT_MATCHABLE_STATUSES:
                 lookup.skipped_status += 1
                 continue

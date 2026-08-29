@@ -1,0 +1,8 @@
+WO: WO-P010-E2.001 Question 2, next layer (Tony approved 2026-08-29,
+"yes" -- pull win/loss outcomes for the 28 bucketed P_300 trades).
+Purpose: join p300_trades_bucketed_20260829_134500.csv against P_020's
+`exits` table (SUM(exit_pnl) per trade_id, handles partial exits) to
+get real per-bucket win rate and realized P&L, using actual sizing and
+stops -- this is the "with stops, actual sizing" comparison Question 2
+asks for, vs the raw forward-return numbers in WO-P300-E5.006. Read-only
+against P_020_trades.db. No writes. Does not decide keep/carve-out/defer.

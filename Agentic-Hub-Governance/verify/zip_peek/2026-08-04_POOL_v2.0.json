@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-03-POOL-001",
+  "signal_timestamp": "2026-08-04T22:20:12Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "POOL",
+  "asset_class": "stock",
+  "guideline_entry": 195.580001831055,
+  "guideline_stop": 186.70143834697043,
+  "guideline_target": 197.0,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 186.70143834697043,
+  "intelliscan_support_1": 184.505004882813,
+  "intelliscan_support_2": 197.0,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 195.580001831055,
+    "trailing_volume_30d": 731300.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 90.0% WR, z=2.59, mean return +8.64% at h=5",
+    "atm_at_signal": 8.878563484084573
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-03",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-03_POOL.md"
+  }
+}

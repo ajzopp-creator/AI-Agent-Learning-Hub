@@ -1,0 +1,3 @@
+unknown option --symbol
+usage: C:\Users\Trader\.conda\envs\p140\python.exe [option] ... [-c cmd | -m mod | file | -] [arg] ...
+Try `python -h' for more information.

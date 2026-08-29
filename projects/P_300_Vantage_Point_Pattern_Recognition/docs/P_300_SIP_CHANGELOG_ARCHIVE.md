@@ -16,4 +16,17 @@ LM Studio Readiness Check added (v2.8) → Steps 4–5c made an uninterruptible 
 
 ---
 
+### v3.3 — 2026-06-18
+- **Decision flags line made real.** Step 5 now greps `config.py`; Step 6 template gained the `Decision flags:` line.
+- **Step 1A added** — non-HALTing preflight freshness reminder right after the session header.
+- **Compression pass** (~20% shorter); top RULE line corrected "0 through 6" → "0 through 7". Header separator dropped (WO-P000-E4.001 v1.1): no `--` required between date and time.
+
+---
+
+### v3.4 -- 2026-07-22
+- **WO-P000-E8.001 pilot: working-state doc retention.** `CLAUDE.md` added at project root (architecture snapshot + Locked Decisions) -- Step 4 now reads it alongside `tasks/lessons.md`/`tasks/todo.md`. Both files split live/archive (`tasks/lessons_archive.md`, `tasks/todo_archive.md`) to stay under a size cap after growing large enough to hit real tool-read limits.
+- v3.2 entry moved to this archive per the two-version retention rule.
+
+---
+
 **End of P_300 SIP Changelog Archive**

@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-03-JBL-001",
+  "signal_timestamp": "2026-08-04T22:12:36Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "JBL",
+  "asset_class": "stock",
+  "guideline_entry": 318.390014648438,
+  "guideline_stop": 302.8527284842385,
+  "guideline_target": 325.265014648438,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 302.8527284842385,
+  "intelliscan_support_1": 285.799987792969,
+  "intelliscan_support_2": 325.265014648438,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 318.390014648438,
+    "trailing_volume_30d": 938400.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 80.0% WR, z=1.67, mean return +6.13% at h=5",
+    "atm_at_signal": 15.53728616419948
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-03",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-03_JBL.md"
+  }
+}

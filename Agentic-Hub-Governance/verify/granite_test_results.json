@@ -1,0 +1,122 @@
+[
+  {
+    "symbol": "STZ",
+    "latency_sec": 8.57,
+    "raw_output": "{\n  \"signal_id\": \"P115-2026-08-17-STZ-001\",\n  \"signal_timestamp\": \"2023-10-01T12:00:00Z\",\n  \"signal_source\": \"P_115\",\n  \"strategy\": \"dip_buy\",\n  \"symbol\": \"STZ\",\n  \"asset_class\": \"stock\",\n  \"guideline_entry\": 139.18,\n  \"guideline_stop\": 129.52,\n  \"guideline_target\": 162.90,\n  \"signal_horizon\": \"10-15 trading days\",\n  \"confidence_level\": \"MEDIUM\",\n  \"position_size\": 11,\n  \"strike_price\": null,\n  \"underlying_price\": null,\n  \"option_type\": null,\n  \"expiration_date\": null,\n  \"atr_adjusted_stop\": null,\n  \"intelliscan_support_1\": null,\n  \"intelliscan_support_2\": null,\n  \"target_source\": null,\n  \"context\": {\n    \"close_at_signal\": 139.18,\n    \"trailing_volume_30d\": 14226.1,\n    \"signal_rationale\": \"P_117 outside rec cross-validated via P_115 core engine, came out BUY. HybridTier=6. Fund verified clean. 200-MA -4% PULLBACK. No earnings flag.\",\n    \"atm_at_signal\": null\n  },\n  \"signal_metadata\": {\n    \"session_date\": \"2026-08-17\",\n    \"chart_timeframe\": \"1D\",\n    \"signal_source_link\": \"TradeOrderManagement/P115\"\n  }\n}",
+    "json_parse": "OK",
+    "schema_validation": "PASS -- valid SignalV2 on first pass",
+    "validated_fields": {
+      "signal_id": "P115-2026-08-17-STZ-001",
+      "signal_timestamp": "2023-10-01T12:00:00Z",
+      "signal_source": "P_115",
+      "strategy": "dip_buy",
+      "symbol": "STZ",
+      "asset_class": "stock",
+      "guideline_entry": 139.18,
+      "guideline_stop": 129.52,
+      "guideline_target": 162.9,
+      "signal_horizon": "10-15 trading days",
+      "confidence_level": "MEDIUM",
+      "position_size": 11,
+      "strike_price": null,
+      "underlying_price": null,
+      "option_type": null,
+      "expiration_date": null,
+      "atr_adjusted_stop": null,
+      "intelliscan_support_1": null,
+      "intelliscan_support_2": null,
+      "target_source": null,
+      "context": {
+        "close_at_signal": 139.18,
+        "trailing_volume_30d": 14226.1,
+        "signal_rationale": "P_117 outside rec cross-validated via P_115 core engine, came out BUY. HybridTier=6. Fund verified clean. 200-MA -4% PULLBACK. No earnings flag.",
+        "atm_at_signal": null
+      },
+      "signal_metadata": {
+        "session_date": "2026-08-17",
+        "chart_timeframe": "1D",
+        "signal_source_link": "TradeOrderManagement/P115"
+      }
+    }
+  },
+  {
+    "symbol": "SBLK",
+    "latency_sec": 8.12,
+    "raw_output": "{\n  \"signal_id\": \"P115-2026-08-17-SBLK-001\",\n  \"signal_timestamp\": \"2023-10-01T12:00:00Z\",\n  \"signal_source\": \"P_115\",\n  \"strategy\": \"breakout\",\n  \"symbol\": \"SBLK\",\n  \"asset_class\": \"stock\",\n  \"guideline_entry\": 29.31,\n  \"guideline_stop\": 27.06,\n  \"guideline_target\": 38.27,\n  \"signal_horizon\": \"10-15 trading days\",\n  \"confidence_level\": \"MEDIUM\",\n  \"position_size\": 20,\n  \"strike_price\": null,\n  \"underlying_price\": null,\n  \"option_type\": null,\n  \"expiration_date\": null,\n  \"atr_adjusted_stop\": null,\n  \"intelliscan_support_1\": null,\n  \"intelliscan_support_2\": null,\n  \"target_source\": null,\n  \"context\": {\n    \"close_at_signal\": 29.84,\n    \"trailing_volume_30d\": 440777,\n    \"signal_rationale\": \"P_118 High Handle pattern, ASYM setup, Fund verified 2/3 criteria. 200-MA +26.1% NORMAL. No earnings flag. RVOL weak.\",\n    \"atm_at_signal\": null\n  },\n  \"signal_metadata\": {\n    \"session_date\": \"2026-08-17\",\n    \"chart_timeframe\": \"1D\",\n    \"signal_source_link\": \"TradeOrderManagement/P115\"\n  }\n}",
+    "json_parse": "OK",
+    "schema_validation": "PASS -- valid SignalV2 on first pass",
+    "validated_fields": {
+      "signal_id": "P115-2026-08-17-SBLK-001",
+      "signal_timestamp": "2023-10-01T12:00:00Z",
+      "signal_source": "P_115",
+      "strategy": "breakout",
+      "symbol": "SBLK",
+      "asset_class": "stock",
+      "guideline_entry": 29.31,
+      "guideline_stop": 27.06,
+      "guideline_target": 38.27,
+      "signal_horizon": "10-15 trading days",
+      "confidence_level": "MEDIUM",
+      "position_size": 20,
+      "strike_price": null,
+      "underlying_price": null,
+      "option_type": null,
+      "expiration_date": null,
+      "atr_adjusted_stop": null,
+      "intelliscan_support_1": null,
+      "intelliscan_support_2": null,
+      "target_source": null,
+      "context": {
+        "close_at_signal": 29.84,
+        "trailing_volume_30d": 440777.0,
+        "signal_rationale": "P_118 High Handle pattern, ASYM setup, Fund verified 2/3 criteria. 200-MA +26.1% NORMAL. No earnings flag. RVOL weak.",
+        "atm_at_signal": null
+      },
+      "signal_metadata": {
+        "session_date": "2026-08-17",
+        "chart_timeframe": "1D",
+        "signal_source_link": "TradeOrderManagement/P115"
+      }
+    }
+  },
+  {
+    "symbol": "AXTI",
+    "latency_sec": 8.18,
+    "raw_output": "{\n  \"signal_id\": \"P115-2026-08-17-AXTI-001\",\n  \"signal_timestamp\": \"2023-10-01T12:00:00Z\",\n  \"signal_source\": \"P_115\",\n  \"strategy\": \"dip_buy\",\n  \"symbol\": \"AXTI\",\n  \"asset_class\": \"stock\",\n  \"guideline_entry\": 92.22,\n  \"guideline_stop\": 59.0,\n  \"guideline_target\": 107.7,\n  \"signal_horizon\": \"10-15 trading days\",\n  \"confidence_level\": \"MEDIUM\",\n  \"position_size\": 5,\n  \"strike_price\": null,\n  \"underlying_price\": null,\n  \"option_type\": null,\n  \"expiration_date\": null,\n  \"atr_adjusted_stop\": null,\n  \"intelliscan_support_1\": null,\n  \"intelliscan_support_2\": null,\n  \"target_source\": null,\n  \"context\": {\n    \"close_at_signal\": 92.22,\n    \"trailing_volume_30d\": 6490476,\n    \"signal_rationale\": \"P_115 dip_buy ASYM. Fund 1/3 criteria (recomputed~1 vs submitted 2, within tolerance). 200-MA +82% NORMAL. No earnings flag. STR=-2 regime signal.\",\n    \"atm_at_signal\": null\n  },\n  \"signal_metadata\": {\n    \"session_date\": \"2026-08-17\",\n    \"chart_timeframe\": \"1D\",\n    \"signal_source_link\": \"TradeOrderManagement/P115\"\n  }\n}",
+    "json_parse": "OK",
+    "schema_validation": "PASS -- valid SignalV2 on first pass",
+    "validated_fields": {
+      "signal_id": "P115-2026-08-17-AXTI-001",
+      "signal_timestamp": "2023-10-01T12:00:00Z",
+      "signal_source": "P_115",
+      "strategy": "dip_buy",
+      "symbol": "AXTI",
+      "asset_class": "stock",
+      "guideline_entry": 92.22,
+      "guideline_stop": 59.0,
+      "guideline_target": 107.7,
+      "signal_horizon": "10-15 trading days",
+      "confidence_level": "MEDIUM",
+      "position_size": 5,
+      "strike_price": null,
+      "underlying_price": null,
+      "option_type": null,
+      "expiration_date": null,
+      "atr_adjusted_stop": null,
+      "intelliscan_support_1": null,
+      "intelliscan_support_2": null,
+      "target_source": null,
+      "context": {
+        "close_at_signal": 92.22,
+        "trailing_volume_30d": 6490476.0,
+        "signal_rationale": "P_115 dip_buy ASYM. Fund 1/3 criteria (recomputed~1 vs submitted 2, within tolerance). 200-MA +82% NORMAL. No earnings flag. STR=-2 regime signal.",
+        "atm_at_signal": null
+      },
+      "signal_metadata": {
+        "session_date": "2026-08-17",
+        "chart_timeframe": "1D",
+        "signal_source_link": "TradeOrderManagement/P115"
+      }
+    }
+  }
+]

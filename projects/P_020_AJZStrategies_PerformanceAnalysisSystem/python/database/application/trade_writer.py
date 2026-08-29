@@ -9,6 +9,14 @@ even after the position closed. Here, a duplicate entry triggers a lookup
 of the existing trade_id, and exits are built/inserted against it.
 insert_exit() already dedupes safely per (trade_id, exit_number), so this
 is idempotent across repeated runs.
+
+dry_run support added 2026-08-22 (found live during WO-P020-E1.015): the
+CLI's --dry-run flag only ever skipped updating last_run.json -- every
+call in this module commits per-write internally (see db_writer.py), so
+"dry run" was writing real rows the whole time. dry_run=True now takes a
+read-only path that mirrors insert_trade()/insert_exit()'s own dedup
+checks (transaction_exists, trade_id+exit_number lookup) without ever
+calling insert_trade/insert_exit/update_trade_status.
 """
 
 import logging
@@ -26,6 +34,7 @@ from infrastructure.db_writer import (
     get_trade_id_by_schwab_id,
     insert_exit,
     insert_trade,
+    transaction_exists,
     update_trade_status,
 )
 from schemas import Exit
@@ -71,7 +80,38 @@ def build_exits(raw: Dict, trade_id: int, params: Dict) -> List[Exit]:
     return exits
 
 
-def write_trade(conn, raw: Dict, trade, params: Dict) -> Tuple[str, Optional[int], int]:
+def _preview_write_trade(conn, raw: Dict, trade, params: Dict) -> Tuple[str, Optional[int], int]:
+    """Read-only preview of what write_trade() would do -- no DB writes.
+
+    Mirrors insert_trade()'s and insert_exit()'s own dedup checks exactly
+    (transaction_exists / trade_id+exit_number lookup) so the reported
+    counts match what a real --commit run would actually do.
+    """
+    existing_id = None
+    if trade.schwab_transaction_id and transaction_exists(conn, trade.schwab_transaction_id):
+        existing_id = get_trade_id_by_schwab_id(conn, trade.schwab_transaction_id)
+
+    if existing_id is None:
+        exits = build_exits(raw, -1, params)
+        return "inserted", None, len(exits)
+
+    exits = build_exits(raw, existing_id, params)
+    new_count = 0
+    for e in exits:
+        row = conn.execute(
+            "SELECT 1 FROM exits WHERE trade_id = ? AND exit_number = ?",
+            (existing_id, e.exit_number),
+        ).fetchone()
+        if row is None:
+            new_count += 1
+
+    outcome = "updated" if new_count > 0 else "unchanged"
+    return outcome, existing_id, new_count
+
+
+def write_trade(
+    conn, raw: Dict, trade, params: Dict, dry_run: bool = False
+) -> Tuple[str, Optional[int], int]:
     """Insert a new trade, or attach new exits to an existing duplicate entry.
 
     Args:
@@ -79,14 +119,21 @@ def write_trade(conn, raw: Dict, trade, params: Dict) -> Tuple[str, Optional[int
         raw: Raw trade dict carrying exit_1/2/3 keys (from exit_allocator).
         trade: Validated Trade schema object built from raw.
         params: Loaded business parameters.
+        dry_run: If True, only preview the outcome -- no insert_trade(),
+                insert_exit(), or update_trade_status() call happens.
 
     Returns:
         Tuple of (outcome, trade_id, new_exit_count). outcome is one of
         'inserted' (brand-new trade), 'updated' (existing entry, new exits
         attached), 'unchanged' (existing entry, nothing new to add), or
         'error' (duplicate detected but existing trade_id not found --
-        should not happen, logged for investigation if it does).
+        should not happen, logged for investigation if it does). In
+        dry_run mode trade_id is None for a would-be 'inserted' outcome
+        since no row was actually created.
     """
+    if dry_run:
+        return _preview_write_trade(conn, raw, trade, params)
+
     trade_id = insert_trade(conn, trade)
     outcome = "inserted"
 
@@ -114,7 +161,9 @@ def write_trade(conn, raw: Dict, trade, params: Dict) -> Tuple[str, Optional[int
     return outcome, trade_id, new_exit_count
 
 
-def attach_orphan_exit(conn, orphan: Dict, open_trade, params: Dict) -> Tuple[str, Optional[int], int]:
+def attach_orphan_exit(
+    conn, orphan: Dict, open_trade, params: Dict, dry_run: bool = False
+) -> Tuple[str, Optional[int], int]:
     """Attach an orphaned exit to an already-open trade found in the DB.
 
     Orphans occur when exit_allocator finds no matching entry within the
@@ -128,6 +177,8 @@ def attach_orphan_exit(conn, orphan: Dict, open_trade, params: Dict) -> Tuple[st
                 symbol, price, qty, open_date, open_datetime, fees).
         open_trade: sqlite3.Row for the matched open/partial trade.
         params: Loaded business parameters.
+        dry_run: If True, preview only -- no insert_exit() or
+                update_trade_status() call happens.
 
     Returns:
         Tuple of (outcome, trade_id, new_exit_count). outcome is 'updated'
@@ -160,6 +211,10 @@ def attach_orphan_exit(conn, orphan: Dict, open_trade, params: Dict) -> Tuple[st
     }
 
     exits = build_exits(raw, trade_id, params)
+
+    if dry_run:
+        return ("updated" if exits else "unchanged", trade_id, len(exits))
+
     new_exit_count = sum(1 for e in exits if insert_exit(conn, e) is not None)
     if new_exit_count == 0:
         return "unchanged", trade_id, 0

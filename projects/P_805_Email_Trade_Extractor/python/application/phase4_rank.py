@@ -8,6 +8,7 @@ Workflow:
 """
 
 import logging
+import sys
 from datetime import date
 from pathlib import Path
 
@@ -40,7 +41,7 @@ def run(signals_path: Path | None = None, ranked_path: Path | None = None) -> No
 
     if not signals:
         logger.error("No signals loaded — aborting Phase 4.")
-        return
+        sys.exit(1)
 
     logger.info(f"Loaded {len(signals)} signals — building consensus")
     logger.info(f"Consensus threshold: {config.CONSENSUS_THRESHOLD} sources")

@@ -1,0 +1,33 @@
+{
+  "signal_id": "P115-2026-08-17-IONQ-001",
+  "signal_timestamp": "2026-08-17T14:45:27Z",
+  "signal_source": "P_115",
+  "strategy": "dip_buy",
+  "symbol": "IONQ",
+  "asset_class": "stock",
+  "guideline_entry": 45.49,
+  "guideline_stop": 39.28,
+  "guideline_target": 51.14,
+  "signal_horizon": "10-15 trading days",
+  "confidence_level": "MEDIUM",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 42.46,
+  "intelliscan_support_1": null,
+  "intelliscan_support_2": null,
+  "target_source": null,
+  "context": {
+    "close_at_signal": 46.59,
+    "trailing_volume_30d": 5911003.0,
+    "signal_rationale": "P_115 dip_buy ASYM (HybridTier=5: Fund2/Anal3/Candle2/Setup3/STR-2). Fund verified: ROE -60.5% fails hard, Debt/Cap ~2% passes, FCF -$484M fails. 1/3 criteria -- recomputed Fund~1 vs submitted 2, 1 tier down, within tolerance. Pre-profitability quantum-computing name, weakest fundamental profile of today's batch. 200-MA +3.1% NORMAL. No earnings flag (reported 8/5/26, past 3-session stabilization window). STR=-2 co-occurs with batch-wide regime signal (14/14 tickers today). RVOL 0.28 weak. T1/T2 touch count=1 (lower structural confirmation on those levels). Confidence MEDIUM.",
+    "atm_at_signal": 3.03
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-17",
+    "chart_timeframe": "1D",
+    "signal_source_link": "TradeOrderManagement/P115"
+  }
+}

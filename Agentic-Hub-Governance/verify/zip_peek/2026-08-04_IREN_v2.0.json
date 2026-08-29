@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-03-IREN-001",
+  "signal_timestamp": "2026-08-04T22:11:47Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "IREN",
+  "asset_class": "stock",
+  "guideline_entry": 39.75,
+  "guideline_stop": 35.50308814786768,
+  "guideline_target": 43.7200012207031,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 35.50308814786768,
+  "intelliscan_support_1": 28.9300003051758,
+  "intelliscan_support_2": 43.7200012207031,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 39.75,
+    "trailing_volume_30d": 43898300.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 75.0% WR, z=1.21, mean return +9.65% at h=5",
+    "atm_at_signal": 4.246911852132319
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-03",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-03_IREN.md"
+  }
+}

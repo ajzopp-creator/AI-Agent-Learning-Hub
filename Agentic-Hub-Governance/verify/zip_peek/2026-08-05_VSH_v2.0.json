@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-04-VSH-001",
+  "signal_timestamp": "2026-08-05T16:36:47Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "VSH",
+  "asset_class": "stock",
+  "guideline_entry": 38.8499984741211,
+  "guideline_stop": 35.38716247022277,
+  "guideline_target": 41.9900016784668,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 35.38716247022277,
+  "intelliscan_support_1": 29.6807994842529,
+  "intelliscan_support_2": 41.9900016784668,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 38.8499984741211,
+    "trailing_volume_30d": 9299900.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 75.0% WR, z=1.21, mean return +11.15% at h=5",
+    "atm_at_signal": 3.4628360038983317
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-04",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-04_VSH.md"
+  }
+}

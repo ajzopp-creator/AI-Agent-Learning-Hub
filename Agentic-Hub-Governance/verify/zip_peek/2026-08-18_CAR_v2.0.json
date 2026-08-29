@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-17-CAR-001",
+  "signal_timestamp": "2026-08-18T18:37:34Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "CAR",
+  "asset_class": "stock",
+  "guideline_entry": 141.300003051758,
+  "guideline_stop": 133.8419898026825,
+  "guideline_target": 156.21602954990908,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 133.8419898026825,
+  "intelliscan_support_1": null,
+  "intelliscan_support_2": null,
+  "target_source": "atr_extension",
+  "context": {
+    "close_at_signal": 141.300003051758,
+    "trailing_volume_30d": 293100.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 75.0% WR, z=1.21, mean return +10.40% at h=5",
+    "atm_at_signal": 7.4580132490755275
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-17",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-17_CAR.md"
+  }
+}

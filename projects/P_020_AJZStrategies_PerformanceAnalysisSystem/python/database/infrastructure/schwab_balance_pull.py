@@ -1,4 +1,4 @@
-﻿"""Schwab balance snapshot - pulls current and start-of-day balance using schwab-py client."""
+"""Schwab balance snapshot - pulls current and start-of-day balance using schwab-py client."""
 
 import logging
 import sqlite3
@@ -32,7 +32,13 @@ def pull_balance(account_hash: str) -> Optional[dict]:
 
     Returns:
         Dict with total_value, start_of_day_value, cash_available,
-        buying_power, day_pnl or None on failure.
+        buying_power, day_pnl or None on failure. cash_available prefers
+        cashAvailableForTrading (textbook cash-account field) but falls
+        back to availableFunds when that key is absent/None -- confirmed
+        live 2026-08-20 that Schwab omits cashAvailableForTrading from
+        currentBalances entirely for this margin account; availableFunds
+        is the field that actually matches TOS's "Available Funds For
+        Trading" (WO-P020-E1.016).
     """
     try:
         client = _get_client()
@@ -67,7 +73,7 @@ def pull_balance(account_hash: str) -> Optional[dict]:
         return {
             "total_value"       : total_value,
             "start_of_day_value": start_of_day,
-            "cash_available"    : curr.get("cashAvailableForTrading"),
+            "cash_available"    : curr.get("cashAvailableForTrading") or curr.get("availableFunds"),
             "buying_power"      : curr.get("buyingPower"),
             "day_pnl"           : curr.get("dayProfitLoss"),
         }

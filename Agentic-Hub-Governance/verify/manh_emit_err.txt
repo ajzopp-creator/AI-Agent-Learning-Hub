@@ -1,0 +1,7 @@
+usage: cli.py [-h] --symbol SYMBOL --session-date SESSION_DATE --timestamp
+              TIMESTAMP --strategy STRATEGY --entry ENTRY --stop STOP --target
+              TARGET [--horizon HORIZON] --confidence CONFIDENCE --close CLOSE
+              --volume VOLUME --rationale RATIONALE --timeframe TIMEFRAME
+              --source-link SOURCE_LINK [--atm ATM] [--support-1 SUPPORT_1]
+              [--support-2 SUPPORT_2] [--source SOURCE]
+cli.py: error: unrecognized arguments: High Handle breakout; chart LogEntry Fund4/Anal3/Candle2/Setup3/STR0, HybridTier7, BUY. Fund recompute via stockanalysis.com: ROE 71.66pct, D/E 0.19, FCF positive -> Tier3, within 1-tier tolerance of chart Fund4. Trend BULL, price 32.5pct above rising 200-SMA (NORMAL zone). No post-earnings flag, last report 7/28/26 (16 sessions prior). PA Stop 185.84 (structure), T1 219.41 Tch:0, T2 232.40 Tch:0.

@@ -1,0 +1,45 @@
+{
+  "run_timestamp": "2026-08-20T15:50:03.081094-04:00",
+  "session_date": "2026-08-20",
+  "cash_available": 19630.0,
+  "posture": "HALF",
+  "screened_count": 7,
+  "passed_tier1": 3,
+  "evaluated": 3,
+  "candidates": [
+    {
+      "symbol": "V",
+      "rank": 1,
+      "score": 0.6294,
+      "score_components": {
+        "rr": 1.0,
+        "atr_headroom": 0.1264,
+        "spread": 0.9904,
+        "liquidity": 0.8056,
+        "drift": 0.1233
+      },
+      "vehicle": "STOCK",
+      "vehicle_reason": "Option BLOCKED by options council (OI_TOO_LOW: open_interest=1 < 150 minimum; SPREAD_TOO_WIDE: spread=17.6% > 10.0% max) -- stock used.",
+      "verdict": "APPROVED",
+      "rr_at_t1": 8.947,
+      "atr_headroom": 1.2529,
+      "spread_pct_of_price": 0.0096,
+      "drift_pct": -1.315,
+      "dollar_risk": 26.91,
+      "quantity": 3
+    }
+  ],
+  "skipped": [
+    {
+      "symbol": "ARDX",
+      "reason": "verdict=BLOCKED (STOP_TOO_TIGHT)"
+    },
+    {
+      "symbol": "ARE",
+      "reason": "verdict=BLOCKED (ADVERSE_DRIFT)"
+    }
+  ],
+  "cumulative_risk_if_all_taken": 26.91,
+  "heat_cap": 3761.8068,
+  "heat_warning": null
+}

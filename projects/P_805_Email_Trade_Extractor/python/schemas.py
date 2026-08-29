@@ -14,7 +14,7 @@ Currently modeled:
 from datetime import date, datetime
 from typing import Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 class ApprovedSender(BaseModel):
@@ -22,6 +22,15 @@ class ApprovedSender(BaseModel):
 
     The 'sector' column is currently unpopulated for most rows; it is
     optional and tolerates missing/empty values from the CSV.
+
+    date_added accepts ISO (2026-04-26) or US (4/26/2026) format on input
+    (Entry 016, 2026-08-23) — the CSV was opened in Excel on 2026-07-22,
+    which silently reformatted every date to US style and, because the
+    field is a strict `date` type, made every row fail validation
+    identically for a month with no visible error (Phase 3 logged it but
+    exited 0 either way — see Entry 016's second fix in phase3_extract.py
+    and siblings). Tolerating both formats here is the permanent fix for
+    this exact failure mode recurring after a future Excel re-save.
     """
 
     email_address: str
@@ -29,6 +38,28 @@ class ApprovedSender(BaseModel):
     date_added: date
     sector: str | None = Field(default=None)
     enabled: bool
+
+    @field_validator("date_added", mode="before")
+    @classmethod
+    def _parse_flexible_date(cls, value):
+        """Accept ISO (YYYY-MM-DD) or US (M/D/YYYY) date strings.
+
+        Passes non-str values (already a date/datetime) through untouched
+        so Pydantic's normal coercion still applies to those.
+        """
+        if not isinstance(value, str):
+            return value
+        try:
+            return date.fromisoformat(value)
+        except ValueError:
+            pass
+        try:
+            return datetime.strptime(value, "%m/%d/%Y").date()
+        except ValueError:
+            raise ValueError(
+                f"date_added {value!r} matches neither ISO (YYYY-MM-DD) "
+                "nor US (M/D/YYYY) format"
+            )
 
 
 class TickerSignal(BaseModel):

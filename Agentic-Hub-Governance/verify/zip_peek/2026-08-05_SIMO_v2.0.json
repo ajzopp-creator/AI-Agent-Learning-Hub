@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-04-SIMO-001",
+  "signal_timestamp": "2026-08-05T16:26:55Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "SIMO",
+  "asset_class": "stock",
+  "guideline_entry": 268.489990234375,
+  "guideline_stop": 240.78697923610306,
+  "guideline_target": 285.0,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 240.78697923610306,
+  "intelliscan_support_1": 204.369995117188,
+  "intelliscan_support_2": 285.0,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 268.489990234375,
+    "trailing_volume_30d": 956700.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 75.0% WR, z=1.21, mean return +10.70% at h=5",
+    "atm_at_signal": 27.703010998271935
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-04",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-04_SIMO.md"
+  }
+}

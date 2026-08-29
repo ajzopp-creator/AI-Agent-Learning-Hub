@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-07-30-ORCL-001",
+  "signal_timestamp": "2026-08-03T22:33:41Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "ORCL",
+  "asset_class": "stock",
+  "guideline_entry": 127.559997558594,
+  "guideline_stop": 120.49592112281434,
+  "guideline_target": 128.839996337891,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 120.49592112281434,
+  "intelliscan_support_1": 114.5,
+  "intelliscan_support_2": 128.839996337891,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 127.559997558594,
+    "trailing_volume_30d": 41338300.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 85.0% WR, z=2.13, mean return +7.35% at h=5",
+    "atm_at_signal": 7.064076435779664
+  },
+  "signal_metadata": {
+    "session_date": "2026-07-30",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-07-30_ORCL.md"
+  }
+}

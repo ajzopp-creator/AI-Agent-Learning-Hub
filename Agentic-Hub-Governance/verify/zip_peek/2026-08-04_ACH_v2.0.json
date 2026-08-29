@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-03-ACH-001",
+  "signal_timestamp": "2026-08-04T21:54:08Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "ACH",
+  "asset_class": "stock",
+  "guideline_entry": 3.41000008583069,
+  "guideline_stop": 3.1533072581865462,
+  "guideline_target": 3.83999991416931,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 3.1533072581865462,
+  "intelliscan_support_1": 2.97000002861023,
+  "intelliscan_support_2": 3.83999991416931,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 3.41000008583069,
+    "trailing_volume_30d": 528150.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 80.0% WR, z=1.67, mean return +9.63% at h=5",
+    "atm_at_signal": 0.2566928276441437
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-03",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-03_ACH.md"
+  }
+}

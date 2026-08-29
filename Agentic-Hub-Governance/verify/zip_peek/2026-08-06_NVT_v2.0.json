@@ -1,0 +1,33 @@
+{
+  "signal_id": "P115-2026-08-06-NVT-001",
+  "signal_timestamp": "2026-08-06T21:05:28Z",
+  "signal_source": "P_115",
+  "strategy": "breakout",
+  "symbol": "NVT",
+  "asset_class": "stock",
+  "guideline_entry": 167.84,
+  "guideline_stop": 130.03,
+  "guideline_target": 177.33,
+  "signal_horizon": "10-20 days",
+  "confidence_level": "MEDIUM",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": null,
+  "intelliscan_support_1": null,
+  "intelliscan_support_2": null,
+  "target_source": null,
+  "context": {
+    "close_at_signal": 163.3,
+    "trailing_volume_30d": 1410567.0,
+    "signal_rationale": "P_118 Eddie Z Double Bottom BUY: HybridTier=7 (Fund4+Anal3), Candle2/Setup3/STR-1. Two-touch bottom ~130-140 (7/27-7/28) after decline from 190, rally to highs post-earnings. Fund reverified via stockanalysis.com (ROE 15.32pct, DebtCap ~27-29pct, FCF positive = Tier4, matches submitted 4, no flag). No earnings flag (last 7/31/26 BMO, 4 sessions elapsed). 200-MA 25.6pct NORMAL = zero penalty. DMI ADX 16.37 Weak trend (secondary caveat, does not override primary verdict). HOT posture (avg_posture 10.63). support_1/2 = chart 48EMA/200SMA, not P_300 IntelliScan.",
+    "atm_at_signal": null
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-06",
+    "chart_timeframe": "1D",
+    "signal_source_link": "TOS_NVT_chart_2026-08-06_session"
+  }
+}

@@ -1,0 +1,1 @@
+Context: query BUY/ASYM Step1Verdict rows since 2026-07-24 cutover to check for un-emitted signals

@@ -1,7 +1,7 @@
 ---
 name: p115-project-context
 description: >
-  P_115 Buy The Dip — project-specific operating rules, critical paths, schema
+  P_115 Buy The Dip â€” project-specific operating rules, critical paths, schema
   shorthand, and anti-patterns. Load at the start of ANY session involving P_115
   work. Triggers on any reference to P_115, P_116, P_117, P_118, P_910, P_920, Buy The Dip, STEP 1/2/3, LogEntry, HybridTier,
   AsymmetricSetup, Fund Verification, PA Stop, 27-column tracker, P_920 EOD scan,
@@ -12,22 +12,23 @@ description: >
 
 ## Purpose & Pairs With
 
-Auto-loading protection layer for P_115 — Buy The Dip (oversold recovery,
+Auto-loading protection layer for P_115 â€” Buy The Dip (oversold recovery,
 anticipation entries). Contains concise rules, critical paths, schema
 shorthand, and anti-patterns. Full domain rules live in the SIP and
 architecture doc, loaded on demand.
 
 | File | Role |
 | :---- | :---- |
-| `docs/SESSION_INITIALIZATION_PROMPT.md` (v3.5) | INIT sequence — steps only. Read directly by path, never via project_knowledge_search (returns fragments mixed with other docs). |
-| `docs/P_115_System_Architecture.v1.0.md` | Full spec, EC log, scoring detail — on demand |
+| `docs/SESSION_INITIALIZATION_PROMPT.md` (v3.5) | INIT sequence â€” steps only. Read directly by path, never via project_knowledge_search (returns fragments mixed with other docs). |
+| `docs/P_115_System_Architecture.v1.3.md` | Full spec, EC log, scoring detail â€” on demand |
 | `docs/P_115_BuyTheDip_MasterDoc_v1_0.md` | Original strategy doc (superseded by Architecture doc for domain rules) |
 | `Quick_Reference_Prompts_v9_4_1.md` | Shorthand command formats for STEP 1/2/3 + batch |
 | `Tracker_Log_Schema_v9_4_0_1.md` | 27-column locked schema detail |
 | `P_115_ Asset Sizing Requirements.md` | SUPERSEDED 2026-07-24 -- pointer only, sizing is P_400's job now (P_400 architecture doc Section 3.3) |
 | `OPTIONS_RISK_METHODOLOGY.md` | REFERENCE ONLY 2026-07-24 -- options gates belong to P_400; never invoke in a P_115 session |
-| `python-project-architecture` SKILL (Hub) | Layer Boundary Standard — config → schemas → domain → infra → application |
-| `peh-handoff` SKILL (Hub) | 4-minute MCP timeout → Claude Code handoff protocol |
+| `python-project-architecture` SKILL (Hub) | Layer Boundary Standard â€” config â†’ schemas â†’ domain â†’ infra â†’ application |
+| `peh-handoff` SKILL (Hub) | 4-minute MCP timeout â†’ Claude Code handoff protocol |
+| `tasks/lessons.md` | Durable trade/process lessons -- READ AT INIT STEP 0.5 (folded in 2026-08-17 after sitting orphaned since 2026-06-09 creation). APPEND new durable lessons here same session when one surfaces. |
 | **THIS FILE** | Always-active protection rules |
 
 ---
@@ -38,14 +39,15 @@ architecture doc, loaded on demand.
 | :---- | :---- |
 | Hub root | `C:\Users\Trader\AI-Agent-Learning-Hub\` |
 | Project root | `<Hub>\projects\P_115_BuytheDipTradingSystem\` |
-| Python | `C:\Users\Trader\.conda\envs\p140\python.exe` (shared conda env — never suggest a new venv) |
-| Account params | `<Hub>\projects\P_000_PythonClaudeLocalLLM\config\P_000_Account_Parameters_Current.md` — read live, never hard-code |
-| Risk config | `<Hub>\projects\P_010_Current_Market_Posture\P_010_RiskConfig.json` — re-read fresh before every packet emission and before writing MarketDirection, not just at INIT |
+| Python | `C:\Users\Trader\.conda\envs\p140\python.exe` (shared conda env â€” never suggest a new venv) |
+| Account params | `<Hub>\projects\P_000_PythonClaudeLocalLLM\config\P_000_Account_Parameters_Current.md` â€” read live, never hard-code |
+| Risk config | `<Hub>\projects\P_010_Current_Market_Posture\P_010_RiskConfig.json` â€” re-read fresh before every packet emission and before writing MarketDirection, not just at INIT |
 | Vault output | `<Hub>\trading_journal\TradeManagement\P115\` |
+| Chaikin enrichment | `<Hub>\shared_resources\chaikin_enrichment\` (shared, P_800-owned) -- batch via Hub-root `RunChaikinBatch.ps1 -Schema P115`; real Ack 2026-07-25 (EMR/OGN/PH enriched, read back confirmed, WO-P800-E4.001) |
 | Signal packets (P_400 handoff) | `<Hub>\trading_journal\TradeOrderManagement\signals\*_v2.0.json` |
-| PEH verify dir | `<Hub>\Agentic-Hub-Governance\verify\` — write `run_this_P115_<TS>.py` + `_context.txt` here BEFORE every MCP Python call or file write (peh-handoff v1.4, timestamped names, broadened scope) |
-| ThinkScript source | `P_115_buyTheDipChart_V15.ts` (current) — TOS custom indicator, PA Stop / HybridTier / AsymmetricSetup computed on-chart |
-| Fund verification source | `stockanalysis.com/stocks/[ticker]/financials/ratios/` — never trust TOS Fund on BUY/ASYM without this recheck (TOS confirmed systematically inflated, AEO 4/21 fail case) |
+| PEH verify dir | `<Hub>\Agentic-Hub-Governance\verify\` â€” write `run_this_P115_<TS>.py` + `_context.txt` here BEFORE every MCP Python call or file write (peh-handoff v1.4, timestamped names, broadened scope) |
+| ThinkScript source | `P_115_buyTheDipChart_V15.ts` (current) â€” TOS custom indicator, PA Stop / HybridTier / AsymmetricSetup computed on-chart |
+| Fund verification source | `stockanalysis.com/stocks/[ticker]/financials/ratios/` â€” never trust TOS Fund on BUY/ASYM without this recheck (TOS confirmed systematically inflated, AEO 4/21 fail case) |
 
 **Signal-contract import (Hub canonical, no sys.path hack):**
 `from shared_resources.python_utils.signal_schemas import SignalV2`
@@ -53,29 +55,29 @@ architecture doc, loaded on demand.
 
 ---
 
-## LogEntry Field Order (LOCKED — V110 standard)
+## LogEntry Field Order (LOCKED â€” V110 standard)
 
 ```
 Position 1: Symbol
-Position 2: FundamentalsTier (ADJUSTED — includes 200-MA penalty)
+Position 2: FundamentalsTier (ADJUSTED â€” includes 200-MA penalty)
 Position 3: AnalysisTier
 Position 4: CandleTier
 Position 5: SetupScore
-Position 6: STR flag (SellTheRip, valid range -2 to 2 — corrected 7/8/26, NOT 0/1 or -1 to 2)
+Position 6: STR flag (SellTheRip, valid range -2 to 2 â€” corrected 7/8/26, NOT 0/1 or -1 to 2)
 Position 7: Verdict (BUY / ASYM / PASS)
 
 Format: LogEntry: [SYMBOL] | [Fund] | [Anal] | [Candle] | [Setup] | [STR] | [Verdict]
 Example: LogEntry: CYTK | 2 | 3 | 2 | 3 | 0 | BUY
 ```
 State the field-position parse explicitly before scoring ("Symbol=X, Fund=Y,
-Anal=Z, Candle=W, Setup=V, STR=U") — EC-011 (MRAM/POET/AAOI 5/27/26) was a
+Anal=Z, Candle=W, Setup=V, STR=U") â€” EC-011 (MRAM/POET/AAOI 5/27/26) was a
 silent misread of position 2 as STR, wrongly auto-rejecting three BUY-quality
 tickers as Fund=0 value traps. LogEntry is authoritative over the chart's
-Final Verdict display bar if the two conflict — flag, don't silently pick one.
+Final Verdict display bar if the two conflict â€” flag, don't silently pick one.
 
 ---
 
-## Scoring Chain (V110 → V111)
+## Scoring Chain (V110 â†’ V111)
 
 ```
 FundamentalsTier (0-4, ADJUSTED)
@@ -88,7 +90,7 @@ CandleTier (0-3)
 SetupScore (0-4)
   CandleTier>=2 | ModScore>=70 | STR>0 | RSI>RSI[1]
 
-AnalysisTier (1-4) — mapped from SetupScore (>=4=T4, >=3=T3, >=2=T2, else T1)
+AnalysisTier (1-4) â€” mapped from SetupScore (>=4=T4, >=3=T3, >=2=T2, else T1)
 
 HybridTier = AnalysisTier + FundamentalsTier
   >=6 -> BUY
@@ -99,19 +101,19 @@ HybridTier = AnalysisTier + FundamentalsTier
 **Fund Verification (V110.2 -> V111):** recompute Fund via stockanalysis.com
 ROE/Debt-Cap/FCF on any Fund>=2 BUY/ASYM. Flag if recomputed value sits
 >1 tier below submitted.
-- V110.2 (4/22/26): P_115 BUY/ASYM — mandatory
+- V110.2 (4/22/26): P_115 BUY/ASYM â€” mandatory
 - V111 (6/18/26): extended to P_118 BUY/ASYM (mandatory, via P_115 recheck) and
   P_117 BUY/ASYM (only when an optional P_115 recheck was actually performed)
-- P_920 BUY/ASYM: applies per V111 logic, **not yet consistently enforced** —
+- P_920 BUY/ASYM: applies per V111 logic, **not yet consistently enforced** â€”
   open gap, first BVS signal (7/6/26) logged without the recheck
 - Post-Earnings Auto-Flag (V110.3) applies to ALL four strategies, checks
-  earnings date only (not Fund tier) — do not conflate with V110.2/V111
+  earnings date only (not Fund tier) â€” do not conflate with V110.2/V111
 - No re-verify on PASS rows
 
 **PA Stop (v1.2, `P_115_buyTheDipChart_V14.ts`, `def paStop`):** primary =
 swing low over 10-bar lookback minus 0.1x ATR buffer; fallback = Entry - 2xATR
 when structure low is NaN or above entry. Always use the chart's displayed
-PA Stop label — never recompute independently.
+PA Stop label â€” never recompute independently.
 
 ---
 
@@ -128,7 +130,7 @@ Outcome | RecheckStatus | SimulationNotes | Comments
 Rules: column order never reorders; all 27 required on every row including
 PASS; Symbol = ticker only, never expand with company name (breaks P_020 join
 keys); Date = M/D/YYYY; MarketDirection = risk_mode value from P_010 JSON only
-(FULL/HALF/OFF — HOT is a derived session state, never persisted, never
+(FULL/HALF/OFF â€” HOT is a derived session state, never persisted, never
 written here); PatternType/BreakoutVerdict = `--` for P_115 (belongs to
 P_118); Step1Verdict vocabulary is BUY/ASYM/PASS ("No Signal" deprecated,
 grandfathered pre-5/23/2026 rows only).
@@ -162,22 +164,22 @@ Full incident narratives for all of these live in the architecture doc's EC log 
 
 ```
 python/
-├── config.py                  ← All constants and paths, no logic
-├── schemas.py                 ← Pydantic models — non-temporary file I/O
-├── domain/
-│   └── signal_builder.py      ← build_record(), scoring/sizing logic — no I/O
-├── infrastructure/
-│   └── tracker_writer.py      ← sys.path-clean since WO-P000-E2.003 (2026-06-09)
-├── application/
-│   └── emit_signal.py         ← orchestration: computes atr_adjusted_stop,
-│                                  calls signal_builder + write_to_vault
-├── cli.py
-└── launcher.bat
+â”œâ”€â”€ config.py                  â† All constants and paths, no logic
+â”œâ”€â”€ schemas.py                 â† Pydantic models â€” non-temporary file I/O
+â”œâ”€â”€ domain/
+â”‚   â””â”€â”€ signal_builder.py      â† build_record(), scoring/sizing logic â€” no I/O
+â”œâ”€â”€ infrastructure/
+â”‚   â””â”€â”€ tracker_writer.py      â† sys.path-clean since WO-P000-E2.003 (2026-06-09)
+â”œâ”€â”€ application/
+â”‚   â””â”€â”€ emit_signal.py         â† orchestration: computes atr_adjusted_stop,
+â”‚                                  calls signal_builder + write_to_vault
+â”œâ”€â”€ cli.py
+â””â”€â”€ launcher.bat
 ```
 
 Imports resolve through the `hub_shared` editable install
 (`shared_resources`, `hub_lib`, `obsidian_writers` all real installed
-packages as of WO-P000-E2.002/E2.003) — no sys.path side-channel inserts
+packages as of WO-P000-E2.002/E2.003) â€” no sys.path side-channel inserts
 remain in P_115's own files. Never reintroduce one.
 
 ---
@@ -187,13 +189,13 @@ remain in P_115's own files. Never reintroduce one.
 **Must:**
 1. State the explicit LogEntry field-position parse before applying any
    scoring logic (EC-011 guard).
-2. Capture Fund/Anal/Candle/Setup/STR/Verdict the instant they're pasted —
+2. Capture Fund/Anal/Candle/Setup/STR/Verdict the instant they're pasted â€”
    never claim missing data that exists earlier in the current conversation.
 3. Re-read `P_010_RiskConfig.json` fresh before every packet emission and before writing MarketDirection -- never carry the INIT snapshot forward.
 4. Trigger the stockanalysis.com Fund recheck on every Fund>=2 BUY/ASYM per
    the active V110.2/V111 scope table.
 5. Read the vault file back after any `write_to_vault()` call to confirm
-   fields actually landed — a True/PASS return alone is not proof.
+   fields actually landed â€” a True/PASS return alone is not proof.
 6. Use snake_case for every vault-write dict key; `traded` as string
    `"Y"`/`"N"`; numeric optionals as `None` not `'--'`.
 7. Write `run_this_P115_<TS>.py` + `_context.txt` (timestamped, peh-handoff v1.4)
@@ -201,37 +203,49 @@ remain in P_115's own files. Never reintroduce one.
    Claude Code on a 4-minute timeout.
 8. STEP 2 = emit the SIGNAL_V2 packet, full stop (architecture v1.3, 2026-07-24). Output STEP 3 in the locked compact labeled block format -- never prose.
 9. Chart Final Verdict overrides LogEntry BUY/ASYM if they conflict during
-   market hours — but flag the divergence, don't silently resolve it.
+   market hours â€” but flag the divergence, don't silently resolve it.
 
 **Must Not:**
-1. Ask the user for P_118 PatternType — read it from the chart.
-2. Assume STR range is 0/1 or -1 to 2 — valid range is -2 to 2 (corrected 7/8/26; -2 is a legitimate falling-knife/regime reading, not out of range).
+1. Ask the user for P_118 PatternType â€” read it from the chart.
+2. Assume STR range is 0/1 or -1 to 2 â€” valid range is -2 to 2 (corrected 7/8/26; -2 is a legitimate falling-knife/regime reading, not out of range).
 3. Perform ANY sizing, R:R validation, options-gate check, options chain
    lookup, or premium-cap calculation inside a P_115 session -- every one of
    those is P_400's as of 2026-07-24 (architecture v1.3). This includes the
    5%-cap-applies-to-premium-not-notional rule, which is now P_400's to apply.
    If a P_115 surface still instructs otherwise, that surface is stale --
    flag it, do not obey it.
-4. Persist `HOT` to `MarketDirection` in a vault write or tracker row — HOT
+4. Persist `HOT` to `MarketDirection` in a vault write or tracker row â€” HOT
    is a derived session state, never a JSON-persisted risk_mode value.
 5. Treat a batch-wide uniform STR=-2 as individual ticker misreads.
-6. Skip the Fund Verification recheck on a P_920 BUY/ASYM signal — this is a
+6. Skip the Fund Verification recheck on a P_920 BUY/ASYM signal â€” this is a
    currently-open enforcement gap (flagged for retroactive correction), not a
    sanctioned exception.
-7. Retry a stalled `windows-mcp:PowerShell` Python call past ~4 minutes —
+7. Retry a stalled `windows-mcp:PowerShell` Python call past ~4 minutes â€”
    hand off immediately.
 
 ---
 
 ## Signal Source Quick Reference
 
+**SignalSource is set by the message's BATCH HEADER, never by the chart.**
+A "P_118 STEP 1 [...]" header governs every ticker in that batch, including
+trailing "STEPS 1-2 [TICKER EP:x]" entries with no new header of their own --
+even when the chart shown is running the P_115_BuyTheDipChart indicator.
+P_118 candidates are REQUIRED to run the P_115 recheck engine (V111), so
+seeing that chart/indicator on a P_118 ticker is expected, not a signal the
+ticker is P_115-sourced. Repeated twice same session 2026-08-20 (CDNA, V),
+corrected in-session but never written durably, then repeated again in a new
+session 2026-08-21 (INCY, MA, V) -- see lessons.md 2026-08-21 entry. If the
+batch-header scope is genuinely ambiguous, ask; do not infer SignalSource
+from the chart.
+
 | Source | PatternType | BreakoutVerdict | Step1Verdict |
 | :---- | :---- | :---- | :---- |
 | P_115 | `--` | `--` | BUY / ASYM / PASS |
 | P_116 | `Bounce` | `Bounce` | BUY / PASS |
 | P_118 | READ FROM CHART | BUY / ASYM / PASS | BUY / ASYM / PASS |
-| P_910 (scan) | logs `SignalSource=P_910` directly | — | — |
-| P_920 (EOD scan) | feeds P_115 pre-market workflow; carries real P_115-style diagnostics | — | — |
+| P_910 (scan) | logs `SignalSource=P_910` directly | â€” | â€” |
+| P_920 (EOD scan) | feeds P_115 pre-market workflow; carries real P_115-style diagnostics | â€” | â€” |
 
 ---
 
@@ -250,38 +264,46 @@ of one grep. 8+ round trips before a relay stall made it worse.
 2. Read `docs/SESSION_INITIALIZATION_PROMPT.md` directly by path -- never
    project_knowledge_search it first.
 3. WO review (Step 0.5) = one `Select-String -Pattern "P_115"` pass across
-   `work_orders\*.md`, not a directory listing plus individual reads.
+   `work_orders\*.md`, combined with a `tasks\lessons.md` read in the SAME
+   PowerShell call (2026-08-17: lessons.md now wired into Step 0.5 -- do
+   not split into a separate round trip), not a directory listing plus
+   individual reads.
 4. Steps 1-3 (ET time, account params, posture) = one combined PowerShell
    call -- already the working pattern, keep it.
 5. Ping (`Write-Output "ping"`) before any call expected to run long; if
    ping itself doesn't return in a few seconds, stop and report relay-down
    rather than let the real call run to the 4-min ceiling.
+6. Read `tasks/lessons.md` once at INIT -- small local read, fold into the
+   item 4 combined call, no added round trip.
+
 ## Session-Start Checklist
 
-- [ ] Call `tool_search` for PowerShell/Windows-MCP first (SIP STEP 0) —
+- [ ] Call `tool_search` for PowerShell/Windows-MCP first (SIP STEP 0) â€”
       never claim web/Desktop status before this check
-- [ ] Run the full SIP v3.4+ 7-step sequence — never the condensed 3-step
-      summary in `P_115_System_Architecture.v1.0.md` Section 3.3 (stale)
-- [ ] Steps 0.5 through 6 are one uninterruptible block — no file writes,
+- [ ] Run the full SIP v3.4+ 7-step sequence â€” never the condensed 3-step
+      summary in `P_115_System_Architecture.v1.3.md` Section 3.3 (stale)
+- [ ] Steps 0.5 through 6 are one uninterruptible block â€” no file writes,
       lesson logs, or actions between them
 - [ ] Confirm current `risk_mode` from `P_010_RiskConfig.json` is re-read
       live before any packet emission, not carried over from INIT
 - [ ] On any LogEntry paste: state the field-position parse explicitly
       before scoring
 - [ ] Follow INIT Fast Path above -- target 2 Windows-MCP calls, not 8+
+- [ ] Read `tasks/lessons.md` at INIT -- apply any durable lesson logged there to this session
+- [ ] Confirm `tasks/lessons.md` was read in the Step 0.5 call and any 14-day-recent entries surfaced in the Step 4 summary
 
 ---
 
 ## When to Consult the Full Architecture Doc
 
-Load `docs/P_115_System_Architecture.v1.0.md` for:
+Load `docs/P_115_System_Architecture.v1.3.md` for:
 - Full EC-001 through EC-011+ log with root-cause detail
 - Section 8 workflows (STEP 1/2/3) in full prose
 - Section 9.3/9.4 complete schema + data-integrity rule set
 - Section 10 known-good reference examples + backtesting thresholds
 - Appendix F full configuration reference (thresholds, gate constants)
 
-Do NOT load reflexively — this SKILL covers routine STEP 1/2/3 operation.
+Do NOT load reflexively â€” this SKILL covers routine STEP 1/2/3 operation.
 
 ---
 
@@ -294,6 +316,34 @@ Do NOT load reflexively — this SKILL covers routine STEP 1/2/3 operation.
   `WO_COMPLETION_GATE.md`)
 
 ## Changelog
+
+### 2026-08-24
+- **Chaikin Power Gauge batch path added (Completion Gate skill-file gap from WO-P800-E4.001).** P_115 ran a real Chaikin enrichment Ack on 2026-07-25 (EMR/OGN/PH via `RunChaikinBatch.ps1 -Schema P115`) but this skill never referenced it -- WO-P800-E4.001 sat OWNER_DONE with that Completion Gate item unsatisfied for P_115 specifically (P_300's skill file was already correct). Fix: Critical Paths row added. Also merged two duplicate `tasks/lessons.md` file-table rows into one (compression pass).
+
+### 2026-08-17
+- **`tasks/lessons.md` wired into INIT (orphaned mechanism fix).** File existed,
+  self-described "Read at every INIT STEP 3," but was never in this skill's
+  file table or Session-Start Checklist -- nothing actually read it. Same
+  failure shape as the 2026-08-03 changelog-vs-rule gap. Fix: added to file
+  table, added INIT Fast Path item 6, added checklist bullet.
+
+### 2026-08-17
+- **`tasks/lessons.md` wired into Step 0.5, file table row added.** File
+  existed since 2026-06-09 with its own header saying "read at every INIT"
+  -- nothing ever did. Root cause: same class of gap as the 8/3 Anti-Pattern
+  sweep (a written instruction is not an executed step until it's in the
+  operative Musts/steps, not just documented). Trigger: two live process
+  failures same session that a maintained lessons file exists specifically
+  to prevent -- (1) used a stale tracker Excel path instead of verifying
+  the canonical one with Tony, producing a false "tracker abandoned since
+  Feb 2026" conclusion; (2) declared the STEP2 SIGNAL_V2 emitter "never
+  worked" without opening an already-noticed archive zip that held 16+ of
+  the 44 flagged signals, and without checking past chat history that
+  showed the emitter working on 7/28 and 7/30. Both lessons appended to
+  `tasks/lessons.md` same session. SIP bumped to v3.6 (Step 0.5 renamed
+  "Work Order + Lessons Review", Step 4 summary gained a `Lessons:` line,
+  INIT Fast Path point 3 updated to combine the lessons read into the
+  existing WO-grep call).
 
 ### 2026-08-06
 - **INIT Fast Path added; changelog archived (Tony directive, live session).**

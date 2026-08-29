@@ -68,6 +68,7 @@ VAULT_FOLDER_MAP: dict[str, str] = {
     "P400SIG":  "TradeOrderManagement/signals",
     "SIGNAL_V2": "TradeOrderManagement/signals",
     "P020":     "TradeOrderManagement/P020",
+    "P820":     "TradeOrderManagement/P820",
     "KB":       "KnowledgeBase",
 }
 
@@ -83,6 +84,7 @@ OUTPUT_FORMAT: dict[str, str] = {
     "P400SIG":  "json",
     "SIGNAL_V2": "json",
     "P020":     "md",
+    "P820":     "md",
     "KB":       "md",
 }
 
@@ -108,6 +110,7 @@ SCHEMA_VERSIONS: dict[str, str] = {
     "P400SIG":  "1.0",   # signal packet — locked per P_115_P400_SIGNAL_PACKET_SCHEMA_v1_0
     "SIGNAL_V2": "2.0",  # unified signal packet — P_115_P400_SIGNAL_PACKET_SCHEMA_v2_0
     "P020":     "2.0",
+    "P820":     "1.0",   # new 2026-08-16, P_020 session
     "KB":       "2.0",
 }
 

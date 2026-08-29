@@ -259,3 +259,33 @@ class KBRecord(BaseModel):
     sector: Optional[str] = None
     market_regime: Optional[str] = None
     linked_trades: Optional[List[str]] = Field(default_factory=list)
+
+
+# ── P_820 ORDER SIGNAL CAPTURE ─────────────────────────────────────────────
+# Added 2026-08-16 (Tony directive, P_020 session). Thin capture record for
+# non-Hub-generated signal sources (SNT, OIL/P_116, WSZ/P_117, Eddie Z/P_118)
+# -- no council/verdict/sizing fields, viability is already decided upstream
+# (subscription service or Tony's own verification) by the time this is
+# logged. Highest-priority source in P_020's resolver: P_820 > ThinkLog >
+# Tracker Dashboard > default.
+
+class P820Record(BaseModel):
+    """One dictated signal-source capture, logged at or near order time."""
+    # Required base fields (Note Standard v1.1)
+    signal_date: str                             # YYYY-MM-DD
+    run_date: str                                # YYYY-MM-DD
+    run_ts: str                                  # ISO 8601
+    written_by: str                              # e.g. "P_820/chat_dictation"
+    write_route: Optional[str] = None            # not applicable -- no verdict concept
+    note_version: int = 1
+    write_route_history: List[Dict[str, Any]] = Field(default_factory=list)
+
+    # P_820-specific fields
+    symbol: str = ""
+    why_code: str = ""                         # open vocabulary: SNT, P_116, P_117, WSZ, etc.
+                                                # -- becomes trades.system directly in P_020
+    sig_code: Optional[str] = None
+    entry_price: Optional[float] = None
+    stop_price: Optional[float] = None
+    target_price: Optional[float] = None
+    notes: Optional[str] = None

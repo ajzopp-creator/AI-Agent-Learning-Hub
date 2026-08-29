@@ -1,0 +1,33 @@
+{
+  "signal_id": "P300-2026-08-05-AVB-001",
+  "signal_timestamp": "2026-08-06T18:54:22Z",
+  "signal_source": "P_300",
+  "strategy": "pattern_analog",
+  "symbol": "AVB",
+  "asset_class": "stock",
+  "guideline_entry": 189.610000610352,
+  "guideline_stop": 186.19474387068323,
+  "guideline_target": 192.849899291992,
+  "signal_horizon": "5 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 186.19474387068323,
+  "intelliscan_support_1": 184.970001220703,
+  "intelliscan_support_2": 192.849899291992,
+  "target_source": "vp_resistance",
+  "context": {
+    "close_at_signal": 189.610000610352,
+    "trailing_volume_30d": 591574.0,
+    "signal_rationale": "Pattern analog: 20 matches @ 70.0% WR, z=0.75, mean return +3.03% at h=5",
+    "atm_at_signal": 3.4152567396687585
+  },
+  "signal_metadata": {
+    "session_date": "2026-08-05",
+    "chart_timeframe": "1D",
+    "signal_source_link": "trading_journal/TradeOrderManagement/P300/2026-08-05_AVB.md"
+  }
+}

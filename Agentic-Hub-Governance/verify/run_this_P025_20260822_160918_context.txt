@@ -1,0 +1,14 @@
+PEH / P_025 / True Average Cost — 2026-08-22
+
+What this tests
+Full rebuild populates a Cost_Basis Data Lake sheet. format_analytics then
+wires Positions!E3 as a VLOOKUP into Cost_Basis. PASS only if Cost_Basis
+has rows and the Positions formula references that sheet.
+
+Success criteria
+Prints PASS. Writes sibling .done with status=PASS, exit_code=0.
+
+On failure
+Fix production code under
+C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_025_AJZ_Institutional_Portfolio_Tracker\python\
+until the script prints PASS. Do not change test assertions.
