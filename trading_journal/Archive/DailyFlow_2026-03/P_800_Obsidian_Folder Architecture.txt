@@ -1,0 +1,104 @@
+Folder PATH listing for volume Backup
+Volume serial number is 9CA1-C608
+D:\ONEDRIVE\DOCUMENTS\AJZSTRATEGIES_TRADINGJOURNAL
+|   P_800_Obsidian_Folder Architecture.txt
+|   
++---.obsidian
+|       app.json
+|       appearance.json
+|       core-plugins.json
+|       workspace.json
+|       
+\---Trading Journal
+    +---.obsidian
+    |   |   app.json
+    |   |   appearance.json
+    |   |   community-plugins.json
+    |   |   core-plugins.json
+    |   |   graph.json
+    |   |   templates.json
+    |   |   types.json
+    |   |   workspace.json
+    |   |   workspaces.json
+    |   |   
+    |   +---plugins
+    |   |   +---google-calendar
+    |   |   |       data.json
+    |   |   |       main.js
+    |   |   |       manifest.json
+    |   |   |       styles.css
+    |   |   |       
+    |   |   +---obsidian-clipper
+    |   |   |       data.json
+    |   |   |       main.js
+    |   |   |       manifest.json
+    |   |   |       styles.css
+    |   |   |       
+    |   |   +---obsidian-importer
+    |   |   |       main.js
+    |   |   |       manifest.json
+    |   |   |       styles.css
+    |   |   |       
+    |   |   +---obsidian-tasks-plugin
+    |   |   |       main.js
+    |   |   |       manifest.json
+    |   |   |       styles.css
+    |   |   |       
+    |   |   +---obsidian42-brat
+    |   |   |       main.js
+    |   |   |       manifest.json
+    |   |   |       styles.css
+    |   |   |       
+    |   |   +---quickadd
+    |   |   |       data.json
+    |   |   |       main.js
+    |   |   |       manifest.json
+    |   |   |       styles.css
+    |   |   |       
+    |   |   \---templater-obsidian
+    |   |           data.json
+    |   |           main.js
+    |   |           manifest.json
+    |   |           styles.css
+    |   |           
+    |   \---themes
+    |       +---AnuPpuccin
+    |       |       manifest.json
+    |       |       theme.css
+    |       |       
+    |       \---Obsidianotion
+    |               manifest.json
+    |               theme.css
+    |               
+    +---AJZStrategies_TradingJournal
+    |   |   2026-05-05-watchlist current accounts.csv
+    |   |   
+    |   \---.obsidian
+    |           app.json
+    |           appearance.json
+    |           core-plugins.json
+    |           workspace.json
+    |           
+    +---Attachments
+    |       Casey Moring  Image 2026-03-11 at 9.33.24 AM.jpeg
+    |       Casey Morning Image 2026-03-10 at 9.35.09 AM (1).jpeg
+    |       Casey Morning Image 2026-03-12 at 9.44.05 AM.jpeg
+    |       Marc  Drawing  2026-03-11 at 7.18.19 PM.jpeg
+    |       Marc Draw II Image 2026-03-11 at 7.27.54 PM.jpeg
+    |       Marc Drawing IV Image 2026-03-11 at 7.50.28 PM.jpeg
+    |       Marc Drawing V Image 2026-03-11 at 8.38.28 PM.jpeg
+    |       Marc Drswing III Image 2026-03-11 at 7.44.46 PM.jpeg
+    |       
+    +---Templates
+    |       Daily-Flow.md
+    |       P_010_TemplateSchema_v1.md
+    |       Web Clipper Whats App.md
+    |       
+    \---TradingJournal
+            03-08-2026.md
+            03-09-2026.md
+            03-10-2026.md
+            03-11-2026.md
+            03-12-2026.md
+            03-13-2026.md
+            
