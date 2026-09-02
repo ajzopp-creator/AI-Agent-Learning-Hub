@@ -118,15 +118,15 @@ def _build_trade(raw: Dict, params: Dict, account_id: str) -> Optional[Trade]:
         return None
 
 
-# ── Stop price population (paper trades only) ───────────────────────────
+# ── Stop price population (Tracker Dashboard) ────────────────────────────
 
 def _apply_stop_prices(trades, lookup, account_id: str) -> None:
     """Populate stop_price on each trade dict from the Tracker Dashboard.
 
-    Only runs for PAPER account. Live trades do not use tracker stop prices.
-    Sets raw["stop_price"] which _build_trade() picks up for risk_amount calc.
+    Skips IRA9885 only -- it bypasses Tracker/vault matching entirely per
+    WO-P020-E1.015 Decision 1. Sets raw["stop_price"] for _build_trade().
     """
-    if "PAPER" not in account_id.upper():
+    if account_id.upper() == "IRA9885":
         return
     if lookup is None:
         logger.debug("No Tracker lookup -- stop prices not applied.")
@@ -145,7 +145,7 @@ def _apply_stop_prices(trades, lookup, account_id: str) -> None:
             missing += 1
 
     logger.info(
-        f"Stop prices (PAPER): {populated} populated, {missing} missing from Tracker."
+        f"Stop prices ({account_id}): {populated} populated, {missing} missing from Tracker."
     )
 
 

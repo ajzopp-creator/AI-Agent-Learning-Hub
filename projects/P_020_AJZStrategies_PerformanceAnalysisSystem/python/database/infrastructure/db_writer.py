@@ -51,6 +51,31 @@ def get_trade_id_by_schwab_id(conn: sqlite3.Connection, schwab_transaction_id: s
 
 # ── Trade writers ──────────────────────────────────────────────────────────
 
+def ensure_system_registered(conn: sqlite3.Connection, system_id: str) -> None:
+    """Auto-register a system_id that isn't yet in the systems table.
+
+    ThinkLog tags are open vocabulary by design (see domain/
+    thinklog_override.py) -- any WHY code (INV, BTD, OIL, a future
+    project code, etc.) is meant to flow through with no schema change.
+    trades.system carries a hard FK to systems, so the first trade
+    tagged with a code outside the pre-seeded list would otherwise
+    raise an uncaught IntegrityError mid-loop and crash the whole
+    ingest run before the audit log is written. INSERT OR IGNORE is a
+    no-op for codes that already exist -- runs inside insert_trade()'s
+    transaction, so it commits or rolls back together with the trade
+    row, never leaving an orphaned systems entry on a later failure.
+
+    Args:
+        conn: Active SQLite connection.
+        system_id: The system code about to be written to trades.system.
+    """
+    conn.execute(
+        "INSERT OR IGNORE INTO systems (system_id, system_name, description, active) "
+        "VALUES (?, ?, 'Auto-registered via ThinkLog tag', 1)",
+        (system_id, system_id),
+    )
+
+
 def insert_trade(conn: sqlite3.Connection, trade: Trade) -> Optional[int]:
     """Insert a single trade row. Skips if schwab_transaction_id already exists.
 
@@ -68,6 +93,8 @@ def insert_trade(conn: sqlite3.Connection, trade: Trade) -> Optional[int]:
                 f"{trade.open_date} (txn_id={trade.schwab_transaction_id})"
             )
             return None
+
+    ensure_system_registered(conn, trade.system)
 
     cursor = conn.execute("""
         INSERT INTO trades (

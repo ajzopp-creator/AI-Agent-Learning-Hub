@@ -13,7 +13,7 @@ from pathlib import Path
 
 import schwab
 
-BASE_DIR       = Path(__file__).resolve().parent.parent
+BASE_DIR       = Path(__file__).resolve().parent.parent.parent
 CONFIG_PATH    = BASE_DIR / "config" / "P_020_schwab_config.json"
 TOKEN_PATH     = BASE_DIR / "config" / "P_020_schwab_token.json"
 SNAPSHOT_DIR   = BASE_DIR / "data" / "balance_snapshots"

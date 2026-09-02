@@ -10,7 +10,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import sqlite3
 
 from infrastructure.db_client import create_all_tables
-from infrastructure.db_writer import update_trade_status
+from infrastructure.db_writer import insert_trade, update_trade_status
+from schemas import Trade
 
 
 def _make_conn() -> sqlite3.Connection:
@@ -64,6 +65,35 @@ def test_commissions_omitted_leaves_prior_value_unchanged():
     ).fetchone()
     assert row["status"] == "partial"
     assert row["total_commissions"] == 2.00
+
+
+def test_insert_trade_auto_registers_unknown_system():
+    """ThinkLog tags are open vocabulary (INV, BTD, OIL, a future project
+    code, etc.) -- a trade carrying a system_id not yet in the systems
+    table must not crash with an FK IntegrityError. insert_trade() has to
+    auto-register the code first. Ref: found while scoping WO-P020-E1.015
+    (IRA ingestion), 2026-08-20 -- also live today for AJZ ThinkLog tags.
+    """
+    conn = _make_conn()
+    trade = Trade(
+        account_id="acct1",
+        system="INV",
+        underlying_symbol="XYZ",
+        asset_type="stock",
+        direction="long",
+        open_date="2026-08-20",
+        qty=10,
+        entry_price=25.0,
+    )
+
+    trade_id = insert_trade(conn, trade)
+
+    assert trade_id is not None
+    row = conn.execute(
+        "SELECT active FROM systems WHERE system_id = ?", ("INV",)
+    ).fetchone()
+    assert row is not None
+    assert row["active"] == 1
 
 
 def test_updated_at_stays_naive_iso_format():

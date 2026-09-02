@@ -2,7 +2,7 @@
 
 **Project:** P_020 AJZ Strategies Performance Analysis System
 **Owner:** Anthony Zoppi (AJZ Strategies LLC)
-**Last Updated:** 2026-04-28
+**Last Updated:** 2026-09-02
 
 ---
 
@@ -23,6 +23,7 @@
 | ✅ | `domain/thinklog_parser.py` — open-vocabulary `[WHY] [SIG]` parser | 2026-04-21 |
 | ✅ | `infrastructure/thinklog_reader.py` — TOS ThinkLog CSV record-format reader with same-day concat and ±3-day auto-filter | 2026-04-28 |
 | ✅ | `application/paper_import.py` — Symbol+Date join from TOS Account Statement → ThinkLog CSV → DB | 2026-04-28 |
+| ✅ | Extended `_apply_stop_prices()` (`application/ingest_pipeline.py`) to all accounts except IRA9885 — live AJZ trades previously never got a stop_price at all, gate was hard-coded to PAPER only. 5 new regression tests, 75/75 passing. No WO filed. | 2026-09-02 |
 | ✅ | SKILL.md v1.5 — locks in the dual-CSV (Account Statement + ThinkLog) flow | 2026-04-28 |
 | ✅ | End-to-end round-trip test (AMR test trade 2026-04-28) | 2026-04-28 |
 
@@ -209,4 +210,4 @@ Schwab live ingest would gain a ThinkLog join step.
 
 ---
 
-*Last session: 2026-04-28 — completed end-to-end paper ThinkLog tag flow*
+*Last session: 2026-09-02 — closed 12 pre-2026 legacy trades; fixed live-account stop_price gap (see Recently Completed); see `tasks\todo.md` for full session history since 4/28 (WO ledger and todo.md have been the primary tracking since, this file lagged)*
