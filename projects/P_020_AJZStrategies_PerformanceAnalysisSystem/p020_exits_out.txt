@@ -1,5 +1,0 @@
-exits columns: ['exit_id', 'trade_id', 'exit_number', 'exit_date', 'exit_datetime', 'qty_exited', 'exit_price', 'exit_commissions', 'exit_pnl', 'hold_days', 'created_at']
-Traceback (most recent call last):
-  File "C:\Users\Trader\AppData\Local\Temp\p020_exits.py", line 11, in <module>
-    cur.execute("""
-sqlite3.OperationalError: no such column: e.pnl

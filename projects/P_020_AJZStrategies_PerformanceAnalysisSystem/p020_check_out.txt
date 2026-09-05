@@ -1,6 +1,0 @@
-TABLES: ['accounts', 'systems', 'trades', 'sqlite_sequence', 'exits', 'account_balances']
-Total trades: 519
-Closed (status=closed): 479
-exit_date col failed: no such column: exit_date
-date range failed: no such column: entry_date
-Columns: ['trade_id', 'account_id', 'system', 'underlying_symbol', 'asset_type', 'direction', 'open_date', 'open_datetime', 'qty', 'entry_price', 'stop_price', 'risk_amount', 'total_commissions', 'status', 'tags', 'notes', 'source', 'schwab_transaction_id', 'created_at', 'updated_at', 'reason', 'signal_strength']
