@@ -242,3 +242,5 @@ projects/P_300_Vantage_Point_Pattern_Recognition/data/historical_patterns/
 *.b64tmp
 *.py.done
 **/_pytest_basetemp*/
+
+~$*.md

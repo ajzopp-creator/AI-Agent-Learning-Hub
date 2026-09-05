@@ -34,6 +34,8 @@ from domain.council_codes import (
     RC_RR_BELOW_MIN,
     RC_STOP_TOO_TIGHT,
     RC_STREAK_CHASING,
+    RC_USING_CLOSE_DATA,
+    RC_USING_EXTENDED_DATA,
 )
 
 # Baseline RISK-clean args for verdict-assembly tests below -- cash covers
@@ -164,6 +166,35 @@ def test_tape_caution_adverse_drift():
                   adverse_drift_pct=2.5, rr_after_drift=1.5)
     assert v.decision == Decision.CAUTION
     assert v.reason_code == RC_ADVERSE_DRIFT
+
+def test_tape_caution_using_extended_data():
+    # WO-P400-E7.001: market closed, price_basis="extended" (pre-market/
+    # after-hours live quote) -- CAUTION, not BLOCK, and not RC_MARKET_CLOSED.
+    v = tape_vote(price_delay_seconds=30, market_open=False, price_basis="extended",
+                  adverse_drift_pct=0.0, rr_after_drift=2.5)
+    assert v.decision == Decision.CAUTION
+    assert v.reason_code == RC_USING_EXTENDED_DATA
+
+def test_tape_caution_using_close_data():
+    # WO-P400-E5.005: market closed, price_basis="close" (last completed
+    # daily bar) -- CAUTION, not BLOCK, and not RC_MARKET_CLOSED.
+    v = tape_vote(price_delay_seconds=30, market_open=False, price_basis="close",
+                  adverse_drift_pct=0.0, rr_after_drift=2.5)
+    assert v.decision == Decision.CAUTION
+    assert v.reason_code == RC_USING_CLOSE_DATA
+
+def test_tape_extended_and_close_reason_codes_do_not_collide():
+    # RC_USING_EXTENDED_DATA and RC_USING_CLOSE_DATA must stay distinct --
+    # both are market_open=False CAUTION paths and must not be confused
+    # with each other or with RC_MARKET_CLOSED (the price_basis="live"
+    # market_open=False fallback in test_tape_blocks_market_closed above).
+    v_extended = tape_vote(price_delay_seconds=30, market_open=False, price_basis="extended",
+                           adverse_drift_pct=0.0, rr_after_drift=2.5)
+    v_close = tape_vote(price_delay_seconds=30, market_open=False, price_basis="close",
+                        adverse_drift_pct=0.0, rr_after_drift=2.5)
+    assert v_extended.reason_code != v_close.reason_code
+    assert v_extended.reason_code != RC_MARKET_CLOSED
+    assert v_close.reason_code != RC_MARKET_CLOSED
 
 
 # ---------------------------------------------------------------------------

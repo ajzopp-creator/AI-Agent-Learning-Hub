@@ -30,6 +30,7 @@ from domain.council_codes import (  # noqa: F401
     RC_MARKET_CLOSED,
     RC_OVERTRADING,
     RC_USING_CLOSE_DATA,
+    RC_USING_EXTENDED_DATA,
     RC_POST_EARNINGS_STABILIZATION,
     RC_PRICE_STALE,
     RC_REVENGE_TRADE,
@@ -184,8 +185,10 @@ def tape_vote(
 ) -> CouncilVote:
     """Tape / momentum blocks. Section 4.5.
 
-    price_basis: "live" (regular-session quote) or "close" (last completed
-    daily bar, used by fetch_snapshot when the market is closed -- WO-P400-E5.005).
+    price_basis: "live" (regular-session quote), "extended" (pre-market/
+    after-hours live quote, WO-P400-E7.001), or "close" (last completed
+    daily bar, used by fetch_snapshot when the market is closed --
+    WO-P400-E5.005).
     """
     if price_delay_seconds > PRICE_STALENESS_THRESHOLD_SEC:
         return CouncilVote(
@@ -194,6 +197,12 @@ def tape_vote(
             reason_detail=f"Price {price_delay_seconds}s old (threshold {PRICE_STALENESS_THRESHOLD_SEC}s).",
         )
     if not market_open:
+        if price_basis == "extended":
+            return CouncilVote(
+                role=Role.TAPE, decision=Decision.CAUTION,
+                reason_code=RC_USING_EXTENDED_DATA,
+                reason_detail="Pre-market/after-hours -- priced off a live extended-hours quote, not the regular session.",
+            )
         if price_basis == "close":
             return CouncilVote(
                 role=Role.TAPE, decision=Decision.CAUTION,

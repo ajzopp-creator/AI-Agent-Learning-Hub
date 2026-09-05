@@ -1,0 +1,61 @@
+{
+  "run_timestamp": "2026-09-02T15:32:17.328889-04:00",
+  "session_date": "2026-09-02",
+  "cash_available": 18134.99,
+  "posture": "OFF",
+  "screened_count": 7,
+  "passed_tier1": 7,
+  "evaluated": 7,
+  "candidates": [
+    {
+      "symbol": "DNOW",
+      "rank": 1,
+      "score": 0.6049,
+      "score_components": {
+        "rr": 1.0,
+        "atr_headroom": 0.1608,
+        "spread": 0.9686,
+        "liquidity": 0.6134,
+        "drift": 0.0
+      },
+      "vehicle": "STOCK",
+      "vehicle_reason": "Option BLOCKED by options council (OI_TOO_LOW: open_interest=15 < 150 minimum; SPREAD_TOO_WIDE: spread=200.0% > 10.0% max) -- stock used.",
+      "verdict": "APPROVED",
+      "rr_at_t1": 10.72,
+      "atr_headroom": 1.3216,
+      "spread_pct_of_price": 0.0314,
+      "drift_pct": -3.723,
+      "dollar_risk": 26.91,
+      "quantity": 46
+    }
+  ],
+  "skipped": [
+    {
+      "symbol": "PBR",
+      "reason": "verdict=BLOCKED (ADVERSE_DRIFT)"
+    },
+    {
+      "symbol": "BWXT",
+      "reason": "verdict=BLOCKED (RR_BELOW_MIN)"
+    },
+    {
+      "symbol": "CVE",
+      "reason": "verdict=BLOCKED (STOP_TOO_TIGHT)"
+    },
+    {
+      "symbol": "GME",
+      "reason": "verdict=BLOCKED (RR_BELOW_MIN)"
+    },
+    {
+      "symbol": "HLX",
+      "reason": "fetch-snapshot failed -- see console output above"
+    },
+    {
+      "symbol": "HPQ",
+      "reason": "verdict=BLOCKED (ADVERSE_DRIFT)"
+    }
+  ],
+  "cumulative_risk_if_all_taken": 26.91,
+  "heat_cap": 3535.0488,
+  "heat_warning": null
+}

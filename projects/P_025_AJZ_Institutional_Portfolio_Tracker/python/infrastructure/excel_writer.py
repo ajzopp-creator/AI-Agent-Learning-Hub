@@ -21,6 +21,8 @@ from schemas import (
     DailyCashRow,
     DailyInvestedRow,
     DailyUnitsRow,
+    FifoCostRow,
+    FifoLotRow,
     MarketDataRow,
     ReferenceData,
     TradeRecord,
@@ -223,6 +225,8 @@ def write_data_lake(
     daily_cash: Sequence[DailyCashRow],
     daily_invested: Sequence[DailyInvestedRow] | None = None,
     cost_basis: Sequence[CostBasisRow] | None = None,
+    fifo_lots: Sequence[FifoLotRow] | None = None,
+    fifo_cost: Sequence[FifoCostRow] | None = None,
 ) -> Path:
     """
     Write (or overwrite) all Data Lake sheets and save the workbook.
@@ -240,6 +244,10 @@ def write_data_lake(
         write_daily_invested(wb, daily_invested)
     if cost_basis is not None:
         write_cost_basis(wb, cost_basis)
+    from infrastructure.fifo_writer import write_fifo_cost, write_fifo_lots
+
+    write_fifo_lots(wb, fifo_lots or [])
+    write_fifo_cost(wb, fifo_cost or [])
 
     for name in (
         "Dashboard", "Positions", "Equity_Curve", "Sector_Exposure",

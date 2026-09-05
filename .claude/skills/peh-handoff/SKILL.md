@@ -18,7 +18,7 @@ description: >
 ---
 
 # peh-handoff
-v1.9 | Created 2026-06-16 | Applies to all Python execution and file-writing MCP calls under C:\Users\Trader\AI-Agent-Learning-Hub\projects\
+v1.11 | Created 2026-06-16 | Applies to all Python execution and file-writing MCP calls under C:\Users\Trader\AI-Agent-Learning-Hub\projects\
 
 ## Trigger
 - MCP Python call about to run, or already timed out (4-min ceiling, ~9/10 occurrence)
@@ -46,8 +46,12 @@ read — never "the call returned without error."
   chunk defensively on size alone.
 - Any call that hits ~4 min or returns "No result received": STOP. Ping first.
   If ping is slow too, the relay is down — tell Tony to restart it. If ping is
-  fast, the earlier stall was the relay, not the work — retry fresh, don't
-  assume the old dispatch is still running.
+  fast, the earlier stall was the relay, not the work -- but that is not license
+  to retry the actual work call. Hand off to Claude Code immediately (see
+  Sequence below). One confirmed-fast ping proves the relay can carry a
+  small payload; it does not prove the larger work call will succeed a
+  second time, and a second attempt is exactly the retry this skill exists
+  to prevent.
 
 ## Content integrity — diagnosis (v1.5)
 Test-Path confirms a file EXISTS. It does not confirm the file is the one you
@@ -97,6 +101,58 @@ appear in the REPLACEMENT text, build it from `[char]` codes
 it, or just use plain ASCII (`--`, `->`) in new content going forward.
 Always print an occurrence-count guard before writing (per the Rule below)
 -- this is what surfaces the 0-vs-1 mismatch instead of a silent no-op.
+
+**Backtick-as-escape-character corruption (new, discovered 2026-09-04).**
+PowerShell backtick (`) is the escape character in double-quoted strings
+and `@"..."@` here-strings -- typing a literal backtick immediately before a
+letter that happens to form a recognized escape (`t` = tab, `n` = newline,
+`r` = carriage return) silently substitutes that control character and
+drops the letter, with no error. This corrupts markdown code-span
+formatting specifically: ``tasks\lessons.md`` typed in a double-quoted
+PowerShell string became a literal TAB followed by "asks\lessons.md" --
+same failure shape as the Unicode-punctuation finding above (silent
+0-vs-expected mismatch, not a crash), different root cause (PowerShells
+own escape table, not a UTF-8 round-trip issue). Observed twice in one
+P_000 session (2026-09-04, WO-P000-E20.001 doc edits): `t`asks\lessons.md
+and three separate `t`est_*.py filenames, all corrupted the same way.
+Also self-inflicted while fixing this same finding: an anchor string
+containing an em-dash, typed directly into a PowerShell command
+parameter (not a saved .ps1 file), silently failed to match this
+files own heading -- the exact failure mode documented above,
+confirming it applies to inline command strings through this tool, not
+only saved .ps1 scripts. Remedy: never use double-quoted strings or
+`@"..."@` here-strings for content containing literal backticks -- use
+single-quoted strings (') or `@'...'@` here-strings instead, which do
+not interpret any escape sequence. If backticks must combine with
+variable interpolation, build the backtick from `[char]0x60` and
+concatenate -- same pattern already established for em-dash/arrow
+above. And separately: never type an em-dash or other non-ASCII
+character directly into ANY match anchor, inline command parameter or
+saved .ps1 alike -- use an ASCII-only anchor immediately before or
+after it instead, per the existing remedy above. Always run the
+existing occurrence-count guard after writing, not just before -- it
+catches this class of corruption too, since the written content no
+longer round-trips against the intended source text.
+
+**Cross-file/cross-project claims stated without checking (new,
+discovered 2026-09-04).** Told the operator two projects "use the same
+file, same function, same endpoint" based on a shared-architecture
+docs description of a wrapper as "shared interface for all Hub
+projects" -- the doc was accurate about the wrapper existing, but did
+not establish that a specific other project actually calls it for the
+specific capability in question. Grepping and reading the other
+projects actual code, done only after the operator pushed back, found
+a completely separate, independently-built client (different endpoint,
+different HTTP library, different timeout constant). Remedy: before
+stating "X uses the same code/path/config as Y" to the operator, grep
+and read Xs actual imports and call sites -- a shared-infrastructure
+description in an architecture doc is a claim about what SHOULD be
+true, never confirmation of what a specific caller actually does. Same
+evidence-over-assumption principle this skill already applies to file
+writes (Durable signal, Content integrity) -- extends here to claims
+made about code that was not directly re-read in the same session.
+
+
 ### Rule — generated files (remedy rewritten v1.7, ref WO-P000-E15.001)
 **Applies to genuinely new files.** For editing an existing file, see "Rule —
 editing an EXISTING file" below first — that rule takes precedence when a file
@@ -296,6 +352,30 @@ No PASS/FAIL in output → ask for full terminal output.
 `C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_000_PythonClaudeLocalLLM\docs\PEH_Python_Execution_Handoff.md`
 
 ## History
+- v1.11 (9/4/26, P_000 session): two Content integrity findings added
+  together (same-version-bump precedent as v1.4). (1) Backtick-as-
+  escape-character corruption -- PowerShell interprets `t`/`n`/`r`
+  after a backtick as control characters inside double-quoted strings
+  and @" "@ here-strings, silently destroying markdown code-span
+  formatting with no error. Observed twice in one session (WO-P000-
+  E20.001 doc edits). Remedy: single-quoted strings/@' '@ here-strings
+  for any content with literal backticks. (2) A cross-project claim
+  ("P_300 uses the same wrapper/timeout") was stated to the operator
+  based on an architecture docs shared-infrastructure description,
+  without reading the other projects actual code -- wrong, corrected
+  only after operator pushback. Remedy: grep/read the actual caller
+  before asserting what code path it uses, never infer from a shared-
+  infrastructure description alone.
+- v1.10 (8/30/26, P_010 session): closed the retry loophole in Durable
+  signal above -- "if ping is fast, retry fresh" read as license for a second
+  attempt at the actual work call, contradicting this skill's own header
+  ("hand off ... instead of retrying"). Root cause: a P_010 session hit a
+  stalled python.exe call, pinged (fast), then retried the real call two
+  more times (3 total attempts, ~10 min) before handing off -- flagged
+  live by Tony ("this trip took 10 min which unacceptable"). New rule: a
+  confirmed-fast ping proves the relay is up, not that the work call will
+  succeed on a second try -- hand off immediately, zero retries of the
+  actual work call, full stop.
 - v1.9 (8/29/26, P_000 session): added Content integrity finding -- Unicode
   punctuation (em-dash, arrow) typed directly into a .ps1 anchor string can
   silently fail to match against the same content read via

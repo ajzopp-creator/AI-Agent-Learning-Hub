@@ -1,0 +1,53 @@
+WO-P000-E20.001 -- lessons_audit v1.3 fix verification (corpus document-frequency filtering)
+Date: 2026-09-01, P_000 session
+
+CONTEXT
+v1.2 (line-level chunking + code-fence exclusion) fixed the structural
+bugs -- every match is now a genuine single line, confirmed by the
+excerpts. But the real run still flagged all 3 lessons. The shared
+words were generic corpus vocabulary: check, just, rule, status,
+because, instead, items, text, time, first, added, chat -- none of
+these are in a normal English stopword list, but they are pervasive
+throughout THIS specific governance document because it is a document
+about checks, rules, and statuses.
+
+FIX (this build)
+compute_document_frequency() counts how many chunks each word appears
+in across the whole reference corpus. filter_significant_keywords()
+drops any word over config.MAX_CHUNK_DOC_FREQUENCY (5) chunks before
+scoring. This is corpus-relative filtering, not a bigger fixed word
+list -- a word is noise if IT'S pervasive in this specific corpus,
+regardless of whether it "looks" generic in the abstract.
+
+WHAT THIS SCRIPT TESTS
+1. All 8 files compile under -W error::SyntaxWarning.
+2. All 6 regression tests pass (4 from v1.1/v1.2, 2 new this pass:
+   pervasive-words-filtered, rare-word-survives).
+3. A fresh real pass over P_000's actual lessons.md -- same detailed
+   per-lesson output as before (classification, shared_terms, top
+   match).
+
+WHAT THIS DOES NOT DO
+Does not write tasks\lessons_audit_status.json. Output:
+lessons_audit_status_SCRATCH_verify_v4.json in this verify\ folder only.
+Does not modify tasks\lessons.md. Does not wire anything into INIT.
+
+SUCCESS CRITERIA
+Compile PASS. 6/6 regression tests PASS. Real run parses 3 lessons.
+
+On classification: this is the fourth pass at tuning this. If it's
+STILL 3/3 flagged with generic-looking shared_terms, that's a sign the
+whole term-overlap-counting approach may not be the right technique for
+a corpus this size and this repetitive in its own vocabulary -- say so
+plainly rather than proposing a fifth patch. If it's now a mix (some
+LIKELY_STILL_LIVE or UNCERTAIN) with specific, meaningful shared_terms
+on any remaining flags, that's the fix working as intended.
+
+IF IT FAILS
+Read the FAIL line. Do not weaken any regression assertion to make it
+pass -- report the actual assertion message.
+
+AFTER PASS
+Paste back: PASS line, 6/6 regression line, and the full per-lesson
+classification block (classification, shared_terms, top_match) for all
+3 lessons.

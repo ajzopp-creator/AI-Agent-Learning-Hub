@@ -1,0 +1,57 @@
+WO-P000-E20.001 -- lessons_audit v1.2 fix verification (line-level chunking + code-fence exclusion)
+Date: 2026-09-01, P_000 session
+
+CONTEXT
+v1.1 (blank-line paragraph chunking) still false-flagged all 3 real
+lessons, smaller radius than the original whole-file bug but same root
+cause. Two distinct sub-bugs found:
+1. M-001 matched a fenced code block (a folder-tree diagram in Section
+   3.2) -- no blank lines inside it, so the paragraph accumulator glued
+   the whole diagram into one chunk. Any lesson naming the same
+   subsystem as the diagram (LM Studio wrapper) matched it -- not a
+   real enforcement signal, just two places naming the same thing.
+2. M-002/M-003 both matched the doc's version-history footer -- a block
+   of consecutive "*Version X.X -- ...*" lines with no blank-line
+   separator, so it also glued into one giant chunk.
+
+FIX (this build)
+chunk_reference_text() is now line-level: every non-blank line is its
+own chunk (subsumes table rows/checklist items for free). Content
+inside triple-backtick fenced code blocks is excluded entirely, never
+scored. Blank-line paragraph accumulation is retired.
+
+WHAT THIS SCRIPT TESTS
+1. All 8 files compile under -W error::SyntaxWarning.
+2. All 4 regression tests pass (2 from v1.1, 2 new this pass guarding
+   the specific v1.2 bugs: consecutive-lines-dont-merge,
+   fenced-code-excluded).
+3. A fresh real pass over P_000's actual lessons.md -- prints per-lesson
+   classification, the actual shared_terms list, AND the top matched
+   chunk excerpt, so you can see exactly which words are triggering
+   any remaining flag, not just guess from an excerpt.
+
+WHAT THIS DOES NOT DO
+Does not write tasks\lessons_audit_status.json. Output:
+lessons_audit_status_SCRATCH_verify_v3.json in this verify\ folder only.
+Does not modify tasks\lessons.md. Does not wire anything into INIT.
+
+SUCCESS CRITERIA
+Compile PASS. 4/4 regression tests PASS. Real run parses 3 lessons.
+
+On classification: read the printed shared_terms list for each flagged
+lesson, not just PASS/FAIL. If a lesson is flagged and the shared_terms
+are genuinely specific/meaningful words that plausibly indicate real
+overlap with a Completion Gate rule or EC log entry, that's a
+legitimate flag -- not every 3/3 result is automatically wrong. If the
+shared_terms are still generic/structural words (doc, section, file,
+version, project, etc.), that's still a chunking or stopword problem
+and needs another look. Read the actual words printed before judging.
+
+IF IT FAILS
+Read the FAIL line. Do not weaken any regression assertion to make it
+pass -- report the actual assertion message and classification/terms.
+
+AFTER PASS
+Paste back: the PASS line, the 4/4 regression line, and the full
+per-lesson classification block including shared_terms and top_match
+for all 3 lessons.

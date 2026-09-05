@@ -10,7 +10,7 @@ still BLOCK.
 """
 
 from domain.council import Decision, tape_vote
-from domain.council_codes import RC_MARKET_CLOSED, RC_USING_CLOSE_DATA
+from domain.council_codes import RC_MARKET_CLOSED, RC_USING_CLOSE_DATA, RC_USING_EXTENDED_DATA
 
 
 def test_tape_caution_market_closed_with_close_data():
@@ -39,3 +39,21 @@ def test_tape_caution_close_data_ignores_stale_check_boundary():
                   adverse_drift_pct=0.0, rr_after_drift=2.5)
     assert v.decision == Decision.CAUTION
     assert v.reason_code == RC_USING_CLOSE_DATA
+def test_tape_caution_extended_hours():
+    # Pre-market/after-hours + price_basis="extended" -> CAUTION, not
+    # PASS/BLOCK -- same tier as close-data, distinct reason code (WO-P400-E7.001).
+    v = tape_vote(price_delay_seconds=30, market_open=False, price_basis="extended",
+                  adverse_drift_pct=0.0, rr_after_drift=2.5)
+    assert v.decision == Decision.CAUTION
+    assert v.reason_code == RC_USING_EXTENDED_DATA
+
+
+def test_tape_extended_and_close_use_different_reason_codes():
+    # Both CAUTION-tier, but the reason code must distinguish them -- a
+    # downstream reader (record notes, Tony reviewing verdicts) needs to
+    # know which basis actually priced the trade.
+    v_ext = tape_vote(price_delay_seconds=0, market_open=False, price_basis="extended",
+                       adverse_drift_pct=0.0, rr_after_drift=2.5)
+    v_close = tape_vote(price_delay_seconds=0, market_open=False, price_basis="close",
+                         adverse_drift_pct=0.0, rr_after_drift=2.5)
+    assert v_ext.reason_code != v_close.reason_code

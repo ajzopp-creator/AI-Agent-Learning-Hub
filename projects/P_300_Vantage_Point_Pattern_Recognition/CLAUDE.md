@@ -70,6 +70,7 @@ $PROFILE                      # expect: D:\OneDrive\...\Microsoft.PowerShellISE_
 | Posture reconstruction grids | `data\reference\10_Pattern_SPY.xlsx` / `10_Pattern_QQQ.xlsx` -- 10yr VP grids for regime reconstruction (WO-P300-E5.006); kept out of `data\bulk\mine\` so BulkAddPattern never scans them |
 | IntelliScan eval-parameters grid | `data\live\P_300_HistoryGrid_IntelliscanEvalParameters.xlsx` |
 | Signal output | `outputs\reports\<date>_<symbol>.txt` |
+| Ledger diagnostic reports | `outputs\reports\ledger\<name>_<timestamp>.txt` -- read-only PEH scripts against `buy_ledger.db` (WO-P300-E5.010) |
 | Work order ledger | `Agentic-Hub-Governance\work_orders\` |
 | Shared schema | `shared_resources\python_utils\signal_schemas.py` |
 | Signal emitter | `python\infrastructure\signal_emitter.py` |
@@ -135,7 +136,7 @@ Health check gate: `OVERALL == HEALTHY` AND `hollow == 0` before any in-session 
 **Pipeline A:** XLSX -> Lock + Temp-DB + Atomic Move -> permanent rows in catalog
 **Pipeline B:** Live XLSX -> in-memory normalization -> BUY/WATCH/PASS signal. READ-ONLY -- no EVAL_SET inserts (Decision E, locked Stage 6).
 
-BUY: n>=5, win_rate>=0.70, z>0.0
+BUY: n>=5, win_rate>=0.70, z>1.0
 WATCH: n>=3, win_rate>=0.60, z>0.0
 Fail to PASS -- never silently produce a BUY.
 

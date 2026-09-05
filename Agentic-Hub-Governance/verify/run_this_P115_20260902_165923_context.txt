@@ -1,0 +1,32 @@
+Phase/WO: P_115 routine session, 2026-09-02, no open WO.
+Task: re-emit HNGE with a corrected target field. Original emission this
+morning (10:43am handoff) used T1=98.69 as guideline_target; P_400's
+cli_evaluate ran ~3:28pm and dropped HNGE for RR_BELOW_MIN (R:R ~0.43
+with T1 vs stop 83.77). Tony confirmed: re-emit with T2=105.55 instead.
+
+What this script does: single emit_signal() call for HNGE, identical to
+this morning's except guideline_target changes from 98.69 to 105.55 and
+the rationale has one added sentence documenting the correction.
+overwrite=True is hardcoded in emit_signal, so this safely replaces the
+existing vault note rather than duplicating it.
+
+Success criteria: script prints "PASS" and exits 0, .done marker written.
+
+IMPORTANT -- do not verify success by checking for a JSON file under
+trading_journal\TradeOrderManagement\signals\. That was this morning's
+wrong assumption. emit_signal() actually writes via P_800's
+write_to_vault(), which lands as an Obsidian note at
+trading_journal\TradeOrderManagement\P400\2026-09-02_HNGE.md. P_400's
+own cli_evaluate process re-reads that note on its own schedule (not
+immediately) and re-runs its R:R gate -- this script's PASS only confirms
+the vault write succeeded, not that P_400 has re-evaluated yet. Tony will
+check the P400 note's run_ts/target_1/council_verdict fields later
+himself to see if it cleared this time.
+
+What to fix on failure: read the printed exception/traceback. Likely
+causes: import path wrong, or a SIGNAL_V2 schema validation error --
+check the field name in the error against signal_schemas.py. Do not
+change any value other than guideline_target (98.69 -> 105.55) and the
+one rationale sentence already in the script.
+
+Do not change test assertions.

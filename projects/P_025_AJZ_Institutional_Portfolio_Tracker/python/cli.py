@@ -3,7 +3,7 @@ P_025 AJZ Institutional Portfolio Tracker — CLI Entry Point
 
 Usage
 -----
-    python cli.py build
+    python cli.py build [--mode full|yearly|ytd]
     python cli.py update
     python cli.py quick
 """
@@ -14,7 +14,7 @@ import argparse
 import logging
 import sys
 
-from config import LOG_FORMAT, LOG_LEVEL
+from config import ANALYSIS_MODE, LOG_FORMAT, LOG_LEVEL
 
 
 def _configure_logging() -> None:
@@ -40,15 +40,20 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--mode",
         choices=["full", "yearly", "ytd"],
-        default="full",
-        help="lookback window for build: full=3y | yearly=365d | ytd=Jan 1",
+        default=None,
+        help=(
+            "Analysis window for build: "
+            "full=3y trailing (default), yearly=365d trailing, ytd=calendar year-to-date. "
+            "Ignored for update/quick. Overrides P025_ANALYSIS_MODE env."
+        ),
     )
     args = parser.parse_args(argv)
 
     if args.command == "build":
         from application.build_portfolio import run_full_build
-        logger.info("Running full build (mode=%s)…", args.mode)
-        run_full_build(mode=args.mode)
+        mode = args.mode or ANALYSIS_MODE
+        logger.info("Running full build (mode=%s)…", mode)
+        run_full_build(mode=mode)
     elif args.command == "update":
         from application.update_portfolio import run_update
         logger.info("Running incremental update…")

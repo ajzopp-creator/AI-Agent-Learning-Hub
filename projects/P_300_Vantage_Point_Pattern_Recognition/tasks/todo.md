@@ -1,5 +1,118 @@
 # P_300 Task Queue
 
+## 2026-09-04 (2nd) -- F2 State Change: Chaikin MCP Pull (14 symbols, 1 failed, 0 no-coverage)
+RunChaikinBatch.ps1 -Schema P300 hit the headless-bridge failure again
+(exited 1, 0/14 notes updated) for SARK, ABM, CFG, CIFR, CRUS, FHN, FISV,
+HUT, IREN, KEY, PNC, RIVN, SYNA, VRT. Pulled all 14 via docs/processes/
+chaikin_mcp_pull.md, this session's own claude-in-chrome MCP tools.
+
+**Updated (13):** ABM Neutral, CFG Neutral, CIFR Very Bearish, CRUS
+Neutral+, FHN Neutral+, FISV Neutral, HUT Bearish, IREN Neutral, KEY
+Bearish, PNC Neutral+, RIVN Very Bearish, SYNA Neutral, VRT Neutral. All
+13 vault notes confirmed with real ## Chaikin Power Gauge sections,
+mtimes 10:20:34-10:27:52, sequential, ratings cross-checked against the
+raw page text before writing. 9 of 13 hit the known page-load race on
+first read (blank/N/A) -- resolved on retry per runbook step 3 every
+time.
+
+**Failed (1):** SARK (Investment Managers Series Trust II - Tradr 1X
+Short Innovation Daily ETF) -- "Oops! Something went wrong. Please try
+again later."
+
+**CORRECTION (same day, Tony's screenshot):** this was NOT an engine
+error. SARK is an ETF; `/pgr/stock/SARK` (the URL this runbook always
+uses) throws "Oops!" for ETF tickers -- the correct path is
+`/pgr/etf/SARK`, which loads cleanly: Rating None, "This ETF is
+unrated", ETF Group Global Inverse Equity, Holdings 0. Same shape as
+the existing XYLD/BITX/CRPT/CLIX skip-list entries. The 2026-08-28 and
+2026-09-03 "Oops!" failures were the identical misdiagnosis, not two
+separate recurrences -- one root cause, caught late. Added to
+chaikin_skip_list.csv this session. `docs/processes/chaikin_mcp_pull.md`
+also gained a step: try `/pgr/etf/{TICKER}` before reporting Failed on
+any `/pgr/stock/{TICKER}` "Oops!" response.
+
+**No-coverage:** SARK confirmed genuine (ETF, unrated, see correction
+above) -- all 14 resolved to a real rating or SARK's no-coverage.
+
+**Chart Is King divergence flagged (disclosure, not override):** of this
+batch's 5 BUY signals (CIFR, CRUS, HUT, RIVN, VRT), 3 landed
+Bearish/Very Bearish on Chaikin -- CIFR (BUY, Very Bearish: high LT
+debt-equity, high price-to-book), HUT (BUY, Bearish: high debt-equity,
+high price-to-sales), RIVN (BUY, Very Bearish: high price-to-book, very
+negative expert activity/short interest). All three are richly-valued,
+high-debt growth names (bitcoin-mining infrastructure + EV) where the
+pattern read is bullish and the fundamentals/expert-activity read is
+bearish. CRUS and VRT (also BUY) landed Neutral+/Neutral -- no conflict.
+
+---
+
+## 2026-09-04 -- F2 State Change: WO-P300-E5.009 + WO-P300-E5.010 both CLOSED, independent review
+Fresh session (INIT only, wrote none of the code under review). Tony's
+instruction: "do Both."
+
+**E5.009 (SIP Step 1B):** verified live -- SIP file read in full (v3.6,
+Step 1B present verbatim), byte-scanned both edited files myself
+(CR=0/LF=205 on the SIP, CR=0 on the archive -- matches the WO's own
+post-write claim, not just trusted). Re-ran Step 1B's actual check logic
+against TODAY's real files, not the 08-29 demo: todo.md fires (756 lines
+> 500), lessons.md silent (37 entries/54.5KB, under cap since the 08-31
+archive pass). No discrepancies. CLOSED.
+
+**E5.010 (h5 timing finding):** both report files matched the WO's
+numbers verbatim. Found one stale claim -- the two `run_this_P300_
+20260831_*` PEH scripts weren't in `verify\` as stated, swept into
+`verify\_archive\_stale_uninspected_20260902\` by an unrelated cleanup;
+content intact, corrected in the WO rather than treated as a blocker.
+Confirmed `signal_classifier.py`'s 08-31 mtime predates this WO's own
+scripts by over an hour (the already-logged M-119/M-120 smoke-test fix,
+not scope creep). Decided the CLAUDE.md question the WO left open --
+added an `outputs\reports\ledger\` row to Canonical Paths. Staged a new
+PEH script (`run_this_P300_20260904_095904.py`) to independently
+recompute the complete-case panel (not just copy the WO's numbers) and
+spot-check one row against `buy_ledger.db` raw values -- Tony ran it,
+PASS, all five horizons matched inside tolerance, DE/2026-06-02 spot-check
+confirmed the M-020/M-120 x100 scaling is actually correct against a real
+row. CLOSED. No change to `signal_classifier.py`'s tiebreak -- WO's own
+recommendation (re-check against a second market window first) stands.
+
+Both WO files updated in place with Independent Review sections;
+CLAUDE.md Canonical Paths gained one row. No production code touched by
+this review session.
+
+Open P_300 work orders after this: E5.001 (PENDING, import-linter,
+unstarted) only.
+
+---
+
+## 2026-09-03 -- F2 State Change: Chaikin MCP Pull (13 symbols, 1 failed, 0 no-coverage)
+RunChaikinBatch.ps1 -Schema P300 hit the headless-bridge failure again
+(exited 1, 0/13 notes updated) for ARRY, FRT, LFCR, MFC, RDDT, RDN, RY,
+SARK, SEDG, SLF, SLM, VST, WMT. Session was logged out of Chaikin's own
+site at first navigate (login page returned for ARRY) -- paused per the
+runbook, Tony logged back in, re-navigate succeeded immediately after.
+Pulled all 13 via docs/processes/chaikin_mcp_pull.md, this session's own
+claude-in-chrome MCP tools.
+
+**Updated (12):** ARRY Neutral+, FRT Bearish, LFCR Neutral, MFC Very
+Bullish, RDDT Neutral, RDN Neutral, RY Neutral+, SEDG Neutral+, SLF
+Bullish, SLM Neutral-, VST Very Bearish, WMT Bearish. No page-load races
+this batch -- all 12 returned full data on the first get_page_text after
+login. Final sweep: all 12 LastWriteTime timestamps cluster
+15:15:15-15:17:59, all 12 contain "## Chaikin Power Gauge", all 12
+ratings cross-checked against the raw page text before writing.
+
+**Failed (1):** SARK (Investment Managers Series Trust II - Tradr 1X
+Short Innovation Daily ETF) -- page returned "Oops! Something went
+wrong. Please try again later." on two separate attempts, same failure
+shape as 2026-08-28's TSLY (leveraged/theme single-instrument ETF, Power
+Gauge engine erroring, not the standard no-coverage shell). Not retried
+a third time. Note untouched.
+
+**No-coverage:** none this batch -- all 13 resolved to either a real
+rating or the TSLY-shaped engine error above.
+
+---
+
 **>>> 2026-08-29, Gap analysis -- Citadel "Cross-Regime Bayesian Optimization" infographic + Apodex-promoted "Regime-Adaptive" article checked against real P_300 architecture, no build:**
 
 Tony uploaded a Citadel Research infographic (7-principle Bayesian-optimization/ML-ensemble framework for regime-robust equity signals) and asked for a gap analysis against P_300's real architecture, then asked to also check a KnowledgeBase article (`2026-08-29_How Quants Use AI to Build Regime-Adaptive Trading Strategies (Complete Guide).md`, an Apodex-tool promotional piece describing HMM/MS-GARCH regime detection) against the same analysis.
@@ -621,3 +734,107 @@ wrong (project .claude\skills\ -- real location is Hub-root
 are cited in any SKILL.md, so the miss changed nothing. Correct path
 recorded for E5.009. WO-P300-E5.009 (INIT size-check nudge, SIP Step
 1B) filed PENDING to close E8.001's "who notices" gap.
+
+**>>> 2026-08-31 (Sonnet) -- INIT through session close, dense day:**
+INIT surfaced real drift from stale notes: E5.006/E4.009/E4.004 already
+CLOSED (not open as last tracked), E5.009 already OWNER_DONE (SIP v3.6
+built, not PENDING), LM Studio running with no model loaded. Diagnosed
+the overnight BulkAddPattern batch mid-flight (not hung -- Step 4
+promoting, per its own >1hr warning). Fixed two real staleness bugs:
+CLAUDE.md's BUY z-gate line (documented z>0.0, live BUY_MIN_Z_SCORE has
+been 1.0 since 06-28) and signal_classifier.py's smoke-test case 4
+(fixture would have printed WATCH not the BUY it claimed, at the
+current gate). 4th lessons.md archive pass (M-042/043/044/045/046/
+047/048/051 moved, oldest-first, none referenced live) plus a real
+duplicate-ID fix -- two unrelated lessons had both been numbered M-111;
+the newer one (headless OAuth, 08-19) renamed to M-118, M-113's
+cross-reference updated to match, M-112's correct M-111 reference
+verified untouched. M-119 (Path.read_text() lacks newline= on p140's
+3.12) and M-120 (a printed "matches known value" claim isn't a check
+unless the code asserts it) added same day.
+
+Catalog-growth question settled with data, not opinion: BUY precision
+has been flat 70.0-70.4% since ~36K patterns despite 11K more added
+since (chart run); root-caused the batch's 10hr Step 2 (vs. the usual
+1.5-2hr) to MINE_MIN_ANCHOR_DATE's rolling 5-year window pushing
+min_new_date back far enough to force near-full-corpus rescoring in
+eval_incremental.py's _partition_unaffected -- confirmed 13 of 15
+batch symbols were genuinely new, not redundant re-mining, so the
+plateau reads as a DTW signal ceiling, not a coverage gap. CE_GATE
+pointed to as the real next lever over more bulk-mining.
+
+Ledger-fill hadn't run since 07-03 despite the DB being written to
+daily -- run today (362/553 filled). h5 calibration gap (n=472,
+75.5% pred vs 51.1% real, -0.75% avg) diagnosed as broad-based (worst
+week 19.8%, worst 5 symbols 12.1% of total negative return, neither
+close to a majority) rather than a bad stretch or bad names. Trajectory
+check on the same 324 complete-case rows: -0.52% at h5 to +1.92% at
+h20, same trades, five time points -- checked against market data
+(S&P roughly flat June-July, not a rising tide) before trusting it.
+Real evidence for a timing artifact in the classifier's shortest-
+horizon tiebreak, not proof. Filed as **WO-P300-E5.010** (OWNER_DONE,
+no build, re-check against a second market window before touching the
+tiebreak) rather than acted on directly.
+
+Overnight batch finished mid-session: promoted to
+083026catalog.db, 44,399 -> 46,809 patterns / 460 -> 473 symbols,
+18/18 mine files archived, total runtime 15:46:35 (Step 4 alone
+5:16:18 -- same min_new_date mechanism as Step 2, not a new problem).
+
+Open at session close: WO-P300-E5.010 and WO-P300-E5.009 both
+OWNER_DONE awaiting independent review (fresh session, not this one).
+WO-P300-E5.001 (import-linter) still PENDING, untouched. LM Studio
+still has no model loaded. P_300_preflight_status.json is now stale
+against the promoted catalog -- run P_300_Preflight.bat before next
+INIT. p300-project-context skill's Step 1B checklist line is still an
+unclicked propose_skills card, not live.
+
+## 2026-08-31 -- F2 State Change: Chaikin MCP Pull (8 symbols, 2 no-coverage)
+Automated RunChaikinBatch.ps1 failed as expected (headless bridge, E4.009
+-- 0/10 via the CLI path). Pulled directly via claude-in-chrome MCP per
+chaikin_mcp_pull.md: CME, FCNCA, JPM, LULU, PTON, SCHW, SPGI, WFC updated
+(## Chaikin Power Gauge section appended, verified via LastWriteTime +
+rating spot-check against what was extracted, not tool-call success
+alone). LVMUY and TCEHY genuine no-coverage (Rating: None + "Power Gauge
+summary not available" on retry, both OTC ADRs) -- no stub written,
+matches the runbook's rule. Most symbols hit the known page-load race
+(blank/N/A on first get_page_text) -- retried once per the runbook, real
+data on the second read every time; only LVMUY/TCEHY stayed empty on
+retry, confirming genuine no-coverage rather than a slow load. Two Chrome
+browsers were connected with no way to distinguish them from deviceId
+alone -- used switch_browser so Tony could pick by clicking Connect in
+the actual window, rather than guessing.
+
+## 2026-09-02 -- F2 State Change: Chaikin MCP Pull (7 symbols, 0 no-coverage)
+RunChaikinBatch.ps1 -Schema P300 hit the headless-bridge failure again
+(banner fired correctly, 0/7 notes updated) for LUMN, BWXT, CVE, GME,
+HLX, HPQ, LTC. Pulled all 7 via docs/processes/chaikin_mcp_pull.md,
+this session's own claude-in-chrome MCP tools -- the MCP relay itself
+had stalled earlier same day (windows-mcp:FileSystem, filesystem:read_text_file,
+and a plain Get-Date all timed out at 4 min back-to-back); did not retry
+blind, waited for Tony to confirm the relay was back before proceeding.
+
+**Written (7):** LUMN Neutral, BWXT Bearish, CVE Very Bullish, GME
+Bearish, HLX Very Bullish, HPQ Very Bullish, LTC Neutral-. No page-load
+races this batch -- all 7 returned full data on the first get_page_text.
+Final sweep: all 7 LastWriteTime timestamps cluster 15:19:51-15:21:45,
+all 7 contain "## Chaikin Power Gauge", all 7 ratings cross-checked
+against the raw page text before writing.
+
+**Chart Is King divergence flagged (Tony's rule, disclosure not
+override):** GME's P_300 signal is BUY with z=+2.13 to +2.31 across
+every horizon (h5-h20, 85% win rate each) -- about as strong a BUY as
+this catalog produces -- while Chaikin rates it Bearish on very
+negative expert activity (high short interest) and poor financial
+metrics, despite very strong earnings performance. Pattern says buy,
+fundamentals/expert-activity side says sell.
+
+**Separate finding, not a Chaikin issue:** LTC Properties' note narrative
+(LM Studio-generated) refers to the company as "Litecoin (LTC)" --
+LTC Properties, Inc. is a health-care REIT; Litecoin is the
+cryptocurrency with the same ticker. The narrator hallucinated the
+wrong entity from the ticker alone. Doesn't touch the underlying
+z-scores/win-rates (real math, unaffected), but the narrative text in
+that note is wrong and should not be read as company context. Same
+shape as the 2026-08-28 TE/TransAlta mismatch (M-116 family) --
+ticker-to-entity confusion in generated text, not in the signal.

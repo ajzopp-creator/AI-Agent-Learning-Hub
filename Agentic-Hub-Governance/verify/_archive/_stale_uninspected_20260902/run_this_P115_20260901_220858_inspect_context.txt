@@ -1,0 +1,14 @@
+Phase/Task: P_115 live-signal logging, 2026-09-01 evening session (ABT/XLV, no WO).
+Date: 2026-09-01
+
+What this script does: Read-only inspection of P_115_118_TrackerDashboard_V2.xlsx
+via openpyxl. Prints sheet names/dims, header row 1, and the last two data rows
+(values + font/fill/numfmt on the last row) so the next step can append two new
+rows (ABT, XLV) matching existing formatting conventions exactly. Makes no writes.
+
+Success criteria: prints SHEETS, header row 1 values, last row number, last row
+values+formatting, second-to-last row values, then "PASS" with no traceback.
+
+If it fails: report the traceback verbatim. Do not guess at sheet name or column
+order from this context file -- read them from the script's own printed output.
+Do not change test assertions (there are none; this is inspection only).

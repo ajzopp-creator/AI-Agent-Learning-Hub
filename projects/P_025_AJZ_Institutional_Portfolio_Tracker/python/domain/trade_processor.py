@@ -17,6 +17,7 @@ from schemas import (
     DailyCashRow,
     DailyInvestedRow,
     DailyUnitsRow,
+    FifoCostRow,
     MarketDataRow,
     TradeRecord,
 )
@@ -248,4 +249,31 @@ def build_cost_basis_rows(
                 account_id=account_id,
             )
         )
+    return rows
+
+
+def build_cost_basis_for_accounts(
+    trades: list[TradeRecord],
+    fifo_cost: list[FifoCostRow],
+    account_ids: tuple[str, ...],
+) -> list[CostBasisRow]:
+    """Lifetime long VWAP × FIFO remaining shares, one row per account+ticker."""
+    rows: list[CostBasisRow] = []
+    for acct in account_ids:
+        avg = average_cost_by_ticker(trades, account_id=acct)
+        for fc in fifo_cost:
+            if fc.account_id.upper() != acct.upper():
+                continue
+            if fc.remaining_shares <= 0:
+                continue
+            a = avg.get(fc.ticker, 0.0)
+            rows.append(
+                CostBasisRow(
+                    ticker=fc.ticker,
+                    avg_cost=round(a, 6),
+                    current_shares=fc.remaining_shares,
+                    total_cost_basis=round(a * fc.remaining_shares, 2),
+                    account_id=acct,
+                )
+            )
     return rows

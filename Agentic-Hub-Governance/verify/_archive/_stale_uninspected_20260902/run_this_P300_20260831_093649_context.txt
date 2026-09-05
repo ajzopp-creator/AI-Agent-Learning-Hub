@@ -1,0 +1,26 @@
+P_300 -- h5 ledger gap diagnosis, 2026-08-31
+Task: is the 75.5% predicted / 51.1% realized h5 win-rate gap (n=472,
+avg return -0.75%) from this morning's ledger-calibration run
+concentrated in time, concentrated in a handful of symbols, or broad?
+
+What this does: read-only query against buy_ledger.db's fired_signals
+table (chosen_horizon=5, h5_return_pct filled). Buckets by ISO week
+and by ticker, computes each bucket's win rate and average return,
+and reports what fraction of total NEGATIVE return comes from the
+single worst week and the worst 5 symbols. No writes to the ledger.
+
+Success criteria: script prints PASS and the "Overall" line's
+avg_return/win_rate should match this morning's ledger-calibration
+h5 row (n=472, avg_ret=-0.75%, win_rate=51.1%) as a sanity check that
+the query is pulling the same population -- if those numbers don't
+match, something about the WHERE clause or the calibration tool's own
+filter differs and needs reconciling before trusting the breakdown.
+
+If it fails: the FAIL reason names what broke (DB not found, 0 rows,
+a signal_date that matches neither YYYYMMDD nor YYYY-MM-DD -- see
+M-060 in lessons.md for why that specific format is worth taking
+seriously here). Don't change the chosen_horizon=5 filter or the
+win/loss threshold (return > 0) without flagging it -- those match
+how ledger-calibration itself defines the h5 bucket.
+
+Paste the full output back either way.

@@ -79,18 +79,30 @@ has a dedicated `APPROVED_WITH_SEVERE_WARNING` branch (state each warning
 No blocks/severe-warnings, a CAUTION → `APPROVED_WITH_CAUTION`. Otherwise
 `APPROVED`.
 
-**TAPE and market hours (WO-P400-E5.005, 2026-08-10):** outside 9:30-16:00
-ET no longer hard-BLOCKs. `fetch_snapshot.py` prices off the last
-completed daily bar's close instead of a live quote, with bid/ask
-reconstructed from the symbol's last observed LIVE half-spread
+**TAPE and market hours (WO-P400-E5.005, 2026-08-10; extended basis added
+WO-P400-E7.001, 2026-08-31):** outside 9:30-16:00 ET no longer hard-BLOCKs.
+`price_basis` is now three-way: "live" (regular session), "extended"
+(pre-market 4:00-9:30 or after-hours 16:00-20:00 ET, priced off a live
+Schwab extended-hours quote via `get_extended_quote_data()` -- CAUTION,
+`RC_USING_EXTENDED_DATA`), or "close" (all other times, last completed
+daily bar + cached spread, unchanged from E5.005 -- CAUTION,
+`RC_USING_CLOSE_DATA`). `fetch_snapshot.py` prices off the last completed
+daily bar's close for the "close" basis only, with bid/ask reconstructed
+from the symbol's last observed LIVE half-spread
 (`infrastructure\last_spread_cache.py`, updated on every market-open
-fetch — real friction, not a synthetic zero). `tape_vote()` reads this as
-`price_basis` ("live" | "close"): closed + `price_basis=="close"` →
-CAUTION (`RC_USING_CLOSE_DATA`), not BLOCK. No cached spread for a symbol
-yet (never fetched live before) → `fetch_snapshot.py` fails loud, no file
-written — fetch that symbol live during market hours first. The old
-`pre_market_flag` param is gone (was dead — hardcoded `False`, never
+fetch -- real friction, not a synthetic zero). No cached spread for a symbol
+yet (never fetched live before) -> `fetch_snapshot.py` fails loud, no file
+written -- fetch that symbol live during market hours first. The old
+`pre_market_flag` param is gone (was dead -- hardcoded `False`, never
 wired to anything).
+
+**Extended-hours gotcha (WO-P400-E7.001, found live 2026-08-31):** Schwab's
+`extended` quote node returns `bidPrice`/`askPrice` as `0.0` (not null)
+when there's no active extended-session market for a symbol right now --
+common on large caps with thin after-hours activity (CME/SPGI/WFC all hit
+this at 17:41 ET). `get_extended_quote_data()` treats bid/ask <= 0 as no
+real quote (returns None, same as missing/null) -- never trust a zero
+spread from this field as real.
 
 Reason codes live in `domain\council_codes.py` as string constants — never
 inline a literal reason string in a new role function; import from there.
@@ -224,6 +236,7 @@ alongside or immediately after this skill, same session, per
 | E5.005 | `tape_vote()` hard-BLOCKed every evaluate outside 9:30-16:00 ET via `RC_MARKET_CLOSED` unless `pre_market_flag=True` -- hardcoded `False` in `evaluate_signal.py`, never wired anywhere, so it was a 100% block with a dead escape hatch | Replaced `pre_market_flag` with `price_basis` ("live"/"close"). Closed-market path prices off the last daily bar's close (`fetch_snapshot.py`) with bid/ask reconstructed from the symbol's last observed LIVE half-spread (`infrastructure\last_spread_cache.py`, real friction, not synthetic zero) -- CAUTIONs (`RC_USING_CLOSE_DATA`) instead of BLOCKing. No cached spread yet -> fails loud, no file written. Tests: `test_tape_price_basis.py`, `test_fetch_snapshot.py`, `test_last_spread_cache.py`. |
 | E6.001 | `Bases/P400_Trades.base` filtered on `TradeManagement/P400` -- renamed to `TradeOrderManagement/P400` by WO-P800-E3.003 (2026-07-25); dead path returned zero rows silently for 17 days. Also sorted on a `date` field that does not exist in the P400 note schema | Path corrected to `TradeOrderManagement/P400`; sort field corrected to `run_date`. See WO-P400-E6.001 -- also found P_400 order notes never close the lifecycle loop (entry_date/close_date/realized_pnl stay null forever), reconciliation design pending |
 | E5.006 | `cmd_compare()` had zero disposition wiring on any outcome -- a `NEITHER` recommendation (both vehicles fail R:R/viability) printed the comparison table and returned, leaving the packet in the live inbox indefinitely -- no archive, no record, re-fetched (re-billed against live Schwab) every session. Found live 2026-08-11 on HAL and VKTX after a `batch-2b` earnings-cache hard-fail forced the manual `compare` fallback. | `run_comparison()` (`compare_vehicles.py`) gained a `trade_mode` param and a new `_dispose_if_neither()` helper -- on `NEITHER`, calls the existing `drop_signal()` (`drop_reason="RR_INVALID"`), archiving the packet and writing a REVIEWED_NO_TRADE record, mirroring the ENTRY_MISSED path `cmd_evaluate()` already used. Tony's directive (2026-08-11): once a signal reaches P_400 it is either a trade or it is not -- no hold-and-recheck; re-qualification is the trade-selector projects' job (P_115/P_300/P_118), not Order Management's. Test: `test_run_comparison_neither_disposes_packet`. Live-verified same session: inbox count 16 -> 0. |
+| E7.001 | `get_extended_quote_data()` (new, WO-P400-E7.001) only checked bid/ask for None -- Schwab's `extended` node returns 0.0 (not null) when no active extended-session market exists for a symbol, which would have let a fake zero-spread snapshot pass the spread-sanity gate looking like a perfect fill. Found live 2026-08-31 on CME/SPGI/WFC (all three, 17:41 ET after-hours). | Added bid <= 0 / ask <= 0 guard, treated same as missing data (returns None, fails loud, no file written). Test: ``test_get_extended_quote_data_returns_none_on_zero_bid_ask``. |
 | E6.004 | `batch-2b` aborted the WHOLE batch on one earnings-cache miss instead of skipping just that symbol -- `batch_2b_scoring.py` already had a per-symbol skip mechanism for this exact case, but it imported `EarningsDataMissing`/`require_entry` from the OLD dead `infrastructure.earnings_file` module, not the live `application.earnings_lookup` module `build_entries_for_symbols()` actually raises from -- two same-named classes in two modules, the real exception blew past the catch and up into `cmd_batch_2b()`'s top-level abort. Found live 2026-08-19: ALGN cache miss killed a clean 12-symbol batch. | Revision 1 fixed the abort (`build_entries_for_symbols()` omits the symbol instead of raising, `_process_symbol()` catches it into the existing `skipped` list). Revision 2, same session: root cause traced further -- MACRO's real gate (`earnings_in_window()`) only ever checks 3-days-forward/2-days-back from today (Tony's call 2026-07-28, confirmed 2026-08-19 as "the real trading Window"), so the 83-day calendar pull was fetching 12x more than the gate consumes, into a data source that's genuinely sparse past ~2 weeks anyway. `EARNINGS_CALENDAR_LOOKAHEAD_DAYS` cut 83->7 (`config.py`); a missing symbol now gets a confirmed-clear entry (`next_earnings_date=None`) instead of a skip, since absence in a window this narrow IS the real answer, not an unknown. Live-verified 2026-08-19: 11-symbol batch, zero data-availability skips, every symbol reached a real QUANT verdict (2 SBLK APPROVED, 9 genuine BLOCKs). See WO-P400-E6.004. |
 | E6.006 | `batch-2b`'s printed table showed `VEHICLE=STOCK` with zero reason for every candidate -- indistinguishable from options never being checked at all. Tony caught it live: "where is Option evaluation??" Traced and confirmed NOT a correctness bug -- `chain_SBLK.json` proved a real contract was fetched and correctly rejected (spread_pct_of_mid=26.67% vs. 10% max). `compare_vehicles()` already builds a full `recommendation_reason` string; `batch_2b_scoring.py`'s `_vehicle_comparison()` just discarded it before it reached the report. | `RankedCandidate` gained `vehicle_reason: str` (`schemas.py`); `_vehicle_comparison()` returns the reason on every path including the chain-fetch-failure early exit (previously reason-less); `_print_ranked_table()` prints it under each row. Pure reporting fix -- vehicle-selection logic itself untouched. See WO-P400-E6.006. Live-table verification pending next signal batch (today's inbox already fully archived by the time this landed). |
 ---

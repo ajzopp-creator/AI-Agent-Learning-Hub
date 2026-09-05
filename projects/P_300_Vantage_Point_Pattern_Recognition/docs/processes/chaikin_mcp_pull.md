@@ -1,9 +1,9 @@
 # P_300 — Chaikin MCP Pull Runbook
 
 **File:** `docs/processes/chaikin_mcp_pull.md`
-**Version:** 1.0
+**Version:** 1.1
 **Status:** Live operator runbook
-**Last Updated:** 2026-08-21
+**Last Updated:** 2026-09-04
 **Audience:** Anthony Zoppi
 **Pairs With:** `RunChaikinBatch.ps1` (Hub-root), `shared_resources\chaikin_enrichment\`, WO-P300-E4.009, WO-P800-E4.001
 
@@ -75,6 +75,18 @@ For each symbol/note-path pair from step 1, in order:
    well-known symbol. Re-run `get_page_text` once before concluding
    anything. Confirmed real on 2026-08-21 (CBOE): first read empty,
    second read complete.
+3b. **If the page returns "Oops! Something went wrong. Please try again
+   later."** — before treating this as a real failure, retry once at
+   `https://members.chaikinanalytics.com/pgr/etf/{TICKER}` (note `/etf/`,
+   not `/stock/`). `/pgr/stock/{TICKER}` throws this exact error for ETF
+   tickers; it is a wrong-URL-template symptom, not an engine fault, and
+   reads identically to a real error unless you know to check the other
+   path. Confirmed 2026-09-04 (SARK): `/pgr/stock/SARK` "Oops!" on three
+   separate sessions (08-28, 09-03, 09-04) before the `/pgr/etf/SARK`
+   path was checked and resolved cleanly to Rating: None / unrated. If
+   `/pgr/etf/{TICKER}` also errors or 404s, it's a genuine failure —
+   report per step 5 below (no-coverage) or as Failed, not retried
+   further.
 4. Extract exactly per `chaikin_prompt_template.txt`'s existing field
    list (Rating, Price, Quick Stats — Fundamentals/Technicals/
    Performance/Earnings/Ratios/Dividends — and the Power Gauge Summary
@@ -128,6 +140,15 @@ For each symbol/note-path pair from step 1, in order:
 
 ## Version History
 
+- **2026-09-04 (v1.1)** — Added step 3b: an "Oops! Something went
+  wrong" response on `/pgr/stock/{TICKER}` is a wrong-URL-template
+  symptom for ETF tickers, not a real engine error — retry at
+  `/pgr/etf/{TICKER}` before reporting Failed. Root-caused after SARK's
+  identical "Oops!" was misdiagnosed as a recurring engine fault across
+  three separate sessions (08-28, 09-03, 09-04); Tony's screenshot of
+  `/pgr/etf/SARK` showed a clean unrated-ETF page the whole time. Same
+  failure shape the existing skip-list ETF entries (XYLD/BITX/CRPT/CLIX)
+  were already evidence of — this runbook just never carried the check.
 - **2026-08-21 (v1.0)** — Initial release, written the same session this
   method was first proven: 8/8 real symbols pulled and independently
   verified (AGCO, CBOE, CLSK, GLPI, GPK, MSCI, RIOT, YUM), after

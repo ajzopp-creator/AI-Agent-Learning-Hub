@@ -13,6 +13,13 @@ reconstructed as close +/- the symbol's last observed LIVE half-spread
 earlier, not a synthetic zero. No cached spread for this symbol yet ->
 fail loud, no file written (never fabricate); the fix is to fetch this
 symbol live at least once during market hours first.
+
+WO-P400-E7.001: added a third pricing basis, "extended", for pre-market
+(4:00-9:30 ET) and after-hours (16:00-20:00 ET) sessions -- prices off a
+live Schwab extended-hours quote instead of falling back to close+cached
+spread, when the extended quote is available. Outside all three windows
+(weekends, holidays, overnight before 4:00/after 20:00 ET), close+cached-
+spread (E5.005) is unchanged.
 """
 
 from __future__ import annotations
@@ -23,7 +30,7 @@ from pathlib import Path
 from typing import Optional
 
 from config import SCHWAB_CONFIG_PATH, SCHWAB_TOKEN_PATH
-from domain.market_hours import is_market_open_now
+from domain.market_hours import get_session_state
 from infrastructure.last_spread_cache import get_last_spread, record_live_spread
 from schemas import SnapshotDict
 from shared_resources.python_utils.atr import compute_atr_wilder
@@ -37,12 +44,17 @@ def cmd_fetch_snapshot(
     sector: Optional[str] = None,
     last_earnings_date: Optional[str] = None,
 ) -> int:
-    from infrastructure.schwab_market_data import get_daily_bars, get_quote_data
+    from infrastructure.schwab_market_data import (
+        get_daily_bars,
+        get_extended_quote_data,
+        get_quote_data,
+    )
 
     symbol = symbol.upper()
     now = datetime.now(timezone.utc)
     now_iso = now.strftime("%Y-%m-%dT%H:%M:%SZ")
-    market_open = is_market_open_now(now)
+    session = get_session_state(now)
+    market_open = session == "regular"
 
     bars_result = get_daily_bars(SCHWAB_CONFIG_PATH, SCHWAB_TOKEN_PATH, symbol)
     if bars_result is None:
@@ -51,7 +63,7 @@ def cmd_fetch_snapshot(
         return 1
     bars, volumes = bars_result
 
-    if market_open:
+    if session == "regular":
         quote = get_quote_data(SCHWAB_CONFIG_PATH, SCHWAB_TOKEN_PATH, symbol)
         if quote is None:
             print(f"[ERROR] Could not fetch live quote for {symbol}. "
@@ -69,6 +81,20 @@ def cmd_fetch_snapshot(
         # Record this real spread for the next closed-market fetch to reuse.
         half_spread = (ask - bid) / 2.0
         record_live_spread(symbol, half_spread=half_spread, price=price, observed_at=now_iso)
+
+    elif session in ("pre_market", "after_hours"):
+        quote = get_extended_quote_data(SCHWAB_CONFIG_PATH, SCHWAB_TOKEN_PATH, symbol)
+        if quote is None:
+            print(f"[ERROR] Could not fetch extended-hours quote for {symbol} "
+                  f"({session}). No file written -- fall back to manual/TOS entry.")
+            return 1
+        price, bid, ask = quote["price"], quote["bid"], quote["ask"]
+        today_volume = quote.get("today_volume")
+        data_source = "schwab_api_extended"
+        price_basis = "extended"
+        print(f"[INFO] {session} session -- pricing {symbol} off a live Schwab "
+              f"extended-hours quote (price={price}, bid={bid}, ask={ask}).")
+
     else:
         if not bars:
             print(f"[ERROR] No daily bars available for {symbol} to price the close. "

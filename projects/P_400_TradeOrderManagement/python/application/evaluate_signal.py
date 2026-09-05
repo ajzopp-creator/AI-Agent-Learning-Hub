@@ -16,6 +16,7 @@ from typing import Optional
 from config import (
     ENTRY_DRIFT_THRESHOLD_PCT,
     MAX_PLAUSIBLE_SPREAD_PCT,
+    MAX_PLAUSIBLE_SPREAD_PCT_EXTENDED,
     MIN_ACCEPTABLE_RR,
     MAX_CONCURRENT_POSITIONS,
     PORTFOLIO_HEAT_MAX_PCT,
@@ -111,20 +112,27 @@ def evaluate_signal(
     # -- Reconciliation: entry resolution (Section 6.5) + live R:R --
     half_spread = (snap.ask - snap.bid) / 2.0 if snap.bid and snap.ask else 0.0
 
-    # Spread plausibility gate (WO-P400-E4.004) -- must run before any R:R
-    # math touches half_spread. A wide/bad spread corrupts realistic-fill
-    # R:R silently (found live 2026-07-26: CAE half_spread=$2.34 -> R:R
-    # computed as -1.00 on a setup that was actually >2.0 by naive math).
+    # Spread plausibility gate (WO-P400-E4.004, extended threshold WO-P400-E7.001)
+    # -- must run before any R:R math touches half_spread. A wide/bad spread
+    # corrupts realistic-fill R:R silently (found live 2026-07-26: CAE
+    # half_spread=$2.34 -> R:R computed as -1.00 on a setup that was actually
+    # >2.0 by naive math). Extended-hours quotes get a wider, separate
+    # ceiling -- genuinely thinner liquidity, not the same signal as a bad
+    # regular-hours quote.
+    spread_threshold = (
+        MAX_PLAUSIBLE_SPREAD_PCT_EXTENDED if snap.price_basis == "extended"
+        else MAX_PLAUSIBLE_SPREAD_PCT
+    )
     spread_pct = (half_spread / snap.price * 100) if snap.price else 0.0
-    if spread_pct > MAX_PLAUSIBLE_SPREAD_PCT:
+    if spread_pct > spread_threshold:
         logger.warning(
             '%s: spread %.1f%% of price exceeds %.1f%% plausibility threshold. SPREAD_TOO_WIDE.',
-            packet.symbol, spread_pct, MAX_PLAUSIBLE_SPREAD_PCT,
+            packet.symbol, spread_pct, spread_threshold,
         )
         return _tape_block_result(
             packet, snap, trade_mode, qty_override, effective_stop,
             reason_code=RC_SPREAD_TOO_WIDE,
-            reason_detail=f'Spread {spread_pct:.1f}% of price exceeds {MAX_PLAUSIBLE_SPREAD_PCT}% plausibility threshold. Fill quality unacceptable.',
+            reason_detail=f'Spread {spread_pct:.1f}% of price exceeds {spread_threshold}% plausibility threshold. Fill quality unacceptable.',
         )
 
     drift_pct = round((snap.price - packet.guideline_entry) / packet.guideline_entry * 100, 3)

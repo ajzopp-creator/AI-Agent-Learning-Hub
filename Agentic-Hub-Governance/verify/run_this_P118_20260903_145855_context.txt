@@ -1,0 +1,27 @@
+P_118 STEP 2 signal emission -- CXW -- 2026-09-03
+
+What this tests: Invokes cli.py (production P_115 signal emitter) with the CXW
+ASYM candidate's fields (entry 34.60, stop 31.59/PA Stop structure, target 38.19,
+strategy=breakout, confidence=MEDIUM inferred, source=P_115 per architecture rule
+even though SignalSource=P_118 in the 27-col tracker). Confirms the SIGNAL_V2
+JSON packet lands at trading_journal\TradeOrderManagement\signals\2026-09-03_CXW_v2.0.json
+before reporting success.
+
+Why: Tony confirmed "Go on CXW" (2026-09-03 P_115/P_118 session). Fund Verification
+(V111) came back clean -- 2 of 3 criteria met (Debt/Cap ~50%, FCF +$26.1M positive;
+ROE 9.01% fails >15% threshold), matching submitted Fund=2, no >1-tier flag. No
+earnings within 3 sessions (last reported 8/6/26, next expected early Nov 2026).
+200-MA at 48.3% is NORMAL per chart label -- no penalty applied. Gate conditions
+for immediate emission (architecture v1.3/v1.4 Section 3.1) are met.
+
+Success criteria: script prints PASS and the exact JSON path; EXPECTED_FILE exists
+on disk after the subprocess call returns 0.
+
+What Claude Code should fix on failure: read STDOUT/STDERR for the emit_signal
+traceback (likely a Pydantic validation error on one of the packet fields -- check
+against shared_resources/python_utils/signal_schemas.py SignalV2 model). Do not
+change ARGS values without re-confirming them against this session's chat record.
+Do not change test assertions (the EXPECTED_FILE existence check).
+
+KNSA is intentionally NOT included -- Tony said "Go on CXW" only, holding KNSA
+pending his review (weak 1.01x breakout volume, sub-7wk pattern duration flagged).

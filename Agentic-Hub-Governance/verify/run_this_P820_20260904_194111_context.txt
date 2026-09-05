@@ -1,0 +1,32 @@
+WO-P820-E1.001 -- CRUS override order capture
+2026-09-04, P_820 session
+
+What this script does:
+Writes ONE real production record to the P_820 vault via
+write_to_vault("P820", {...}) for a live CRUS paper trade: entry 113.45,
+stop 109.80, target 119.94, source P_300, 10 shares. The trade was
+BLOCKED on R:R (~1.78:1) by P_400's Council and has no eval_cache on
+disk, so P_400's own `record` command cannot accept it -- this is the
+P_820 override-order fallback path defined in
+P_820_SYSTEM_DOCUMENTATION.md Section 6 Workflow 6.2 (added this
+session). This is NOT a test/dry-run -- it is the actual trade record.
+
+Success criteria:
+Script prints PASS and writes run_this_P820_20260904_194111.py.done with
+status: PASS. The printed "Note content" must contain CRUS, P_300,
+113.45, 109.8, 119.94, and "Discretionary override". A CRUS note must
+exist on disk under
+C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P820\.
+
+If it fails:
+Read the FAIL message and traceback. Common causes: import path issue
+(shared_resources not resolving -- check sys.path insert points at the
+Hub root, not a project folder), or P_800's write_handler.py rejecting
+the field dict (check P820Record schema in
+obsidian_writers\domain\vault_schemas.py for a field-name mismatch).
+Do not change field values (symbol/entry/stop/target/why_code) to make
+it pass -- those are the real trade data. Fix the code path, not the
+data, then re-run and paste full output back to Tony.
+
+Do not change test assertions (the required_substrings check) to make
+it pass artificially.

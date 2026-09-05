@@ -20,6 +20,22 @@ MARKET_CLOSE_TIME_ET: time = time(16, 0)
 # 6.9%, both off-hours. Real liquid-stock spreads are well under 1%.
 MAX_PLAUSIBLE_SPREAD_PCT: float = 2.0
 
+# --- Extended-hours pricing (WO-P400-E7.001) --------------------------------
+# Pre-market and after-hours session boundaries, Eastern time. Regular session
+# stays MARKET_OPEN_TIME_ET/MARKET_CLOSE_TIME_ET above; these bound the two
+# extended windows fetch_snapshot.py checks before falling back to close+cache.
+PRE_MARKET_OPEN_TIME_ET: time = time(4, 0)
+AFTER_HOURS_CLOSE_TIME_ET: time = time(20, 0)
+
+# Half-spread plausibility ceiling for extended-hours quotes -- separate from
+# MAX_PLAUSIBLE_SPREAD_PCT above because extended-session liquidity is
+# genuinely thinner (Schwab's own docs: single-venue pricing, wider spreads
+# as a rule, not an exception). PROVISIONAL: no real extended-hours spread
+# samples gathered yet -- set conservatively wide (2.5x the regular-hours
+# ceiling) pending live data. Revisit once a few real CAUTION/BLOCK cases are
+# observed (WO-P400-E7.001 acceptance criteria).
+MAX_PLAUSIBLE_SPREAD_PCT_EXTENDED: float = 5.0
+
 # --- Hub roots --------------------------------------------------------------
 HUB_ROOT: Path = Path(r"C:\Users\Trader\AI-Agent-Learning-Hub")
 VAULT_ROOT: Path = HUB_ROOT / "trading_journal"

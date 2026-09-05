@@ -8,6 +8,7 @@
 # Last updated: 2026-08-07 (added Session-Close Reporting Rule -- a session that did OWNER_DONE work on WO-P000-E3.001/E7.001 described that same work as "Independent Review" in its own chat recap; ref EC-006)
 # Last updated: 2026-08-29 (added "What Independent Review Is Not" -- a WOs VERIFY section labeled two unfinished OWNER tasks "left for Independent Review"; ref WO-P010-E1.004)
 # Last updated: 2026-08-29 (added Ack Scope -- doc-only/governance WOs no longer require per-project Acks, only WOs that change something a project's code/config/schema directly depends on; ref WO-P000-E2.001)
+# Last updated: 2026-09-04 (restored Enforcement section -- 2026-07-29 changelog line above claimed it was added but body never contained it; found while backfilling WO-P010-E1.004/E1.005 Completion Gate blocks; ref EC-005, WO-P000-E9.001)
 
 ---
 
@@ -47,6 +48,20 @@ Copy this block into the WO before marking OWNER_DONE:
 [ ] One ledger entry per WO confirmed
 [ ] No open VERIFY/Acceptance Criteria item is deferred to Independent Review by label -- see "What Independent Review Is Not" below
 ```
+
+---
+
+## Enforcement
+
+The Completion Gate checklist block above must be copied into the WO and
+populated *before* Status is set to OWNER_DONE -- not backfilled
+afterward, and not deferred to Independent Review. A WO reaching
+OWNER_DONE with no Completion Gate block present, or with the block
+present but empty, is not OWNER_DONE regardless of whether the
+underlying work is otherwise finished -- the missing block is itself the
+gate failure. (ref EC-005, WO-P000-E9.001; restores wording the
+2026-07-29 changelog line claimed was added but was never actually
+present in this file's body -- found 2026-09-04.)
 
 ---
 

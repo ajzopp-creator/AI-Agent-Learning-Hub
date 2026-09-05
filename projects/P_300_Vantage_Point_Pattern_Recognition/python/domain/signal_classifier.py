@@ -222,11 +222,12 @@ if __name__ == "__main__":
           f"{classify_per_horizon(stats(7, 3, 0.5, 1.0, 0.5, 0.4))} "
           f"(expect SignalClass.PASS)")
 
-    # 4. Per-horizon: clear BUY at the live z gate. BUY_MIN_Z_SCORE is 0.0
-    #    (M-034, lowered 2026-05-28), so z=1.0 > 0.0 passes; n/wr also clear.
-    #    (Originally written against the retired z>1.0 gate; updated v1.2.)
-    print(f"BUY (z=1.0 vs live gate 0.0):  "
-          f"{classify_per_horizon(stats(7, 10, 0.8, 3.5, 1.0, 1.0))} "
+    # 4. Per-horizon: clear BUY at the live z gate. BUY_MIN_Z_SCORE is 1.0
+    #    (M-034 lowered it 1.0->0.0 on 2026-05-28; config v1.8 re-tightened
+    #    it back to 1.0 on 2026-06-28), so z=1.1 clears the strict
+    #    z_score > BUY_MIN_Z_SCORE gate; n/wr also clear.
+    print(f"BUY (z=1.1 vs live gate 1.0):  "
+          f"{classify_per_horizon(stats(7, 10, 0.8, 3.5, 1.0, 1.1))} "
           f"(expect SignalClass.BUY)")
 
     # 5. Cross-horizon: BUY at 15 beats WATCH at 10 beats PASS at 5

@@ -8,18 +8,18 @@ No hardcoded values are permitted outside this module.
 from __future__ import annotations
 
 import os
-from datetime import date, timedelta
+from datetime import date
 from pathlib import Path
-from typing import Final
+from typing import Final, Literal
 
 # ---------------------------------------------------------------------------
 # Environment & Root Paths
 # ---------------------------------------------------------------------------
 
-# Hub lives on the Hub disk, not OneDrive. Override only via HUB_ROOT.
-HUB_ROOT: Final[Path] = Path(
-    os.environ.get("HUB_ROOT", r"C:\Users\Trader\AI-Agent-Learning-Hub")
-)
+# HUB_ROOT env wins. Do not fall back to OneDrive — that writes an empty
+# build when OneDrive is set and HUB_ROOT is not.
+_DEFAULT_HUB_ROOT: Final[str] = r"C:\Users\Trader\AI-Agent-Learning-Hub"
+HUB_ROOT: Final[Path] = Path(os.environ.get("HUB_ROOT", _DEFAULT_HUB_ROOT))
 
 PROJECT_ROOT: Final[Path] = HUB_ROOT / "projects" / "P_025_AJZ_Institutional_Portfolio_Tracker"
 PYTHON_ROOT: Final[Path] = PROJECT_ROOT / "python"
@@ -33,7 +33,6 @@ OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 # Primary SQLite database produced by P_020.
 # Confirmed live path (2026-08-21):
 # C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_020_AJZStrategies_PerformanceAnalysisSystem\data\database\P_020_trades.db
-# 611 rows in v_trade_summary, last written 2026-08-20 22:32.
 P020_DB_PATH: Final[Path] = Path(
     os.environ.get(
         "P020_DB_PATH",
@@ -65,9 +64,42 @@ PRIMARY_ACCOUNTS: Final[tuple[str, ...]] = (
     ACCOUNT_IRA9885,
 )
 
-# Inherited Roth (5232-9885) is included in the pull. Reader still returns
-# empty for that account if P_020 has no matching rows — it will not raise.
+# IRA feed is live — Inherited Roth (5232-9885) is included in all pulls.
+# Flip back to False only if the P_020 feed regresses.
 IRA_FEED_READY: Final[bool] = True
+
+# ---------------------------------------------------------------------------
+# Analysis Mode (lookback window for Daily_* / Market_Data / Equity_Curve)
+# ---------------------------------------------------------------------------
+
+AnalysisMode = Literal["full", "yearly", "ytd"]
+
+# Default mode; override with env P025_ANALYSIS_MODE or CLI --mode
+_DEFAULT_MODE: Final[str] = os.environ.get("P025_ANALYSIS_MODE", "full").lower()
+ANALYSIS_MODE: Final[str] = _DEFAULT_MODE if _DEFAULT_MODE in ("full", "yearly", "ytd") else "full"
+
+LOOKBACK_DAYS_FULL: Final[int] = 365 * 3   # 3 years trailing
+LOOKBACK_DAYS_YEARLY: Final[int] = 365     # 1 year trailing (best-practice risk window)
+LOOKBACK_DAYS_UPDATE: Final[int] = 14     # recent window for daily / weekly update
+
+
+def resolve_start_date(end_date: date, mode: str | None = None) -> date:
+    """
+    Resolve analysis start date from mode.
+
+    full   → trailing LOOKBACK_DAYS_FULL (3y)
+    yearly → trailing LOOKBACK_DAYS_YEARLY (365d)
+    ytd    → 1 January of end_date.year
+    """
+    from datetime import timedelta
+    m = (mode or ANALYSIS_MODE).lower()
+    if m == "ytd":
+        return date(end_date.year, 1, 1)
+    if m == "yearly":
+        return end_date - timedelta(days=LOOKBACK_DAYS_YEARLY)
+    # full (default)
+    return end_date - timedelta(days=LOOKBACK_DAYS_FULL)
+
 
 # ---------------------------------------------------------------------------
 # Output Workbook
@@ -84,6 +116,9 @@ SHEET_DAILY_UNITS: Final[str] = "Daily_Units"
 SHEET_DAILY_CASH: Final[str] = "Daily_Cash"
 SHEET_DAILY_INVESTED: Final[str] = "Daily_Invested"
 SHEET_COST_BASIS: Final[str] = "Cost_Basis"
+SHEET_FIFO_LOTS: Final[str] = "Fifo_Lots"
+SHEET_FIFO_COST: Final[str] = "Fifo_Cost"
+CORREL_TICKER_CAP: Final[int] = 20
 
 # Analytics sheet names
 SHEET_DASHBOARD: Final[str] = "Dashboard"
@@ -104,6 +139,8 @@ DATA_LAKE_SHEETS: Final[tuple[str, ...]] = (
     SHEET_DAILY_CASH,
     SHEET_DAILY_INVESTED,
     SHEET_COST_BASIS,
+    SHEET_FIFO_LOTS,
+    SHEET_FIFO_COST,
 )
 
 # ---------------------------------------------------------------------------
@@ -112,24 +149,6 @@ DATA_LAKE_SHEETS: Final[tuple[str, ...]] = (
 
 YFINANCE_TIMEOUT: Final[int] = 30          # seconds
 YFINANCE_RETRIES: Final[int] = 3
-LOOKBACK_DAYS_FULL: Final[int] = 365 * 3   # 3 years for initial build
-LOOKBACK_DAYS_YEARLY: Final[int] = 365     # trailing 12 months
-LOOKBACK_DAYS_UPDATE: Final[int] = 14     # recent window for daily update
-
-ANALYSIS_MODES: Final[tuple[str, ...]] = ("full", "yearly", "ytd")
-ANALYSIS_MODE: Final[str] = os.environ.get("P025_ANALYSIS_MODE", "full").strip().lower()
-
-
-def resolve_start_date(end: date, mode: str | None = None) -> date:
-    """Return the lookback start date for full / yearly / ytd."""
-    key = (mode or ANALYSIS_MODE).strip().lower()
-    if key == "ytd":
-        return date(end.year, 1, 1)
-    if key == "yearly":
-        return end - timedelta(days=LOOKBACK_DAYS_YEARLY)
-    if key == "full":
-        return end - timedelta(days=LOOKBACK_DAYS_FULL)
-    raise ValueError(f"Unknown analysis mode: {mode!r}")
 
 # Risk-free rate used in Sharpe / Sortino (annualised)
 RISK_FREE_RATE: Final[float] = 0.045       # 4.5 % — update as needed

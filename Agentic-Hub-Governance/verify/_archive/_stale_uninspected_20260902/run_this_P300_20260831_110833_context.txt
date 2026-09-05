@@ -1,0 +1,40 @@
+P_300 -- h5-chosen trajectory check, 2026-08-31
+Direct follow-up to run_this_P300_20260831_093649.py (h5 gap
+diagnosis). Task: for the same chosen_horizon=5 rows, do trades that
+look bad at day 5 look better by day 10/15/20, wherever those columns
+are already filled by ledger-fill? Tests "edge is real, wrong horizon
+cashed out early" against "the patterns themselves don't work."
+
+Read-only against buy_ledger.db, no writes to the ledger.
+
+Two important design points, both learned from this morning's mistake
+on the previous script (now logged as M-120):
+
+1. Every *_return_pct value goes through a single pct() helper (x100)
+   before display. If you see a return-like number that's obviously
+   off by ~100x (e.g. -0.007% where -0.7% is expected), that's the bug
+   recurring -- find wherever a raw DB value got printed without
+   passing through pct() first, don't patch the display format instead.
+
+2. The baseline h5 numbers (n, win_rate, avg_ret) are checked with real
+   if/fail statements against the known calibration-report values, not
+   just printed as a claimed match. Tolerances are deliberately loose
+   (population 400-600, win_rate +-2pp, avg_ret +-0.15pp) so a few new
+   ledger-fill rows since this morning don't cause a false FAIL --
+   these exist to catch a real bug (wrong query, missed scaling), not
+   to demand the exact same n=472 forever.
+
+Success criteria: prints PASS. The "Trajectory" table's population
+(n) should shrink monotonically as horizon lengthens (h7 >= h10 >=
+h15 >= h20) since later horizons need more elapsed trading days --
+if it doesn't, something is wrong with the NULL filtering. h20's
+matched n will likely be small (single digits to a few dozen); that's
+expected, not a bug -- flag it as thin evidence, don't try to make it
+look more solid than it is.
+
+If it fails: the message names what broke. Don't change the
+chosen_horizon=5 filter, the tolerance bands, or which columns count
+as "matched" -- those are deliberate. Do fix an actual scaling or
+query bug if the FAIL message points at one.
+
+Paste the full output back either way.

@@ -1,0 +1,31 @@
+Phase/WO: P_115 routine session, 2026-09-02, no open WO.
+Task: emit CEG signal. P_117 source (outside rec, info@lockandloadfinance.com),
+P_115 recheck BUY (HybridTier=7). Tony explicitly overrode a hold on an
+active opposing BEAR position already open on CEG (Days:0, Strike 247.3,
+P&L 3.6%) -- FSLR/SATL precedent, override confirmed verbatim: "override".
+
+What this script does: single emit_signal() call for CEG. Entry 290.04,
+stop 267.07 (PA Stop from chart), target 393.83 (T2, not T1 -- confirmed
+convention from the HNGE correction earlier today), confidence MEDIUM
+(HybridTier clears threshold comfortably but override + ROE/FCF caveats
+argue against HIGH).
+
+Success criteria: script prints "PASS" and exits 0, .done marker written.
+Confirm the JSON packet lands at
+trading_journal\TradeOrderManagement\signals\2026-09-02_CEG_v2.0.json
+with signal_source: "P_115" (tracker SignalSource=P_117 is provenance
+only, packet field is always P_115 -- do not conflate, this has been a
+recurring error in past sessions per lessons.md).
+
+Note from this session: P_400's own note under
+trading_journal\TradeOrderManagement\P400\ and its council_verdict
+evaluation happen on a separate schedule, not immediately after this
+script runs -- don't wait on that to confirm success. The JSON packet at
+the signals\ path is what confirms this script's own job is done.
+
+What to fix on failure: read the printed exception/traceback. Likely
+causes: import path wrong, or a SIGNAL_V2 schema validation error --
+check the field name in the error against signal_schemas.py. Do not
+change entry/stop/target/volume/rationale values without Tony's say-so.
+
+Do not change test assertions.

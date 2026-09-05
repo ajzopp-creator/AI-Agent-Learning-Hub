@@ -12,7 +12,6 @@ import logging
 from datetime import date
 
 from config import (
-    ACCOUNT_AJZ6348,
     ANALYSIS_MODE,
     IRA_FEED_READY,
     P020_DB_PATH,
@@ -20,8 +19,9 @@ from config import (
     WORKBOOK_PATH,
     resolve_start_date,
 )
+from domain.fifo_lots import process_fifo_lots, summarize_fifo_cost
 from domain.trade_processor import (
-    build_cost_basis_rows,
+    build_cost_basis_for_accounts,
     calculate_daily_cash,
     calculate_daily_invested,
     calculate_daily_units,
@@ -38,13 +38,24 @@ logger = logging.getLogger(__name__)
 
 def run_full_build(mode: str | None = None) -> PortfolioSnapshot:
     """
-    Execute a rebuild of the portfolio workbook.
+    Execute a full rebuild of the portfolio workbook.
 
-    mode
-        full | yearly | ytd — lookback window. Defaults to ANALYSIS_MODE.
+    Parameters
+    ----------
+    mode:
+        Analysis window: "full" (3y trailing), "yearly" (365d trailing),
+        or "ytd" (1 Jan of current year). Defaults to config.ANALYSIS_MODE.
+
+    Steps
+    -----
+    1. Read trades from P_020 (AJZ6348 + 5232-9885 when IRA_FEED_READY)
+    2. Filter to primary accounts
+    3. Derive daily units, daily cash, daily invested for the chosen window
+    4. Fetch market data + reference data for all tickers
+    5. Write everything to the Data Lake sheets
     """
-    selected = (mode or ANALYSIS_MODE).strip().lower()
-    logger.info("=== P_025 Full Build starting (mode=%s) ===", selected)
+    effective_mode = (mode or ANALYSIS_MODE).lower()
+    logger.info("=== P_025 Full Build starting (mode=%s) ===", effective_mode)
 
     raw_trades = read_trades(
         db_path=P020_DB_PATH,
@@ -66,11 +77,14 @@ def run_full_build(mode: str | None = None) -> PortfolioSnapshot:
             daily_cash=[],
             daily_invested=[],
             cost_basis=[],
+            fifo_lots=[],
+            fifo_cost=[],
         )
         return snapshot
 
     end_date = date.today()
-    start_date = resolve_start_date(end_date, selected)
+    start_date = resolve_start_date(end_date, effective_mode)
+    logger.info("Analysis window: %s → %s", start_date, end_date)
 
     daily_units = calculate_daily_units(trades, start_date=start_date, end_date=end_date)
     daily_cash = calculate_daily_cash(trades, start_date=start_date, end_date=end_date)
@@ -80,8 +94,10 @@ def run_full_build(mode: str | None = None) -> PortfolioSnapshot:
     reference_data = fetch_reference_data(tickers)
 
     daily_invested = calculate_daily_invested(daily_units, market_data)
-    cost_basis = build_cost_basis_rows(
-        trades, daily_units, account_id=ACCOUNT_AJZ6348
+    fifo_lots = process_fifo_lots(trades)
+    fifo_cost = summarize_fifo_cost(fifo_lots)
+    cost_basis = build_cost_basis_for_accounts(
+        trades, fifo_cost, PRIMARY_ACCOUNTS
     )
 
     snapshot = PortfolioSnapshot(
@@ -92,6 +108,8 @@ def run_full_build(mode: str | None = None) -> PortfolioSnapshot:
         daily_cash=daily_cash,
         daily_invested=daily_invested,
         cost_basis=cost_basis,
+        fifo_lots=fifo_lots,
+        fifo_cost=fifo_cost,
     )
     write_data_lake(
         WORKBOOK_PATH,
@@ -102,6 +120,8 @@ def run_full_build(mode: str | None = None) -> PortfolioSnapshot:
         daily_cash=snapshot.daily_cash,
         daily_invested=snapshot.daily_invested,
         cost_basis=snapshot.cost_basis,
+        fifo_lots=snapshot.fifo_lots,
+        fifo_cost=snapshot.fifo_cost,
     )
 
     logger.info("=== P_025 Full Build complete → %s ===", WORKBOOK_PATH)

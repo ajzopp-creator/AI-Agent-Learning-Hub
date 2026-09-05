@@ -1,0 +1,57 @@
+WO-P000-E20.001 -- lessons_audit first build verification
+Date: 2026-09-01, P_000 session
+
+WHAT THIS TESTS
+1. All six new files (shared_resources\python_utils\lessons_audit\*.py)
+   compile cleanly under -W error::SyntaxWarning.
+2. The package imports via the existing hub_shared editable install --
+   no sys.path insert, confirms pyproject.toml's shared_resources*
+   include pattern picked up the new subpackage automatically.
+3. A real end-to-end pass over P_000's actual tasks\lessons.md (the LM
+   Studio wrapper M-series log) parses at least one lesson entry and
+   produces a classification for each.
+
+WHAT THIS DOES NOT DO
+- Does not write to tasks\lessons_audit_status.json (the real production
+  location). Output goes to a SCRATCH file in this verify\ folder only:
+  lessons_audit_status_SCRATCH_verify.json
+- Does not modify tasks\lessons.md (read-only).
+- Does not wire anything into INIT -- that's a separate step after Tony
+  reviews one real output.
+
+SUCCESS CRITERIA
+- Compile check passes for all 6 files.
+- Import succeeds.
+- total_lessons > 0 (if this is 0, the M-series header regex in
+  domain.py's _LESSON_HEADER pattern doesn't match the real file's
+  header format -- check the actual "### M-NNN: Title" lines in
+  projects\P_000_PythonClaudeLocalLLM\tasks\lessons.md against the
+  regex r"^###\s+(M-\d+):\s*(.+?)\s*$").
+- Script prints PASS and writes a .done marker.
+
+IF IT FAILS
+Read the FAIL line -- it names the file and reason. Most likely failure
+modes, in order of probability:
+1. Header regex mismatch (see above) -- fix domain.py's _LESSON_HEADER
+   pattern to match the real format, don't touch the test data.
+2. Import failure -- check pyproject.toml's [tool.setuptools.packages.find]
+   include list actually covers shared_resources.python_utils.lessons_audit
+   (it should, via the shared_resources* wildcard, but confirm rather
+   than assume).
+3. Compile/syntax error in one of the 6 files -- report which file/line.
+
+Paste full output back. Do not change WHAT the script tests to make it
+pass -- if the real lessons.md format differs from what domain.py
+assumes, that's a real bug in domain.py's parser, fix the parser.
+
+AFTER PASS
+Once this verify script prints PASS, the real first pilot run (writing
+the actual tasks\lessons_audit_status.json next to lessons.md) is a
+separate, deliberate command -- not run automatically by this script:
+
+  C:\Users\Trader\.conda\envs\p140\python.exe -m shared_resources.python_utils.lessons_audit.lessons_audit
+
+Run that from the Hub root (C:\Users\Trader\AI-Agent-Learning-Hub) after
+this verify PASSes, then paste the console summary back so we can look
+at the real classification counts before deciding on match-strictness
+tuning or INIT wiring.

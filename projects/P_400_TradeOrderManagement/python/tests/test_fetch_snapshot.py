@@ -3,6 +3,11 @@
 New file, WO-P400-E5.005. No dedicated test file existed before this WO --
 infrastructure (Schwab calls, spread cache) and market-hours are
 monkeypatched so no real credentials or network access are required.
+
+WO-P400-E7.001: _patch_common now patches get_session_state (returns a
+session string) instead of is_market_open_now (returned a bool) --
+fetch_snapshot.py branches on the three-way session now, not a boolean.
+Added extended-hours (pre_market/after_hours) coverage.
 """
 
 import json
@@ -17,15 +22,15 @@ _BARS = [(105.0 + i, 100.0 + i, 102.0 + i) for i in range(20)]  # (high, low, cl
 _VOLUMES = [1_000_000 + i * 1000 for i in range(20)]
 
 
-def _patch_common(monkeypatch, market_open: bool):
-    monkeypatch.setattr(fs_module, "is_market_open_now", lambda now=None: market_open)
+def _patch_common(monkeypatch, session: str):
+    monkeypatch.setattr(fs_module, "get_session_state", lambda now=None: session)
     import infrastructure.schwab_market_data as smd
     monkeypatch.setattr(smd, "get_daily_bars", lambda *a, **k: (_BARS, _VOLUMES))
     return smd
 
 
 def test_market_open_uses_live_quote_and_records_spread(monkeypatch, tmp_path, capsys):
-    smd = _patch_common(monkeypatch, market_open=True)
+    smd = _patch_common(monkeypatch, session="regular")
     monkeypatch.setattr(smd, "get_quote_data", lambda *a, **k: {
         "price": 121.50, "bid": 121.45, "ask": 121.55, "today_volume": 500000,
     })
@@ -52,7 +57,7 @@ def test_market_open_uses_live_quote_and_records_spread(monkeypatch, tmp_path, c
 
 
 def test_market_closed_reuses_cached_live_spread(monkeypatch, tmp_path, capsys):
-    smd = _patch_common(monkeypatch, market_open=False)
+    smd = _patch_common(monkeypatch, session="closed")
     monkeypatch.setattr(smd, "get_quote_data",
                          lambda *a, **k: pytest.fail("live quote called while market closed"))
     monkeypatch.setattr(fs_module, "PYTHON_DIR", tmp_path)
@@ -80,7 +85,7 @@ def test_market_closed_reuses_cached_live_spread(monkeypatch, tmp_path, capsys):
 
 
 def test_market_closed_no_cached_spread_errors_no_file(monkeypatch, tmp_path):
-    smd = _patch_common(monkeypatch, market_open=False)
+    smd = _patch_common(monkeypatch, session="closed")
     monkeypatch.setattr(fs_module, "PYTHON_DIR", tmp_path)
     monkeypatch.setattr(fs_module, "get_last_spread", lambda symbol: None)  # never fetched live
 
@@ -90,7 +95,7 @@ def test_market_closed_no_cached_spread_errors_no_file(monkeypatch, tmp_path):
 
 
 def test_market_closed_no_bars_errors_no_file(monkeypatch, tmp_path):
-    monkeypatch.setattr(fs_module, "is_market_open_now", lambda now=None: False)
+    _patch_common(monkeypatch, session="closed")
     import infrastructure.schwab_market_data as smd
     monkeypatch.setattr(smd, "get_daily_bars", lambda *a, **k: ([], []))
     monkeypatch.setattr(fs_module, "PYTHON_DIR", tmp_path)
@@ -98,3 +103,57 @@ def test_market_closed_no_bars_errors_no_file(monkeypatch, tmp_path):
     rc = cmd_fetch_snapshot("ZZZZ")
     assert rc == 1
     assert not (tmp_path / "snapshot_ZZZZ.json").exists()
+
+
+# --- WO-P400-E7.001: extended-hours (pre_market / after_hours) -------------
+
+@pytest.mark.parametrize("session", ["pre_market", "after_hours"])
+def test_extended_hours_uses_extended_quote(monkeypatch, tmp_path, session):
+    smd = _patch_common(monkeypatch, session=session)
+    monkeypatch.setattr(smd, "get_extended_quote_data", lambda *a, **k: {
+        "price": 118.20, "bid": 118.00, "ask": 118.40, "today_volume": 12000,
+    })
+    monkeypatch.setattr(smd, "get_quote_data",
+                         lambda *a, **k: pytest.fail("regular quote called during extended session"))
+    monkeypatch.setattr(fs_module, "PYTHON_DIR", tmp_path)
+
+    rc = cmd_fetch_snapshot("AAPL")
+    assert rc == 0
+
+    out = json.loads((tmp_path / "snapshot_AAPL.json").read_text())
+    assert out["price_basis"] == "extended"
+    assert out["data_source"] == "schwab_api_extended"
+    assert out["market_open"] is False
+    assert out["price"] == 118.20
+    assert out["bid"] == 118.00 and out["ask"] == 118.40
+    assert out["today_volume"] == 12000
+
+
+def test_extended_hours_no_extended_quote_errors_no_file(monkeypatch, tmp_path):
+    # No live extended quote available (e.g. never fetched, or Schwab has
+    # no extended session for this symbol) -- fail loud, never fall back
+    # to close+cached-spread silently. Symmetric with the closed-market
+    # "no cached spread" failure mode.
+    smd = _patch_common(monkeypatch, session="after_hours")
+    monkeypatch.setattr(smd, "get_extended_quote_data", lambda *a, **k: None)
+    monkeypatch.setattr(fs_module, "PYTHON_DIR", tmp_path)
+
+    rc = cmd_fetch_snapshot("ZZZZ")
+    assert rc == 1
+    assert not (tmp_path / "snapshot_ZZZZ.json").exists()
+
+
+def test_extended_hours_does_not_touch_last_spread_cache(monkeypatch, tmp_path):
+    # Extended-basis snapshots price off a live extended quote directly --
+    # unlike the regular-session path, there is no half-spread to record
+    # for later reuse (record_live_spread must not be called).
+    smd = _patch_common(monkeypatch, session="pre_market")
+    monkeypatch.setattr(smd, "get_extended_quote_data", lambda *a, **k: {
+        "price": 118.20, "bid": 118.00, "ask": 118.40, "today_volume": None,
+    })
+    monkeypatch.setattr(fs_module, "PYTHON_DIR", tmp_path)
+    monkeypatch.setattr(fs_module, "record_live_spread",
+                         lambda *a, **k: pytest.fail("record_live_spread called during extended session"))
+
+    rc = cmd_fetch_snapshot("AAPL")
+    assert rc == 0

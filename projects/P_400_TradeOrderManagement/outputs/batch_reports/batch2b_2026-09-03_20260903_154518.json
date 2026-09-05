@@ -1,0 +1,23 @@
+{
+  "run_timestamp": "2026-09-03T15:45:18.719337-04:00",
+  "session_date": "2026-09-03",
+  "cash_available": 18573.63,
+  "posture": "HALF",
+  "screened_count": 2,
+  "passed_tier1": 2,
+  "evaluated": 2,
+  "candidates": [],
+  "skipped": [
+    {
+      "symbol": "WMT",
+      "reason": "verdict=BLOCKED (ADVERSE_DRIFT)"
+    },
+    {
+      "symbol": "SARK",
+      "reason": "verdict=BLOCKED (RR_BELOW_MIN)"
+    }
+  ],
+  "cumulative_risk_if_all_taken": 0.0,
+  "heat_cap": 3535.0488,
+  "heat_warning": null
+}

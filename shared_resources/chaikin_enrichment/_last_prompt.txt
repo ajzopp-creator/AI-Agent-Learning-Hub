@@ -3,11 +3,20 @@ stock symbols and attaching each one to its Obsidian note.
 
 Notes to enrich (symbol -> exact note path, already resolved by Python --
 do not guess or construct a different path):
-BRK_A -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-08-26_BRK_A.md
-RBA -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-08-27_RBA.md
-TDC -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-08-27_TDC.md
-TE -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-08-27_TE.md
-TSLY -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-08-27_TSLY.md
+SARK -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-09-02_SARK.md
+ABM -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-09-03_ABM.md
+CFG -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-09-03_CFG.md
+CIFR -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-09-03_CIFR.md
+CRUS -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-09-03_CRUS.md
+FHN -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-09-03_FHN.md
+FISV -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-09-03_FISV.md
+HUT -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-09-03_HUT.md
+IREN -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-09-03_IREN.md
+KEY -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-09-03_KEY.md
+PNC -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-09-03_PNC.md
+RIVN -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-09-03_RIVN.md
+SYNA -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-09-03_SYNA.md
+VRT -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-09-03_VRT.md
 
 For EACH symbol/note pair listed above, do the following in order:
 

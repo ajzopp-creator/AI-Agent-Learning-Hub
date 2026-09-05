@@ -1,0 +1,27 @@
+{
+  "run_timestamp": "2026-09-01T15:11:57.950052-04:00",
+  "session_date": "2026-09-01",
+  "cash_available": 18990.32,
+  "posture": "OFF",
+  "screened_count": 3,
+  "passed_tier1": 3,
+  "evaluated": 3,
+  "candidates": [],
+  "skipped": [
+    {
+      "symbol": "CME",
+      "reason": "verdict=BLOCKED (RR_BELOW_MIN)"
+    },
+    {
+      "symbol": "SPGI",
+      "reason": "verdict=BLOCKED (RR_BELOW_MIN)"
+    },
+    {
+      "symbol": "WFC",
+      "reason": "verdict=BLOCKED (RR_BELOW_MIN)"
+    }
+  ],
+  "cumulative_risk_if_all_taken": 0.0,
+  "heat_cap": 3761.8068,
+  "heat_warning": null
+}

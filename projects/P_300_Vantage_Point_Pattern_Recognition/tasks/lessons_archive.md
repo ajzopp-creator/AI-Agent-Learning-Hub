@@ -1330,3 +1330,87 @@ Claude then reads `output.txt` directly via `windows-mcp:FileSystem` without ope
 
 (Captured 2026-06-03)
 
+
+
+---
+
+## Archive batch -- 2026-08-31 (4th archive roll, light pass)
+
+8 Section-1 entries moved verbatim from tasks/lessons.md, oldest-first, 2026-06-03 through 2026-06-12, none referenced in SKILL/SIP/CLAUDE.md. Script: run_this_P300_20260831_081556.py
+
+### M-042 -- Non-blocking hooks can hide silent failures; add explicit success logging
+**Rule:** When a feature is designed to fail non-blocking (errors logged but don't stop the flow), add EXPLICIT success logging so absence of a success message indicates the hook never ran or failed silently. Without positive confirmation, debugging becomes guesswork.
+
+**Failure mode captured 2026-06-03:** Ledger_record hook was called but produced no output (no error, no success). Ledger DB remained empty. Without explicit "ledger record success -> ledger_id=NNN" logging, operator couldn't tell if the hook ran at all, failed silently, or the insert succeeded but didn't write.
+
+**Fix:** Add explicit logger.info() on success path so every firing produces a log line.
+
+(Captured 2026-06-03)
+
+### M-043 -- Non-blocking errors must be logged at WARNING level so operators notice them
+**Rule:** When an error is intentionally non-blocking (doesn't stop the flow), log it at WARNING level, NOT INFO or just ERROR. Non-blocking errors that are only logged at ERROR level get lost in the stream and the operator thinks the feature succeeded.
+
+**Failure mode captured 2026-06-03:** Ledger_record hook failed silently (threw exception, caught it, logged at ERROR). The batch file saw exit code 0 and continued. COHR and DE were both archived even though their signals were never recorded to the ledger. Operator only noticed by checking logs after the fact.
+
+**Fix:** (1) Log non-blocking failures at WARNING level so they stand out. (2) Consider adding a summary line at the end: "Ledger: OK" or "Ledger: FAILED (see logs)".
+
+(Captured 2026-06-03)
+
+### M-044 -- Read skill documentation FIRST; don't experiment after asking "what should I be using?"
+**Rule:** When uncertainty arises about the right tool or approach, **read the applicable skill doc immediately** before proposing workarounds or experiments. Asking "what should I be using" and then fumbling instead of reading the answer wastes time and erodes trust.
+
+**Failure mode captured 2026-06-03:** After multiple PowerShell timeouts on Python commands, Tony pointed out the answer was already documented in the python-project-architecture skill. Instead of reading it, I continued experimenting with different MCP approaches. Lost time and credibility. The skill document had the answer all along.
+
+**Fix:** Whenever you encounter "I believe it's in [skill name]", **immediately fetch and read that skill** before responding. Don't hypothesize; read the source.
+
+(Captured 2026-06-03)
+
+### M-045 -- Verify the full cross-project write path before relying on a Hub-interface schema key
+**Rule:** A published Consumer Guide is the caller contract, but before trusting a new Hub-interface schema key (e.g. `write_to_vault("SIGNAL_V2", ...)`), confirm the dispatch chain is wired end-to-end in the owning project: (1) the schema registry maps the key to a model, (2) the output-format map routes it (md vs json), (3) the filename builder handles it, (4) the writer exists. A key documented in a guide can still be unwired in code. Confirm on disk, then trust.
+
+**Why it matters (2026-06-08):** Before the COHR live test of Enhancement 1, P_800's `write_handler.py` docstring named only the legacy `P400SIG` json path -- never `SIGNAL_V2`. Because the emit is non-blocking by design, an unwired key would have silently logged a WARNING and produced a false "pass." Verifying the chain across `obsidian_writers/config.py` (OUTPUT_FORMAT / VAULT_FOLDER_MAP / JSON_FILENAME_SUFFIX), `validator.py` -> `schemas.py` (SCHEMA_REGISTRY["SIGNAL_V2"] = SignalV2), and `filename_builder.py` confirmed all four links wired (P_800 work dated 2026-06-07/08); the handler docstring was merely stale. Verifying first turned a potential false-pass into a real end-to-end validation.
+
+**Pairs with:** M-040 (test execution paths, not just imports), M-041 (verify utility signatures before use), M-038 (use the Hub interface for cross-project writes).
+
+(Captured 2026-06-08)
+
+### M-046 -- Risk-aversion lambda is signal provenance; log every change as calibration-affecting
+**Rule:** RISK_AVERSION_LAMBDA (config v1.7, Certainty-Equivalent BUY gate) is applied to DECIMAL-FRACTION returns (0.06 = 6%), NOT percentages. At decimal magnitudes lambda must be large to bite -- the meaningful band is ~10-40; default is 20.0. A BUY made at lambda=20 is NOT comparable to a BUY made at lambda=5. Therefore:
+1. Any change to RISK_AVERSION_LAMBDA is a calibration-affecting event -- log the change + rationale here in lessons.md.
+2. Fired signals are only comparable across runs at the SAME lambda.
+3. Lambda is stamped into the report header (report_writer v1.7 `Risk model:` line) and is to be stamped into the ledger record when the gate goes live, so every fired signal records the lambda it was judged under.
+4. NEVER calibrate lambda as if returns were in percent (6.0) -- that collapses every CE toward the worst-case analog and nukes every BUY.
+
+**Design (NARRATOR_ENABLED precedent):** CE_GATE_ENABLED defaults False. While off, the CE is computed and displayed but does NOT alter any signal -- determinism regression stays byte-identical. The gate goes live only after lambda is tuned against the ledger. Verified 2026-06-09: utility.py smoke PASS; dispersed cluster [-0.10, 0.02, 0.06, 0.20] mean +4.5% -> CE -3.7% at lambda=20 (8.2 pt penalty), confirming the fat-tail penalty fires as intended.
+
+**Open before gate-on (M-040):** signal_classifier smoke harness covers only CE_GATE_ENABLED=False; the gate-ON path (CE below threshold blocks a BUY) has NO test yet. Add two harness cases proving block-on and no-op-off BEFORE flipping the flag in production. Also owed: end-to-end daily-evaluate determinism replay vs a pre-change run (NFR-1 proof that observe-mode changed nothing).
+
+(Captured 2026-06-09)
+
+### M-047 -- Smoke harnesses must not emit production warning strings they did not earn
+**Rule:** A test harness that prints a real production warning on demand trains the operator to half-trust the output. Any harness block that forces a warning/error condition by hand (rather than detecting it) must label its output as a demonstration -- e.g. a `[SMOKE DEMO]` banner stating the state is simulated, not measured -- so the string can never be mistaken for a live detection.
+
+**Failure mode captured 2026-06-09:** report_writer.py smoke harness called print_signal_report_clean(narration=None, narrator_warning=True), which printed `[WARNING] LM Studio unavailable -- narration skipped` even though LM Studio was never contacted. Operator correctly flagged this as misleading regardless of it being a test. Fixed by banner-labeling the demo block (report_writer v1.7). The production string itself is left verbatim -- the demo's job is to show it -- but the banner now announces the state as staged.
+
+**Underlying design note (out of scope, backlog):** In production the warning is driven by a caller-passed boolean (narrator_warning), so print_signal_report_clean renders whatever it is told -- the display can disagree with actual LM Studio state. The real fix is to derive the warning from a recorded narrator outcome (not-attempted / succeeded / attempted-and-failed) in daily_evaluate_pipeline.py, so no boolean can be set wrong. Requires reading the current narrator-detection block first; scoped as its own change.
+
+(Captured 2026-06-09)
+
+### M-048 -- filesystem:edit_file batches are atomic; verify after every multi-edit batch
+**Rule:** `filesystem:edit_file` applies its `edits` array as a single transaction. If any one edit's `oldText` fails to match exactly, the ENTIRE batch rolls back -- including edits in the same array that would have matched. A clean partial application never happens. Therefore: after any multi-edit batch, re-read or grep the file to confirm every intended change landed; never assume "the diff showed N edits so N applied." When a batch errors, re-issue ALL edits from that batch, not just the one that failed.
+
+**Failure mode captured 2026-06-09:** SKILL.md decision-flag edit issued as a 3-edit batch (checklist line, Aligned-with pointer, changelog entry). The changelog edit's `oldText` assumed `## Changelog` was immediately followed by the 2026-05-29 entry, but a 2026-05-30 entry sat between them (disk SKILL was newer than the project-attached copy). The mismatch rolled back all three; a verification grep showed the checklist line and Aligned-with pointer were both still stale despite the tool reporting the batch. Re-issued the two reverted edits separately; confirmed by grep. Root contributing cause: trusted the project-attached snapshot's changelog structure instead of the just-read disk content.
+
+(Captured 2026-06-09)
+
+### M-051 -- Never hardcode a success string; output only follows a real call result
+
+**Rule:** Any console line claiming `[OK]`, `SUCCESS`, `DONE`, `written`, etc. MUST be produced from the actual function call's return value, not hardcoded before/instead of the call. A hardcoded success string is a falsified functional test. Placeholder output strings are permitted ONLY during active UI scaffolding within a single session -- before the session ends, every placeholder must be replaced with a real call or tracked as an open todo.md item. No placeholder survives a session boundary.
+
+**Trigger (2026-06-12):** `report_writer.py print_signal_report_clean()` printed `[OK] {ticker} written to vault` and `ARCHIVE OK` as hardcoded strings -- no vault write and no archive call existed anywhere in the function. Scaffolded 2026-05-27, never replaced. The correctly-wired `signal_emitter.emit_signal_packet()` path masked the fact that this function's writes were fake.
+
+**Addendum (2026-06-17) -- the original fix never landed:** todo.md/lessons.md both logged this closed 2026-06-12. It wasn't -- `report_writer.py` was still v1.7 with both strings verbatim, running live in production for 5+ days undetected. Real fix landed v1.8 -- see M-054.
+
+**Pairs with:** M-040, M-047, M-054.
+
+(Captured 2026-06-12)

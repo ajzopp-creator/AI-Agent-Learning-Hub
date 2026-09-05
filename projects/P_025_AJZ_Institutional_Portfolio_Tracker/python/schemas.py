@@ -116,13 +116,34 @@ class DailyInvestedRow(BaseModel):
 
 
 class CostBasisRow(BaseModel):
-    """Average-cost basis for one ticker at current shares."""
+    """Lifetime long VWAP × current long shares. Not FIFO remaining cost."""
 
     ticker: str
     avg_cost: float
     current_shares: float
     total_cost_basis: float
     account_id: str = "AJZ6348"
+
+
+class FifoLotRow(BaseModel):
+    """One remaining long lot after FIFO consumption."""
+
+    account_id: str
+    ticker: str
+    open_date: date
+    remaining_qty: float
+    lot_price: float
+    remaining_cost: float
+    source_trade_id: int
+
+
+class FifoCostRow(BaseModel):
+    """Remaining FIFO cost rolled up by account + ticker."""
+
+    ticker: str
+    account_id: str
+    remaining_shares: float
+    remaining_cost: float
 
 
 # ---------------------------------------------------------------------------
@@ -139,6 +160,8 @@ class PortfolioSnapshot(BaseModel):
     daily_cash: list[DailyCashRow] = Field(default_factory=list)
     daily_invested: list[DailyInvestedRow] = Field(default_factory=list)
     cost_basis: list[CostBasisRow] = Field(default_factory=list)
+    fifo_lots: list[FifoLotRow] = Field(default_factory=list)
+    fifo_cost: list[FifoCostRow] = Field(default_factory=list)
 
     def tickers(self) -> set[str]:
         """Return the unique set of tickers present in trades."""

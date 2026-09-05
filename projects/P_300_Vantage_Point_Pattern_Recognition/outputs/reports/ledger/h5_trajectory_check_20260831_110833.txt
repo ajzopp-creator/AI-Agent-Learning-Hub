@@ -1,0 +1,7 @@
+h5-chosen trajectory check -- 20260831_110833
+Baseline: n=472 win=51.1% avg=-0.75% (asserted vs known values)
+h7: n=458 h5[win 50.7% avg -0.81%] h7[win 54.6% avg +0.04%] delta[win +3.9 avg +0.85]
+h10: n=445 h5[win 51.0% avg -0.77%] h10[win 54.2% avg +0.31%] delta[win +3.1 avg +1.08]
+h15: n=418 h5[win 51.9% avg -0.65%] h15[win 52.6% avg -0.24%] delta[win +0.7 avg +0.41]
+h20: n=324 h5[win 53.1% avg -0.52%] h20[win 59.0% avg +1.92%] delta[win +5.9 avg +2.45]
+Complete-case panel: n=324

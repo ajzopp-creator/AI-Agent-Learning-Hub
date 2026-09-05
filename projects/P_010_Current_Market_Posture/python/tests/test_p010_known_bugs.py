@@ -175,6 +175,45 @@ def test_e1004_stale_grid_detected_and_named():
           f"stale={stale} detail={detail!r}")
 
 
+def test_e1005_expected_day_skips_labor_day():
+    """BEHAVIOR -- a Tuesday morning after Labor Day must expect the
+    Friday before it, not the Monday holiday itself (WO-P010-E1.005)."""
+    from datetime import date
+    mod = _load_freshness_module()
+    # 2026-09-08 is a Tuesday; 2026-09-07 is Labor Day
+    got = mod.expected_trading_day(date(2026, 9, 8))
+    ok = got == date(2026, 9, 4)
+    check("e1005_expected_day_skips_labor_day", "BEHAVIOR", ok,
+          f"got {got!r}")
+
+
+def test_e1005_expected_day_sunday_run_expects_friday():
+    """BEHAVIOR -- running the check itself on a Sunday must expect the
+    preceding Friday, not Saturday (the live false-positive math bug
+    found 2026-08-30, WO-P010-E1.005)."""
+    from datetime import date
+    mod = _load_freshness_module()
+    # 2026-08-30 is a Sunday
+    got = mod.expected_trading_day(date(2026, 8, 30))
+    ok = got == date(2026, 8, 28)
+    check("e1005_expected_day_sunday_run_expects_friday", "BEHAVIOR", ok,
+          f"got {got!r}")
+
+
+def test_e1005_sunday_run_with_fresh_friday_data_not_flagged():
+    """BEHAVIOR -- a Sunday run against grid_dates that already show
+    Friday's close must NOT be flagged stale (guards against the
+    E1.005 fix itself becoming a new false-halt source)."""
+    from datetime import date
+    mod = _load_freshness_module()
+    today = date(2026, 8, 30)  # Sunday -> expects 2026-08-28
+    grid_dates = {"SPY": date(2026, 8, 28), "QQQ": date(2026, 8, 28),
+                  "VXX": date(2026, 8, 28)}
+    stale, detail = mod.check_grid_freshness(grid_dates, today)
+    check("e1005_sunday_run_with_fresh_friday_data_not_flagged", "BEHAVIOR",
+          not stale, f"stale={stale} detail={detail!r}")
+
+
 def main():
     tests = [v for k, v in list(globals().items()) if k.startswith("test_")]
     for t in tests:

@@ -76,15 +76,15 @@ def build_positions(wb: Workbook) -> None:
         )
         ws.cell(r, 3, price_formula).font = BODY_FONT
         ws.cell(r, 4, f"=B{r}*C{r}").font = BODY_FONT
-        # Cost Basis = Total_Cost_Basis from Cost_Basis helper (Python average-cost)
+        # Remaining FIFO cost across accounts (not lifetime VWAP)
         cost_formula = (
-            f'=IFERROR(VLOOKUP(A{r},Cost_Basis!$A:$D,4,FALSE),0)'
+            f'=IFERROR(SUMIF(Fifo_Cost!$A:$A,A{r},Fifo_Cost!$D:$D),0)'
         )
         ws.cell(r, 5, cost_formula).font = BODY_FONT
         ws.cell(r, 6, f"=D{r}-E{r}").font = BODY_FONT
         ws.cell(r, 7, f'=IF(E{r}=0,0,F{r}/E{r})').font = BODY_FONT
         ws.cell(r, 8, f'=IF(SUM($D$3:$D$202)=0,0,D{r}/SUM($D$3:$D$202))').font = BODY_FONT
-        ws.cell(r, 9, "AJZ6348").font = BODY_FONT
+        ws.cell(r, 9, "PRIMARY").font = BODY_FONT
 
         for col in range(1, 10):
             ws.cell(r, col).border = THIN_BORDER

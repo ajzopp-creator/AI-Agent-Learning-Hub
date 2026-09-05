@@ -1,0 +1,36 @@
+{
+  "run_timestamp": "2026-09-02T18:00:01.980844-04:00",
+  "session_date": "2026-09-02",
+  "cash_available": 18134.99,
+  "posture": "OFF",
+  "screened_count": 1,
+  "passed_tier1": 1,
+  "evaluated": 1,
+  "candidates": [
+    {
+      "symbol": "CEG",
+      "rank": 1,
+      "score": 0.7351,
+      "score_components": {
+        "rr": 0.7515,
+        "atr_headroom": 0.7053,
+        "spread": 0.7753,
+        "liquidity": 0.6093,
+        "drift": 0.832
+      },
+      "vehicle": "STOCK",
+      "vehicle_reason": "Option BLOCKED by options council (OI_TOO_LOW: open_interest=3 < 150 minimum; SPREAD_TOO_WIDE: spread=26.0% > 10.0% max) -- stock used.",
+      "verdict": "APPROVED_WITH_CAUTION",
+      "rr_at_t1": 4.509,
+      "atr_headroom": 2.4107,
+      "spread_pct_of_price": 0.2247,
+      "drift_pct": -0.252,
+      "dollar_risk": 44.48,
+      "quantity": 2
+    }
+  ],
+  "skipped": [],
+  "cumulative_risk_if_all_taken": 44.48,
+  "heat_cap": 3535.0488,
+  "heat_warning": null
+}

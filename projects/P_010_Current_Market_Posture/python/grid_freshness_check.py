@@ -13,26 +13,50 @@ the age it should be.
 Pure logic -- no I/O, no network calls. Same split-file pattern as
 intraday_risk_logic.py / staleness_check.py.
 
-SCOPE (Tony's sign-off, 2026-08-29): weekend-only expected-lag logic,
-no holiday calendar. A trading day the morning after a US market
-holiday WILL false-positive here (~9x/year) -- accepted cost, cleared
-by Tony in seconds each time rather than build/maintain a holiday
-calendar. See WO-P010-E1.004 scoping decision.
+HOLIDAY + WEEKEND-RUN AWARE (WO-P010-E1.005, 2026-08-30): the original
+E1.004 scope (Tony's sign-off, 2026-08-29) was weekend-only lag logic
+with no holiday calendar, accepting ~9 false positives/year the morning
+after a US market holiday. Reopened the same week -- the very next
+holiday, Labor Day (Mon 2026-09-07), would have false-positived on Tue
+2026-09-08 within days of shipping. Separately, a manual Sunday run on
+2026-08-30 exposed a second gap in the same function: the old
+Monday-only special case had no concept of the check itself running on
+a non-trading day, and mis-derived Saturday as "expected." Both are
+fixed by the same generalized rule below -- see WO-P010-E1.005.
 """
 
 from datetime import date, timedelta
+
+MARKET_HOLIDAYS_2026 = {
+    date(2026, 1, 1),   # New Year's Day
+    date(2026, 1, 19),  # MLK Day
+    date(2026, 2, 16),  # Washington's Birthday
+    date(2026, 4, 3),   # Good Friday
+    date(2026, 5, 25),  # Memorial Day
+    date(2026, 6, 19),  # Juneteenth
+    date(2026, 7, 3),   # Independence Day (observed -- July 4 is a Saturday)
+    date(2026, 9, 7),   # Labor Day
+    date(2026, 11, 26), # Thanksgiving
+    date(2026, 12, 25), # Christmas Day
+}
 
 
 def expected_trading_day(today: date) -> date:
     """The grid_date VantagePoint SHOULD show for today's morning run.
 
-    VP exports the night before for next-day use, so Tue-Fri mornings
-    expect yesterday's date; Monday expects last Friday's. No holiday
-    awareness -- see module docstring.
+    VP exports the night before for next-day use, so a normal weekday
+    morning expects the prior trading day's date. Generalized (v2,
+    WO-P010-E1.005): walk backward from today one day at a time,
+    skipping weekends AND MARKET_HOLIDAYS_2026, and return the first
+    date that clears both. This also correctly handles the check
+    itself running on a non-trading day (e.g. a manual Saturday/Sunday
+    run) -- it always resolves to the most recent real trading day
+    before `today`, regardless of what `today` itself is.
     """
-    if today.weekday() == 0:  # Monday
-        return today - timedelta(days=3)
-    return today - timedelta(days=1)
+    d = today - timedelta(days=1)
+    while d.weekday() >= 5 or d in MARKET_HOLIDAYS_2026:
+        d -= timedelta(days=1)
+    return d
 
 
 def check_grid_freshness(

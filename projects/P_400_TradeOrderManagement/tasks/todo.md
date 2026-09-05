@@ -1,5 +1,73 @@
 # P_400 Current State
 
+## 2026-08-31 -- WO-P400-E7.001 (Extended-Hours Pricing Basis) build session
+
+**Status: CODE BUILT, not OWNER_DONE.** Full build + fix landed same session; live-verified on real symbols, partially.
+
+### Shipped this session (all read-back verified on disk)
+- config.py +16 -- PRE_MARKET_OPEN_TIME_ET, AFTER_HOURS_CLOSE_TIME_ET,
+  MAX_PLAUSIBLE_SPREAD_PCT_EXTENDED (provisional 5.0%, not yet backed by
+  real spread samples)
+- domain/market_hours.py -- new get_session_state() (regular/pre_market/
+  after_hours/closed); is_market_open_now() now a thin wrapper over it
+- infrastructure/schwab_market_data.py -- new get_extended_quote_data()
+- application/fetch_snapshot.py -- 3-way session branch (was 2-way bool)
+- domain/council.py -- tape_vote() extended branch, RC_USING_EXTENDED_DATA
+- application/evaluate_signal.py -- spread-sanity threshold now differs by
+  price_basis
+- schemas.py, domain/council_codes.py -- supporting field/constant additions
+- tests: test_market_hours.py, test_schwab_market_data.py,
+  test_tape_price_basis.py, test_fetch_snapshot.py extended;
+  test_evaluate_signal.py split (296->246 lines) into new
+  test_evaluate_signal_spread.py (200 lines -- moved E4.004 tests + new
+  extended-threshold tests)
+- WO-P400-E7.001 filed and updated to CODE BUILT
+
+### Regression check
+Full suite twice this session: 384 passed/1 skipped (initial build), then
+385 passed/1 skipped after the live-bug fix below (one new test added).
+Exit 0 both times. Pre-existing warnings only.
+
+### Live verification -- PARTIAL, and caught a real bug
+2026-08-31 17:41 ET, after-hours: ran fetch-snapshot on CME/SPGI/WFC (the
+three symbols batch-2b couldn't price earlier the same session, no cached
+spread). All three returned [OK] with price_basis="extended" -- but
+bid=0.0/ask=0.0 on all three. Root cause: Schwab's extended quote node
+returns 0.0 (not null) when there's no active extended-session market for
+a symbol, and the original get_extended_quote_data() only checked for
+None, not <= 0 -- would have let a fake zero-spread snapshot through the
+spread-sanity gate looking like a perfect fill. Fixed same session
+(bid/ask <= 0 now treated as no-data, same as None), test added
+(test_get_extended_quote_data_returns_none_on_zero_bid_ask), 3 bad
+snapshot files deleted. Re-ran fetch-snapshot CME after the fix: correctly
+fails loud now instead of writing garbage.
+
+**Confirmed working:** session detection (correctly identified
+after_hours at 17:41 ET), extended-quote HTTP call, price_basis="extended"
+wiring end to end, the zero-bid/ask guard (post-fix).
+
+**NOT YET exercised by a live run:**
+- A symbol WITH real extended-hours liquidity (bid/ask > 0) -- CME/SPGI/WFC
+  just had none available tonight.
+- Pre-market window (only after-hours tested tonight).
+- Real extended-hours spread sampling to replace the provisional 5.0%
+  MAX_PLAUSIBLE_SPREAD_PCT_EXTENDED placeholder.
+
+### CME/SPGI/WFC status
+Still un-priceable as of session end -- no active extended market tonight,
+no cached regular-session spread either. Resolves naturally at tomorrow's
+9:30 ET open (first live fetch caches the spread for future closed-market
+runs too). Manual/TOS entry is the only tonight-option if needed sooner.
+
+### Do NOT
+- Mark WO-P400-E7.001 OWNER_DONE until a real symbol with actual
+  extended-hours liquidity has been fetched successfully (not just the
+  fail-loud path) and pre-market has been tested at least once.
+- Assume the 5.0% extended-spread threshold is calibrated -- it's a
+  documented placeholder, not derived from data.
+
+---
+
 ## 2026-08-07 -- WO-P400-E5.003 (Tier-2B Batch Runner) build session
 
 **Status: IN_PROGRESS, not OWNER_DONE.** Build complete, live-verified partially.

@@ -1,0 +1,34 @@
+P_300 -- Independent Review of WO-P300-E5.010, 2026-09-04
+Task: this WO (h5 chosen-horizon timing finding, OWNER_DONE 2026-08-31) is
+under independent review this session. The WO's own "For the independent
+reviewer" section asks for a direct spot-check against buy_ledger.db --
+this script does that plus an independent recompute of the complete-case
+panel table (WHAT WAS FOUND #3 in the WO), since that panel's numbers
+exist only in the WO's prose, not in either saved report file.
+
+What this does: read-only query against buy_ledger.db's fired_signals
+table (chosen_horizon=5, all five h5/h7/h10/h15/h20 return_pct columns
+NOT NULL -- the same "complete-case" filter the WO describes). Recomputes
+win% and avg_ret% per horizon independently (not copied from the WO) and
+compares against the WO's claimed table with tolerance (win +-2pp,
+avg_ret +-0.15pp, matching WO-P300-E5.010's own stated tolerance policy).
+Then prints one spot-check row's raw DB value and x100-scaled value for
+all five horizons, to confirm the M-020/M-120 scaling correction the WO
+describes is actually right, not just self-consistent.
+
+Success criteria: prints "Complete-case population: n=<N>" (expect ~324,
+tolerance 300+), five OK lines (one per horizon) with independently
+computed win%/avg_ret% within tolerance of the WO's claimed table, and
+one spot-check row with raw + scaled values for h5-h20. Ends PASS.
+
+If it fails: the FAIL reason names what broke (missing column, population
+below 300, or a horizon whose independently-computed win%/avg_ret% falls
+outside tolerance of the WO's claimed numbers -- that specific finding is
+itself the review result, not a bug to silently patch around). Do not
+change the tolerance bands or the chosen_horizon=5 filter without flagging
+it first -- they're deliberately matched to the WO's own stated tolerances.
+
+This is read-only. No writes to buy_ledger.db (opened in ro mode). No
+production code read or touched.
+
+Paste the full output back either way.

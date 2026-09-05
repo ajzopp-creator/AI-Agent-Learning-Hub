@@ -1,0 +1,180 @@
+{
+  "project_id": "P_000",
+  "lessons_file": "C:\\Users\\Trader\\AI-Agent-Learning-Hub\\projects\\P_000_PythonClaudeLocalLLM\\tasks\\lessons.md",
+  "generated_at": "2026-09-05T02:42:30.841570Z",
+  "min_shared_terms": 3,
+  "total_lessons": 3,
+  "flags": [
+    {
+      "lesson_id": "M-001",
+      "lesson_title": "Native API Only — No Endpoint Switching",
+      "classification": "LIKELY_STILL_LIVE",
+      "classification_method": "LM_STUDIO",
+      "shared_term_count": 0,
+      "matched_sources": [
+        {
+          "source_type": "ec_log",
+          "source_path": "C:\\Users\\Trader\\AI-Agent-Learning-Hub\\projects\\P_000_PythonClaudeLocalLLM\\docs\\P_000_SYSTEM_DOCUMENTATION.md",
+          "chunk_excerpt": "| # | Date | Severity | Error Observed | Correct Behavior |",
+          "shared_terms": []
+        },
+        {
+          "source_type": "skill_file",
+          "source_path": "C:\\Users\\Trader\\AI-Agent-Learning-Hub\\.claude\\skills\\system-doc-initializer\\SKILL.md",
+          "chunk_excerpt": "**F1 Lessons.** New lesson for a future session (fix that worked, mistake not to repeat, architecture decision + why)? Yes → write into the relevant project's SKILL.md/bug table now, not a someday-not",
+          "shared_terms": []
+        },
+        {
+          "source_type": "completion_gate",
+          "source_path": "C:\\Users\\Trader\\AI-Agent-Learning-Hub\\Agentic-Hub-Governance\\work_orders\\WO_COMPLETION_GATE.md",
+          "chunk_excerpt": "7.09:1 R:R, and an options-chain request -- all P_400's.",
+          "shared_terms": []
+        },
+        {
+          "source_type": "ec_log",
+          "source_path": "C:\\Users\\Trader\\AI-Agent-Learning-Hub\\projects\\P_000_PythonClaudeLocalLLM\\docs\\P_000_SYSTEM_DOCUMENTATION.md",
+          "chunk_excerpt": "3. **LM Studio / Local LLM Testing** — Build and validate local LLM workflows using LM Studio (Llama models) without cloud dependencies",
+          "shared_terms": []
+        },
+        {
+          "source_type": "ec_log",
+          "source_path": "C:\\Users\\Trader\\AI-Agent-Learning-Hub\\projects\\P_000_PythonClaudeLocalLLM\\docs\\P_000_SYSTEM_DOCUMENTATION.md",
+          "chunk_excerpt": "- Serve as the architectural reference — when in doubt, look here first",
+          "shared_terms": []
+        },
+        {
+          "source_type": "ec_log",
+          "source_path": "C:\\Users\\Trader\\AI-Agent-Learning-Hub\\projects\\P_000_PythonClaudeLocalLLM\\docs\\P_000_SYSTEM_DOCUMENTATION.md",
+          "chunk_excerpt": "- Python script development and testing",
+          "shared_terms": []
+        },
+        {
+          "source_type": "ec_log",
+          "source_path": "C:\\Users\\Trader\\AI-Agent-Learning-Hub\\projects\\P_000_PythonClaudeLocalLLM\\docs\\P_000_SYSTEM_DOCUMENTATION.md",
+          "chunk_excerpt": "- Claude API connection and testing",
+          "shared_terms": []
+        },
+        {
+          "source_type": "ec_log",
+          "source_path": "C:\\Users\\Trader\\AI-Agent-Learning-Hub\\projects\\P_000_PythonClaudeLocalLLM\\docs\\P_000_SYSTEM_DOCUMENTATION.md",
+          "chunk_excerpt": "| **LM Studio** | Local LLM application running Llama models. API endpoint: `http://localhost:1234/api/v1` |",
+          "shared_terms": []
+        }
+      ]
+    },
+    {
+      "lesson_id": "M-002",
+      "lesson_title": "Chat Requests Require Model Parameter",
+      "classification": "LIKELY_STILL_LIVE",
+      "classification_method": "LM_STUDIO",
+      "shared_term_count": 0,
+      "matched_sources": [
+        {
+          "source_type": "ec_log",
+          "source_path": "C:\\Users\\Trader\\AI-Agent-Learning-Hub\\projects\\P_000_PythonClaudeLocalLLM\\docs\\P_000_SYSTEM_DOCUMENTATION.md",
+          "chunk_excerpt": "Trailing label is optional — include it only when a project needs to distinguish parallel sessions (P_115 has carried one since v2.7 for this reason). No mandatory separator between date and time — an",
+          "shared_terms": []
+        },
+        {
+          "source_type": "ec_log",
+          "source_path": "C:\\Users\\Trader\\AI-Agent-Learning-Hub\\projects\\P_000_PythonClaudeLocalLLM\\docs\\P_000_SYSTEM_DOCUMENTATION.md",
+          "chunk_excerpt": "| # | Date | Severity | Error Observed | Correct Behavior |",
+          "shared_terms": []
+        },
+        {
+          "source_type": "completion_gate",
+          "source_path": "C:\\Users\\Trader\\AI-Agent-Learning-Hub\\Agentic-Hub-Governance\\work_orders\\WO_COMPLETION_GATE.md",
+          "chunk_excerpt": "IS the notification. No per-project Ack required, no CLOSED-blocking.",
+          "shared_terms": []
+        },
+        {
+          "source_type": "completion_gate",
+          "source_path": "C:\\Users\\Trader\\AI-Agent-Learning-Hub\\Agentic-Hub-Governance\\work_orders\\WO_COMPLETION_GATE.md",
+          "chunk_excerpt": "7.09:1 R:R, and an options-chain request -- all P_400's.",
+          "shared_terms": []
+        },
+        {
+          "source_type": "ec_log",
+          "source_path": "C:\\Users\\Trader\\AI-Agent-Learning-Hub\\projects\\P_000_PythonClaudeLocalLLM\\docs\\P_000_SYSTEM_DOCUMENTATION.md",
+          "chunk_excerpt": "| **LM Studio** | Local LLM application running Llama models. API endpoint: `http://localhost:1234/api/v1` |",
+          "shared_terms": []
+        },
+        {
+          "source_type": "ec_log",
+          "source_path": "C:\\Users\\Trader\\AI-Agent-Learning-Hub\\projects\\P_000_PythonClaudeLocalLLM\\docs\\P_000_SYSTEM_DOCUMENTATION.md",
+          "chunk_excerpt": "| **DeepSeek R1 14B** | Primary local model (daily driver): `deepseek-r1-distill-qwen-14b` |",
+          "shared_terms": []
+        },
+        {
+          "source_type": "ec_log",
+          "source_path": "C:\\Users\\Trader\\AI-Agent-Learning-Hub\\projects\\P_000_PythonClaudeLocalLLM\\docs\\P_000_SYSTEM_DOCUMENTATION.md",
+          "chunk_excerpt": "| **Activation** | NOT required — all .bat files call python.exe directly by full path |",
+          "shared_terms": []
+        },
+        {
+          "source_type": "ec_log",
+          "source_path": "C:\\Users\\Trader\\AI-Agent-Learning-Hub\\projects\\P_000_PythonClaudeLocalLLM\\docs\\P_000_SYSTEM_DOCUMENTATION.md",
+          "chunk_excerpt": "| **API endpoint** | http://localhost:1234/api/v1 |",
+          "shared_terms": []
+        }
+      ]
+    },
+    {
+      "lesson_id": "M-003",
+      "lesson_title": "Request Format Investigation Before Architecture Change",
+      "classification": "LIKELY_STILL_LIVE",
+      "classification_method": "LM_STUDIO",
+      "shared_term_count": 0,
+      "matched_sources": [
+        {
+          "source_type": "ec_log",
+          "source_path": "C:\\Users\\Trader\\AI-Agent-Learning-Hub\\projects\\P_000_PythonClaudeLocalLLM\\docs\\P_000_SYSTEM_DOCUMENTATION.md",
+          "chunk_excerpt": "Trailing label is optional — include it only when a project needs to distinguish parallel sessions (P_115 has carried one since v2.7 for this reason). No mandatory separator between date and time — an",
+          "shared_terms": []
+        },
+        {
+          "source_type": "ec_log",
+          "source_path": "C:\\Users\\Trader\\AI-Agent-Learning-Hub\\projects\\P_000_PythonClaudeLocalLLM\\docs\\P_000_SYSTEM_DOCUMENTATION.md",
+          "chunk_excerpt": "| 004 | 2026-06-30 | High | An untraced session added extra=\"forbid\" to P400Record (obsidian_writers\\domain\\vault_schemas.py) without accounting for write_handler.py's unconditional injected source ke",
+          "shared_terms": []
+        },
+        {
+          "source_type": "skill_file",
+          "source_path": "C:\\Users\\Trader\\AI-Agent-Learning-Hub\\.claude\\skills\\system-doc-initializer\\SKILL.md",
+          "chunk_excerpt": "- No Windows-MCP → Linux sandbox: create in `/mnt/user-data/outputs/` → `present_files` → manifest table of Windows destinations → Tony downloads + places. Format: `CREATED IN: /mnt/user-data/outputs/",
+          "shared_terms": []
+        },
+        {
+          "source_type": "ec_log",
+          "source_path": "C:\\Users\\Trader\\AI-Agent-Learning-Hub\\projects\\P_000_PythonClaudeLocalLLM\\docs\\P_000_SYSTEM_DOCUMENTATION.md",
+          "chunk_excerpt": "Every `CLAUDE.md` currently on disk (P_115, P_400, P_020) was built by the owning project independently of this WO, before the pattern was formally recorded here — this table documents what already ex",
+          "shared_terms": []
+        },
+        {
+          "source_type": "skill_file",
+          "source_path": "C:\\Users\\Trader\\AI-Agent-Learning-Hub\\.claude\\skills\\system-doc-initializer\\SKILL.md",
+          "chunk_excerpt": "| F | Falsified output — hardcoded success string, no real call | Output `[OK]`/`DONE`/`written` only after call returns without exception |",
+          "shared_terms": []
+        },
+        {
+          "source_type": "skill_file",
+          "source_path": "C:\\Users\\Trader\\AI-Agent-Learning-Hub\\.claude\\skills\\system-doc-initializer\\SKILL.md",
+          "chunk_excerpt": "Non-negotiables: never confuse command timeout/transport/permission errors · never assume absent without verifying · never retry blindly · never optimize for speed when Tony needs diagnosis · never em",
+          "shared_terms": []
+        },
+        {
+          "source_type": "skill_file",
+          "source_path": "C:\\Users\\Trader\\AI-Agent-Learning-Hub\\.claude\\skills\\system-doc-initializer\\SKILL.md",
+          "chunk_excerpt": "**F2 State.** Session changed code, ran a validation, or moved project state (file versions, validation numbers, blocked/next items)? Yes → write a Current-State entry to `[Project ID]/tasks/todo.md` ",
+          "shared_terms": []
+        },
+        {
+          "source_type": "completion_gate",
+          "source_path": "C:\\Users\\Trader\\AI-Agent-Learning-Hub\\Agentic-Hub-Governance\\work_orders\\WO_COMPLETION_GATE.md",
+          "chunk_excerpt": "# Last updated: 2026-08-03 (added Caller Propagation + Imperative Sweep checks -- WO-P115-E2.001 wired support fields into emit_signal() but never into cli.py, the only entry point, and closed anyway;",
+          "shared_terms": []
+        }
+      ]
+    }
+  ]
+}

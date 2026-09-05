@@ -1,0 +1,43 @@
+P_300 -- Working-state doc maintenance, 2026-08-31
+Task: lessons.md archive pass (light, 8 entries) + M-111 duplicate-ID rename
+
+What this tests: moves 8 contiguous, oldest Section-1 lessons (M-042
+through M-051, captured 2026-06-03 through 2026-06-12) verbatim from
+tasks/lessons.md to tasks/lessons_archive.md. Cross-checked against
+CLAUDE.md/SIP/SKILL first -- none of the 8 are referenced by ID
+anywhere live, so none need to stay live.
+
+Also fixes a real duplicate-ID bug found the same session: two
+unrelated lessons were both numbered M-111 (a WO-status-header lesson
+from ~2026-08-12, and a headless-OAuth-token lesson from 2026-08-19).
+The OAuth one is renamed to M-118 (next open number); its one
+cross-reference (inside M-113's "Pairs with" line) is updated to
+match. The OTHER M-111 reference (inside M-112's "Pairs with" line --
+a genuinely different lesson) is deliberately left alone. The script
+asserts both outcomes explicitly rather than assuming a blind
+find-replace would get this right.
+
+Success criteria: script prints PASS. It verifies, in order: (1)
+exactly the 8 expected IDs and no others were inside the extracted
+span, (2) the surviving M-111 header and M-112's correct M-111
+reference are both still present post-edit, (3) byte delta on
+lessons.md matches the archived span's size within 2 bytes, (4) CR
+and LF byte counts on lessons.md match orig minus what the removed
+span itself contained -- not just "unchanged" or "went down", the
+exact expected number. That CR check exists because
+windows-mcp:FileSystem mode=write silently converted LF to CRLF on a
+full-file rewrite earlier this same project (M-117, lessons.md itself)
+with no error and a clean line-count/content spot-check -- only a raw
+byte scan caught it. This script reads and writes with newline=''
+(raw passthrough, no universal-newline translation) specifically to
+avoid that failure mode; the CR/LF assertions prove it worked rather
+than assume it did.
+
+If it fails: read the FAIL reason -- it names exactly which check
+tripped (marker not found, wrong entry count, byte/CR/LF mismatch,
+etc.). Fix only the specific string constant or logic that assumption
+depended on. Do NOT change which 8 entries get archived or the
+rename decision (OAuth M-111 -> M-118) -- both are Tony's approved
+choices from this session, not something to re-derive.
+
+Paste the full output back either way (PASS or FAIL).

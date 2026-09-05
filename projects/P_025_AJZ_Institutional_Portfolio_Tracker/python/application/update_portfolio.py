@@ -13,15 +13,15 @@ import logging
 from datetime import date, timedelta
 
 from config import (
-    ACCOUNT_AJZ6348,
     IRA_FEED_READY,
     LOOKBACK_DAYS_UPDATE,
     P020_DB_PATH,
     PRIMARY_ACCOUNTS,
     WORKBOOK_PATH,
 )
+from domain.fifo_lots import process_fifo_lots, summarize_fifo_cost
 from domain.trade_processor import (
-    build_cost_basis_rows,
+    build_cost_basis_for_accounts,
     calculate_daily_cash,
     calculate_daily_invested,
     calculate_daily_units,
@@ -75,8 +75,10 @@ def run_update(quick_prices_only: bool = False) -> PortfolioSnapshot:
     market_data = fetch_market_data(tickers, start=start_date, end=end_date)
     reference_data = fetch_reference_data(tickers)
     daily_invested = calculate_daily_invested(daily_units, market_data)
-    cost_basis = build_cost_basis_rows(
-        trades, daily_units, account_id=ACCOUNT_AJZ6348
+    fifo_lots = process_fifo_lots(trades)
+    fifo_cost = summarize_fifo_cost(fifo_lots)
+    cost_basis = build_cost_basis_for_accounts(
+        trades, fifo_cost, PRIMARY_ACCOUNTS
     )
 
     snapshot = PortfolioSnapshot(
@@ -87,6 +89,8 @@ def run_update(quick_prices_only: bool = False) -> PortfolioSnapshot:
         daily_cash=daily_cash,
         daily_invested=daily_invested,
         cost_basis=cost_basis,
+        fifo_lots=fifo_lots,
+        fifo_cost=fifo_cost,
     )
 
     write_data_lake(
@@ -98,6 +102,8 @@ def run_update(quick_prices_only: bool = False) -> PortfolioSnapshot:
         daily_cash=snapshot.daily_cash,
         daily_invested=snapshot.daily_invested,
         cost_basis=snapshot.cost_basis,
+        fifo_lots=snapshot.fifo_lots,
+        fifo_cost=snapshot.fifo_cost,
     )
 
     logger.info("=== P_025 Update complete → %s ===", WORKBOOK_PATH)

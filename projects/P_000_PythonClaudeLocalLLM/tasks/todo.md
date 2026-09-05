@@ -1,4 +1,73 @@
+## Current State -- 2026-09-04 (session close)
+
+WO-P000-E20.001 (lessons_audit staleness detection): PENDING -> IN_PROGRESS.
+All 4 Open Decisions locked (location, trigger, LM Studio primary/keyword
+fallback method, cadence). Item 1 (Script) BUILT -- 10 files in
+shared_resources\python_utils\lessons_audit\ + 1 TASK_ROUTING entry in
+integrations\lm_studio\config.py. 19/19 tests passing. Item 4 (Rollout)
+COMPLETE -- ran against real P_000 lessons.md, 3/3 lessons classified via
+LM_STUDIO (not keyword fallback), all correctly LIKELY_STILL_LIVE. Item 2
+(Wiring -- INIT reads lessons_audit_status.json) NOT STARTED -- next
+actionable piece. Independent Review not done -- WO cannot move past
+IN_PROGRESS toward OWNER_DONE until Wiring lands and review happens.
+
+Real bug found and fixed during Rollout: two LM Studio model instances
+loaded simultaneously were splitting the 8GB VRAM budget, causing near-
+zero real GPU compute and system-wide lag -- looked like a reasoning-
+length/timeout problem but was not. Confirmed fix: eject both, reload a
+single instance. integrations\lm_studio\config.py HTTP_TIMEOUT_SECONDS
+was also raised 30->90 during diagnosis, but per the WO write-up this is
+NOT confirmed necessary -- the VRAM fix is the well-evidenced one. Left in
+place as harmless, not something to cite as a proven fix.
+
+Related finding, documented in the WO not fixed: P_300s Stage 8 narrator
+uses its own separate LM Studio client (python\infrastructure\
+llm_client.py -- OpenAI-compatible endpoint, synchronous requests, own
+120s timeout), not the shared integrations\lm_studio wrapper. Historical
+split (P_300s client predates the shared wrapper). Tonys call: leave as-
+is, do not migrate, revisit only if a real blocker forces it. Not an
+oversight -- a recorded, deliberate deferral.
+
+peh-handoff SKILL.md bumped to v1.11 (disk only -- needs Customize ->
+Skills -> peh-handoff -> edit/replace to go live). Two new Content
+integrity findings added: (1) PowerShell backtick-as-escape-character
+corruption -- same failure shape as the existing Unicode-punctuation
+finding, different root cause, hit twice this session on WO-P000-E20.001
+doc edits before being caught. (2) Cross-project claims must be verified
+by reading the actual code, not inferred from a shared-architecture docs
+description -- a wrong claim about P_300 sharing this same wrapper/
+timeout was stated to Tony, then corrected after he pushed back.
+
 ## Current State -- 2026-08-29 (session close)
+
+GIT: committed acbc70a, pushed to origin/main. Also resolved a merge conflict
+in WO-P000-E10.004.md (two-machine race, ASUS 2026-08-17 re-check kept over
+LG's earlier 2026-08-16 draft -- same underlying facts, ASUS side had more)
+and fixed a nested-.git repo under projects/P_005_local-llm-core/ that was
+blocking `git add -A` entirely (backup at .git_backup_2026-08-29_185957
+before removal).
+
+AFTER THAT PUSH (NOT YET COMMITTED -- next session or a manual commit
+should pick these up):
+- This todo.md's commit-hash logging edit (the paragraph above).
+- projects/P_025_AJZ_Institutional_Portfolio_Tracker/docs/
+  P_025_PROJECT_INSTRUCTIONS.md -- new Section 9 "Hub Governance & Deploy
+  Safety." Tony clarified P_025 (a Grok-built project) stays under FULL
+  Hub governance -- WO ledger, Completion Gate, Independent Review, Ack
+  Scope -- no exemption for being Grok-built, especially since real tokens
+  go into it. No WO-P025-* ledger entries exist yet; first real P_025 work
+  starts that ledger. Also added a backup-before-extract step tied to the
+  existing rmtree warning in Section 6. Backup taken first:
+  P_025_PROJECT_INSTRUCTIONS.md.backup_2026-08-29_192122.
+- P_025 git untracking was DISCUSSED, NOT EXECUTED. Tony confirmed P_025
+  (Grok-managed) shouldn't be in the Hub's GitHub tracking, but the actual
+  `git rm --cached` + .gitignore commands were never run this session --
+  P_025's files are still sitting in git as of commit acbc70a. Flag this
+  explicitly next session; don't assume it's handled.
+- Declined building a p025-project-context skill (matching every other
+  governed project) -- Tony's call: P_025 is an experimental Grok project,
+  prior Grok attempts (P_300) didn't pan out, holding off until it proves
+  out further.
 
 NEXT SESSION -- START HERE: no blocking priority. Every WO on the P_000
 ledger is now either CLOSED, OWNER_DONE awaiting Independent Review, or

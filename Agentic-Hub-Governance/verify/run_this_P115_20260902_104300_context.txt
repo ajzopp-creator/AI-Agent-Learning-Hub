@@ -1,0 +1,51 @@
+Phase/WO: P_115 routine session, 2026-09-02, no open WO (all P_115 WOs CLOSED).
+Task: P_118 STEP 1 batch pasted by Tony this session -- 8 pre-screen tickers
+(ANRO/AVAH/CXW/EXEL/GKOS/KNSA/MRX/PSNL) all PASS, no action needed. Two
+trailing "STEPS 1-2" tickers (DNOW, HNGE) both cleared the P_115 recheck
+(DNOW=ASYM, HNGE=BUY), passed Fund Verification and post-earnings checks
+clean -- both are due for SIGNAL_V2 emission per the STEP2 decision gate
+(BUY/ASYM + clean = emit immediately).
+
+What this script tests: calls emit_signal() directly for DNOW and HNGE
+with the parameters derived this session (entry/stop/target from the
+TOS chart screenshots + Tony's stated EP values, volume from
+stockanalysis.com, Fund Verification and earnings-date checks already
+done via web search this session -- both clean, documented in the
+signal_rationale field of each packet).
+
+Why emit_signal() directly instead of cli.py via command line: this
+session's python.exe calls stalled past the 4-min MCP ceiling on a
+plain --help invocation (before any real work), so per peha-handoff
+v1.10 the actual work call was never attempted a second time --
+handing off to Claude Code instead of retrying.
+
+Success criteria:
+- Both calls complete without exception
+- Two files exist after running:
+  C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\signals\2026-09-02_DNOW_v2.0.json
+  C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\signals\2026-09-02_HNGE_v2.0.json
+- Each file's signal_source field reads "P_115" (not "P_118") -- this is
+  correct per architecture doc 8.2 step 3, not a bug to fix.
+- Script prints "PASS" and exits 0
+
+What to fix on failure: read the printed exception/traceback. Likely
+causes: import path wrong (check PROJECT_PYTHON path in the script
+matches the real project python\ folder), or a SIGNAL_V2 schema
+validation error (check the field name in the error against
+signal_schemas.py's SignalV2 model). Do not change test assertions.
+Do NOT change the entry/stop/target/volume/rationale VALUES -- those
+were derived from live data this session, not placeholders. If a
+value looks wrong to you, stop and flag it rather than adjusting it.
+
+Also flag to Tony (outside this script's scope, just surface it):
+the verify\ folder pre-stage check found a backlog of unconsumed
+run_this_*.py handoffs with no .done file, including several P_115
+ones dated 2026-09-01 (run_this_P115_20260901_220858_inspect.py,
+run_this_P115_20260901_221500.py, run_this_P115_batch_emit.py,
+run_this_P115_batch2_emit.py, run_this_P115_STZ_emit.py) plus older
+ones from P_010/P_020/P_300/P_400. These may represent signal
+emissions or checks from a prior session that never got run. This
+new script does not touch them or assume what they contain -- Tony
+should decide whether to run, archive, or discard them separately.
+
+Do not change test assertions.

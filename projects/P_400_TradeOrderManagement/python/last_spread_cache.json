@@ -87,8 +87,8 @@
     },
     "SARK": {
       "half_spread": 0.009999999999999787,
-      "price": 25.72,
-      "observed_at": "2026-08-19T16:24:00Z"
+      "price": 24.38,
+      "observed_at": "2026-09-03T19:45:16Z"
     },
     "TSN": {
       "half_spread": 0.019999999999999574,
@@ -214,6 +214,61 @@
       "half_spread": 0.004999999999999893,
       "price": 4.81,
       "observed_at": "2026-08-28T16:57:33Z"
+    },
+    "CME": {
+      "half_spread": 0.03499999999999659,
+      "price": 286.75,
+      "observed_at": "2026-09-01T19:11:51Z"
+    },
+    "SPGI": {
+      "half_spread": 0.160000000000025,
+      "price": 445.85,
+      "observed_at": "2026-09-01T19:11:53Z"
+    },
+    "WFC": {
+      "half_spread": 0.005000000000002558,
+      "price": 86.885,
+      "observed_at": "2026-09-01T19:11:55Z"
+    },
+    "DNOW": {
+      "half_spread": 0.004999999999999893,
+      "price": 15.905,
+      "observed_at": "2026-09-02T19:31:59Z"
+    },
+    "PBR": {
+      "half_spread": 0.005000000000000782,
+      "price": 20.935,
+      "observed_at": "2026-09-02T19:32:02Z"
+    },
+    "BWXT": {
+      "half_spread": 0.125,
+      "price": 155.13,
+      "observed_at": "2026-09-02T19:32:06Z"
+    },
+    "CVE": {
+      "half_spread": 0.004999999999999005,
+      "price": 32.935,
+      "observed_at": "2026-09-02T19:32:08Z"
+    },
+    "GME": {
+      "half_spread": 0.004999999999999005,
+      "price": 18.8567,
+      "observed_at": "2026-09-02T19:32:10Z"
+    },
+    "HPQ": {
+      "half_spread": 0.004999999999999005,
+      "price": 32.275,
+      "observed_at": "2026-09-02T19:32:14Z"
+    },
+    "WMT": {
+      "half_spread": 0.0049999999999954525,
+      "price": 108.568,
+      "observed_at": "2026-09-03T19:45:12Z"
+    },
+    "CRUS": {
+      "half_spread": 0.11500000000000199,
+      "price": 113.195,
+      "observed_at": "2026-09-04T15:19:56Z"
     }
   }
 }

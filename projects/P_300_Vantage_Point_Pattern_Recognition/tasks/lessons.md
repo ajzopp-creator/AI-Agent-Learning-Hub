@@ -2,7 +2,7 @@
 
 **File:** `tasks/lessons.md`
 **Status:** Live working document
-**Last Updated:** 2026-08-29 (M-114). Full per-session update history moved to tasks/lessons_archive.md, third pass.
+**Last Updated:** 2026-08-31 (M-119). Full per-session update history moved to tasks/lessons_archive.md, fourth pass.
 **Maintained By:** Anthony Zoppi + Claude (architect)
 
 ---
@@ -38,6 +38,8 @@ the retention standard.
 
 Third pass: 2026-08-29 -- 23 Section 1 entries archived oldest-first, skipping IDs still referenced in SKILL/SIP/CLAUDE.md (M-015); Last-Updated history line moved to the archive. Script: verify\run_this_P300_20260829_104500.py.
 
+Fourth pass: 2026-08-31 -- 8 more Section 1 entries (M-042/043/044/045/046/047/048/051) archived oldest-first, same cross-check (M-015/M-054/M-109 kept, still referenced in CLAUDE.md). Same session also fixed a duplicate ID -- M-111 had been assigned to two unrelated lessons; the newer one (headless OAuth token refresh, 2026-08-19) renamed to M-118, its one cross-reference in M-113 updated to match, M-112's reference to the other M-111 verified untouched. Script: verify\run_this_P300_20260831_081556.py.
+
 ---
 ## Section 1 -- Session Methodology Rules (Active)
 
@@ -53,82 +55,6 @@ diagnostic script; script-local bug, not a `db_utils.py` defect.
 ### M-015 -- Live filesystem MCP reads override project attachments for `tasks/*.md`
 **Rule:** When INIT loads `tasks/lessons.md` and `tasks/todo.md`, ALWAYS read via filesystem MCP (`filesystem:read_text_file`), NEVER trust project-attached versions. Attachments lag disk. (Identified 2026-05-15.)
 
-### M-042 -- Non-blocking hooks can hide silent failures; add explicit success logging
-**Rule:** When a feature is designed to fail non-blocking (errors logged but don't stop the flow), add EXPLICIT success logging so absence of a success message indicates the hook never ran or failed silently. Without positive confirmation, debugging becomes guesswork.
-
-**Failure mode captured 2026-06-03:** Ledger_record hook was called but produced no output (no error, no success). Ledger DB remained empty. Without explicit "ledger record success -> ledger_id=NNN" logging, operator couldn't tell if the hook ran at all, failed silently, or the insert succeeded but didn't write.
-
-**Fix:** Add explicit logger.info() on success path so every firing produces a log line.
-
-(Captured 2026-06-03)
-
-### M-043 -- Non-blocking errors must be logged at WARNING level so operators notice them
-**Rule:** When an error is intentionally non-blocking (doesn't stop the flow), log it at WARNING level, NOT INFO or just ERROR. Non-blocking errors that are only logged at ERROR level get lost in the stream and the operator thinks the feature succeeded.
-
-**Failure mode captured 2026-06-03:** Ledger_record hook failed silently (threw exception, caught it, logged at ERROR). The batch file saw exit code 0 and continued. COHR and DE were both archived even though their signals were never recorded to the ledger. Operator only noticed by checking logs after the fact.
-
-**Fix:** (1) Log non-blocking failures at WARNING level so they stand out. (2) Consider adding a summary line at the end: "Ledger: OK" or "Ledger: FAILED (see logs)".
-
-(Captured 2026-06-03)
-
-### M-044 -- Read skill documentation FIRST; don't experiment after asking "what should I be using?"
-**Rule:** When uncertainty arises about the right tool or approach, **read the applicable skill doc immediately** before proposing workarounds or experiments. Asking "what should I be using" and then fumbling instead of reading the answer wastes time and erodes trust.
-
-**Failure mode captured 2026-06-03:** After multiple PowerShell timeouts on Python commands, Tony pointed out the answer was already documented in the python-project-architecture skill. Instead of reading it, I continued experimenting with different MCP approaches. Lost time and credibility. The skill document had the answer all along.
-
-**Fix:** Whenever you encounter "I believe it's in [skill name]", **immediately fetch and read that skill** before responding. Don't hypothesize; read the source.
-
-(Captured 2026-06-03)
-
-### M-045 -- Verify the full cross-project write path before relying on a Hub-interface schema key
-**Rule:** A published Consumer Guide is the caller contract, but before trusting a new Hub-interface schema key (e.g. `write_to_vault("SIGNAL_V2", ...)`), confirm the dispatch chain is wired end-to-end in the owning project: (1) the schema registry maps the key to a model, (2) the output-format map routes it (md vs json), (3) the filename builder handles it, (4) the writer exists. A key documented in a guide can still be unwired in code. Confirm on disk, then trust.
-
-**Why it matters (2026-06-08):** Before the COHR live test of Enhancement 1, P_800's `write_handler.py` docstring named only the legacy `P400SIG` json path -- never `SIGNAL_V2`. Because the emit is non-blocking by design, an unwired key would have silently logged a WARNING and produced a false "pass." Verifying the chain across `obsidian_writers/config.py` (OUTPUT_FORMAT / VAULT_FOLDER_MAP / JSON_FILENAME_SUFFIX), `validator.py` -> `schemas.py` (SCHEMA_REGISTRY["SIGNAL_V2"] = SignalV2), and `filename_builder.py` confirmed all four links wired (P_800 work dated 2026-06-07/08); the handler docstring was merely stale. Verifying first turned a potential false-pass into a real end-to-end validation.
-
-**Pairs with:** M-040 (test execution paths, not just imports), M-041 (verify utility signatures before use), M-038 (use the Hub interface for cross-project writes).
-
-(Captured 2026-06-08)
-
-### M-046 -- Risk-aversion lambda is signal provenance; log every change as calibration-affecting
-**Rule:** RISK_AVERSION_LAMBDA (config v1.7, Certainty-Equivalent BUY gate) is applied to DECIMAL-FRACTION returns (0.06 = 6%), NOT percentages. At decimal magnitudes lambda must be large to bite -- the meaningful band is ~10-40; default is 20.0. A BUY made at lambda=20 is NOT comparable to a BUY made at lambda=5. Therefore:
-1. Any change to RISK_AVERSION_LAMBDA is a calibration-affecting event -- log the change + rationale here in lessons.md.
-2. Fired signals are only comparable across runs at the SAME lambda.
-3. Lambda is stamped into the report header (report_writer v1.7 `Risk model:` line) and is to be stamped into the ledger record when the gate goes live, so every fired signal records the lambda it was judged under.
-4. NEVER calibrate lambda as if returns were in percent (6.0) -- that collapses every CE toward the worst-case analog and nukes every BUY.
-
-**Design (NARRATOR_ENABLED precedent):** CE_GATE_ENABLED defaults False. While off, the CE is computed and displayed but does NOT alter any signal -- determinism regression stays byte-identical. The gate goes live only after lambda is tuned against the ledger. Verified 2026-06-09: utility.py smoke PASS; dispersed cluster [-0.10, 0.02, 0.06, 0.20] mean +4.5% -> CE -3.7% at lambda=20 (8.2 pt penalty), confirming the fat-tail penalty fires as intended.
-
-**Open before gate-on (M-040):** signal_classifier smoke harness covers only CE_GATE_ENABLED=False; the gate-ON path (CE below threshold blocks a BUY) has NO test yet. Add two harness cases proving block-on and no-op-off BEFORE flipping the flag in production. Also owed: end-to-end daily-evaluate determinism replay vs a pre-change run (NFR-1 proof that observe-mode changed nothing).
-
-(Captured 2026-06-09)
-
-### M-047 -- Smoke harnesses must not emit production warning strings they did not earn
-**Rule:** A test harness that prints a real production warning on demand trains the operator to half-trust the output. Any harness block that forces a warning/error condition by hand (rather than detecting it) must label its output as a demonstration -- e.g. a `[SMOKE DEMO]` banner stating the state is simulated, not measured -- so the string can never be mistaken for a live detection.
-
-**Failure mode captured 2026-06-09:** report_writer.py smoke harness called print_signal_report_clean(narration=None, narrator_warning=True), which printed `[WARNING] LM Studio unavailable -- narration skipped` even though LM Studio was never contacted. Operator correctly flagged this as misleading regardless of it being a test. Fixed by banner-labeling the demo block (report_writer v1.7). The production string itself is left verbatim -- the demo's job is to show it -- but the banner now announces the state as staged.
-
-**Underlying design note (out of scope, backlog):** In production the warning is driven by a caller-passed boolean (narrator_warning), so print_signal_report_clean renders whatever it is told -- the display can disagree with actual LM Studio state. The real fix is to derive the warning from a recorded narrator outcome (not-attempted / succeeded / attempted-and-failed) in daily_evaluate_pipeline.py, so no boolean can be set wrong. Requires reading the current narrator-detection block first; scoped as its own change.
-
-(Captured 2026-06-09)
-
-### M-048 -- filesystem:edit_file batches are atomic; verify after every multi-edit batch
-**Rule:** `filesystem:edit_file` applies its `edits` array as a single transaction. If any one edit's `oldText` fails to match exactly, the ENTIRE batch rolls back -- including edits in the same array that would have matched. A clean partial application never happens. Therefore: after any multi-edit batch, re-read or grep the file to confirm every intended change landed; never assume "the diff showed N edits so N applied." When a batch errors, re-issue ALL edits from that batch, not just the one that failed.
-
-**Failure mode captured 2026-06-09:** SKILL.md decision-flag edit issued as a 3-edit batch (checklist line, Aligned-with pointer, changelog entry). The changelog edit's `oldText` assumed `## Changelog` was immediately followed by the 2026-05-29 entry, but a 2026-05-30 entry sat between them (disk SKILL was newer than the project-attached copy). The mismatch rolled back all three; a verification grep showed the checklist line and Aligned-with pointer were both still stale despite the tool reporting the batch. Re-issued the two reverted edits separately; confirmed by grep. Root contributing cause: trusted the project-attached snapshot's changelog structure instead of the just-read disk content.
-
-(Captured 2026-06-09)
-
-### M-051 -- Never hardcode a success string; output only follows a real call result
-
-**Rule:** Any console line claiming `[OK]`, `SUCCESS`, `DONE`, `written`, etc. MUST be produced from the actual function call's return value, not hardcoded before/instead of the call. A hardcoded success string is a falsified functional test. Placeholder output strings are permitted ONLY during active UI scaffolding within a single session -- before the session ends, every placeholder must be replaced with a real call or tracked as an open todo.md item. No placeholder survives a session boundary.
-
-**Trigger (2026-06-12):** `report_writer.py print_signal_report_clean()` printed `[OK] {ticker} written to vault` and `ARCHIVE OK` as hardcoded strings -- no vault write and no archive call existed anywhere in the function. Scaffolded 2026-05-27, never replaced. The correctly-wired `signal_emitter.emit_signal_packet()` path masked the fact that this function's writes were fake.
-
-**Addendum (2026-06-17) -- the original fix never landed:** todo.md/lessons.md both logged this closed 2026-06-12. It wasn't -- `report_writer.py` was still v1.7 with both strings verbatim, running live in production for 5+ days undetected. Real fix landed v1.8 -- see M-054.
-
-**Pairs with:** M-040, M-047, M-054.
-
-(Captured 2026-06-12)
 ## Section 2 -- Operational Lessons Specific to P_300 (Not Yet in EC Log)
 
 ### O-001 -- Pattern file bar overage
@@ -397,7 +323,7 @@ None of the three were caught by boundary-line verification prints -- all confir
 
 (Captured 2026-07-23, three of Claude's own mistakes in one session, all self-caught.)
 
-## M-111 -- M-097's "persists indefinitely" theory was wrong; headless Claude Code OAuth tokens do not reliably refresh
+## M-118 -- M-097's "persists indefinitely" theory was wrong; headless Claude Code OAuth tokens do not reliably refresh
 
 **Rule:** `claude -p` (headless/non-interactive) does NOT share the same reliable auto-refresh behavior as an interactive session. Per Anthropic's own Claude Code CLI issue tracker (multiple confirmed reports: anthropics/claude-code #28827, #50743, #79685, #80091), the OAuth access token has a short TTL (~8 hours) and is not reliably refreshed when the CLI is invoked headlessly, while a concurrent interactive session on the same machine keeps working. A script that calls `claude -p ... --chrome` roughly once a day should be expected to hit a 401 on a routine basis, not treated as rare. M-097's "a login persists indefinitely under normal use, so this was a one-time bootstrap gap" was reasoned from Anthropic's docs on LOGIN expiry (the multi-day/long-lived kind, code.claude.com/docs/en/authentication's 3-day warning) -- a separate, longer-lived mechanism from the short-lived ACCESS TOKEN refresh problem specific to headless mode. Two different expiry mechanisms were conflated.
 
@@ -441,7 +367,7 @@ Neither hit us on 2026-08-21 -- the approval stuck cleanly and navigate worked i
 
 **Accepted workaround (Tony's call, 2026-08-21):** if Chaikin (or any approved site) unexpectedly re-prompts, Tony manually re-approves once -- acceptable as a one-off. Becomes worth real investigation only if it recurs repeatedly (pattern, not a single blip) -- same one-off-vs-repeatable threshold this Hub already applies to the Chaikin OAuth 401 recurrences (M-111).
 
-**Pairs with:** M-111 (headless auth reliability, same "one-off is fine, pattern needs investigation" threshold), WO-P300-E4.009 (this permission model is the foundation of the MCP-driven Chaikin pull that replaced `claude -p --chrome` for today's real batch).
+**Pairs with:** M-118 (headless auth reliability, same "one-off is fine, pattern needs investigation" threshold), WO-P300-E4.009 (this permission model is the foundation of the MCP-driven Chaikin pull that replaced `claude -p --chrome` for today's real batch).
 
 (Captured 2026-08-21, Tony's own policy call after Claude found and explained the two known upstream bugs.)
 
@@ -488,3 +414,27 @@ Neither hit us on 2026-08-21 -- the approval stuck cleanly and navigate worked i
 **Fix:** After any full-file rewrite via windows-mcp:FileSystem mode=write, byte-scan the result for CR bytes (or CRLF pairs) and compare to the line-ending convention confirmed before the edit -- do not trust line-count or content spot-checks alone, they do not detect this. If the file is supposed to stay LF-only and the write introduced CRLF, normalize immediately with a .NET ReadAllText -> -replace "``r``n","``n" -> WriteAllText(UTF8, no BOM) pass and re-verify CR_COUNT=0 before considering the edit done. This is a distinct failure mode from the PowerShell .Replace() line-ending mismatches already logged this session (M-054/M-055 era fixes) -- those broke targeted `.Replace()` matches; this one silently corrupts a file's established convention on a clean full-file write with no match failure to signal it.
 
 (Captured 2026-08-29, self-caught during WO-P300-E5.009 build, not a Tony correction.)
+
+## M-119 -- Verify a stdlib keyword argument exists on p140's actual Python version before using it; don't assume API knowledge transfers across versions
+
+**Rule:** Before passing an unfamiliar or infrequently-used keyword argument to a stdlib function/method, confirm it's supported on p140's actual version (3.12), not on whatever version general API knowledge assumes. A keyword argument added in a later Python release raises a hard TypeError immediately -- not a silent bug, but still a wasted PEH round-trip a one-line version check would have prevented.
+
+**Trigger (2026-08-31):** The lessons.md archive-pass script (run_this_P300_20260831_081556.py) called Path.read_text(encoding='utf-8', newline=''), written specifically to guard against M-117's CRLF-conversion failure mode. First run failed on p140: pathlib.Path.read_text() does not accept a newline parameter on Python 3.12 -- that parameter was added in 3.13. Fix: switched to the plain builtin open(path, encoding='utf-8', newline='') instead, which has supported newline='' raw passthrough for a long time -- same guarantee, older API. No assertions changed; re-run passed clean.
+
+**Fix:** When a script needs a stdlib feature that isn't rock-solid common knowledge (recently-added kwargs, new stdlib modules, syntax features), either check p140's version first or default to the older/more broadly-supported API (open() over Path.read_text() for anything beyond the plainest read) rather than reaching for whichever spelling comes to mind first.
+
+**Pairs with:** M-117 (the CRLF guard this script existed to enforce -- the fix here didn't touch that guard, just its API surface), M-035 (verify interpreter identity before issuing a python command).
+
+(Captured 2026-08-31, caught by Tony running the script -- first real PEH round-trip on this script, one clean fix, no retry needed.)
+
+## M-120 -- A "matches known value" sanity check printed as a comment is not a check unless the code actually asserts it; M-020 recurs in ad-hoc analysis scripts, not just production display code
+
+**Rule:** M-020 (return_pct is a decimal fraction; x100 at display) applies to ANY script reading a `*_return_pct` field, including one-off diagnostic scripts, not just production report_writer paths -- the field doesn't know it's being read by a "real" script versus a throwaway one. Separately: a script that claims to sanity-check its own output against a known-correct number, printed as a comment or f-string next to the computed value, provides zero real protection unless that comparison is a live assertion that fails the script on mismatch. A claimed match nobody verified programmatically is the same failure shape as M-051's hardcoded success string.
+
+**Trigger (2026-08-31):** run_this_P300_20260831_093649.py (h5 ledger gap diagnosis) read h5_return_pct directly from buy_ledger.db and printed it with a bare `%` suffix, skipping the x100 scaling M-020 already covers -- same mistake for every *_return_pct field in the by-week and by-symbol breakdowns. The script's own header line even printed "(matches calibration report's -0.75% / 51.1% -- sanity check)" next to an actual value of -0.007%, an order-of-magnitude mismatch the script never checked itself; Tony caught it by eye against the known baseline. n, win_rate%, and both concentration ratios (week/symbol share of total negative return) were unaffected -- ratios of two equally-unscaled numbers cancel the error; only the raw average/total return figures needed correcting.
+
+**Fix:** (1) Apply x100 at the exact point any *_return_pct field is formatted for display, in every script that touches one, including throwaway analysis scripts -- not just files that already carry the anti-pattern-list warning. (2) When a script prints a "should match X" comparison, make it a real `assert abs(computed - known) < tolerance, f"..."` that fails the run -- never a comment or f-string asserting agreement that nothing actually diffed.
+
+**Pairs with:** M-020, M-051 (hardcoded success claims), M-054 (a claim is not evidence).
+
+(Captured 2026-08-31, Tony's direct correction.)

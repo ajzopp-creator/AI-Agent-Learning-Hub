@@ -12,6 +12,7 @@ from unittest.mock import MagicMock, patch
 from infrastructure.schwab_market_data import (
     get_chain_candidates,
     get_daily_bars,
+    get_extended_quote_data,
     get_quote_data,
 )
 
@@ -100,3 +101,62 @@ def test_get_chain_candidates_returns_none_on_client_exception(mock_get_client):
     clear message and exit without writing a partial file."""
     mock_get_client.side_effect = RuntimeError("network error")
     assert get_chain_candidates(CONFIG_PATH, TOKEN_PATH, "MRCY", "call") is None
+@patch("infrastructure.schwab_market_data.get_client")
+def test_get_extended_quote_data_reads_quote_node_not_extended_node(mock_get_client):
+    # FOUND LIVE 2026-09-01 (SPY, 06:57 ET) -- "extended" node is stale
+    # (frozen at the pre-market boundary); "quote" node is the real,
+    # continuously-live NBBO across sessions. Fixture mirrors that shape:
+    # "quote" has real live values, "extended" has different (stale-
+    # looking) values -- result must come from "quote", proving the
+    # stale "extended" block is genuinely ignored, not coincidentally
+    # matched.
+    mock_get_client.return_value = _mock_client(200, {
+        "MRCY": {
+            "quote": {"lastPrice": 106.70, "bidPrice": 106.70, "askPrice": 106.95, "totalVolume": 30000},
+            "extended": {"lastPrice": 106.50, "bidPrice": 106.40, "askPrice": 106.60},
+        }
+    })
+    result = get_extended_quote_data(CONFIG_PATH, TOKEN_PATH, "MRCY")
+    assert result == {"price": 106.70, "bid": 106.70, "ask": 106.95, "today_volume": 30000}
+
+
+@patch("infrastructure.schwab_market_data.get_client")
+def test_get_extended_quote_data_returns_none_on_missing_quote_node(mock_get_client):
+    # Symbol present, but no "quote" block at all. Never fabricate;
+    # return None even if a (now-ignored) "extended" block exists.
+    mock_get_client.return_value = _mock_client(200, {
+        "MRCY": {"extended": {"lastPrice": 106.50, "bidPrice": 106.40, "askPrice": 106.60}}
+    })
+    assert get_extended_quote_data(CONFIG_PATH, TOKEN_PATH, "MRCY") is None
+
+
+@patch("infrastructure.schwab_market_data.get_client")
+def test_get_extended_quote_data_returns_none_on_incomplete_quote_block(mock_get_client):
+    # "quote" node present but missing bid -- still None, not a partial fill.
+    mock_get_client.return_value = _mock_client(200, {
+        "MRCY": {
+            "quote": {"lastPrice": 106.70, "bidPrice": None, "askPrice": 106.95, "totalVolume": 30000},
+            "extended": {"lastPrice": 106.50, "bidPrice": 106.40, "askPrice": 106.60},
+        }
+    })
+    assert get_extended_quote_data(CONFIG_PATH, TOKEN_PATH, "MRCY") is None
+
+
+@patch("infrastructure.schwab_market_data.get_client")
+def test_get_extended_quote_data_returns_none_on_non_200(mock_get_client):
+    mock_get_client.return_value = _mock_client(500, {})
+    assert get_extended_quote_data(CONFIG_PATH, TOKEN_PATH, "MRCY") is None
+
+@patch("infrastructure.schwab_market_data.get_client")
+def test_get_extended_quote_data_returns_none_on_zero_bid_ask(mock_get_client):
+    # Genuine no-market guard, now checked against the "quote" node
+    # (source changed 2026-09-01 -- see get_extended_quote_data
+    # docstring). "extended" holds real-looking values here specifically
+    # to prove the guard is driven by "quote", not "extended".
+    mock_get_client.return_value = _mock_client(200, {
+        "CME": {
+            "quote": {"lastPrice": 286.0, "bidPrice": 0.0, "askPrice": 0.0, "totalVolume": 900000},
+            "extended": {"lastPrice": 286.0, "bidPrice": 285.9, "askPrice": 286.1},
+        }
+    })
+    assert get_extended_quote_data(CONFIG_PATH, TOKEN_PATH, "CME") is None

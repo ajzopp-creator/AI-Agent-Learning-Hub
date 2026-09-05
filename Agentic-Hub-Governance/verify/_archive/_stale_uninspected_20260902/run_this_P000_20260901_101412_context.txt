@@ -1,0 +1,65 @@
+WO-P000-E20.001 -- lessons_audit v1.1 fix verification (chunking)
+Date: 2026-09-01, P_000 session
+
+CONTEXT
+First live run (run_this_P000_20260901_100426.py) passed compile/import
+but exposed a real bug: all 3 of P_000's real lessons.md entries were
+flagged LIKELY_ENFORCED_ELSEWHERE. Root cause: classify_lesson scored
+each lesson against a reference source's ENTIRE text pooled into one
+keyword set -- any technical lesson shares 3+ generic terms with a
+multi-thousand-word document (P_000_SYSTEM_DOCUMENTATION.md) somewhere
+across its whole length. That's noise, not a real enforcement signal.
+
+FIX (this build)
+domain.chunk_reference_text() splits each reference source into its
+actual structural units -- table row / checklist item / paragraph.
+classify_lesson() now scores each chunk independently; a lesson only
+flags LIKELY_ENFORCED_ELSEWHERE if a SINGLE chunk clears the threshold
+on its own, never an aggregate across a whole file. schemas.py's
+MatchedSource gained chunk_excerpt so a flagged entry shows which
+specific line matched.
+
+WHAT THIS SCRIPT TESTS
+1. All 7 files (including new test_domain.py) compile under
+   -W error::SyntaxWarning.
+2. The two new regression tests pass:
+   - test_scattered_terms_across_many_chunks_do_not_flag_as_enforced
+     (guards against the exact bug just fixed)
+   - test_concentrated_terms_in_single_chunk_flags_as_enforced
+     (confirms real detection still works after the fix)
+3. A fresh real pass over P_000's actual lessons.md, same as before,
+   but now with chunked scoring -- prints per-lesson classification AND
+   the top matched chunk excerpt for each, so you can eyeball whether
+   any flags still look wrong.
+
+WHAT THIS DOES NOT DO
+- Does not write tasks\lessons_audit_status.json (production location).
+  Output: lessons_audit_status_SCRATCH_verify_v2.json in this verify\
+  folder only.
+- Does not modify tasks\lessons.md.
+- Does not wire anything into INIT.
+
+SUCCESS CRITERIA
+- Compile check passes (7 files).
+- Both regression tests pass.
+- Real run parses 3 lesson entries (same as before -- the lesson count
+  didn't change, only the classification logic did).
+- Classification counts should NOT be 3/3 LIKELY_ENFORCED_ELSEWHERE this
+  time. If they still are, read the printed top_match excerpts for each
+  lesson -- if the excerpts look like genuinely relevant single lines
+  (not generic filler), the flags might be correct and P_000's own
+  lessons really do overlap that specifically with WO_COMPLETION_GATE.md
+  or the EC log. If the excerpts look like generic/unrelated text, the
+  chunking fix isn't sufficient and needs another look -- don't assume
+  either way, read the actual excerpts printed.
+
+IF IT FAILS
+Read the FAIL line. Do not weaken the regression test assertions to
+make them pass -- if a real test fails, the fix has a bug; report the
+assertion message and the actual classification/max_shared it got.
+
+AFTER PASS
+Read the printed per-lesson classification + top_match lines and paste
+them back along with the PASS output. That's what decides whether
+match-strictness is right or needs another tuning pass before this
+gets wired into INIT.

@@ -14,6 +14,10 @@ from openpyxl import load_workbook
 
 from config import WORKBOOK_PATH
 from infrastructure.analytics_exposure import build_correlation, build_sector_exposure
+from infrastructure.analytics_scenarios import (
+    build_geographic_exposure,
+    build_stress_testing,
+)
 from infrastructure.analytics_sheets import (
     apply_data_lake_formatting,
     build_dashboard,
@@ -57,12 +61,13 @@ def run_format_analytics(
     build_risk_metrics(wb)
     build_sector_exposure(wb)
     build_correlation(wb)
+    build_geographic_exposure(wb)
+    build_stress_testing(wb)
 
-    for name in ("Geographic_Exposure", "Stress_Testing", "Investment_Theses"):
-        if name in wb.sheetnames:
-            ws = wb[name]
-            if ws.cell(1, 1).value is None:
-                ws.cell(1, 1, f"{name} — placeholder (formulas TBD)").font = TITLE_FONT
+    if "Investment_Theses" in wb.sheetnames:
+        ws = wb["Investment_Theses"]
+        if ws.cell(1, 1).value is None:
+            ws.cell(1, 1, "Investment_Theses — placeholder (formulas TBD)").font = TITLE_FONT
 
     wb.save(dest)
     logger.info("Versioned workbook saved → %s", dest)

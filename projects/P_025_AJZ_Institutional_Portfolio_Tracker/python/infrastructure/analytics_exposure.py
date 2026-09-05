@@ -75,47 +75,60 @@ def build_sector_exposure(wb: Workbook) -> None:
     logger.info("Sector_Exposure sheet built with %d sectors", len(sectors))
 
 
-def build_correlation(wb: Workbook) -> None:
-    """Correlation matrix structure for top tickers (labels only for v1)."""
-    ws = wb["Correlation"]
-    clear_sheet(ws)
-
-    ws.cell(1, 1, "Correlation Matrix — Top Positions (structure)").font = TITLE_FONT
-
+def _correl_tickers(wb: Workbook, cap: int) -> list[str]:
     tickers: list[str] = []
     if "Positions" in wb.sheetnames:
         pos = wb["Positions"]
-        for row in range(3, min(pos.max_row + 1, 15)):
+        for row in range(3, min(pos.max_row + 1, 3 + cap)):
             t = pos.cell(row, 1).value
             if t:
                 tickers.append(str(t).strip().upper())
     if not tickers and "Reference_Data" in wb.sheetnames:
         ref = wb["Reference_Data"]
-        for row in range(2, min(ref.max_row + 1, 14)):
+        for row in range(2, min(ref.max_row + 1, 1 + cap)):
             t = ref.cell(row, 1).value
             if t:
                 tickers.append(str(t).strip().upper())
+    return tickers[:cap]
 
+
+def build_correlation(wb: Workbook) -> None:
+    """CORREL of Market_Data close columns; diagonal = 1. Cap from config."""
+    from config import CORREL_TICKER_CAP
+
+    ws = wb["Correlation"]
+    clear_sheet(ws)
+    ws.cell(1, 1, "Correlation — Market_Data closes (top Positions)").font = TITLE_FONT
+    tickers = _correl_tickers(wb, CORREL_TICKER_CAP)
+
+    # Title row 1, header row 4, first data row 5 so (5,3) is off-diagonal CORREL.
     for i, t in enumerate(tickers):
-        cell_h = ws.cell(3, i + 2, t)
+        cell_h = ws.cell(4, i + 2, t)
         cell_h.fill = HEADER_FILL
         cell_h.font = HEADER_FONT
         cell_h.border = THIN_BORDER
-        cell_v = ws.cell(i + 4, 1, t)
+        cell_v = ws.cell(i + 5, 1, t)
         cell_v.fill = HEADER_FILL
         cell_v.font = HEADER_FONT
         cell_v.border = THIN_BORDER
 
     for i in range(len(tickers)):
         for j in range(len(tickers)):
-            cell = ws.cell(i + 4, j + 2)
+            cell = ws.cell(i + 5, j + 2)
             cell.border = THIN_BORDER
             cell.font = BODY_FONT
+            cell.number_format = "0.00"
             if i == j:
                 cell.value = 1
-                cell.number_format = "0.00"
-            else:
-                cell.value = None
+                continue
+            header_cell = ws.cell(4, j + 2).coordinate
+            row_ticker = ws.cell(i + 5, 1).coordinate
+            cell.value = (
+                f'=IFERROR(CORREL('
+                f'INDEX(Market_Data!$B$2:$ZZ$4000,0,MATCH({row_ticker},Market_Data!$1:$1,0)),'
+                f'INDEX(Market_Data!$B$2:$ZZ$4000,0,MATCH({header_cell},Market_Data!$1:$1,0))'
+                f'),"")'
+            )
 
     ws.column_dimensions["A"].width = 12
-    logger.info("Correlation sheet structured with %d tickers", len(tickers))
+    logger.info("Correlation sheet filled with %d tickers", len(tickers))

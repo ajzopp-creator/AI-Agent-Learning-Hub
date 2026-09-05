@@ -1,0 +1,21 @@
+h5 gap diagnosis -- 2026-08-31 (CORRECTED, see note)
+n=472 avg_ret=-0.75% win_rate=51.1%
+Worst week: 2026-W25 (avg_ret=-6.2%, n=38, win=31.6%) -- 19.8% of total negative return
+Worst 5 symbols: 12.1% of total negative return
+
+CORRECTION (2026-08-31, same day): the original version of this file
+was written by run_this_P300_20260831_093649.py before a scaling bug
+was caught. h5_return_pct (and all other *_return_pct fields) are
+stored as decimal fractions per M-020 (0.0075 = 0.75%) -- the script
+printed the raw decimal value with a bare "%" suffix, never applying
+the x100 M-020 requires. n, win_rate%, and both concentration ratios
+(19.8% / 12.1%) were unaffected -- those are counts and self-normalizing
+ratios, not raw return magnitudes, so the bug didn't touch them. Only
+avg_ret / total_ret figures needed correcting. Caught by Tony reading
+the pasted PEH output against the known calibration-report baseline
+(-0.75%), not by the script itself, which is now logged as M-120.
+
+Conclusion holds: neither the worst week (19.8%) nor the worst 5
+symbols (12.1%) account for a majority of the negative return -- the
+h5 shortfall is broad-based across weeks and tickers, not concentrated
+in an identifiable bad stretch or a handful of bad names.

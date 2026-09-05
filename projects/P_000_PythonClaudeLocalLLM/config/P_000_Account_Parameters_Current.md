@@ -1,5 +1,4 @@
-# P_000 Account Parameters ? All Trading Projects
-
+# P_000 Account Parameters — All Trading Projects
 **File:** P_000_Account_Parameters_Current.md
 **Location:** C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_000_PythonClaudeLocalLLM\config\
 **Last Updated:** September 02, 2026
@@ -12,22 +11,22 @@
 | Parameter | Value |
 |-----------|-------|
 | Account Balance | $29,458.74 |
-| Risk per Trade | 1.5% = $441.88|
+| Risk per Trade | 1.5% = $441.88 |
 | Max Position (5%) | $1,472.94 |
 | Options Rule | Use underlying STOCK price as the management trigger for option positions; execute exits with stop-limit logic and bid-aware option pricing to reduce gap-through risk |
-| Buying Power | $36,269.98 (pulled Sep 2, 2026 2:38 PM) |
-| Cash Available for Trading | $18,134.99 (pulled Sep 2, 2026 2:38 PM) |
+| Buying Power | $37,147.26 (pulled Sep 3, 2026 3:45 PM) |
+| Cash Available for Trading | $18,573.63 (pulled Sep 3, 2026 3:45 PM) |
 
 ---
 
 ## Risk Mode Adjustments (from P_010_RiskConfig.json)
 
-**Authority rule:** `risk_mode` in P_010_RiskConfig.json is the authoritative value at all times. The avg_posture thresholds below are reference ranges only ? the JSON field governs when they conflict.
+**Authority rule:** `risk_mode` in P_010_RiskConfig.json is the authoritative value at all times. The avg_posture thresholds below are reference ranges only -- the JSON field governs when they conflict.
 
 | Risk Mode | Risk/Trade | Max Position | Notes |
 |-----------|------------|--------------|-------|
 | OFF / CORRECTION | $220.94 (50%) | $736.47 (50%) | avg_posture < -1.0 |
-| HALF | $331.41 (75%) | $1,104.70 (75%) | 25% reduction |
+| HALF | $331.41 (75%) | $1,104.71 (75%) | 25% reduction |
 | STANDARD | $441.88 | $1,472.94 | Base risk |
 | FULL | $441.88 | $1,472.94 | Same as STANDARD |
 | HOT | Tiered up to 5% | Up to $1,472.94 | avg_posture > 1.08 |
@@ -37,7 +36,7 @@
 ## Critical Rules
 
 ### Cash Balance (Separate Concept)
-**Note (WO-P020-E1.009):** Buying Power and Cash Available for Trading in the table above are broker-reported reference numbers only. P_400's `--cash` flag on evaluate/spec/compare stays a manual figure Tony types himself -- never auto-read from these fields. Exception (2026-08-25): batch-2b auto-reads Cash Available for Trading from this file via P_400_Batch2b_CashPull.bat / P_400_Batch2bCashPull_mcp.ps1, which pulls a fresh balance first. evaluate/spec/compare are unaffected.
+**Note (WO-P020-E1.009):** Buying Power and Cash Available for Trading in the table above are broker-reported reference numbers only. P_400's `--cash` flag stays a manual figure Tony types himself -- never auto-read from these fields.
 User provides per-trade available buying power. This is NOT account balance.
 - Do NOT subtract trades from cash balance between gates
 - Do NOT track remaining cash across trades
@@ -95,10 +94,10 @@ Calculate option prices using delta. Show leverage multiple.
 | Mar 9, 2026 | $32,298 | $484.47 | $1,614.90 | Monthly review update |
 | Apr 8, 2026 | $31,668.31 | $475.02 | $1,583.42 | Monthly review -- Net Liq per broker |
 | May 1, 2026 | $32,812.00 | $492.18 | $1,640.60 | Monthly review -- Net Liq per broker |
-| June 3, 2026 | $32,669.72| $490.04 | $1,633.47 | Monthly review -- Net Liq per broker |
+| June 3, 2026 | $32,669.72 | $490.04 | $1,633.47 | Monthly review -- Net Liq per broker |
 | July 1, 2026 | $32,072.00 | $481.08 | $1,603.60 | Monthly review -- Net Liq per broker |
-| Aug 4, 2026 | $31,348.39 | $470.23 | $1,567.42 | Monthly review -- Net Liq per broker (live pull) |
-| Sep 2, 2026 | $29,458.74 | $441.88 | $1,472.94 | Monthly review -- Net Liq per broker (live pull) |
+| Aug 4, 2026 | $31,348.39 | $470.23 | $1,567.42 | Monthly review -- Net Liq per broker (live Schwab pull) |
+| Sep 2, 2026 | $29,458.74 | $441.88 | $1,472.94 | Monthly review -- Net Liq per broker |
 
 ---
 
@@ -128,11 +127,10 @@ Calculate option prices using delta. Show leverage multiple.
 
 ## Change Log
 
-- May 31, 2026 ? Perplexity P_400_Trade Management System ? corrected option rule to use stock-price management trigger with stop-limit and bid-aware option exit handling.
+- May 31, 2026 -- Perplexity P_400_Trade Management System -- corrected option rule to use stock-price management trigger with stop-limit and bid-aware option exit handling.
 - June 3, 2026 - Updated Account Balance
-- June 3, 2026 - Synced derived tables to base $490.04 / $1,633.47 (Risk Mode Adjustments, Three-Gate block, Growth current row) 
+- June 3, 2026 - Synced derived tables to base $490.04 / $1,633.47 (Risk Mode Adjustments, Three-Gate block, Growth current row)
 - June 16, 2026 - Added authority rule clarifying JSON risk_mode governs over avg_posture thresholds (WO-P010-E1.001 Option A)
 - July 1, 2026 - Updated Account Balance to $32,072.00 (Net Liq per broker); synced derived tables to base $481.08 / $1,603.60 (Risk Mode Adjustments, Three-Gate block, Growth current row); Next Review moved to August 2026
-- August 4, 2026 - Updated Account Balance to $31,348.39 (Net Liq per broker, live Schwab pull); synced derived tables to base $470.23 / $1,567.42 (Risk Mode Adjustments, Three-Gate block, Growth current row); Next Review moved to September 2026. Buying Power / Cash Available auto-written by the same pull per WO-P020-E1.009.
-- September 2, 2026 - Updated Account Balance to $29,458.74 (Net Liq per broker, live Schwab pull via P_020_Balance_Snapshot.py); synced derived tables to base $441.88 / $1,472.94 (Risk Mode Adjustments, Three-Gate block, Growth current row); Next Review moved to October 2026. Buying Power ($36,269.98) / Cash Available ($18,134.99) refreshed same pull. Fixed BASE_DIR path bug in P_020_Balance_Snapshot.py (was resolving one level short of project root) as part of this run.
-
+- Aug 4, 2026 - Updated Account Balance to $31,348.39 (live Schwab pull, Net Liq per broker); synced derived tables to base $470.23 / $1,567.42; Next Review moved to September 2026
+- Sep 2, 2026 - Updated Account Balance to $29,458.74 (Net Liq per broker); synced derived tables to base $441.88 / $1,472.94 (Risk Mode Adjustments, Three-Gate block, Growth current row); Next Review moved to October 2026. Prior live file had reverted to stale May 1 content (missing Buying Power/Cash Available fields, missing Options Management Rule detail, missing Aug 4 update) -- restored full structure from the Aug 4 pre-edit backup and reconstructed the Aug 4 history row from session record.

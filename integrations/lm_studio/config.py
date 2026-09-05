@@ -57,7 +57,7 @@ MODELS = {
 }
 
 # ── API TIMEOUT & RETRY SETTINGS ──────────────────────────────────────────────
-HTTP_TIMEOUT_SECONDS = 30
+HTTP_TIMEOUT_SECONDS = 90  # was 30 -- raised 2026-09-04 (WO-P000-E20.001 rollout): DeepSeek R1's chain-of-thought on non-trivial prompts ran 32-110s in the same day's P_300 calls, but send_chat_request's HTTP_TIMEOUT_SECONDS*3 chat timeout (90s) killed all 3 lessons_audit classification calls at the client-disconnect mark with only 2-4 reasoning tokens generated. New chat timeout: 270s.
 MAX_RETRIES = 3
 RETRY_DELAY_SECONDS = 2
 
@@ -82,6 +82,7 @@ TASK_ROUTING = {
     "python_debugging": "primary",
     "sql_schema_design": "primary",
     "vantagepoint_analysis": "primary",
+    "lesson_classification": "primary",
     "trade_journal_analysis": "batch",
     "document_summarization": "batch",
     "code_generation_heavy": "batch",

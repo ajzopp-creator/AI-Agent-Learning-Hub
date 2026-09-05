@@ -1,0 +1,44 @@
+Phase/Task: P_115 live-signal tracker logging, 2026-09-01 evening session. No WO
+(routine trade entry, not a code/architecture change).
+Date: 2026-09-01
+
+What this script does: Appends two rows (ABT, XLV) to
+D:\OneDrive\Documents\AJZStrategiesLLC\P_115_TrackerAudit\P_115_118_TrackerDashboard_V2.xlsx.
+It first locates the tracker sheet by matching header row 1 for
+Date/Symbol/SignalSource, finds the true last data row by scanning the Date
+column (not just ws.max_row, which can overshoot on a sheet with trailing
+formatting), copies that row's cell styles (font/fill/border/alignment/
+number_format) onto the two new rows so they match existing conventions, then
+writes values by HEADER NAME (not a fixed column index) so a schema reorder
+can't silently misalign data. It touches only rows strictly below the prior
+last data row - no existing cell is read for write purposes, only for style
+copy. After saving it reloads the file and prints the two new rows' values
+back so the log line itself proves what landed, not just that the file grew.
+
+The trade data (already confirmed with Tony over several turns this session,
+via TOS screenshots and order-ticket screenshots):
+- ABT: filled BUY +1 18SEP26 105 CALL @8.00 on 8/31/26 09:30:09. Outside rec
+  via SNT (SignalSource=P_117). P_115 chart/HybridTier engine read is PASS
+  (Anal=1, Fund=2 -> HybridTier=3, below BUY/ASYM thresholds) - this is
+  expected/consistent, not a data error, since it wasn't a P_115-engine
+  trigger. GTC exits currently working: STP 4.70 / LMT 12.70.
+- XLV: 5x 18SEP26 175 CALL BUY order @1.10 LMT DAY placed after-hours
+  9/1/26 21:41:40, status WORKING (unfilled) as of this log. SignalSource=P_116
+  (Bounce). Same PASS read from the P_115 engine. Council output referenced a
+  10-share stock leg that never appeared on any of four order-ticket
+  screenshots Tony provided - logged as option-only (5 contracts), per his
+  explicit "write them now" instruction on the option-only version.
+
+Success criteria: prints SHEETS, MATCHED SHEET, HEADERS FOUND, LAST DATA ROW,
+SAVED, MAX ROW AFTER SAVE (should be last_row_before + 2), then a READBACK
+line for each of the two new rows showing the values above, then "PASS" with
+no traceback.
+
+If it fails: report the traceback verbatim, plus whatever it printed before
+failing (SHEETS / MATCHED SHEET / HEADERS FOUND lines matter most for
+diagnosing a sheet-name or header mismatch). Do not change the ROW_ABT/ROW_XLV
+dictionaries' values without checking with me/Tony first - those are
+transcribed from live trade confirmations, not placeholders. If the header
+match fails (no sheet with Date/Symbol/SignalSource in row 1), stop and report
+the actual sheet names/headers found rather than guessing which sheet is the
+tracker.

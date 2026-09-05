@@ -8,8 +8,10 @@ from __future__ import annotations
 
 from datetime import date
 
+from domain.fifo_lots import process_fifo_lots, summarize_fifo_cost
 from domain.trade_processor import (
     average_cost_by_ticker,
+    build_cost_basis_for_accounts,
     build_cost_basis_rows,
     calculate_daily_invested,
     calculate_daily_units,
@@ -108,11 +110,17 @@ def test_build_cost_basis_rows_total():
     assert rows[0].total_cost_basis == 1000.0
 
 
-def test_resolve_start_date_modes():
-    from config import LOOKBACK_DAYS_YEARLY, resolve_start_date
-
-    end = date(2026, 8, 22)
-    assert LOOKBACK_DAYS_YEARLY == 365
-    assert resolve_start_date(end, "yearly") == date(2025, 8, 22)
-    assert resolve_start_date(end, "ytd") == date(2026, 1, 1)
-    assert resolve_start_date(end, "full") == date(2023, 8, 23)
+def test_cost_basis_for_two_accounts():
+    trades = [
+        _make_trade(1, "AJZ6348", "AAPL", 10, date(2025, 1, 2)),
+        _make_trade(2, "5232-9885", "AAPL", 5, date(2025, 1, 2)),
+    ]
+    lots = process_fifo_lots(trades)
+    fifo_cost = summarize_fifo_cost(lots)
+    rows = build_cost_basis_for_accounts(
+        trades, fifo_cost, ("AJZ6348", "5232-9885")
+    )
+    assert len(rows) == 2
+    by_acct = {r.account_id: r.total_cost_basis for r in rows}
+    assert by_acct["AJZ6348"] == 1000.0
+    assert by_acct["5232-9885"] == 500.0

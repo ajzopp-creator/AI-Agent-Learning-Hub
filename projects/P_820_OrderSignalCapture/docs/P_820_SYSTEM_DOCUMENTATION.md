@@ -4,9 +4,9 @@
 ---
 
 **Project ID:** P_820
-**Version:** 1.0
+**Version:** 1.1
 **Created:** 2026-08-16
-**Last Updated:** 2026-08-16
+**Last Updated:** 2026-09-04
 **Owner:** Anthony Zoppi
 **Status:** Active
 **Template:** Adapted from UNIVERSAL_PROJECT_TEMPLATE_v1_1 -- condensed per the template's own Documentation Decision Protocol (architecture content here is under one page and specific to this project, so it stays in this master doc rather than a separate Interface-Arch-style file, matching P_800's practice for content that size).
@@ -25,18 +25,36 @@ showed no other signal_source value). No evaluation logic -- viability
 was already decided upstream, either by the subscription service or by
 Tony personally verifying an idea through VantagePoint/WSZ.
 
+**Second function, added 2026-09-04:** capturing a full discretionary/
+override order when P_400's own `record` path structurally cannot
+accept it -- e.g. a Council-BLOCKED verdict (R:R fail, macro freeze,
+etc.) that Tony trades anyway. P_400's `record --order-id` only submits
+a cached APPROVED/APPROVED_WITH_CAUTION/APPROVED_WITH_SEVERE_WARNING
+verdict, by design -- no discretionary-override path exists there
+(confirmed live 2026-09-04, CRUS/P_300 case: BLOCKED on R:R ~1.78:1, no
+eval_cache present, `record` would refuse outright). P_820 is the
+fallback record path for these trades -- it does not replace or
+retroactively grant Council approval, it only preserves the fact the
+trade happened.
+
 ### 1.2 Scope
 
 **Covers:**
 - Logging a dictated signal (symbol, date, source, entry/stop/target,
   notes) directly to the vault at or near order time
 - Serving as the highest-priority source in P_020's attribution resolver
+- Logging a discretionary/override order when the major-project
+  pipeline cannot accept it -- e.g. P_400's `record` refuses a BLOCKED
+  verdict, or no eval_cache exists for the symbol (added 2026-09-04)
 
 **Does NOT cover:**
 - Signal evaluation or scoring (P_115/P_300 own this)
 - Position sizing, R:R validation, or options-gate checks (P_400 owns)
 - Trade execution of any kind
 - Performance analysis (P_020 owns)
+- Retroactively approving a BLOCKED trade -- P_820 records that a
+  discretionary trade happened, it does not grant Council approval
+  after the fact (added 2026-09-04)
 
 ### 1.3 Project Details
 
@@ -129,6 +147,31 @@ Tony personally verifying an idea through VantagePoint/WSZ.
  Tracker > default]
 ```
 
+### 3.1b Override Order Flow (added 2026-09-04)
+
+```
+[Tony executes a trade P_400 Council BLOCKED, or that never got a
+ cached evaluate/spec result]
+         |
+         v
+[Claude confirms the trade's TRUE origin project for why_code --
+ P_820 never becomes the attributed source itself]
+         |
+         v
+[Claude builds the field dict: entry/stop/target from the actual fill,
+ override context (BLOCKED reason, R:R, etc.) folded into notes --
+ quantity/paper-real also go in notes until schema gains real fields]
+         |
+         v
+[write_to_vault("P820", {...}) -- same mechanism, same schema, as
+ Workflow 6.1]
+         |
+         v
+[P820Record validated, note written to
+ trading_journal\TradeOrderManagement\P820\ -- P_020 resolves it same
+ as any other P_820 entry]
+```
+
 ### 3.2 Core Components
 
 #### Component 1: Capture (this project)
@@ -195,6 +238,13 @@ workaround predates P_820 and is retired.
 | P_117 (email, verified via VantagePoint/WSZ) | **No, by default** | Same tracker-fudge history as P_116 by default. **Exception:** an occasional, deliberate P_115 fundamentals recheck (V111, stockanalysis.com) is real and legitimate. `why_code` stays `P_117` even then -- P_115 touching a trade for a quality check does not change its source. |
 | SNT | **No, never** | Pure subscription alert -- one option/week, pre-set stop+target, closes Friday. |
 
+**Override-order case (added 2026-09-04):** if the trade came from a
+major-project pipeline (P_115/P_300/P_400) but was BLOCKED/failed there
+and Tony traded anyway, `why_code` stays that project's own code (e.g.
+`P_300`) -- never `P_820` or `OVERRIDE`. A P_820 write records that the
+trade happened outside the pipeline's accept path; it never changes
+attribution.
+
 ---
 
 ## Section 5 -- Folder Structure
@@ -251,6 +301,39 @@ If same symbol+date already logged today --> confirm correction vs. distinct sec
 
 ---
 
+### Workflow 6.2 -- Log an Override Order (added 2026-09-04)
+
+**Trigger:** Tony executed a trade that the major-project pipeline
+either BLOCKED (Council verdict) or never evaluated (no eval_cache) --
+P_400's `record` path structurally cannot accept it.
+**Frequency:** Per override, at or near fill time.
+**Time Required:** Under a minute.
+
+**Steps:**
+1. Confirm the trade's true origin project (e.g. P_300) -- `why_code`
+   stays that project's code, never `P_820` or `OVERRIDE` (see Section
+   4 override-case note).
+2. Capture entry/stop/target from the actual fill.
+3. Fold the override context into `notes` -- what blocked it and why
+   (e.g. "Discretionary override -- BLOCKED on R:R ~1.78:1 in P_400
+   Council, no eval_cache present"). Quantity and paper-vs-real go in
+   `notes` too -- no dedicated schema field yet (Section 9.1 Known Gaps).
+4. Call `write_to_vault("P820", {...})` per the field list in the
+   skill file.
+5. Read the written note back to confirm fields landed.
+6. Confirm to Tony in one line what was logged.
+
+**Expected Output:** One `P820Record` note in
+`trading_journal\TradeOrderManagement\P820\`, same as Workflow 6.1.
+
+**Decision gate:**
+```
+If P_400 BLOCKED the trade (or no eval_cache exists) and Tony traded anyway --> log to P_820, why_code = true origin project, override context in notes
+If quantity or paper/real is known --> include in notes as free text (no schema field yet)
+```
+
+---
+
 ## Section 7 -- Error Corrections Log
 
 *Permanent record, per Hub-wide convention. None yet -- this section
@@ -293,6 +376,19 @@ rediscovered.*
 | Python skill level | Novice |
 | VS Code skill level | Novice |
 
+### 9.1 Known Gaps (added 2026-09-04)
+
+- **No `quantity` field** in `P820Record` -- capture in `notes` as free
+  text until a P_800-owned follow-on WO adds it properly.
+- **No `trade_mode` (paper/real) field** -- same treatment, `notes` for
+  now.
+- **No `override_reason`/`is_override` field** -- override context
+  currently lives entirely in free-text `notes`, not a queryable field.
+  P_020's resolver can't yet filter/report on override trades
+  separately from ordinary P_820 signal-source entries.
+- Follow-on schema WO not yet opened -- P_800 owns `vault_schemas.py`,
+  this doc only defines the requirement (WO-P820-E1.001).
+
 ---
 
-*End of P_820 SYSTEM DOCUMENTATION v1.0 -- 2026-08-16*
+*End of P_820 SYSTEM DOCUMENTATION v1.1 -- 2026-09-04*

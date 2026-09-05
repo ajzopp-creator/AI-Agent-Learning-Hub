@@ -1,0 +1,27 @@
+{
+  "run_timestamp": "2026-08-31T16:24:44.280649-04:00",
+  "session_date": "2026-08-31",
+  "cash_available": 18990.83,
+  "posture": "OFF",
+  "screened_count": 3,
+  "passed_tier1": 3,
+  "evaluated": 3,
+  "candidates": [],
+  "skipped": [
+    {
+      "symbol": "CME",
+      "reason": "fetch-snapshot failed -- see console output above"
+    },
+    {
+      "symbol": "SPGI",
+      "reason": "fetch-snapshot failed -- see console output above"
+    },
+    {
+      "symbol": "WFC",
+      "reason": "fetch-snapshot failed -- see console output above"
+    }
+  ],
+  "cumulative_risk_if_all_taken": 0.0,
+  "heat_cap": 3761.8068,
+  "heat_warning": null
+}

@@ -91,7 +91,7 @@ class SnapshotDict(BaseModel):
     iv_rank: Optional[float] = None
     option_chain_ref: Optional[Dict] = None
     market_open: bool = True       # set False for pre-market; tape_vote uses this
-    price_basis: str = "live"          # "live" | "close" -- set by fetch_snapshot when market closed, WO-P400-E5.005
+    price_basis: str = "live"          # "live" | "extended" | "close" -- set by fetch_snapshot depending on session, WO-P400-E5.005/E7.001
     guideline_stop_override: Optional[float] = None   # P_400 re-derived stop (drift reconciliation)
 
 
