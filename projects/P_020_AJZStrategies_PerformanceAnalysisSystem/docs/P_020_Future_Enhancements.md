@@ -102,6 +102,33 @@ returns rows once paper trades with tags exist in the DB.
 
 ---
 
+### NEXT-3: Live Account ThinkLog Tagging (promoted from BACKLOG-8, 2026-09-05)
+**Priority:** High -- promoted after a real live loss (P_210 vertical credit spread, NDX, Fri 9/4) ingested with no signal-source tag
+**Estimate:** Design decision first (~30 min, no code) -- implementation estimate TBD after design
+
+Live Schwab-API trades for AJZ6348 don't go through `paper_import.py` at all --
+`domain/system_resolver.py` resolves `system` by priority: (1) vault, (2) Tracker
+Dashboard, (3) default `TOS_Import`. ThinkLog isn't in that chain for live yet.
+Relaxing `paper_import.py`'s `account_id == 'PAPER'` gate (the original BACKLOG-8
+plan) doesn't reach this code path -- live trades never touch `paper_import.py`.
+
+The real fix is adding ThinkLog as a step in `system_resolver.py`'s priority
+chain for AJZ6348, the same way `application/system_attribution.py` already
+does it for IRA9885 (`run_full_attribution()` checks `account_id == 'IRA9885'`
+and skips straight to ThinkLog override then P_820, no vault/tracker detour).
+For AJZ6348 the design question to answer first: does a ThinkLog tag override
+vault/tracker when both resolve, or only fill in when neither does? P_115/P_118
+already have real Tracker coverage, so this isn't a clean skip-the-resolver
+case like IRA9885 was.
+
+**Trigger:** P_210 (new vertical credit spread subscription, NDX/QQQ, 2PM
+signal) traded live for the first time Fri 9/4 after two paper tests -- took
+a loss. No Tracker Dashboard coverage for P_210, so it lands as `TOS_Import`
+on the next weekly pull with no way to tag it correctly except a manual
+one-off DB correction (same pattern as the 8/30 IRA9885 backfill).
+
+---
+
 ## 📋 BACKLOG — Approved, Not Scheduled
 
 ### BACKLOG-1: System-Generated Tag Emitter
@@ -181,13 +208,7 @@ Six CSVs for AI-assisted weekly review:
 
 ---
 
-### BACKLOG-8: Live Account ThinkLog Tagging
-**Priority:** Low (after paper validates)
-
-Currently tag parsing only runs in `paper_import.py`. Once Tony is happy with
-how tags work on paper, extend the same logic to live account ingestion.
-The `account_id contains '6348'` check in `paper_import.py` would relax;
-Schwab live ingest would gain a ThinkLog join step.
+### BACKLOG-8: Promoted to NEXT-3, 2026-09-05 (Live Account ThinkLog Tagging) -- see NEXT section for current scope and trigger.
 
 ---
 

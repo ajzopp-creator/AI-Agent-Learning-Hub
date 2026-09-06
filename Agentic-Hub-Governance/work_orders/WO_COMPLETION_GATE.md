@@ -9,6 +9,7 @@
 # Last updated: 2026-08-29 (added "What Independent Review Is Not" -- a WOs VERIFY section labeled two unfinished OWNER tasks "left for Independent Review"; ref WO-P010-E1.004)
 # Last updated: 2026-08-29 (added Ack Scope -- doc-only/governance WOs no longer require per-project Acks, only WOs that change something a project's code/config/schema directly depends on; ref WO-P000-E2.001)
 # Last updated: 2026-09-04 (restored Enforcement section -- 2026-07-29 changelog line above claimed it was added but body never contained it; found while backfilling WO-P010-E1.004/E1.005 Completion Gate blocks; ref EC-005, WO-P000-E9.001)
+# Last updated: 2026-09-06 (added PREMISE VERIFICATION checklist item + "Why" section -- three of four delegated child WOs under WO-P000-E22.001 inherited materially wrong "current state" claims from the parent WO's own scope summary; ref WO-P000-E25.001/E26.001/E27.001)
 
 ---
 
@@ -47,6 +48,11 @@ Copy this block into the WO before marking OWNER_DONE:
 [ ] DRAFT files for this WO deleted from Agentic-Hub-Governance\work_orders\
 [ ] One ledger entry per WO confirmed
 [ ] No open VERIFY/Acceptance Criteria item is deferred to Independent Review by label -- see "What Independent Review Is Not" below
+[ ] PREMISE VERIFICATION: any "current state"/scope claim this WO inherited
+    from a parent or planning WO's own summary -- not this WO's own
+    original investigation -- has been checked against live code/docs
+    before being carried forward as fact. Name what was checked. (ref
+    WO-P000-E25.001/E26.001/E27.001)
 ```
 
 ---
@@ -130,6 +136,43 @@ removed capabilities, and anything CALLER PROPAGATION/IMPERATIVE SWEEP
 below already covers still require the Ack, unchanged. When in doubt
 whether a WO is Direct or doc-only, default to Direct -- this section
 narrows an existing gate, it does not invite skipping it.
+
+## Why PREMISE VERIFICATION Exists (added 2026-09-06, ref WO-P000-E25.001/E26.001/E27.001)
+
+WO-P000-E22.001 (Attribution Integrity Standard) filed a scope summary for
+each of five delegated child projects (P_115, P_020, P_400, P_820, Registry
+cleanup) in its own table -- written the day before, from a discussion, not
+from reading each project's actual current code. Filing each child WO
+required opening the real files first, since the parent WO's summary is a
+plan, not a verified fact. Reading found three of four code-touching
+child WOs had a materially wrong premise carried over unchanged from that
+summary:
+
+1. **P_115 (WO-P000-E25.001):** parent WO said the CDNA/INCY/MA/V
+   misattribution incidents lived in the SIGNAL_V2 emit path and needed a
+   "construction-time guard." Reading `signal_builder.py`/`config.py`
+   found that emitter's P_115 default is correct by design (scoped to
+   P_115 only, documented as such since 2026-07-24) -- the incidents
+   actually live in the Tracker Dashboard, an entirely different file,
+   with a different, narrower fix available.
+2. **P_400 (WO-P000-E26.001):** parent WO said P_400 needed to be brought
+   from "shadow-mode" to emitting CONFIRMED-tier records at order time.
+   Reading `record_writer.py` found this was already built and live
+   (WO-P020-E1.007/WO-P400-E6.001) -- "shadow mode" was never a P_400
+   concept at all, it belongs to P_020's resolver.
+3. **P_820 (WO-P000-E27.001):** parent WO said P_820 was "not yet built."
+   It had been fully built and live for three weeks, already the
+   highest-priority source in P_020's attribution chain -- found by
+   reading P_820's own SYSTEM_DOCUMENTATION.md, one file the parent WO's
+   author apparently never opened before writing that line.
+
+Each wrong premise, left uncorrected, would have produced a child WO
+building a solution to a problem that didn't exist (or already existed)
+while missing the real one. All three were caught only because
+investigation-before-filing was already this session's habit, not because
+any checklist required it -- this item makes that habit a gate.
+
+---
 
 ## Why Caller Propagation and Imperative Sweep Exist
 

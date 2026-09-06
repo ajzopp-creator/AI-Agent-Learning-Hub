@@ -20,7 +20,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
-from domain.exit_allocator import allocate_exits
+from domain.exit_allocator import allocate_exits, is_entry_fill, is_exit_fill
 
 logger = logging.getLogger(__name__)
 
@@ -163,14 +163,15 @@ def _parse_transaction(txn: Dict) -> Optional[Dict]:
         logger.debug(f"Skipping excluded symbol: {underlying}")
         return None
 
-    # Direction: OPENING = long (buying), CLOSING = short (selling to close)
-    # For equity: positive amount = buy = long
-    if position_eff == "OPENING":
-        direction = "long"
-    elif position_eff == "CLOSING":
-        direction = "short"
-    else:
-        direction = "long" if amount > 0 else "short"
+    # Direction is always amount-sign-based: positive amount = buy = long,
+    # negative amount = sell = short. positionEffect (OPENING/CLOSING) tells
+    # us entry vs exit, not long vs short -- a sell-to-OPEN (short call/put)
+    # has amount < 0 same as a sell-to-CLOSE, so branching on positionEffect
+    # alone mislabeled every short-open leg as "long" (found alongside
+    # WO-P020-E1.017, same investigation). CLOSING fills route to become
+    # exits downstream and don't store this field, so this only actually
+    # changes behavior for OPENING fills.
+    direction = "long" if amount > 0 else "short"
 
     qty      = abs(amount)
     fees     = _sum_fees(items)
@@ -199,11 +200,12 @@ def _parse_transaction(txn: Dict) -> Optional[Dict]:
 # ── Fill aggregation ───────────────────────────────────────────────────────
 
 def _aggregate_by_order(fills: List[Dict]) -> List[Dict]:
-    """Aggregate multiple fills of the same orderId into one record.
+    """Aggregate multiple fills of the same (orderId, full_symbol) into one record.
 
-    Same orderId = same order executed in multiple partial fills.
-    Aggregates: qty (sum), price (weighted avg), fees (sum).
-    Uses earliest datetime.
+    full_symbol disambiguates combo/multi-leg orders (one orderId, several
+    DIFFERENT contracts) from genuine same-contract partial fills, so spread
+    legs never get merged into one fake position (WO-P020-E1.017).
+    Aggregates: qty (sum), price (weighted avg), fees (sum). Uses earliest datetime.
 
     Args:
         fills: List of parsed fill dicts.
@@ -211,12 +213,12 @@ def _aggregate_by_order(fills: List[Dict]) -> List[Dict]:
     Returns:
         List of aggregated fill dicts — one per orderId.
     """
-    orders: Dict[str, List[Dict]] = defaultdict(list)
+    orders: Dict[Tuple[str, str], List[Dict]] = defaultdict(list)
     for fill in fills:
-        orders[fill["order_id"]].append(fill)
+        orders[(fill["order_id"], fill["full_symbol"])].append(fill)
 
     aggregated = []
-    for order_id, group in orders.items():
+    for (order_id, full_symbol), group in orders.items():
         if len(group) == 1:
             aggregated.append(group[0])
             continue
@@ -240,8 +242,8 @@ def _aggregate_by_order(fills: List[Dict]) -> List[Dict]:
         merged["schwab_transaction_id"] = group[0]["schwab_transaction_id"]
 
         logger.debug(
-            f"Aggregated {len(group)} fills for order {order_id}: "
-            f"{merged['underlying_symbol']} {total_qty} @ {avg_price}"
+            f"Aggregated {len(group)} fills for order {order_id} "
+            f"({full_symbol}): {merged['underlying_symbol']} {total_qty} @ {avg_price}"
         )
         aggregated.append(merged)
 
@@ -283,9 +285,11 @@ def map_pull_file(path: Path) -> Tuple[str, List[Dict], List[Dict]]:
     aggregated = _aggregate_by_order(fills)
     logger.info(f"Aggregated to {len(aggregated)} orders.")
 
-    # Split entries and exits
-    entries = [f for f in aggregated if f["direction"] == "long"]
-    exits   = [f for f in aggregated if f["direction"] == "short"]
+    # Split entries and exits by position_effect, not direction -- see
+    # is_entry_fill/is_exit_fill in domain.exit_allocator (WO-P020-E1.017
+    # companion fix) for why direction alone can't tell entry from exit.
+    entries = [f for f in aggregated if is_entry_fill(f)]
+    exits   = [f for f in aggregated if is_exit_fill(f)]
     logger.info(f"Entries (OPENING): {len(entries)}  Exits (CLOSING): {len(exits)}")
 
     # Allocate exits to entries, qty-aware (domain.exit_allocator)

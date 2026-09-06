@@ -54,7 +54,7 @@ Two folders, easy to conflate, real disk state governs, not the doc:
 
 ---
 
-## Vault Folder Map (live, confirmed 2026-08-12)
+## Vault Folder Map (live, confirmed 2026-08-12; KnowledgeBase\Newsletters\ and TradeOrderManagement\P820\ added 2026-09-06)
 
 ```
 trading_journal\
@@ -65,13 +65,31 @@ trading_journal\
 │   ├── P400_Trades.base               ← owner P_400
 │   ├── P020_Performance.base          ← owner P_020
 │   ├── Open_Positions.base            ← P_800-internal
-│   └── KB_Articles.base               ← P_800-internal
+│   └── KB_Articles.base               ← P_800-internal; file.inFolder("KnowledgeBase")
+│                                         matches nested subfolders, so Newsletters\ below
+│                                         shows here too, no edit needed (WO-P800-E5.001)
 ├── TradeOrderManagement\
-│   ├── P115\ P300\ P400\ P020\        ← one frontmatter .md per record, live
-│   └── signals\                       ← raw JSON signal packets, P400SIG schema
-├── KnowledgeBase\                     ← articles, clipped content, AI summaries
+│   ├── P115\ P300\ P400\ P020\ P820\  ← one frontmatter .md per record, live
+│   │                                     (P820\ live since 2026-08-16, missing from
+│   │                                     this diagram until corrected 2026-09-06)
+│   └── signals\                       ← raw JSON signal packets, P400SIG/SIGNAL_V2 schemas
+├── KnowledgeBase\                     ← articles, clipped content, AI summaries (origin != Email)
+│   └── Newsletters\                   ← P_805 email-derived KB notes only (origin == Email),
+│                                         added 2026-09-06 (WO-P800-E5.001)
 └── Dashboard.md                       ← daily entry point, vault root
 ```
+
+### KB schema origin routing (WO-P800-E5.001, 2026-09-06)
+
+`config.KB_ORIGIN_SUBFOLDER_MAP` overrides the KB schema's normal
+`VAULT_FOLDER_MAP["KB"]` destination when a write's `origin` field
+matches a key in that map. Currently: `origin: "Email"` →
+`KnowledgeBase/Newsletters` (P_805's KB-mode notes only). Any other
+origin (Web Clipper, PDF, AI Summary, Manual, or unset) still lands in
+the `KnowledgeBase\` root, unchanged. Consulted only inside
+`filename_builder.build_filepath()` for the `KB` schema — no other
+schema is affected. `write_handler.py` and `vault_schemas.py` needed no
+change for this; confirmed live via a real write-and-delete smoke test.
 
 ### Public API contract
 
@@ -101,7 +119,7 @@ write_to_vault("P115", {"date": "2026-06-07", "symbol": "AAPL", ...})
 
 ```
 obsidian_writers\                      ← Hub root, canonical
-├── config.py                          ← VAULT_FOLDER_MAP, all constants
+├── config.py                          ← VAULT_FOLDER_MAP + KB_ORIGIN_SUBFOLDER_MAP, all constants
 ├── schemas.py                         ← Pydantic models — per-project payload contracts
 ├── domain\
 │   ├── validator.py
@@ -187,6 +205,16 @@ Do NOT load reflexively — this SKILL covers most operations.
 - **Created:** 2026-08-12 — first always-loaded context layer for P_800, gap flagged during WO-P800-E4.004 (fabricated Bases schema sat undetected across every `.base` file since creation partly for lack of this layer)
 
 ## Changelog
+
+### 2026-09-06
+Added KB schema origin-based subfolder routing (WO-P800-E5.001):
+`config.KB_ORIGIN_SUBFOLDER_MAP`, consulted by
+`filename_builder.build_filepath()` only for the `KB` schema — routes
+`origin: "Email"` writes to `KnowledgeBase\Newsletters\`, everything
+else unchanged. Vault Folder Map diagram updated to show the new
+subfolder. Also corrected a pre-existing gap in that same diagram:
+`TradeOrderManagement\P820\` has been live since 2026-08-16 but was
+never added here until this edit.
 
 ### 2026-08-12
 Initial creation. Anti-Pattern #1/#2 and Critical Paths' TradeManagement-vs-TradeOrderManagement section sourced directly from WO-P800-E4.004's live findings (same session). EC-004 (Pydantic `extra="forbid"`) and EC-002/007/009 (P_010 scope, OneDrive path, Templater function) folded in from `P_800_SYSTEM_DOCUMENTATION.md` Section 9.

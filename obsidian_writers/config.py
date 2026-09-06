@@ -72,6 +72,18 @@ VAULT_FOLDER_MAP: dict[str, str] = {
     "KB":       "KnowledgeBase",
 }
 
+# -- KB SCHEMA ORIGIN SUBFOLDER MAP -----------------------------------------
+# WO-P800-E5.001 (2026-09-06). A KB write whose origin matches a key here
+# routes to VAULT_ROOT / <value> instead of VAULT_FOLDER_MAP["KB"] --
+# keeps P_805 newsletter-derived KB notes separate from manually-clipped
+# research in the same KnowledgeBase tree. Any origin not listed here
+# (Web Clipper, PDF, AI Summary, Manual, or unset) uses the KB root,
+# unchanged. Consulted only by filename_builder.build_filepath() for
+# the KB schema -- no other schema is affected.
+KB_ORIGIN_SUBFOLDER_MAP: dict[str, str] = {
+    "Email": "KnowledgeBase/Newsletters",
+}
+
 # ── OUTPUT FORMAT MAP ────────────────────────────────────────────────────────
 # Per-schema write format selected by write_handler.
 #   "md"   → frontmatter note via vault_writer (write_route normalization + provenance)

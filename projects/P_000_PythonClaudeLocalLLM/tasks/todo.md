@@ -1,4 +1,60 @@
-## Current State -- 2026-09-04 (session close)
+## Current State -- 2026-09-06 (session close)
+
+WO-P000-E22.001 (Attribution Integrity Standard, Signal Source ID +
+confidence tier, all accounts) drafted, approved by Tony, and all five
+delegated child WOs filed this session:
+
+- **WO-P000-E23.001 (Registry cleanup)** -- full scope complete. OIL/P_116
+  vs P_110 resolved as a deliberate subscription/in-house pairing pattern,
+  not a collision -- retire the `[OIL]` ThinkLog shorthand, keep `P_110`'s
+  name. `P_000_SYSTEM_DOCUMENTATION.md` Section 1.4 now v1.16: added
+  missing project rows (P_120, P_210, P_820, P_200), added a Signal Source
+  ID(s) column plus a 1.4.1 Standalone IDs subsection. `db_seeder.py` and
+  both `VALID_SYSTEMS` sets in P_020 gained `P_105`/`P_110`/`P_120`/`P_210`
+  (P_110 previously had no system_id at all despite being live). P_910/
+  P_920 descriptions corrected (Relative Strength scan / EOD scan, not
+  generic placeholders). Tony ran both live-DB scripts (`init-db`,
+  description-update) and confirmed results. Remaining: Completion Gate +
+  Independent Review.
+- **WO-P000-E24.001 (P_020 schema + resolver)** -- PENDING, not built.
+  `confidence_tier` column, resolver priority reorder (P_400 shadow-to-
+  live cutover gated behind its own explicit go-ahead), views/exports
+  exclude UNRESOLVED by default, Phase 2 backfill. Corrected mid-session
+  re: P_820 (see below).
+- **WO-P000-E25.001 (P_115)** -- PENDING, not built. Real gap: zero
+  validation on `signal_source`/Tracker `SignalSource`, not the
+  SIGNAL_V2 emit-path default the parent WO assumed (that default is
+  correct by design). Also found `tracker_writer.py` has a broken
+  import (references config constants that don't exist) -- blocks part
+  of this WO's own scope, needs a decision (fix or archive).
+- **WO-P000-E26.001 (P_400)** -- PENDING, small. Most of the parent WO's
+  ask was already built (`why_code=signal_source` live on every vault
+  write since WO-P020-E1.007/WO-P400-E6.001). Real remaining scope: add
+  `confidence_tier` field. Coordination note added to WO-P400-E6.001
+  itself re: its own not-yet-built orders-table columns.
+- **WO-P000-E27.001 (P_820)** -- PENDING, small. Biggest correction this
+  session: parent WO said P_820 "not yet built" -- it's been fully built
+  and live since 2026-08-16, already the highest-priority source in
+  P_020's resolver chain. Real remaining scope: `confidence_tier` field +
+  a why_code validity check (flag, not reject).
+
+All four project skill files (`p115-project-context`, `p400-project-
+context`, `p020-project-context`, `p820-project-context`) got a pointer
+back to the Standard, each with its own changelog entry -- confirmed none
+needed creating from scratch (P_820's already existed).
+
+**Governance change, Hub-wide:** `WO_COMPLETION_GATE.md` gained a new
+PREMISE VERIFICATION checklist item + "Why" section. Three of the four
+code-touching child WOs above had a materially wrong "current state"
+claim inherited from the parent WO's own scope summary, caught only by
+reading the actual code/docs before filing each child WO -- this is now
+a named gate, not just this session's habit. See WO_COMPLETION_GATE.md
+for the three incidents in full.
+
+Independent Review not done for WO-P000-E22.001 or WO-P000-E23.001 --
+both need a separate session before OWNER_DONE/CLOSED, per this file's
+own EC-005 rule (this session did the work, cannot also review it).
+
 
 WO-P000-E20.001 (lessons_audit staleness detection): PENDING -> IN_PROGRESS.
 All 4 Open Decisions locked (location, trigger, LM Studio primary/keyword

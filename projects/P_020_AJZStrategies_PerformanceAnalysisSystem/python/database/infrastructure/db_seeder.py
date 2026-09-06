@@ -31,10 +31,10 @@ _SYSTEMS: List[Tuple] = [
      "Eddie Z breakout pattern system",               1),
     ("P_300",      "VantagePoint Pattern Recognition",
      "VantagePoint software signals",                 1),
-    ("P_910",      "P_910 System",
-     "Additional trading system",                     1),
-    ("P_920",      "P_920 System",
-     "Additional trading system",                     1),
+    ("P_910",      "Relative Strength Scan",
+     "P_115 bucket - relative strength scan signals (WO-P000-E23.001)", 1),
+    ("P_920",      "EOD Scan",
+     "P_115 bucket - end-of-day scan signals (WO-P000-E23.001)", 1),
     ("Day",        "Day Trading",
      "Intraday trades",                               1),
     ("SNT",        "Sunday Night Trader",
@@ -43,6 +43,17 @@ _SYSTEMS: List[Tuple] = [
      "Default when no Tracker Dashboard match found", 1),
     ("INV",        "Investment / Swing Trade",
      "IRA generic investment or swing trade, no specific signal system (WO-P020-E1.015)", 1),
+    ("P_110",      "TradeTheBounce OIL",
+     "In-house replica of P_116 (Options Income Launchpad) subscription edge, "
+     "deliberately tracked apart to measure replication accuracy (WO-P000-E23.001)", 1),
+    ("P_105",      "Sunday Night Trader - In-House",
+     "In-house replica of SNT (BigTrends Sunday Night Trader) subscription edge, "
+     "deliberately tracked apart; no project codebase yet (WO-P000-E23.001)", 1),
+    ("P_120",      "Supply and Demand Zones",
+     "P_120 in-house supply & demand zone scanner signals",  1),
+    ("P_210",      "OneClickTrading 2PM Income Trade",
+     "External subscription signal source, same category as P_116/SNT "
+     "(WO-P000-E22.001 near-miss origin)",            1),
 ]
 
 

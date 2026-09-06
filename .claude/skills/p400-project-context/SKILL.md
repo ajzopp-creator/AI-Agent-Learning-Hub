@@ -213,6 +213,22 @@ Full incident + why the skill missed this for 9 days: WO-P020-E1.010's
 
 ---
 
+## Attribution Standard (Hub-wide, WO-P000-E22.001, added 2026-09-06)
+
+Every trade/order record needs a Signal Source ID and a confidence tier
+(CONFIRMED/INFERRED/UNRESOLVED). P_400's part is mostly already done:
+`record_writer.py` writes `why_code = signal_source` on every vault
+write already, unconditionally (WO-P020-E1.007/WO-P400-E6.001) -- that's
+a CONFIRMED-tier capture by the Standard's own definition. Remaining gap,
+tracked in **WO-P000-E26.001**: no explicit `confidence_tier` field on
+the vault payload yet (one field add, not built yet). Separately: if
+WO-P400-E6.001 Scope item 2's `orders` table ever gets built, its
+`why_code`/`sig_code`/`source_project` columns need to be designed
+against this Standard's vocabulary -- see the coordination note already
+added to that WO's own file.
+
+---
+
 ## Bugs Already Fixed
 
 One test candidate per row — see `test_p400_known_bugs.py` (build
@@ -415,6 +431,14 @@ is the cautionary example: a log line is not a council verdict.
   "P_400 already knows this happened, the skill file just wasn't told."
 
 ## Changelog
+
+### 2026-09-06
+- Added Attribution Standard section (WO-P000-E22.001, pointer only) --
+  documents that `record_writer.py`'s existing `why_code=signal_source`
+  write already satisfies the Hub-wide CONFIRMED-tier requirement;
+  remaining `confidence_tier` field gap tracked in WO-P000-E26.001. Also
+  added a coordination note to WO-P400-E6.001 itself, flagging its
+  not-yet-built `orders` table columns against this Standard's vocabulary.
 
 ### 2026-08-19 (second entry, same day)
 - WO-P400-E6.006: Bugs Already Fixed row added -- `batch-2b`'s printed

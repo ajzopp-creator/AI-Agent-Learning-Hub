@@ -1,4 +1,4 @@
-﻿"""Tracker Dashboard reader — loads Tracker Excel into a TrackerLookup schema."""
+"""Tracker Dashboard reader — loads Tracker Excel into a TrackerLookup schema."""
 
 import logging
 from pathlib import Path
@@ -29,7 +29,7 @@ _SIGNAL_MAP = {
     "P117:WALLSTZEN"             : "P_117",
 }
 
-_VALID_SYSTEMS = {"P_115","P_116","P_117","P_118","P_300","P_910","P_920","Day","SNT","TOS_Import"}
+_VALID_SYSTEMS = {"P_115","P_116","P_117","P_118","P_300","P_910","P_920","Day","SNT","TOS_Import","P_105","P_110","P_120","P_210"}
 
 def _normalize_signal(raw: str) -> str:
     """Map Tracker signal_source variants to a valid system_id."""

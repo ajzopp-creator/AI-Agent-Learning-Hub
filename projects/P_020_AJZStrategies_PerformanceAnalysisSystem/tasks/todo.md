@@ -1,5 +1,131 @@
 # P_020 Current State
 
+## 2026-09-05
+
+Session covered: WO-P020-E1.016 file repair, P_210 onboarding, the Saturday
+weekly run (relay stall + Claude Code handoff), WO-P020-E1.017 (a real
+3-bug mapper defect found via a live P_210 trade), NEXT-3 promotion, a
+Cowork scheduling fix, P_105 registration, and drafting a Hub-wide
+governance WO (P_000-E22.001) in chat for Tony to import himself.
+
+- **WO-P020-E1.016 file repair:** found during INIT -- not just a missing
+  title line as first flagged, the file had lost its entire WHY/FIX/
+  Correction Note/Acceptance Criteria body, jumping straight to Completion
+  Gate. Git-log recovery attempted via windows-mcp -- **hung 4+ min, hit the
+  documented credential-helper conflict** (never run git via windows-mcp
+  again this session, confirmed relay itself was healthy via ping
+  afterward). Reconstructed the missing sections from cross-referenced
+  evidence (the Independent Review section's own verbatim fix quote,
+  `p020-project-context` skill references) with an explicit Reconstruction
+  Note and Change Log entry so the fabricated-vs-original boundary stays
+  auditable. File verified on disk, 81 lines.
+- **P_210 onboarding (new subscription, vertical credit spreads, NDX/QQQ,
+  2PM signal):** registered in `systems` table. Investigated Tony's
+  description of a Friday live loss ("bought NDX in paper twice, went live,
+  got killed") against the actual Schwab eConfirms email -- real structure
+  was a 4-leg bear-call credit spread (short 29520C/long 29530C opened
+  2:10pm ET, long leg rolled 29530C->29540C at 2:21pm), not a single call.
+- **Weekly run:** token + balance steps clean (AJZ6348 $27,362.98, down from
+  $29,321 two days prior). Schwab Trade Pull step stalled 4+ min on
+  windows-mcp with zero output produced -- per peh-handoff, staged the
+  remainder (steps 2-5) as `run_this_P020_20260905_105257.py` +
+  `_context.txt` in `verify\` rather than retry the same path. Tony ran it
+  himself in a visible terminal -- succeeded clean, 4 new trades ingested
+  (ASX, XLV, ABT, and a fabricated NDXP row -- see below), `last_run.json`
+  updated, new audit log written.
+- **WO-P020-E1.017 (Schwab combo-order mis-aggregation -- 3 coupled bugs,
+  all found/fixed same session):**
+  1. `_aggregate_by_order()` keyed on `order_id` alone -- a 2-leg combo
+     order (one order_id, two different strikes) got averaged into one
+     fabricated position (the NDXP row above: "long call qty 2, entry
+     $4.025, exit $4.60, +$115" -- none of those numbers were real). Fixed:
+     key changed to `(order_id, full_symbol)`.
+  2. Found while writing the fix's test: `_parse_transaction()`'s direction
+     logic hardcoded `OPENING -> "long"` regardless of buy/sell, mislabeling
+     every sell-to-open (short) as long. Fixed: pure amount-sign logic.
+  3. Found because fixing #2 exposed it: `map_pull_file()` split
+     entries/exits by `direction` instead of `position_effect` -- only ever
+     worked because bug #2's mislabeling happened to route sell-to-opens
+     into entries by accident. Fixed by adding `is_entry_fill()` /
+     `is_exit_fill()` to `domain/exit_allocator.py` (kept out of
+     `schwab_mapper.py` to stay under the 300-line cap -- inlining pushed it
+     to 302/318 lines depending on approach).
+  4 new regression tests added to `tests/test_p020_known_bugs.py` (project's
+  existing convention, not a new per-module file). All 4 pass. 3
+  pre-existing unrelated failures noted, left alone: 2x `domain` import-path
+  issue on ThinkLog tests, 1x legacy "11 closed trades missing exit rows"
+  data gap. Verified against the real 2026-09-05 pull file directly:
+  corrected mapper produces exactly 3 separate NDXP legs (29520C
+  short/open, 29530C long/closed w/ exit $5.15, 29540C long/open) instead
+  of 1 fabricated row. Cleanup: trade_id 3150 + exit_id 5026 deleted
+  (dry-run then commit), re-import produced trade_ids 3152/3153/3154 --
+  confirmed correct by direct DB read. WO status PENDING -> OWNER_DONE.
+  **Independent Review still open, separate session required.**
+- **NEXT-3 (was BACKLOG-8, promoted this session):** live-account ThinkLog
+  tagging. Rewrote its scope in `P_020_Future_Enhancements.md` -- the old
+  text described relaxing `paper_import.py`'s account gate, which is wrong;
+  live trades never touch that file at all. Real fix location is
+  `system_resolver.py`'s priority chain, following the IRA9885 precedent in
+  `system_attribution.py`. P_210 named as the trigger. Not implemented yet.
+- **Cowork weekly schedule:** confirmed the scheduled task hadn't fired
+  Saturday morning (`last_run.json` still showed 8/29 at the time). Moved
+  from 8:00 to 9:00 AM per Tony. Discussed Cowork's catch-up-on-wake
+  behavior (unreliable per real-world reports) vs. "Keep computer awake"
+  (Tony vetoed -- wasteful) -- landed on a Windows Task Scheduler wake-timer
+  approach instead: trivial trigger task at 8:55 AM with "wake the computer
+  to run this task" enabled, so the PC wakes briefly for Cowork's 9:00 fire
+  and can sleep the rest of the week. Not yet implemented on Tony's machine
+  as of session end -- he has the steps, hasn't confirmed he's done it.
+- **P_105 registered** in `systems` table -- in-house build of the SNT
+  strategy, trades "rarely" per Tony. Confirmed zero existing trades
+  reference it (any past P_105 activity likely landed as SNT or
+  TOS_Import -- Phase 2 backfill candidate, not fixed today).
+- **Cross-project governance discussion -> WO-P000-E22.001 drafted in chat
+  only** (Tony importing it himself, not written to disk by Claude this
+  session): "Attribution Integrity Standard." Root cause tied together two
+  real incidents -- the P_115 skill's own documented EC-log dilution
+  incidents (CDNA 8/20, INCY/MA/V 8/21 -- P_118 signals attributed to P_115
+  because attribution was read off a shared chart/engine instead of the
+  real batch header) and today's P_210 near-miss. Introduces "Signal Source
+  ID" as the fixed term (distinct from "Hub Project" -- SNT/Day/INV/P_105
+  are Signal Source IDs with no Hub Project folder; P_116/117/118 are
+  buckets inside the P_115 project, not projects themselves -- conflating
+  the two terms was part of how the P_115 dilution went unnoticed).
+  Confidence tiers: CONFIRMED / INFERRED / UNRESOLVED, replacing the old
+  binary attributed-or-default. Two phases: rule effective immediately for
+  all new trades (both accounts) vs. retroactive backfill to 2026-06-01
+  (Tony's paper-account change-control reset point, applied to live too for
+  reporting consistency). Delegated child WOs identified for P_115, P_020,
+  P_400, P_820, plus a registry-cleanup item. That last item was corrected
+  mid-discussion: P_116/P_110 and SNT/P_105 are not naming collisions --
+  they're a deliberate subscription-vs-in-house-build pairing pattern
+  (compare the sub's performance against your own replication), and the WO
+  text was rewritten to document that pattern rather than "resolve" it.
+  **Not yet approved or imported by Tony as of session end. No child WOs
+  filed.**
+
+**Open items carried forward:**
+- WO-P020-E1.010 (Schwab OAuth) -- Tony's decision (separate app
+  registration vs. accept-reauth) has now been due across multiple
+  sessions (flagged 9/2, flagged again at this session's INIT) and still
+  wasn't addressed this session either.
+- WO-P020-E1.015 and WO-P020-E1.017 -- both OWNER_DONE, both need
+  Independent Review in a separate session.
+- WO-P000-E22.001 -- needs Tony's approval/import, then 5 delegated child
+  WOs (P_115, P_020, P_400, P_820, registry pairing doc) need filing.
+- NEXT-3 -- filed/promoted, not implemented.
+- **Latent bug noticed, not fixed:** `import_command.py`'s `run_import_command()`
+  never actually passes its own `dry_run` argument through to
+  `run_ingest()` -- the CLI's `--dry-run` flag currently doesn't gate real
+  writes the way `run_ingest()`'s own docstring says it should (that
+  docstring cites WO-P020-E1.015 as having fixed this exact class of issue
+  once already). Worked around this session by calling `run_ingest()`
+  directly instead of through the wrapper. Not filed as its own WO yet.
+- 3 pre-existing test failures in `test_p020_known_bugs.py` (2x `domain`
+  import-path, 1x legacy exit-rows gap) -- noted, not investigated.
+- Windows Task Scheduler wake-timer for the 8:55 AM trigger -- steps given
+  to Tony, not confirmed done.
+
 ## 2026-09-02
 
 Session covered five items: E1.015 WO rewrite + Independent-Review-ready, monthly review, a token failure + reauth, closing 12 pre-2026 trades, and a stop-price gap fix.

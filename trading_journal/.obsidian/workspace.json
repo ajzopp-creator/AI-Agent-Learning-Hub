@@ -41,12 +41,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "KnowledgeBase/2026-08-29_PEOPLE ARE USING NOTEBOOKLM TO MASS-PRODUCE SPECIALIZED CLAUDE SKILLS IN MINUTES.md",
+                "file": "KnowledgeBase/2026-09-05_One Click Trading 2 pm Income Trade Guide.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "2026-08-29_PEOPLE ARE USING NOTEBOOKLM TO MASS-PRODUCE SPECIALIZED CLAUDE SKILLS IN MINUTES"
+              "title": "2026-09-05_One Click Trading 2 pm Income Trade Guide"
             }
           }
         ],
@@ -84,7 +84,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "IWM",
+                "query": "line:()",
                 "matchingCase": true,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -105,13 +105,11 @@
               "title": "Bookmarks"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "right": {
     "id": "243143675774371c",
@@ -229,6 +227,12 @@
   },
   "active": "2b15ca7285075366",
   "lastOpenFiles": [
+    "KnowledgeBase/Newsletters",
+    "TradeOrderManagement/P820/2026-09-05_EVERPURE.md",
+    "KnowledgeBase/2026-09-05_One Click Trading 2 pm Income Trade Guide.md.bak_2026-09-05",
+    "KnowledgeBase/Obsidian Trading System – Implementation Plan.md",
+    "KnowledgeBase/2026-09-05_One Click Trading 2 pm Income Trade Guide.md",
+    "KnowledgeBase/2026-08-29_PEOPLE ARE USING NOTEBOOKLM TO MASS-PRODUCE SPECIALIZED CLAUDE SKILLS IN MINUTES.md",
     "TradeOrderManagement/P400/~$26-09-03_CRUS.md",
     "TradeOrderManagement/P820/2026-09-04_CRUS.md",
     "TradeOrderManagement/P400/2026-09-03_CRUS.md",
@@ -257,14 +261,8 @@
     "TradeOrderManagement/signals/2026-09-02_HNGE_v2.0.json",
     "TradeOrderManagement/signals/2026-09-02_DNOW_v2.0.json",
     "KnowledgeBase/2026-08-29_How Quants Use AI to Build Regime-Adaptive Trading Strategies (Complete Guide).md",
-    "KnowledgeBase/2026-08-29_PEOPLE ARE USING NOTEBOOKLM TO MASS-PRODUCE SPECIALIZED CLAUDE SKILLS IN MINUTES.md",
     "KnowledgeBase/2026-08-29_Post by @RitOnchain on X.md",
     "KnowledgeBase/2026-08-29_How to Master Graph and Loop Engineering using Grok Bot (Builder's Guide).md",
-    "KnowledgeBase/2026-08-24_I Read Every Page Of The xAI Docs. Here Are 12 Grok Bot Rules Nobody Talks About.md",
-    "TradeOrderManagement/P400/paper/2026-08-24_V.md",
-    "TradeOrderManagement/P400/paper/2026-08-21_INCY.md",
-    "TradeOrderManagement/P400/paper/2026-08-21_MA.md",
-    "TradeOrderManagement/signals/2026-08-24_V_v2.0.json",
     "Pasted image 20260822181852.png",
     "Pasted image 20260613092126.png",
     "Pasted image 20260614115050.png",

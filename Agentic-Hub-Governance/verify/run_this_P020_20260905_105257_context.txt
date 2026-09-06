@@ -1,0 +1,57 @@
+P_020 Weekly Update -- resume from Step 2 (Schwab Trade Pull) -- 2026-09-05
+
+What this tests: Runs the remainder of P_020_Weekly_Update.bat (Steps 2-5:
+Schwab Trade Pull -> Import -> Analyze -> Dashboard regen) directly via
+subprocess, skipping the .bat's `pause` lines and Steps 0-1, which already
+ran clean this session under windows-mcp:
+  - Step 0 (token pre-flight): OK -- 2 accounts found (...6348, ...9885)
+  - Step 1 (balance): OK -- AJZ6348 total=$27,362.98 cash=$16,140.32
+    bp=$32,280.64, saved to DB and P_000 params (within threshold, no
+    full param sync triggered)
+
+Why this is staged instead of run via windows-mcp: the windows-mcp
+PowerShell call for Step 2 (Schwab Trade Pull) stalled 4+ minutes with
+"No result received." Pinged the relay separately afterward -- it responded
+fine, so the relay itself is healthy. Checked for side effects on disk
+after the stall: no new file in data\api_pulls\ajz_strategies\, no process
+still running (python/pwsh), P_020_last_run.json unchanged at 2026-08-29.
+Conclusion: the Step 2 call never actually completed on the Windows side --
+this is not a "still running in background" case, it's a dead call. Per
+peh-handoff protocol, handing off to Claude Code rather than retrying the
+same windows-mcp path a second time.
+
+Background: this is the regular Saturday 8am P_020 weekly automation
+(normally run via Cowork), which had not run today as of ~10:30 AM when
+Tony asked about it. No Cowork schedule config is visible from windows-mcp
+(likely account-side, not a local file) -- Tony is checking that
+separately. This script is the manual catch-up run he asked for.
+
+Success criteria: script prints "PASS: Weekly pipeline steps 2-5 complete."
+at the end. A new P_020_Weekly_Audit_YYYYMMDD_HHMMSS.txt file should appear
+in audit_logs\, and P_020_last_run.json should update to today's date.
+
+What Claude Code should fix on failure:
+- Step 2 failure: most likely cause is a transient Schwab API error or an
+  expired/stale token despite the earlier pre-flight pass (tokens can expire
+  mid-session) -- read STDERR for the actual HTTP error; if 401/token-related,
+  stop and tell Tony re-auth is needed (P_020_Schwab_Auth.py requires an
+  interactive browser flow, do not attempt to automate it).
+- Step 3 failure: check whether P_020_ThinkLog_Live_Current.csv exists at
+  data\thinklog\live\ -- if missing, that's a safe no-op per code comments
+  in the .bat, not a real failure; a real failure here is more likely a DB
+  lock (Excel or another process has P_020_trades.db open) or a symbol/date
+  match error in system_resolver.py.
+- Step 4/5 failures: read the traceback directly, these are lower-risk
+  (Step 5 is non-fatal by design, matching the .bat).
+
+Do not change the account ("AJZ"), the --from date logic, or the thinklog
+path without checking with Tony first -- these match the production .bat
+verbatim.
+
+Note for whoever picks this up: two live/notable items from this session
+Tony should know about if not already surfaced -- (1) AJZ6348 balance is
+down to $27,362.98, further below the $35K baseline than the $29,321
+reading from two days ago; (2) a new system P_210 (vertical credit spread,
+NDX/QQQ) was registered in the systems table this session but has no
+Tracker Dashboard coverage, so whatever this pull ingests for that symbol
+will land tagged TOS_Import and need a manual correction afterward.

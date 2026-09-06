@@ -83,16 +83,37 @@ writing -- never pass a relative string through.
 
 ---
 
-## P_115 Routing Rules (confirmed live, 2026-08-16 session)
+## Attribution Standard (Hub-wide, WO-P000-E22.001, added 2026-09-06)
 
-Do not send a trade through P_115's STEP1/2 just to get it into P_820 or
-the Tracker -- that workaround is retired now that P_820 exists.
+Every trade record needs a Signal Source ID (`why_code`, already this
+file's core job) and a confidence tier (CONFIRMED/INFERRED/UNRESOLVED).
+Every P_820 write already qualifies as CONFIRMED by the Standard's own
+definition -- dictated at or near order time, structured, no chart/
+context inference involved. Two real gaps, tracked in **WO-P000-E27.001**,
+neither built yet: (1) `P820Record` has no `confidence_tier` field to
+actually write `CONFIRMED` into; (2) `why_code` is open-vocabulary with
+zero validation against the Hub's registry (WO-P000-E23.001) -- by
+design, a hard-reject validator would risk blocking a legitimate new
+source this project exists specifically to capture, so the planned fix
+is a flag-for-review, not a reject. This session also corrected a wrong
+assumption in the parent Standard (WO-P000-E22.001 originally said "P_820:
+not yet built") -- that's fixed now, this project's own docs were the
+source of truth that caught it.
+
+---
+
+## P_115 Routing Rules (confirmed live 2026-08-16; P_117 row corrected 2026-09-06)
+
+Do not send a P_116/SNT trade through P_115's STEP1/2 just to get it
+into P_820 or the Tracker -- that workaround is retired now that P_820
+exists. P_117 is different: real P_115 evaluation is its default path
+(see table below), not a workaround.
 
 | Source | Goes through P_115? | Why |
 | :---- | :---- | :---- |
 | P_118 (Eddie Z), P_910, P_920 | **Yes, always** | Genuinely evaluated by P_115's scoring engine -- confirmed in `p115-project-context`'s own Signal Source table and Fund Verification scope (V111 mandatory for P_118). |
 | P_116 (OIL) | **No** | Pure external swing-trade alert. Historical P_115 routing was only ever Tony fudging trades into P_115 to get them tracker-logged before P_820 existed -- not real evaluation. |
-| P_117 (email, verify via VantagePoint/WSZ) | **No, by default** | Same tracker-fudge history as P_116 by default. **Exception:** an occasional, deliberate P_115 fundamentals recheck (V111, stockanalysis.com ROE/Debt-Cap/FCF) is real and legitimate when Tony chooses it -- confirmed this happens often on interesting email finds. Even then, `why_code` stays `P_117`, never `P_115` -- P_115 touching a trade for a quality check does not change its source, same principle as any P_115-flagged idea Tony executes under a different system. |
+| P_117 (email/newsletter, e.g. P_805 consensus) | **By default, yes** | Corrected 2026-09-06 (reverses this row's original "No, by default"): most newsletter picks get the real P_115 STEP 1 recheck (SignalSource=P_117 in tracker). **Exception:** Tony's per-signal judgment call, not a fixed split -- skips straight to P_820 only when a pick (or an occasional convincing social-media post) is compelling enough on its own to trade without running P_115 evaluation. `why_code` stays `P_117` either way -- P_115 touching a trade for evaluation does not change its source. |
 | SNT | **No, never** | Pure subscription alert -- one option/week, stop+target pre-set, closes Friday. |
 
 If a P_117 recheck happens, capture it in `notes` (e.g. `"Fund
@@ -110,8 +131,10 @@ no schema field for this, free text is enough.
    read the file back to confirm fields landed (Hub-wide rule).
 3. **Guessing a relative date** ("today", "yesterday") instead of
    resolving it explicitly before writing `signal_date`.
-4. **Routing P_116/P_117/SNT through P_115** "to get it tracked" -- that
-   workaround is retired; write to P_820 directly.
+4. **Routing P_116/SNT through P_115** "to get it tracked" -- that
+   workaround is retired; write to P_820 directly. (P_117 is exempt from
+   this anti-pattern as of 2026-09-06 -- P_115 evaluation is its real
+   default, not a workaround; see routing table above.)
 5. **Same symbol + same date logged twice same day** -- `overwrite=True`
    replaces the note in place. If it's a correction, that's correct
    behavior. If it's a second, genuinely distinct signal for the same
@@ -130,6 +153,23 @@ no schema field for this, free text is enough.
   in `WO_COMPLETION_GATE.md`).
 
 ## Changelog
+
+### 2026-09-06 (second entry, same day)
+- **Hub-wide Attribution Standard pointer added (WO-P000-E22.001).**
+  Documents that every P_820 write already qualifies as CONFIRMED-tier;
+  `confidence_tier` field and a `why_code` validity check (flag, not
+  reject) tracked in WO-P000-E27.001, not built yet. Also: this project's
+  own docs were what caught WO-P000-E22.001 wrongly claiming P_820 "not
+  yet built" -- corrected there in the same session.
+
+### 2026-09-06
+- **P_117 routing corrected (Tony directive, P_805 session).** The
+  2026-08-16 "No, by default" rule for P_117 was wrong -- Tony clarified
+  newsletter/P_805 picks go through P_115 evaluation by default, and
+  P_820 is the exception for a pick convincing enough to skip
+  evaluation. Judgment call per signal, not a fixed split. Routing
+  table, intro note, and Anti-Pattern #4 all updated same session.
+  P_116/SNT/P_118/P_910/P_920 rows unchanged.
 
 ### 2026-08-16
 - **Initial version.** Built same session as the P_800 schema

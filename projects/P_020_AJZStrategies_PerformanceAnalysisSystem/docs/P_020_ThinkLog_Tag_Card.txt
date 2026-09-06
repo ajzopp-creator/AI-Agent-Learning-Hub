@@ -12,6 +12,7 @@ WHY -- SYSTEM
   VPT    P_300  VantagePoint
   SNT    P_100  BigTrends / Sunday Night Trader
   DAY    P_200  Intraday, flat by close
+  2PM    P_210  2PM Income Trade  
 
 WHY -- SITUATION
   ASYM     Near-miss BUY signal, needs review

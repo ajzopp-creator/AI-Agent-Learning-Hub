@@ -1,0 +1,71 @@
+run_this_P800_E5001_20260906.py -- context
+
+WORK ORDER: WO-P800-E5.001 (KnowledgeBase Folder Split, Newsletter vs Research)
+REQUESTED:  Tony, 2026-09-06, P_805 session (web interface, no live MCP access)
+BUILT BY:   Claude, same session, from four uploaded files:
+              obsidian_writers\config.py
+              obsidian_writers\application\write_handler.py
+              obsidian_writers\domain\vault_schemas.py
+              obsidian_writers\domain\filename_builder.py
+              trading_journal\Bases\KB_Articles.base
+
+WHY
+---
+P_805's KB mode (--kb-mode summary|full) writes email-newsletter-derived
+notes into the same KnowledgeBase\ folder as Tony's manually-clipped
+research articles -- confirmed live 2026-09-06 via an Obsidian screenshot.
+Tony wants them separated by origin.
+
+WHAT CHANGES ON DISK
+---------------------
+  obsidian_writers\config.py
+    - Adds KB_ORIGIN_SUBFOLDER_MAP = {"Email": "KnowledgeBase/Newsletters"}.
+      Additive only -- VAULT_FOLDER_MAP itself is untouched.
+
+  obsidian_writers\domain\filename_builder.py
+    - build_filepath() now checks KB_ORIGIN_SUBFOLDER_MAP for the KB schema
+      before falling back to VAULT_FOLDER_MAP["KB"]. Every other schema
+      (P115/P300/P400/P400_PAPER/P400SIG/SIGNAL_V2/P020/P820) is untouched --
+      the new branch only triggers when schema_name == "KB".
+
+  trading_journal\KnowledgeBase\Newsletters\ (new folder, created if missing)
+
+NOT CHANGED (verified unnecessary, not just skipped)
+------------------------------------------------------
+  - write_handler.py: only calls build_filepath(schema_name, validated); the
+    folder decision is entirely inside filename_builder.py. No change needed.
+  - vault_schemas.py: KBRecord already has an `origin: Optional[str]` field.
+    No schema change needed.
+  - KB_Articles.base: filter is `file.inFolder("KnowledgeBase")`. Confirmed
+    against Obsidian's own forum that inFolder() matches nested subfolders,
+    so Newsletters\ notes will still appear in the existing Base with zero
+    edits to it.
+
+VERIFICATION BUILT INTO THE SCRIPT
+------------------------------------
+The script writes two REAL notes through the actual write_to_vault("KB", ...)
+path -- one with origin="Email" (must land in KnowledgeBase\Newsletters\),
+one with origin="Web Clipper" (must land in KnowledgeBase\ root, unaffected)
+-- confirms both landed where expected, then deletes both. This directly
+tests WO-P800-E5.001's first two acceptance criteria live, not just that the
+code compiles. Nothing fake is left behind in the vault after a PASS or FAIL.
+
+SAFETY
+------
+  - config.py and filename_builder.py are each copied to
+    <name>.backup_2026-09-06 before any edit. If the backup already exists
+    (script run twice), it's left alone rather than overwritten.
+  - Both patch functions check for the KB_ORIGIN_SUBFOLDER_MAP marker first
+    and skip cleanly if already applied -- safe to re-run.
+  - Every string match the script depends on is copied verbatim from the
+    actual uploaded file content, not guessed or reconstructed from memory.
+  - If either exact anchor string isn't found (meaning the file has drifted
+    since it was uploaded this session), the script prints FAIL and exits
+    before writing anything to that file.
+
+WHAT TO DO WITH THE OUTPUT
+-----------------------------
+Paste the full terminal output back. A PASS block means WO-P800-E5.001's
+acceptance criteria 1 and 2 are met live. Criteria 3 (Base file verified --
+nothing to do here, per above) and 4 (P_805 KB mode smoke-tested against a
+real .eml) are the two remaining open items on that WO.

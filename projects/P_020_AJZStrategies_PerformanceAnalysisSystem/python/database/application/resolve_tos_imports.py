@@ -1,4 +1,4 @@
-﻿"""Generate a manual review CSV for TOS_Import trades awaiting system assignment."""
+"""Generate a manual review CSV for TOS_Import trades awaiting system assignment."""
 
 import sys
 import csv
@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 REVIEW_CSV  = EXPORTS_DIR / "tos_import_review.csv"
 IMPORT_CSV  = EXPORTS_DIR / "tos_import_review_updated.csv"
-VALID_SYSTEMS = {"P_115","P_116","P_117","P_118","P_300","P_910","P_920","SNT","Day","DAY","TOS_Import"}
+VALID_SYSTEMS = {"P_115","P_116","P_117","P_118","P_300","P_910","P_920","SNT","Day","DAY","TOS_Import","P_105","P_110","P_120","P_210"}
 
 
 def load_tos_imports(conn):

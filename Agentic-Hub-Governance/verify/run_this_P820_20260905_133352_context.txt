@@ -1,0 +1,22 @@
+WO-P820-E1.001 override capture -- EVERPURE (P_400 Gate 1 sizing override)
+Date: 2026-09-05
+
+What this tests:
+Calls write_to_vault("P820", payload) with a full P820Record payload for
+the EVERPURE 105C 09/18/26 Gate-1 sizing override (approved 2 contracts,
+submitted 3, FULL risk mode). Confirms the vault-write API accepts the
+payload and lands a note under TradeOrderManagement\P820\ without error.
+
+Success criteria:
+Script prints "PASS" and exits 0. A new .md file appears under
+TradeOrderManagement\P820\ dated 2026-09-05 for symbol EVERPURE.
+
+If it fails:
+Read the exception message. Likely causes: import path wrong (check
+HUB_ROOT and shared_resources.python_utils.vault_interface exist),
+P820Record validation error (check payload types match domain\vault_schemas.py
+P820Record class -- entry_price/target_price must be float, not str).
+
+Do not change test assertions. Do not alter PAYLOAD values -- these are
+the exact figures from Tony's override log; a validation failure means
+fix the schema/writer, not the numbers.

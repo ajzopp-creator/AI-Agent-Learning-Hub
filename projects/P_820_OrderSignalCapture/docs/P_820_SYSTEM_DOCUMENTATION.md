@@ -4,9 +4,9 @@
 ---
 
 **Project ID:** P_820
-**Version:** 1.1
+**Version:** 1.2
 **Created:** 2026-08-16
-**Last Updated:** 2026-09-04
+**Last Updated:** 2026-09-06
 **Owner:** Anthony Zoppi
 **Status:** Active
 **Template:** Adapted from UNIVERSAL_PROJECT_TEMPLATE_v1_1 -- condensed per the template's own Documentation Decision Protocol (architecture content here is under one page and specific to this project, so it stays in this master doc rather than a separate Interface-Arch-style file, matching P_800's practice for content that size).
@@ -108,9 +108,12 @@ trade happened.
   rule)
 - Route P_118/P_910/P_920 through P_115's evaluation first, then log
   the real source to P_820 -- see Section 4 routing table
-- Route P_116/P_117/SNT to P_820 directly -- no P_115 involvement
-  needed just to get a trade logged (that workaround is retired now
-  that P_820 exists)
+- Route P_117 (email/newsletter, e.g. P_805 consensus) through P_115
+  evaluation by default too -- same as above -- unless Tony calls the
+  pick convincing enough on its own to skip evaluation and log straight
+  to P_820 (Section 4 exception, corrected 2026-09-06)
+- Route P_116/SNT to P_820 directly -- no P_115 involvement needed
+  just to get a trade logged
 
 **MUST NOT:**
 - Add any evaluation, scoring, or verdict logic to P_820 -- viability
@@ -227,16 +230,28 @@ trade happened.
 
 ## Section 4 -- Signal Source Routing Rules
 
-Confirmed directly with Tony, 2026-08-16 P_020 session. Do not route a
-trade through P_115 just to get it into P_820 or the Tracker -- that
-workaround predates P_820 and is retired.
+Confirmed directly with Tony, 2026-08-16 P_020 session. P_117 row
+corrected 2026-09-06 -- see note below table. Do not route P_116/SNT
+through P_115 just to get them into the Tracker -- that workaround
+predates P_820 and is retired for those two sources.
 
 | Source | Goes through P_115? | Why |
 |---|---|---|
 | P_118 (Eddie Z), P_910, P_920 | **Yes, always** | Genuinely evaluated by P_115's scoring engine. |
 | P_116 (OIL) | **No** | Pure external swing-trade alert. Historical P_115 routing was only Tony fudging trades in to get them tracker-logged before P_820 existed. |
-| P_117 (email, verified via VantagePoint/WSZ) | **No, by default** | Same tracker-fudge history as P_116 by default. **Exception:** an occasional, deliberate P_115 fundamentals recheck (V111, stockanalysis.com) is real and legitimate. `why_code` stays `P_117` even then -- P_115 touching a trade for a quality check does not change its source. |
+| P_117 (email/newsletter, e.g. P_805 consensus) | **By default, yes** | Genuinely evaluated through P_115 (SignalSource=P_117 in tracker) -- corrected 2026-09-06, reverses the original "No, by default" line below. **Exception:** Tony's judgment call per signal, not a fixed split -- skips straight to P_820 only when the pick (or an occasional convincing social-media post) is compelling enough on its own that he trades it without running P_115 evaluation. `why_code` stays `P_117` either way. |
 | SNT | **No, never** | Pure subscription alert -- one option/week, pre-set stop+target, closes Friday. |
+
+**2026-09-06 correction:** the row above originally read "No, by
+default" for P_117, on the reasoning that P_115 routing was only ever
+the pre-P_820 tracker-fudge workaround, same as P_116. Tony corrected
+this directly: for P_117 specifically (email/newsletter picks,
+including P_805's daily consensus), P_115 evaluation is the real
+default -- most newsletter picks get the STEP 1 recheck. P_820 is the
+exception path, used only when a pick is convincing enough on its own
+that Tony skips evaluation entirely. This is a judgment call per
+signal, not a percentage rule. P_116/SNT are unaffected -- those stay
+workaround-free, straight to P_820.
 
 **Override-order case (added 2026-09-04):** if the trade came from a
 major-project pipeline (P_115/P_300/P_400) but was BLOCKED/failed there
@@ -293,9 +308,10 @@ No `python\` folder -- by design, per Section 2.1 MUST NOT.
 
 **Decision gate:**
 ```
-If source is P_118/P_910/P_920 --> confirm it already went through P_115, then log to P_820
-If source is P_116/P_117/SNT    --> log to P_820 directly, no P_115 step
-If signal_date is relative      --> resolve to a real date before writing, never guess
+If source is P_118/P_910/P_920        --> confirm it already went through P_115, then log to P_820
+If source is P_117 (email/newsletter) --> by default, confirm it went through P_115 first; log straight to P_820 only if Tony says this pick skipped evaluation
+If source is P_116/SNT                --> log to P_820 directly, no P_115 step
+If signal_date is relative             --> resolve to a real date before writing, never guess
 If same symbol+date already logged today --> confirm correction vs. distinct second signal before overwriting
 ```
 
@@ -353,6 +369,7 @@ rediscovered.*
 | 2026-08-16 | Project inception, scoping | P_820 identified as the fix for ThinkLog's export fragility (no reliable cutoff, watchlist-scoped export, one-symbol-per-search). Scoped as a standalone project, not a P_020 module, per Tony's own reasoning: requirements will likely evolve and a dedicated project gives room to grow. |
 | 2026-08-16 | Build session | P_800 schema registration (`P820Record`, 5 additive files, all existing tests unchanged), P_020 resolver wiring (`p820_reader.py`/`p820_override.py`/`p820_capture.py`, chain now P_820 > ThinkLog > Tracker > default), project scaffold + skill file. Full write-and-read-back smoke test and end-to-end integration test both passed. |
 | 2026-08-16 | Routing rules | Worked through P_115/P_116/P_117/P_920/P_910/P_118/SNT routing directly with Tony. Corrected an initial assumption that P_116 evaluation via P_115 was real -- it was a tracker-logging workaround, now retired. Confirmed P_117's occasional P_115 fundamentals recheck is real and separate from that workaround. |
+| 2026-09-06 | P_117 routing correction (P_805 session) | Tony corrected the 2026-08-16 P_117 rule: newsletter/P_805-sourced picks go through P_115 evaluation by default (SignalSource=P_117 in tracker); P_820 is the exception, used only when a pick is convincing enough on its own to skip evaluation. Judgment call per signal, not a fixed split. Section 4 table, Section 2.1 Musts, and Workflow 6.1 decision gate all updated same session (imperative sweep). P_116/SNT rows unchanged. |
 
 ---
 
@@ -391,4 +408,4 @@ rediscovered.*
 
 ---
 
-*End of P_820 SYSTEM DOCUMENTATION v1.1 -- 2026-09-04*
+*End of P_820 SYSTEM DOCUMENTATION v1.2 -- 2026-09-06*

@@ -355,6 +355,122 @@ def test_accountparser_bat_points_at_v24():
     check("accountparser_bat_points_at_v24", "SOURCE", ok)
 
 
+def test_combo_order_full_symbol_split():
+    """BEHAVIOR -- _aggregate_by_order() must key on (order_id, full_symbol),
+    not order_id alone, or a combo/multi-leg order (one order_id, two
+    different strikes) gets averaged into one fake position (WO-P020-E1.017,
+    found via a real NDXP bear-call-spread trade 2026-09-04)."""
+    import schwab_mapper as sm
+
+    fill_short_open = {
+        "activity_id": "1", "order_id": "ORDER_A",
+        "underlying_symbol": "NDXP", "full_symbol": "NDXP  260904C29520000",
+        "asset_type": "call", "direction": "short", "position_effect": "OPENING",
+        "open_date": None, "open_datetime": None,
+        "qty": 1, "price": 4.50, "fees": 0.66, "net_amount": 449.34,
+        "schwab_transaction_id": "1",
+    }
+    fill_long_open = {
+        "activity_id": "2", "order_id": "ORDER_A",
+        "underlying_symbol": "NDXP", "full_symbol": "NDXP  260904C29530000",
+        "asset_type": "call", "direction": "long", "position_effect": "OPENING",
+        "open_date": None, "open_datetime": None,
+        "qty": 1, "price": 3.55, "fees": 0.66, "net_amount": -355.66,
+        "schwab_transaction_id": "2",
+    }
+    result = sm._aggregate_by_order([fill_short_open, fill_long_open])
+    ok = (
+        len(result) == 2
+        and {r["full_symbol"] for r in result} == {
+            "NDXP  260904C29520000", "NDXP  260904C29530000"}
+        and all(r["qty"] == 1 for r in result)
+    )
+    check("combo_order_full_symbol_split", "BEHAVIOR", ok,
+          f"got {len(result)} groups: {[(r['full_symbol'], r['qty'], r['price']) for r in result]}")
+
+
+def test_same_contract_multi_fill_still_aggregates():
+    """BEHAVIOR -- genuine same-contract multi-fill orders (e.g. QBTS 2+2,
+    same order_id, same full_symbol) must still merge into one fill after
+    the WO-P020-E1.017 key change."""
+    import schwab_mapper as sm
+
+    fill_a = {
+        "activity_id": "1", "order_id": "ORDER_B",
+        "underlying_symbol": "QBTS", "full_symbol": "QBTS",
+        "asset_type": "stock", "direction": "long", "position_effect": "OPENING",
+        "open_date": None, "open_datetime": None,
+        "qty": 2, "price": 2.32, "fees": 1.32, "net_amount": -464.0,
+        "schwab_transaction_id": "1",
+    }
+    fill_b = dict(fill_a, activity_id="2", schwab_transaction_id="2", qty=2)
+    result = sm._aggregate_by_order([fill_a, fill_b])
+    ok = len(result) == 1 and result[0]["qty"] == 4 and result[0]["price"] == 2.32
+    check("same_contract_multi_fill_still_aggregates", "BEHAVIOR", ok,
+          f"got {len(result)} groups: {result}")
+
+
+def test_sell_to_open_direction_is_short():
+    """BEHAVIOR -- a sell-to-open OPENING fill (short call/put) must map to
+    direction='short', not 'long' (WO-P020-E1.017 companion fix -- found
+    alongside the aggregation bug via the same real NDXP trade: the short
+    29520C leg was being mislabeled 'long' because the old logic branched
+    on positionEffect alone, ignoring amount sign)."""
+    import schwab_mapper as sm
+
+    txn = {
+        "activityId": 1, "orderId": "ORDER_C", "type": "TRADE", "status": "VALID",
+        "tradeDate": "2026-09-04T18:10:25+0000", "netAmount": 449.34,
+        "transferItems": [
+            {
+                "instrument": {"assetType": "CURRENCY", "symbol": "CURRENCY_USD"},
+                "amount": 0.65, "cost": -0.65, "feeType": "COMMISSION",
+            },
+            {
+                "instrument": {
+                    "assetType": "OPTION", "symbol": "NDXP  260904C29520000",
+                    "underlyingSymbol": "NDXP", "putCall": "CALL",
+                },
+                "amount": -1.0, "cost": 450.0, "price": 4.50,
+                "positionEffect": "OPENING",
+            },
+        ],
+    }
+    fill = sm._parse_transaction(txn)
+    ok = fill is not None and fill["direction"] == "short"
+    check("sell_to_open_direction_is_short", "BEHAVIOR", ok,
+          f"got {fill['direction'] if fill else None!r} (want 'short')")
+
+
+def test_buy_to_open_direction_still_long():
+    """BEHAVIOR -- a buy-to-open OPENING fill (long call/put) must still map
+    to direction='long' after the WO-P020-E1.017 companion fix."""
+    import schwab_mapper as sm
+
+    txn = {
+        "activityId": 1, "orderId": "ORDER_D", "type": "TRADE", "status": "VALID",
+        "tradeDate": "2026-09-04T18:10:25+0000", "netAmount": -355.66,
+        "transferItems": [
+            {
+                "instrument": {"assetType": "CURRENCY", "symbol": "CURRENCY_USD"},
+                "amount": 0.65, "cost": -0.65, "feeType": "COMMISSION",
+            },
+            {
+                "instrument": {
+                    "assetType": "OPTION", "symbol": "NDXP  260904C29530000",
+                    "underlyingSymbol": "NDXP", "putCall": "CALL",
+                },
+                "amount": 1.0, "cost": -355.0, "price": 3.55,
+                "positionEffect": "OPENING",
+            },
+        ],
+    }
+    fill = sm._parse_transaction(txn)
+    ok = fill is not None and fill["direction"] == "long"
+    check("buy_to_open_direction_still_long", "BEHAVIOR", ok,
+          f"got {fill['direction'] if fill else None!r} (want 'long')")
+
+
 def main():
     tests = [v for k, v in list(globals().items()) if k.startswith("test_")]
     for t in tests:

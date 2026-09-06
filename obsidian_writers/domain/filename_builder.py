@@ -43,6 +43,7 @@ from typing import Any
 
 from obsidian_writers.config import (
     JSON_FILENAME_SUFFIX,
+    KB_ORIGIN_SUBFOLDER_MAP,
     OUTPUT_FORMAT,
     VAULT_FOLDER_MAP,
     VAULT_ROOT,
@@ -83,7 +84,13 @@ def build_filepath(schema_name: str, data: dict[str, Any]) -> Path:
     if schema_name not in VAULT_FOLDER_MAP:
         raise ValueError(f"No folder mapping for schema '{schema_name}'")
 
-    folder = VAULT_ROOT / VAULT_FOLDER_MAP[schema_name]
+    if schema_name == "KB":
+        # WO-P800-E5.001: route by origin when a subfolder is mapped,
+        # otherwise fall back to the ordinary KB root folder.
+        override = KB_ORIGIN_SUBFOLDER_MAP.get(data.get("origin"))
+        folder = VAULT_ROOT / (override or VAULT_FOLDER_MAP[schema_name])
+    else:
+        folder = VAULT_ROOT / VAULT_FOLDER_MAP[schema_name]
 
     if OUTPUT_FORMAT.get(schema_name) == "json":
         filename = _build_json_filename(schema_name, data)

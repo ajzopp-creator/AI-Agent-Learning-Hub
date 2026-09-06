@@ -16,6 +16,27 @@ logger = logging.getLogger(__name__)
 
 MAX_EXIT_SLOTS = 3
 
+def is_entry_fill(fill: Dict) -> bool:
+    """True if a fill opens a new position (OPENING for options; a buy for
+    stock, which carries no position_effect from Schwab). WO-P020-E1.017 --
+    entry/exit must be decided by position_effect, not direction, since a
+    sell-to-open (short) is an entry, not an exit, and direction alone can't
+    tell the two apart."""
+    return fill["position_effect"] == "OPENING" or (
+        fill["position_effect"] == "" and fill["direction"] == "long"
+    )
+
+
+def is_exit_fill(fill: Dict) -> bool:
+    """True if a fill closes an existing position (CLOSING for options; a
+    sell for stock). See is_entry_fill -- this account does not short stock,
+    so the stock fallback (direction == "short") is unchanged from prior
+    behavior."""
+    return fill["position_effect"] == "CLOSING" or (
+        fill["position_effect"] == "" and fill["direction"] == "short"
+    )
+
+
 
 def allocate_exits(entries: List[Dict], exits: List[Dict]) -> Tuple[List[Dict], List[Dict]]:
     """Allocate exit fills to entry fills, qty-aware, grouped by full_symbol.

@@ -79,6 +79,18 @@ currently enforced (FK doesn't appear active), but would break if
 
 `TOS_Import` = unmatched fallthrough only.
 
+**Hub-wide Attribution Standard (WO-P000-E22.001, added 2026-09-06).**
+Every trade record needs a Signal Source ID (this section) and a new
+`confidence_tier` column (CONFIRMED/INFERRED/UNRESOLVED) -- not yet added
+to `trades`, tracked in **WO-P000-E24.001** along with a resolver
+priority reorder (P_820 override stays on top, unchanged; P_400 vault
+cuts over from shadow to live; ThinkLog extends to the live account;
+Tracker demoted). Also tracked there: the OIL/P_116 live-data fix from
+WO-P000-E23.001's registry cleanup. Registry corrections from that same
+cleanup: `P_910`/`P_920` are P_115 buckets (Relative Strength / EOD scan),
+not generic systems; `P_110`/`P_105`/`P_120`/`P_210` added to this table
+since they previously had no `system_id` at all despite needing one.
+
 ---
 
 ## ThinkLog Tag Format
@@ -229,7 +241,15 @@ Both are standard two-bracket lines -- no parser change for either form.
 
 ---
 
-*Skill version: 2.8 | Updated: 2026-08-12 | `Bases/P020_Performance.base` was
+*Skill version: 2.9 | Updated: 2026-09-06 | Added Hub-wide Attribution
+Standard pointer (WO-P000-E22.001) to Valid Trading Systems: new
+`confidence_tier` column and resolver reorder tracked in WO-P000-E24.001;
+OIL/P_116 live-data fix tracked there too, inherited from WO-P000-E23.001's
+registry cleanup. Registry corrections folded in from that same session:
+P_910/P_920 are P_115 buckets (Relative Strength/EOD scan), not generic
+systems; P_110/P_105/P_120/P_210 added to db_seeder.py's systems seed list
+and both VALID_SYSTEMS sets, having previously had no system_id at all.
+Prior: v2.8 (2026-08-12) | `Bases/P020_Performance.base` was
 found to use an entirely fabricated Bases schema, not just a stale path --
 `filter:`/`conditions:`/`field:`/`operator:` are not real Obsidian Bases keys,
 so the filter block was silently ignored by the plugin regardless of the path

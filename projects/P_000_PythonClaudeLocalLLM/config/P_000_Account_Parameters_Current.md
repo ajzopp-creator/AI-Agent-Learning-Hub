@@ -14,8 +14,8 @@
 | Risk per Trade | 1.5% = $441.88 |
 | Max Position (5%) | $1,472.94 |
 | Options Rule | Use underlying STOCK price as the management trigger for option positions; execute exits with stop-limit logic and bid-aware option pricing to reduce gap-through risk |
-| Buying Power | $37,147.26 (pulled Sep 3, 2026 3:45 PM) |
-| Cash Available for Trading | $18,573.63 (pulled Sep 3, 2026 3:45 PM) |
+| Buying Power | $32,280.64 (pulled Sep 5, 2026 10:47 AM) |
+| Cash Available for Trading | $16,140.32 (pulled Sep 5, 2026 10:47 AM) |
 
 ---
 

@@ -239,6 +239,17 @@ session 2026-08-21 (INCY, MA, V) -- see lessons.md 2026-08-21 entry. If the
 batch-header scope is genuinely ambiguous, ask; do not infer SignalSource
 from the chart.
 
+**Hub-wide Attribution Standard (WO-P000-E22.001, 2026-09-06).** The
+CDNA/INCY/MA/V incidents above are the documented origin case for a
+Hub-wide rule: every trade record needs a Signal Source ID (this section)
+and a confidence tier (CONFIRMED/INFERRED/UNRESOLVED). P_115-specific
+follow-through is WO-P000-E25.001 -- reading the actual code found the
+real gap isn't in the SIGNAL_V2/P_400 emit path (that one's scoped to
+P_115 only, by design, already correct), it's zero validation on the
+Tracker Dashboard's `SignalSource` column plus an unrelated broken import
+in `tracker_writer.py` that blocks fixing it. See that WO before touching
+either file.
+
 | Source | PatternType | BreakoutVerdict | Step1Verdict |
 | :---- | :---- | :---- | :---- |
 | P_115 | `--` | `--` | BUY / ASYM / PASS |
@@ -319,6 +330,16 @@ Do NOT load reflexively â€” this SKILL covers routine STEP 1/2/3 operation.
 
 ### 2026-08-24
 - **Chaikin Power Gauge batch path added (Completion Gate skill-file gap from WO-P800-E4.001).** P_115 ran a real Chaikin enrichment Ack on 2026-07-25 (EMR/OGN/PH via `RunChaikinBatch.ps1 -Schema P115`) but this skill never referenced it -- WO-P800-E4.001 sat OWNER_DONE with that Completion Gate item unsatisfied for P_115 specifically (P_300's skill file was already correct). Fix: Critical Paths row added. Also merged two duplicate `tasks/lessons.md` file-table rows into one (compression pass).
+
+### 2026-09-06
+- **Hub-wide Attribution Standard pointer added (WO-P000-E22.001).** The
+  BATCH HEADER anti-pattern above is the documented origin case for a new
+  Hub-wide rule requiring a Signal Source ID + confidence tier on every
+  trade record. Pointer added rather than duplicating the rule text here.
+  P_115-specific follow-through tracked in WO-P000-E25.001, which found
+  the real code gap is in `tracker_writer.py` (zero SignalSource
+  validation, plus a separate broken import blocking any fix there), not
+  the SIGNAL_V2 emit path the parent WO originally assumed.
 
 ### 2026-08-17
 - **`tasks/lessons.md` wired into INIT (orphaned mechanism fix).** File existed,

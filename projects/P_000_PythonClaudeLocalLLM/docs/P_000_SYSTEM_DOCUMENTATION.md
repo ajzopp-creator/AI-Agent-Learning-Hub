@@ -9,7 +9,7 @@
 | **Project Name** | Python, Claude & Local LLM Learning Hub |
 | **Version** | 2.2 |
 | **Created** | March 8, 2026 |
-| **Last Updated** | 2026-08-20 |
+| **Last Updated** | 2026-09-06 |
 | **Owner** | Tony (Trader) |
 | **Status** | Active |
 
@@ -50,18 +50,35 @@ P_000 is the **foundation project** for the AI-Agent-Learning-Hub. It serves fiv
 
 ### 1.4 Related Projects
 
-| Project ID | Description |
-|---|---|
-| P_010 | Current Market Posture — Daily/intraday market posture analysis |
-| P_020 | AJZ Strategies Performance Analysis System |
-| P_115 | Buy the Dip Trading System |
-| P_300 | Vantage Point Pattern Recognition |
-| P_301 | Bullish Trend Pattern V2.5 |
-| P_400 | Trade Order Management |
-| P_800 | Automation / Note-Taking (Claude–Obsidian MCP) |
-| P_805 | Email Trade Extractor |
-| P_810 | Email Tax Extractor (AJZ Strategies tax emails — peer of P_805, shares mbox/IMAP layer via shared_resources) |
-| P_110 | TradetheBounce OIL analysis |
+| Project ID | Description | Signal Source ID(s) |
+|---|---|---|
+| P_010 | Current Market Posture — Daily/intraday market posture analysis | `P_010` |
+| P_020 | AJZ Strategies Performance Analysis System | — analysis layer, consumes IDs, not a source itself |
+| P_115 | Buy the Dip Trading System | `P_115` (+ buckets `P_116`, `P_117`, `P_118`, `P_910` Relative Strength, `P_920` EOD Scan — not separate projects) |
+| P_300 | Vantage Point Pattern Recognition | `P_300` |
+| P_301 | Bullish Trend Pattern V2.5 | none seeded |
+| P_400 | Trade Order Management | — routes orders, not a signal source itself |
+| P_800 | Automation / Note-Taking (Claude–Obsidian MCP) | — infrastructure |
+| P_805 | Email Trade Extractor | — infrastructure |
+| P_810 | Email Tax Extractor (AJZ Strategies tax emails — peer of P_805, shares mbox/IMAP layer via shared_resources) | — infrastructure |
+| P_110 | TradetheBounce OIL analysis — in-house replica of P_116 subscription edge, deliberately tracked apart (WO-P000-E23.001) | `P_110` |
+| P_120 | Supply and Demand Zones — in-house scanner | `P_120` |
+| P_210 | OneClickTrading 2PM Income Trade — external subscription signal source, same category as P_116/SNT (WO-P000-E22.001 near-miss origin) | `P_210` |
+| P_820 | Order Signal Capture — logs signals from external sources not otherwise captured (SNT, P_117, P_118); infrastructure, not itself a Signal Source ID | — logs `SNT`, `P_117`, `P_118`; not itself an ID |
+| P_200 | Day Trading Strategy — docs/journal only as of 2026-09-06 (Excel trade journals), no Python code yet | `Day` / `DAY` |
+
+#### 1.4.1 Standalone Signal Source IDs (not Hub Projects)
+
+| Signal Source ID | What it is | Paired Hub Project |
+|---|---|---|
+| `SNT` | Subscription — BigTrends Sunday Night Trader | `P_105` — Project ID reserved for an in-house replica, no codebase yet (add here once built) |
+| `Day` / `DAY` | Day-trading signal tag (two spellings live in code — not yet normalized) | `P_200` Day Trading Strategy — added to Section 1.4 above, 2026-09-06 |
+| `INV` | Generic IRA daily investment/swing tag, no specific system, by design | none |
+| `TOS_Import` | Default/unresolved catch-all | none |
+
+See WO-P000-E22.001 (Attribution Integrity Standard) and WO-P000-E23.001
+(Registry cleanup) for how this table was derived and the subscription
+<-> in-house pairing pattern it documents.
 
 ### 1.5 Definitions & Acronyms
 
@@ -656,3 +673,6 @@ Thumbs.db
 *Version 1.11 — Updated August 20, 2026: Section 1.4 — added P_820 (Email Tax Extractor), new peer project to P_805, scaffolded this session (docs + folder structure only, no code yet). Ref WO-P820-E1.001. Originally created as P_810 and renamed to P_820 later in the same session, before any code existed — see WO Session Notes.*
 *Version 1.12 — Updated August 20, 2026: Section 1.4 — reverted the new peer-project row from P_820 back to P_810. P_820 was a naming mistake — Tony had that ID earmarked for a separate, unrelated future project (Order Signal Capture) and didn't catch the collision until after the v1.11 rename landed. No code existed at any point during the P_810→P_820→P_810 churn. Ref WO-P810-E1.001 (formerly WO-P820-E1.001).*
 *Version 1.13 -- Updated August 29, 2026: Section 3 -- added 3.7 Changelog Retention Standard (Hub-wide audit, ref WO-P000-E4.002). P_300 confirmed compliant (pilot). P_115 and P_400 found non-compliant -- follow-ons filed as WO-P115-E5.002 and WO-P400-E6.007 respectively; corrective archive-split work happens in each project's own session. P_800 confirmed compliant. P_116/P_117/P_118 have no standalone SIP, inherit P_115's.*
+*Version 1.14 -- Updated September 6, 2026: Section 1.4 -- added three project rows found on disk but missing from the registry: P_120 (Supply and Demand Zones), P_210 (OneClickTrading 2PM Income Trade -- external subscription, same category as P_116/SNT), P_820 (Order Signal Capture -- infrastructure, not a Signal Source ID). P_110's row annotated as the deliberate in-house pairing for P_116 (not a naming collision -- see WO-P000-E23.001). Ref WO-P000-E22.001/E23.001 (Attribution Integrity Standard, Registry cleanup child WO). Note: the Version field in the header table above reads "2.2" and has not tracked this footer's own 1.x sequence for at least the last several entries -- flagged, not corrected here; Tony to confirm which number is authoritative.*
+*Version 1.15 -- Updated September 6, 2026: Section 1.4 -- added a third "Signal Source ID(s)" column to the Related Projects table, and a new 1.4.1 Standalone Signal Source IDs subsection (SNT, Day/DAY, INV, TOS_Import), completing WO-P000-E23.001 Scope item 3 (canonical cross-reference). Flagged, not added: P_200 (Day Trading Strategy) is a real project folder on disk with no Section 1.4 row -- same gap class as P_120/P_210/P_820 above, found while building this table, held for Tony's confirmation before adding.*
+*Version 1.16 -- Updated September 6, 2026: Section 1.4 -- added P_200 (Day Trading Strategy) per Tony's confirmation; docs/journal only as of this date, no Python code yet, Signal Source ID Day/DAY. 1.4.1's Day/DAY row updated to point at it. Header table's Version field ("2.2") vs. this footer's own sequence (now 1.16) still unreconciled -- still flagged, Tony's call.*
