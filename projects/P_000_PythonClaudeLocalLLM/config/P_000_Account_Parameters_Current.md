@@ -14,8 +14,10 @@
 | Risk per Trade | 1.5% = $441.88 |
 | Max Position (5%) | $1,472.94 |
 | Options Rule | Use underlying STOCK price as the management trigger for option positions; execute exits with stop-limit logic and bid-aware option pricing to reduce gap-through risk |
-| Buying Power | $32,280.64 (pulled Sep 5, 2026 10:47 AM) |
-| Cash Available for Trading | $16,140.32 (pulled Sep 5, 2026 10:47 AM) |
+| Buying Power | $33,458.10 (pulled Sep 12, 2026 11:39 AM) |
+| Cash Available for Trading | $16,729.05 (pulled Sep 12, 2026 11:39 AM) |
+
+*Refreshes automatically at 9:30 AM and 2:00 PM (P_010 daily/intraday cycle). P_400's `--cash` flag can still override this per trade when supplied.*
 
 ---
 
@@ -33,48 +35,19 @@
 
 ---
 
-## Critical Rules
+## Sizing & Options Rules
 
-### Cash Balance (Separate Concept)
-**Note (WO-P020-E1.009):** Buying Power and Cash Available for Trading in the table above are broker-reported reference numbers only. P_400's `--cash` flag stays a manual figure Tony types himself -- never auto-read from these fields.
-User provides per-trade available buying power. This is NOT account balance.
-- Do NOT subtract trades from cash balance between gates
-- Do NOT track remaining cash across trades
-- Each trade gets independent cash allocation
-
-### Three-Gate Position Sizing
-```text
-Gate 1 (Risk-Based):    $441.88 / (Entry - Stop)
-Gate 2 (Cash Limit):    User-provided per trade
-Gate 3 (Concentration): $1,472.94 max (or premium for options)
-
-Final Position Size = SMALLEST of three gates
-```
-
-### Options Management Rule
-For option positions, use the underlying stock price as the protection and management trigger by default.
-Do NOT assume the trigger is the option Mark unless the trade plan explicitly says Mark.
-When generating exits, use stop-limit structure and bid-aware option pricing where spreads are wide to improve control and reduce gap-through risk.
-
-### Options Display Rule
-Always show targets/stops with BOTH stock and option prices:
-```text
-Entry:       Stock $XX.XX --> Option $X.XX
-Take Profit: Stock $XX.XX --> Option ~$X.XX (+XX% gain)
-Stop Loss:   Stock $XX.XX --> Option ~$X.XX (-XX% loss)
-```
-Calculate option prices using delta. Show leverage multiple.
+Canonical source: P_400 (`P_400_TradeOrderManagement_Architecture_v2_0.md` Sec 3.3/3.4, `P_400_PositionSizing_TradeManagement_v1_0.md`). This file holds only the dollar figures P_400 reads -- balance, risk, max position, cash. Rule text (cash-per-trade, three-gate formula, options management/display) lives in P_400, not here.
 
 ---
 
 ## Applies To
 
-- P_115: Buy The Dip
 - P_116: Options Income Launchpad
 - P_117: Outside Recommendations
 - P_118: Eddie Z Breakouts
 - P_300: VantagePoint Grid
-- P_400: Trade Order Management
+- P_400: Trade Order Management (sizes P_115 trades on its behalf -- P_115 itself does not size)
 
 ---
 
@@ -134,3 +107,4 @@ Calculate option prices using delta. Show leverage multiple.
 - July 1, 2026 - Updated Account Balance to $32,072.00 (Net Liq per broker); synced derived tables to base $481.08 / $1,603.60 (Risk Mode Adjustments, Three-Gate block, Growth current row); Next Review moved to August 2026
 - Aug 4, 2026 - Updated Account Balance to $31,348.39 (live Schwab pull, Net Liq per broker); synced derived tables to base $470.23 / $1,567.42; Next Review moved to September 2026
 - Sep 2, 2026 - Updated Account Balance to $29,458.74 (Net Liq per broker); synced derived tables to base $441.88 / $1,472.94 (Risk Mode Adjustments, Three-Gate block, Growth current row); Next Review moved to October 2026. Prior live file had reverted to stale May 1 content (missing Buying Power/Cash Available fields, missing Options Management Rule detail, missing Aug 4 update) -- restored full structure from the Aug 4 pre-edit backup and reconstructed the Aug 4 history row from session record.
+- Sep 15, 2026 - Removed Critical Rules section (Cash Balance, Three-Gate, Options Management/Display rules) -- all already canonical in P_400 Architecture v2.0 / PositionSizing docs; replaced with a pointer. Removed P_115 from Applies To (P_400 sizes P_115 trades on its behalf; P_115 itself does not size). Cash Available for Trading now refreshes automatically 9:30 AM + 2:00 PM via P_010's daily/intraday cycle (WO-P010 cash automation); P_400's `--cash` flag still overrides per trade when supplied, no longer required on every call.

@@ -1,5 +1,40 @@
 # P_805 — Current State (todo.md)
-Last updated: 2026-08-24 (Independent Review session)
+Last updated: 2026-09-06 (sector data + parent_domain dedup + WO-P800-E5.001 criterion 4 session)
+
+## Done this session (2026-09-06)
+- Sector data: tagged 14 senders with confirmed/identified sectors (6 by
+  same-domain match to an already-tagged sibling: analystratings.net x3,
+  zacks.com x2, t3live.com; 7-8 identified via web research: Colibri
+  Trader/Hima Reddy/BigTrends x2 -> technical or options, Hedgeye ->
+  macro, MarketTaker -> options, Earnings Whispers -> analyst_ratings,
+  Katusa Research -> new sector `resources`). Tagged the remaining 14
+  no-public-info senders `Notclassified` (Tony's call, so they stand out
+  for his own research later instead of sitting blank). ~7 low-confidence
+  naming-pattern guesses (dividendbrief, elitetrade.club, chaikinanalytics
+  x2, Kiyosaki, Michael Burry substack, mlquant) deliberately left blank —
+  Tony's call, not filed as fact.
+- parent_domain dedup: **dropped, not built.** KryptonStreet/MarketCrux
+  footers show two different LLCs at two different addresses (Krypton
+  Street Media 1717 LLC, Delray Beach FL vs. Headline Media LLC, St.
+  Petersburg FL) — the "same publisher" premise this backlog item rested
+  on doesn't hold. Building dedup around it would have silently understated
+  consensus on any ticker where both fire. No other verified pair exists.
+  Off the backlog until a real pair turns up.
+- WO-P800-E5.001 criterion 4 closed out: staged a real message from
+  `trading-protraderstrategies.com@shared1.ccsend.com` out of the live
+  iCloud mbox, ran `--kb-mode full`. First run failed validation
+  (`KBRecord` requires `signal_date`/`written_by`, neither auto-injected).
+  Real bug in `application\p805_kb_writer.py`'s `build_kb_record()` — it
+  only ever set the deprecated `date` field. Fixed: now sets `signal_date`
+  and `written_by: "P_805/kb_writer"`. Re-ran clean — note landed in
+  `KnowledgeBase\Newsletters\`, `.eml` deleted on success. This means
+  every prior `--kb-mode` run (there had been none against a real `.eml`)
+  would have failed the same way — not caught until this session.
+- WO-P810-E1.001 Independent Review performed (separate session from the
+  2026-08-20 build) — PASS, moved OWNER_DONE -> CLOSED. One unrelated
+  anomaly flagged for Tony: a stray `docs\P805 IMAP OAuth.txt` (bare GUID,
+  dated 8/23) sitting in the P_810 folder, likely misplaced from
+  WO-P805-E2.001's Outlook OAuth2 work.
 
 ## Done this session (2026-08-24)
 - WO-P805-E2.001 (Outlook OAuth2) Independent Review performed fresh, in a
@@ -121,17 +156,39 @@ passes silently on refresh. All four accounts now covered by Phase 5.3.
    during an interactive session.
 
 ## Queued (priority order)
-1. Sector data -- 34 of 59 senders still untagged, fill in as they
-   accumulate ticker-producing history
-2. parent_domain dedup -- KryptonStreet/MarketCrux case; not yet built
-3. Yahoo retention policy -- set 10-day retention once Yahoo's
-   ExtractedNewsletterFolder has content
-4. Set a 10-day retention policy on Outlook's ExtractedNewsletterFolder
-   in Thunderbird, same as icloud/gmail already have (Outlook is new to
-   the live move as of this session)
+1. Sector data -- confirmed/identified sectors written for 20 of the 34
+   previously-untagged senders (2026-09-06); 14 tagged `Notclassified`
+   (no public info, Tony's own read needed); ~7 low-confidence guesses
+   left blank pending Tony's call. Fill in as real ticker-producing
+   history accumulates or Tony confirms a guess.
+2. ~~parent_domain dedup~~ DROPPED (2026-09-06) -- KryptonStreet/MarketCrux
+   confirmed as two different LLCs, not one publisher. Off the backlog.
+3. ~~Yahoo retention policy~~ DONE (2026-09-06) -- 10-day retention set.
+4. ~~Outlook retention policy~~ DONE (2026-09-06) -- 10-day retention set.
+   All four accounts now covered.
+5. P_115 dashboard scoping (Tony's stated ultimate goal) -- design
+   principle decided 2026-09-06: candidate list, not an auto-trigger.
+   P_805 output sits at the same tier as P_117's subscription-service
+   inputs (Big Trends/SNT) -- P_115's mandatory chart-pattern check and
+   "analysis first, decide after" rule for outside signals stays intact,
+   dashboard surfaces candidates for Tony to glance at and manually run
+   through P_115's diagnostic. Tony's stated longer-term aspiration is
+   full automation (P_115 diagnostic auto-gating on its own criteria,
+   still no skipped checks) -- not building toward that yet, but noting
+   it so today's structure doesn't foreclose it later.
+   Tracker placement decided 2026-09-06: fold into P_117's existing
+   "Outside Recommendations" bucket, no new distinct tier -- Tony doesn't
+   need to separate newsletter-consensus signals from Big Trends/SNT
+   right now (would only matter if he wanted to selectively pause just
+   the email-sourced ones; reversible later if that changes).
+   Still greenfield otherwise -- touches P_805 (source), P_800
+   (dashboard/vault owns all display), and P_115 (tracker/consumer).
+   No WO opened yet, no build started.
 
 ## Next session first task
-Confirm WO-P805-E2.001's Independent Review has happened (or do it, if
-this session is the fresh one). Check whether a full Phase 5.3 daily
-run has moved real Outlook mail yet, and whether the 9:15 AM scheduled
-run has been firing cleanly across all four accounts.
+If starting the P_115 dashboard scoping (talked through 2026-09-06, no
+decision yet on P_115 auto-consumption vs. manual candidate report):
+read P_115's own project context first -- this todo.md has no prior
+integration notes to build from. Otherwise, retention policies and
+both WOs are closed -- nothing else queued except sector data as it
+accumulates history.

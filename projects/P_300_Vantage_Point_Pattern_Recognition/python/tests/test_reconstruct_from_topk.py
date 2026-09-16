@@ -50,7 +50,7 @@ from domain.eval_scoring import run_walk_forward, score_one  # noqa: E402
 from domain.reconstruct_from_topk import (  # noqa: E402
     classify_topk_gap, score_one_from_topk_cache,
 )
-from infrastructure.catalog_reader import PatternMetadata  # noqa: E402
+from schemas_pipeline_b import PatternMetadata  # noqa: E402
 from schemas_pipeline_b import ForwardLabelLite, NormalizedBar  # noqa: E402
 
 

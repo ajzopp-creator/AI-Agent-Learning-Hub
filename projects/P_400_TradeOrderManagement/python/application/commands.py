@@ -177,8 +177,10 @@ def cmd_evaluate(symbol: str, snapshot_path: str, cash: float, trade_mode: Trade
             return 1
         from application.evaluate_options import evaluate_options
         opt_result = evaluate_options(
-            packet=packet, snapshot_raw=snapshot, chain_path=chain_path,
-            cash_available=cash, stock_rr=result.rr_after_drift,
+            symbol=packet.symbol, stock_stop=packet.guideline_stop,
+            stock_target=packet.guideline_target, snapshot_raw=snapshot,
+            chain_path=chain_path, cash_available=cash,
+            stock_rr=result.rr_after_drift,
             is_paper=(trade_mode == TradeMode.PAPER),
         )
         print("=" * 60)

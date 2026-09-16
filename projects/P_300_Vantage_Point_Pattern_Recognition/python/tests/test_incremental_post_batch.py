@@ -67,7 +67,7 @@ from application.incremental_post_batch import run_incremental_post_batch  # noq
 from domain.eval_incremental import IncrementalGuardrailError  # noqa: E402
 from domain.eval_scoring import run_walk_forward  # noqa: E402
 from domain.topk_cache import seed_full_catalog  # noqa: E402
-from infrastructure.catalog_reader import PatternMetadata  # noqa: E402
+from schemas_pipeline_b import PatternMetadata  # noqa: E402
 from infrastructure.topk_cache_io import (  # noqa: E402
     create_topk_cache_table, insert_topk_rows_batch,
 )

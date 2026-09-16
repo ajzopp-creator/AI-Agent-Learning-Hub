@@ -338,13 +338,13 @@ P_115_STEP 1 [TICKER] [Fund] [Anal] [Candle] [Setup] [STR] [Verdict]
 **When to Use:** Per ticker after TOS chart review
 **Last Updated:** 2026-05-23 (PASS vocabulary standardized)
 
-#### Prompt: STEP 2 Position Sizing
+#### Prompt: STEP 2 Signal Emission
 ```
-STEP 2 [TICKER] Entry $X.XX Stop $X.XX Cash $X,XXX
+STEP 2 [TICKER]
 ```
-**Purpose:** Re-read posture, run three-gate sizing, output TP/SL with stock+option prices
+**Purpose:** Build and emit the SIGNAL_V2 packet only. guideline_stop = chart's PA Stop label, guideline_target = chart's first resistance/T1 label -- both read directly, never recomputed. No sizing, no cash input, no options gates -- P_400 owns all sizing downstream (Tony directive, 2026-07-24, Section 8.2).
 **When to Use:** After BUY or ASYM verdict
-**Last Updated:** 2026-03-31 (v2.9 posture re-read mandatory)
+**Last Updated:** 2026-09-10 (corrected -- prior "Entry $X.XX Stop $X.XX Cash $X,XXX" template was pre-7/24 sizing-era language that was never swept when STEP 2 was cut to emit-only. Caused a live repeat 2026-09-10 of the same gap the 2026-08-03 changelog entry ("STEP 2 = emit only") already fixed once -- this time the trigger was Claude reading this stale template instead of the rule.)
 
 #### Prompt: STEP 3 Outcome + Vault Write
 ```

@@ -242,3 +242,10 @@ EARNINGS_CALENDAR_LOOKBACK_BUFFER_DAYS: int = 5
 # pull date, don't spot-check symbols against the live API. ~30-day cadence
 # + 5-day grace before earnings_lookup.py warns.
 EARNINGS_CALENDAR_MAX_STALENESS_DAYS: int = 35
+
+# --- Account (WO-P400-E6.001) -----------------------------------------------
+# P_400 has always submitted through AJZ Strategies -- IRA9885 is
+# buy-and-hold, no active trading. Added when order_submit_writer.py needed
+# an account_id to pass to P_020's orders table; nothing in P_400 tracked
+# this before.
+ACCOUNT_ID: str = "AJZ6348"

@@ -71,3 +71,25 @@ def test_is_stale_exactly_at_threshold_not_stale():
     today = date(2026, 8, 8)
     cache = _cache((today - timedelta(days=35)).isoformat())
     assert cache_mod.is_stale(cache, today=today) is False  # > not >=
+
+
+def test_is_valid_for_current_gate_fresh_pull():
+    """WO-P400-E8.002. max_valid_age = LOOKAHEAD_DAYS(7) - FORWARD_DAYS(3) = 4."""
+    today = date(2026, 8, 8)
+    cache = _cache(today.isoformat())
+    assert cache_mod.is_valid_for_current_gate(cache, today=today) is True
+
+
+def test_is_valid_for_current_gate_exactly_at_max_age():
+    today = date(2026, 8, 8)
+    cache = _cache((today - timedelta(days=4)).isoformat())
+    assert cache_mod.is_valid_for_current_gate(cache, today=today) is True
+
+
+def test_is_valid_for_current_gate_past_max_age():
+    """WO-P400-E8.002 found-live scenario: a cache older than the ~4-day
+    valid window (26+ days observed 2026-09-14 on NFLX/EHC/SELF) must no
+    longer be trusted to confirm a missing symbol clear."""
+    today = date(2026, 8, 8)
+    cache = _cache((today - timedelta(days=5)).isoformat())
+    assert cache_mod.is_valid_for_current_gate(cache, today=today) is False

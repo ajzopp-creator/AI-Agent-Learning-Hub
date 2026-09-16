@@ -140,7 +140,9 @@ def _create_trades_table(conn: sqlite3.Connection) -> None:
             created_at             DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at             DATETIME DEFAULT CURRENT_TIMESTAMP,
             reason                 TEXT,
-            signal_strength        TEXT
+            signal_strength        TEXT,
+            expiration_date        DATE,
+            settlement_price       REAL
         )
     """)
 

@@ -61,12 +61,11 @@ from config import (  # noqa: E402
     WATCH_MIN_WIN_RATE, WATCH_MIN_Z_SCORE,
 )
 from domain import aggregator, similarity  # noqa: E402
-from infrastructure.catalog_reader import PatternMetadata  # noqa: E402
 from schemas_eval import (  # noqa: E402
     Correctness, ThresholdOverrides, WalkForwardBatch, WalkForwardResult,
 )
 from schemas_pipeline_b import (  # noqa: E402
-    AggregatedSignalPerHorizon, ForwardLabelLite, NormalizedBar, SignalClass,
+    AggregatedSignalPerHorizon, ForwardLabelLite, NormalizedBar, PatternMetadata, SignalClass,
 )
 
 _CLASS_RANK = {SignalClass.PASS: 0, SignalClass.WATCH: 1, SignalClass.BUY: 2}

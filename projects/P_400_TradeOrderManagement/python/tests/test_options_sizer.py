@@ -1,4 +1,4 @@
-"""test_options_sizer.py -- Unit tests for domain\options_sizer.py.
+"""test_options_sizer.py -- Unit tests for domain/options_sizer.py.
 
 Covers: Chart-Based delta translation, Risk-Budget-First 2xATR floor,
 Gate 3 premium cap, 0-contract override path, posture multiplier.
@@ -14,7 +14,7 @@ from domain.options_sizer import (
     size_option_chart_based,
     size_option_risk_budget,
     _translate_stop,
-    _translate_target,
+    translate_target_premium,
 )
 
 # ---------------------------------------------------------------------------
@@ -61,7 +61,7 @@ def test_translate_stop_floors_at_penny():
 
 def test_translate_target_basic():
     # entry=10.00, delta=0.50, stock_reward=20.00 -> target = 10 + (0.5*20) = 20.00
-    assert _translate_target(10.00, 0.50, 20.00) == 20.00
+    assert translate_target_premium(10.00, 0.50, 20.00) == 20.00
 
 
 # ---------------------------------------------------------------------------

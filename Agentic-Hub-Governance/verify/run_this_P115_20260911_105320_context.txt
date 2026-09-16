@@ -1,0 +1,18 @@
+Phase/WO: P_115 STEP 2 signal emission (EXPD, P_118 batch, Fund-verified BUY)
+Date: 2026-09-11
+
+What this tests: Emits the P_115->P_400 SIGNAL_V2 JSON packet for EXPD using
+the same emit_signal() call cli.py normally runs via command line. The direct
+cli.py invocation via Windows-MCP PowerShell timed out (4-min ceiling, relay
+confirmed alive via ping afterward) before this handoff was staged.
+
+Success criteria: Script prints "Signal written: <path>" followed by "PASS".
+The path must exist on disk (json file under
+trading_journal\TradeOrderManagement\signals\).
+
+If it fails: Read the exception message. Most likely causes are an import
+error (config.py / application.emit_signal.py path), a schema validation
+error inside emit_signal, or a permissions issue writing to the signals
+folder. Do not change test assertions -- there are none here, this is a
+production call, not a unit test. Fix the underlying cause (e.g. a stale
+sys.path, a missing directory) and re-run. Paste full output back to Tony.

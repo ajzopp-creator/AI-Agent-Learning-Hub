@@ -1,0 +1,71 @@
+WO-P400-E6.001 Scope item 2 -- File 9 of 18 (shared_resources\python_utils\
+p020_order_writer.py, new) -- 2026-09-07
+
+This file lives outside any single project (shared_resources\python_utils\),
+unlike files 1-8 which were all inside P_020's own project folder --
+same location as vault_interface.py, schwab_client.py, etc. Written
+directly via windows-mcp FileSystem (mode=write). Durable-signal
+Test-Path/Length check succeeded directly via PowerShell (4,919 bytes).
+Skipped the compile subprocess call via windows-mcp:PowerShell -- stalled
+4+ min on every file this session so far. Handing straight to Claude Code.
+
+IMPORTANT -- no real P_020 database connection anywhere in this script.
+infrastructure.db_client.get_connection (P_020's own module, reached by
+inserting P_020's database dir onto sys.path the same way the production
+file does) is monkeypatched to return an in-memory scratch DB with just
+the orders table, before submit_order() is ever called for real.
+
+What it does:
+  1. Confirms the file exists with a plausible line count, compiles
+     under warnings-as-errors.
+  2. LAZY-IMPORT check: imports shared_resources.python_utils.
+     p020_order_writer bare (with only the Hub root on sys.path) and
+     confirms P_020's database dir is NOT yet on sys.path afterward --
+     proves _load_p020() only runs inside submit_order(), not at module
+     import time, matching schwab_order_puller.py's lazy-client
+     discipline.
+  3. Separately (not through the module under test) inserts P_020's
+     database dir itself, to reach infrastructure.db_client and
+     monkeypatch get_connection before any real call happens.
+  4. submit_order() happy path: submits an AAPL order with a full set of
+     attribution fields (why_code=P_115, sig_code=BTD_SIGNAL,
+     schwab_order_id=7001, etc.), confirms it returns a real order_id,
+     and confirms the row landed in the scratch orders table with every
+     field correct, including the trade_mode=REAL / confidence_tier=
+     CONFIRMED defaults.
+  5. Dedup: a second submit_order() call with the SAME schwab_order_id
+     returns None and does not insert a second row (exactly 1 row in
+     the table after both calls).
+
+Success criteria: script prints "PASS: p020_order_writer.py validated
+(no real P_020 database touched)." and a
+run_this_P020_20260907_210328.py.done file appears with status: PASS.
+
+What Claude Code should fix on failure:
+- Line count / compile errors: same known failure modes as prior
+  handoffs this session.
+- Lazy-import check failing (P_020 dir already on sys.path after a bare
+  import): _load_p020()'s sys.path.insert() call must be inside the
+  function body, not at module scope -- check for an accidental
+  top-level call to _load_p020() or a stray sys.path.insert() outside
+  any function.
+- submit_order() field mismatches: read the Order(...) construction in
+  submit_order() directly against this script's call arguments -- likely
+  a keyword typo or an argument silently dropped.
+- Dedup not working: this actually exercises P_020's own
+  infrastructure.db_order_writer.insert_order() (unchanged, imported not
+  duplicated) -- if dedup fails here, the bug is more likely in how
+  submit_order() builds the Order (e.g. schwab_order_id not passed
+  through) than in insert_order() itself, since insert_order()'s dedup
+  was already validated in the file-6 handoff.
+
+Do not change test assertions. This script never opens the real
+P_020_trades.db at any point -- confirm any fix keeps it that way.
+
+Sequencing note: file 9 of 18 (Shared). Files 1-8 already validated
+PASS earlier today -- the live path is fully wired end-to-end within
+P_020. Next in the P_020 sequence per the WO's build-order narrative:
+P_400's own infrastructure\order_submit_writer.py and application\
+record_commands.py extension -- the P_400 side that actually calls
+this new submit_order() bridge when the council approves a live order.
+Paper support stays deferred to near the end of this build.

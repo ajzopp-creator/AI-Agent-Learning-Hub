@@ -36,11 +36,17 @@ from __future__ import annotations
 import logging
 from typing import Dict, List, Optional
 
-from infrastructure.earnings_calendar_cache import is_stale, load_cache
+from infrastructure.earnings_calendar_cache import is_stale, is_valid_for_current_gate, load_cache
 from infrastructure.earnings_calendar_client import NasdaqRequestError, fetch_company_sector
 from schemas import EarningsEntry
 
 logger = logging.getLogger("p400.earnings_lookup")
+
+# Source tags for EarningsEntry.source -- named constants so
+# batch_2b_scoring.py can key its skip logic on them rather than a
+# duplicated literal string (WO-P400-E8.002).
+SOURCE_CONFIRMED_CLEAR = "nasdaq_calendar_confirmed_clear"
+SOURCE_GATE_UNCERTAIN = "nasdaq_calendar_gate_stale_uncertain"
 
 
 class EarningsCacheMissing(Exception):
@@ -94,26 +100,43 @@ def build_entries_for_symbols(symbols: List[str]) -> Dict[str, EarningsEntry]:
         print(f"[WARN] Earnings calendar cache is stale (pulled {cache.pulled_date}) "
               "-- run `cli.py refresh-earnings-calendar` when convenient.")
 
+    gate_valid = is_valid_for_current_gate(cache)
     entries: Dict[str, EarningsEntry] = {}
     for symbol in symbols:
         symbol = symbol.upper()
         cached = cache.entries.get(symbol)
         sector = _lookup_sector(symbol)
         if cached is None:
-            logger.info(
-                "No earnings calendar entry for %s in the %s pull -- "
-                "narrow window now matches MACRO's actual gate, so this is "
-                "a confirmed clear, not a skip (WO-P400-E6.004, revised).",
-                symbol, cache.pulled_date,
-            )
-            entries[symbol] = EarningsEntry(
-                symbol=symbol,
-                next_earnings_date=None,
-                last_earnings_date=None,
-                sector=sector,
-                source="nasdaq_calendar_confirmed_clear",
-                date_confirmed=True,
-            )
+            if gate_valid:
+                logger.info(
+                    "No earnings calendar entry for %s in the %s pull -- "
+                    "narrow window now matches MACRO's actual gate, so this is "
+                    "a confirmed clear, not a skip (WO-P400-E6.004, revised).",
+                    symbol, cache.pulled_date,
+                )
+                entries[symbol] = EarningsEntry(
+                    symbol=symbol,
+                    next_earnings_date=None,
+                    last_earnings_date=None,
+                    sector=sector,
+                    source=SOURCE_CONFIRMED_CLEAR,
+                    date_confirmed=True,
+                )
+            else:
+                logger.warning(
+                    "No earnings calendar entry for %s and the %s pull is too "
+                    "old to confirm today's gate window is covered -- surfacing "
+                    "as uncertain, not clear (WO-P400-E8.002).",
+                    symbol, cache.pulled_date,
+                )
+                entries[symbol] = EarningsEntry(
+                    symbol=symbol,
+                    next_earnings_date=None,
+                    last_earnings_date=None,
+                    sector=sector,
+                    source=SOURCE_GATE_UNCERTAIN,
+                    date_confirmed=False,
+                )
             continue
         entries[symbol] = cached.model_copy(update={"sector": sector})
     return entries

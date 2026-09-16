@@ -1,0 +1,57 @@
+{
+  "run_timestamp": "2026-09-08T11:54:45.609299-04:00",
+  "session_date": "2026-09-08",
+  "cash_available": 15410.0,
+  "posture": "FULL",
+  "screened_count": 6,
+  "passed_tier1": 6,
+  "evaluated": 6,
+  "candidates": [
+    {
+      "symbol": "BA",
+      "rank": 1,
+      "score": 0.5411,
+      "score_components": {
+        "rr": 0.6817,
+        "atr_headroom": 0.0897,
+        "spread": 0.9766,
+        "liquidity": 0.7312,
+        "drift": 0.56
+      },
+      "vehicle": "STOCK",
+      "vehicle_reason": "Option BLOCKED by options council (OI_TOO_LOW: open_interest=41 < 150 minimum) -- stock used.",
+      "verdict": "APPROVED",
+      "rr_at_t1": 4.09,
+      "atr_headroom": 1.1795,
+      "spread_pct_of_price": 0.0234,
+      "drift_pct": 0.66,
+      "dollar_risk": 33.97,
+      "quantity": 6
+    }
+  ],
+  "skipped": [
+    {
+      "symbol": "CPRI",
+      "reason": "verdict=BLOCKED (STOP_TOO_TIGHT)"
+    },
+    {
+      "symbol": "TLN",
+      "reason": "verdict=BLOCKED (ADVERSE_DRIFT)"
+    },
+    {
+      "symbol": "ASO",
+      "reason": "verdict=BLOCKED (STOP_TOO_TIGHT)"
+    },
+    {
+      "symbol": "EWBC",
+      "reason": "verdict=BLOCKED (STOP_TOO_TIGHT)"
+    },
+    {
+      "symbol": "CBSH",
+      "reason": "verdict=BLOCKED (RR_BELOW_MIN)"
+    }
+  ],
+  "cumulative_risk_if_all_taken": 33.97,
+  "heat_cap": 3535.0488,
+  "heat_warning": null
+}

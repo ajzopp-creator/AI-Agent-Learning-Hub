@@ -1,0 +1,72 @@
+orders rows before seed: 0
+Seeded orders row #5: SPY short 1 (IRON CONDOR primary leg, 745 CALL) @3.16, schwab_order_id=5375345511
+
+--- CLI exit code: 0 ---
+STDOUT:
+
+Reconcile complete -- closed: 1  still open: 0  not in pull window: 0
+
+STDERR:
+
+
+--- orders row #5 after reconcile ---
+  order_id: 5
+  account_id: IRA9885
+  symbol: SPY
+  side: short
+  qty: 1.0
+  planned_entry_price: 3.16
+  planned_stop_price: None
+  planned_target_price: None
+  trade_mode: PAPER
+  submitted_ts: 2026-07-27T11:08:42
+  schwab_order_id: 5375345511
+  status: closed
+  council_verdict: None
+  why_code: None
+  sig_code: None
+  source_project: P400
+  confidence_tier: CONFIRMED
+  entry_date: 2026-07-27
+  close_date: 2026-07-27
+  realized_pnl: 3.0
+  entry_fill_price: 3.16
+  asset_type: OPTION
+  put_call: CALL
+
+--- matching trades row ---
+  trade_id: 3158
+  account_id: IRA9885
+  system: P400
+  underlying_symbol: SPY
+  asset_type: call
+  direction: short
+  open_date: 2026-07-27
+  open_datetime: None
+  qty: 1.0
+  entry_price: 3.16
+  stop_price: None
+  risk_amount: None
+  total_commissions: 0.0
+  status: closed
+  tags: None
+  notes: None
+  source: P400
+  schwab_transaction_id: 5375345511
+  created_at: 2026-09-08 18:33:16
+  updated_at: 2026-09-08 18:33:16
+  reason: None
+  signal_strength: None
+
+--- matching exits row ---
+  exit_id: 5032
+  trade_id: 3158
+  exit_number: 1
+  exit_date: 2026-07-27
+  exit_datetime: None
+  qty_exited: 1.0
+  exit_price: 3.13
+  exit_commissions: 0.0
+  exit_pnl: 3.0
+  hold_days: 0
+  created_at: 2026-09-08 18:33:16

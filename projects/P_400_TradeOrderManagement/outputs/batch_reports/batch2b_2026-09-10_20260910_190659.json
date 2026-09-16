@@ -1,0 +1,19 @@
+{
+  "run_timestamp": "2026-09-10T19:06:59.424779-04:00",
+  "session_date": "2026-09-10",
+  "cash_available": 16622.42,
+  "posture": "OFF",
+  "screened_count": 1,
+  "passed_tier1": 1,
+  "evaluated": 1,
+  "candidates": [],
+  "skipped": [
+    {
+      "symbol": "GLW",
+      "reason": "verdict=BLOCKED (STOP_TOO_TIGHT)"
+    }
+  ],
+  "cumulative_risk_if_all_taken": 0.0,
+  "heat_cap": 3535.0488,
+  "heat_warning": null
+}

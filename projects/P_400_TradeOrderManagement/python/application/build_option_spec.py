@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime
+from typing import Optional
 
 from domain.options_sizer import OptionSizingResult
 from schemas import OptionChainInput
@@ -26,7 +27,7 @@ _SEP = "=" * 60
 _DIV = "-" * 60
 
 
-def _occ_symbol(symbol: str, expiry: str, option_type: str, strike: float) -> str:
+def occ_symbol(symbol: str, expiry: str, option_type: str, strike: float) -> str:
     """Build OCC option symbol (6-char underlying + YYMMDD + C/P + 8-digit strike)."""
     dt = datetime.strptime(expiry, "%Y-%m-%d")
     yymmdd = dt.strftime("%y%m%d")
@@ -35,7 +36,7 @@ def _occ_symbol(symbol: str, expiry: str, option_type: str, strike: float) -> st
     return f"{symbol:<6}{yymmdd}{cp}{strike_int:08d}"
 
 
-def _leverage_multiple(delta: float, stock_entry: float, option_mid: float) -> float:
+def leverage_multiple(delta: float, stock_entry: float, option_mid: float) -> float:
     """Effective leverage: |delta| * stock_price / option premium."""
     if option_mid <= 0:
         return 0.0
@@ -143,6 +144,7 @@ def build_option_spec(
     stock_stop: float,
     stock_target: float,
     is_paper: bool = False,
+    stock_target_2: Optional[float] = None,
 ) -> str:
     """Render Pattern B single-leg option spec for Schwab entry.
 
@@ -157,6 +159,11 @@ def build_option_spec(
         stock_stop: Underlying stop price (Section 3.8 display + Leg 2 trigger).
         stock_target: Underlying T1 target price.
         is_paper: If True, prepends PAPER TRADE banner.
+        stock_target_2: Optional second underlying target (WO-P400-E8.003).
+            When given, delegates to build_option_spec_scaleout.py: contracts
+            split floor/remainder-to-T2, two independent OCO brackets sharing
+            this function's stock_stop. When None (default), behavior is
+            unchanged from before this WO.
 
     Returns:
         Multi-line string spec.
@@ -184,18 +191,33 @@ def build_option_spec(
             _SEP, "",
         ])
 
-    option_sym = _occ_symbol(
+    option_sym = occ_symbol(
         underlying_symbol, chain.expiration, chain.option_type, chain.strike,
     )
-    leverage = _leverage_multiple(chain.delta, stock_entry, sizing.option_entry)
+    leverage = leverage_multiple(chain.delta, stock_entry, sizing.option_entry)
 
-    lines = []
-    lines += _summary_block(underlying_symbol, option_sym, chain, sizing,
-                            contracts, leverage)
-    lines += _dual_price_block(underlying_symbol, sizing,
-                               stock_entry, stock_stop, stock_target)
-    lines += _legs_block(underlying_symbol, option_sym, contracts, sizing,
-                         stock_stop, stock_target)
+    if stock_target_2 is not None:
+        from application.build_option_spec_scaleout import build_option_spec_scaleout
+        body = build_option_spec_scaleout(
+            underlying_symbol=underlying_symbol,
+            option_sym=option_sym,
+            chain=chain,
+            sizing=sizing,
+            contracts=contracts,
+            leverage=leverage,
+            stock_entry=stock_entry,
+            stock_stop=stock_stop,
+            stock_target_1=stock_target,
+            stock_target_2=stock_target_2,
+        )
+    else:
+        lines = []
+        lines += _summary_block(underlying_symbol, option_sym, chain, sizing,
+                                contracts, leverage)
+        lines += _dual_price_block(underlying_symbol, sizing,
+                                   stock_entry, stock_stop, stock_target)
+        lines += _legs_block(underlying_symbol, option_sym, contracts, sizing,
+                             stock_stop, stock_target)
+        body = "\n".join(lines)
 
-    body = "\n".join(lines)
     return override_note + paper_banner + body

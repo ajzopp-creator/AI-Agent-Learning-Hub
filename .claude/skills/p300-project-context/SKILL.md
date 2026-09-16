@@ -179,6 +179,11 @@ Two roles, hard boundary: (1) **Dev Assistant** — writes Python, reviews archi
 12. Perform file modifications directly via MCP when available — never ask operator to paste 2+ lines
 13. Refuse to let Claude touch the catalog (in-session ingest/catalog ops) until Step 5b health check is clean — HEALTHY, hollow = 0 (M-017). Note: routine growth runs outside Claude via .bat; this gate is for the rare in-session catalog operation.
 14. **Complete the full INIT sequence (Steps 0–7) before writing any file, logging any lesson, or taking any action. Steps 4 through 5c are an uninterruptible block.**
+15. Before evaluating whether any candidate variable helps pick winners
+    (a pattern, a regime, a filter), check
+    `Trading_Projects_Folder_Architecture.md` -> "Trading Research
+    Standards" -- compare base-rate-adjusted lift, not raw win rate,
+    across buckets (ref WO-P010-E2.001, added 2026-09-13).
 
 **Must Not:**
 1. Invent project status not in `tasks/todo.md` or architecture doc

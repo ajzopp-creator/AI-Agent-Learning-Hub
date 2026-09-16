@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "C:\Users\Trader\AI-Agent-Learning-Hub\Agentic-Hub-Governance\verify\edit_trade_manager_20260915.py", line 32, in <module>
+    assert content.count(old_parser_anchor) == 1, "positions subparser anchor not found or not unique"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: positions subparser anchor not found or not unique

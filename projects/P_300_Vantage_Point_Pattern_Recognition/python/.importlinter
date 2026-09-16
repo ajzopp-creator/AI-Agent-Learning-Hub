@@ -1,0 +1,37 @@
+# .importlinter -- WO-P300-E5.001 step 2: the actual import-linter contract.
+#
+# Layer order (bottom -> top): domain, utilities, infrastructure,
+# application | tools (independent siblings -- neither may import the
+# other), cli_commands. schemas*.py and config.py are deliberately NOT
+# root_packages here -- they're single-file modules, not packages (no
+# __init__.py, can't be namespace-packaged per import-linter/grimp), and
+# every layer is allowed to import them freely by design, so there's
+# nothing this contract needs to say about them. cli.py is the outermost
+# entry point (thin shim, nothing imports it) -- also omitted, nothing to
+# check.
+#
+# promote_gate.py's known exception (cli_commands/promote_gate.py imports
+# domain + infrastructure directly, skipping application) is NOT a
+# violation under this contract -- a Layers contract lets a higher layer
+# (cli_commands) import ANY lower layer, not just the one immediately
+# below it. Flagged during the design conversation as something that
+# might need a stricter rule later; this contract doesn't need one now.
+
+[importlinter]
+root_packages =
+    domain
+    utilities
+    infrastructure
+    application
+    tools
+    cli_commands
+
+[importlinter:contract:p300-layers]
+name = P_300 layered architecture
+type = layers
+layers =
+    cli_commands
+    application | tools
+    infrastructure
+    utilities
+    domain

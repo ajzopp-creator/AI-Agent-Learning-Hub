@@ -35,7 +35,7 @@ def _system_rows(systems):
           <td class="{_cls(s["total_pnl"])}">{_pnl(s["total_pnl"])}</td>
           <td class="{_cls(s["avg_R"])}">{float(s["avg_R"]):+.2f}R</td>
           <td class="{_cls(float(pf)-1 if pf != "—" else -1)}">{pf}</td>
-          <td>{float(s["avg_hold_days"]):.1f}d</td>
+          <td>{f'{float(s["avg_hold_days"]):.1f}d' if s["avg_hold_days"] else "—"}</td>
         </tr>""")
     return "\n".join(rows)
 

@@ -18,7 +18,7 @@ description: >
 ---
 
 # peh-handoff
-v1.11 | Created 2026-06-16 | Applies to all Python execution and file-writing MCP calls under C:\Users\Trader\AI-Agent-Learning-Hub\projects\
+v1.13 | Created 2026-06-16 | Applies to all Python execution and file-writing MCP calls under C:\Users\Trader\AI-Agent-Learning-Hub\projects\
 
 ## Trigger
 - MCP Python call about to run, or already timed out (4-min ceiling, ~9/10 occurrence)
@@ -34,8 +34,9 @@ effectively a new process, so a backgrounded job is orphaned even if the call
 signal = a file actually on disk, confirmed with Test-Path AND a Length / line-count
 read — never "the call returned without error."
 
-- Fast work (py_compile, small writes): one direct synchronous call, no
-  backgrounding — but only if a plain `Write-Output "ping"` is currently fast.
+- Fast work (small file writes, non-python PowerShell cmdlets): one direct
+  synchronous call, no backgrounding — but only if a plain `Write-Output "ping"`
+  is currently fast. Does NOT include python.exe — see Sequence step 4.
 - Detached/backgrounded work: `Start-Process -WindowStyle Hidden`, not Start-Job.
 - Any MCP file write: after it returns, run Test-Path + Get-Item (Length) or
   Get-Content (line count) on the target BEFORE reporting success to Tony. A
@@ -273,10 +274,13 @@ names.
 4. Timeout/stall → ping first, then give Tony the HANDOFF PROMPT if relay
    confirmed dead. **Never blind-retry MCP. Never substitute inline PowerShell**
    — inline `python -c "..."` through the relay stalled the full 4-min ceiling
-   twice 2026-08-09 (P_020 session, unrelated calls); `Start-Process`
-   invocations of a script file did not fail the same way in that session.
-   Prefer a small script file + `Start-Process` over an inline `-c` one-liner
-   whenever a call seems likely to be slow.
+   twice 2026-08-09 (P_020 session, unrelated calls), and a direct `python -m
+   py_compile` call stalled the same way 2026-09-13 (P_020 session) despite
+   a fast ping run immediately before it -- not specific to `-c`.
+   `Start-Process` invocations (script file, or module flags via
+   -ArgumentList, output redirected to files and read back in a separate
+   call) have not failed this way. Default to `Start-Process` for every
+   python.exe call -- not just ones that seem likely to be slow.
 5. If timeout hits before files exist: write them now, then hand off.
 6. On completion, run_this_<PROJECT>_<TS>.py writes a sibling .done file
    (timestamp, PASS/FAIL, exit code) — see "run_this script" below. This is the
@@ -325,6 +329,17 @@ files. Ends:
 print("PASS")                    # or
 print("FAIL:", reason); sys.exit(1)
 ```
+
+PASS/FAIL detection for scripts that call an emitter (cli.py, emit_signal, etc.):
+check the KNOWN OUTPUT PATH directly (construct it from the same naming convention
+the emitter uses, e.g. signals\YYYY-MM-DD_SYMBOL_v2.0.json, then check existence and
+a plausible size) -- do NOT parse the emitter's stdout text for a bare path. Added
+2026-09-14 (P_115 session): a stdout-parsing run_this reported FAIL on an NFLX
+signal that had actually written correctly, because the real stdout was a logger
+line plus "Signal written: True", never a bare ".json" line on its own -- caught only
+by a direct Test-Path after the fact. A run_this .done marker is only as reliable
+as its own verification logic; a surprising FAIL deserves a direct disk check before
+being trusted.
 then, before exit, writes its own .done marker (status, exit code, timestamp) next
 to itself — three lines, see peh_helper.py's `done_marker_format()` docstring for
 the exact format. Written inline, not via an imported helper, to stay self-contained
@@ -352,6 +367,31 @@ No PASS/FAIL in output → ask for full terminal output.
 `C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_000_PythonClaudeLocalLLM\docs\PEH_Python_Execution_Handoff.md`
 
 ## History
+- v1.13 (9/14/26, P_115 session): added a PASS/FAIL-detection remedy to the
+  run_this script section -- for scripts calling an emitter (cli.py, emit_signal),
+  check the known output path directly (Test-Path + size), never parse the
+  emitter's stdout for a bare path. Root cause: a run_this script reported FAIL
+  on an NFLX SIGNAL_V2 emission that had actually written correctly, because
+  cli.py's real stdout is a logger line plus a boolean confirmation, never a bare
+  .json path on its own line -- caught only by a direct disk check after the
+  surprising FAIL. Durable signal (v1.3/v1.4) already required checking disk over
+  a clean process return; this extends the same principle to the run_this script's
+  own internal verification logic, which can be wrong even when the underlying
+  work succeeded.
+- v1.12 (9/13/26, P_020 session): corrected the py_compile carve-out in
+  Durable signal above -- it was listed as safe for a direct synchronous
+  call; a plain `python -m py_compile` call stalled the full 4-min ceiling
+  despite a fast ping run immediately beforehand, same failure shape as
+  the inline `-c` anti-pattern this skill already documented (P_020 session,
+  building the systems_registry.py centralization). Root cause: the
+  anti-pattern was scoped to `-c` specifically when it is not -- any direct
+  synchronous python.exe call carries the same relay risk regardless of
+  flags. Fix: py_compile carve-out removed from Durable signal; Sequence
+  step 4 broadened from `-c` one-liners to every python.exe invocation.
+  — Start-Process worked on every attempt after the switch (compile check,
+  migration run, ad hoc verification), including for a genuine DB write
+  (migration_add_display_order.py), so the remedy is confirmed, not just
+  a workaround for the read-only cases.
 - v1.11 (9/4/26, P_000 session): two Content integrity findings added
   together (same-version-bump precedent as v1.4). (1) Backtick-as-
   escape-character corruption -- PowerShell interprets `t`/`n`/`r`

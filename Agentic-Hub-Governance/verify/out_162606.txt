@@ -1,0 +1,24 @@
+num pull files: 32
+asset types seen (OPTION only filter): {'OPTION'}
+distinct option underlyings: ['AA', 'AAL', 'AAOI', 'AAP', 'AAPL', 'ABNB', 'ABT', 'ADM', 'AEO', 'AFL', 'AFRM', 'AKAM', 'AMD', 'AMKR', 'AMZN', 'ANET', 'APH', 'ASX', 'BAC', 'BBY', 'BMY', 'C', 'CAH', 'CCI', 'CCJ', 'CCL', 'CLSK', 'CMA', 'CMCL', 'CMCSA', 'CME', 'COIN', 'COP', 'COST', 'CRML', 'CSCO', 'CSX', 'CVNA', 'CVS', 'DAL', 'DASH', 'DDOG', 'DELL', 'DG', 'DINO', 'DIS', 'DJT', 'DLR', 'DOCU', 'DOW', 'DUK', 'EBAY', 'ETSY', 'EWZ', 'F', 'FLWS', 'FUTU', 'GDX', 'GE', 'GLD', 'GLXY', 'GM', 'GOOG', 'GOOGL', 'GRPN', 'HIG', 'HOOD', 'HWM', 'IAU', 'IBM', 'INTC', 'IONQ', 'IRDM', 'IRM', 'IWM', 'JCI', 'JNJ', 'KO', 'KR', 'LEVI', 'LION', 'LMND', 'LNG', 'LOW', 'LQDA', 'LRCX', 'M', 'MA', 'MAG', 'MARA', 'MCHP', 'MDT', 'META', 'MO', 'MOS', 'MRK', 'MRNA', 'MRVL', 'MS', 'MSFT', 'MSTR', 'NDXP', 'NEE', 'NEM', 'NFLX', 'NTAP', 'NU', 'NVDA', 'NXT', 'OPFI', 'P', 'PANW', 'PLTR', 'PM', 'PNC', 'PPC', 'QBTS', 'RBLX', 'RDDT', 'REAL', 'RGLD', 'RGTI', 'RIG', 'RIOT', 'RKLB', 'ROKU', 'ROST', 'RTX', 'SAND', 'SBUX', 'SCHW', 'SGML', 'SHEL', 'SMTC', 'SNAP', 'SOFI', 'SONY', 'SOUN', 'SPY', 'SU', 'TDOC', 'TIGO', 'TME', 'TMUS', 'TSLA', 'TTD', 'UAL', 'UBER', 'UBS', 'URBN', 'VLO', 'VZ', 'WBD', 'WFC', 'WMT', 'WULF', 'XLE', 'XLK', 'XLV', 'XYZ', 'YUM', 'ZION', 'ZM', 'ZTS']
+DASH -> sample type: VANILLA n= 6
+AFL -> sample type: VANILLA n= 4
+PM -> sample type: VANILLA n= 2
+CCI -> sample type: VANILLA n= 4
+IBM -> sample type: VANILLA n= 58
+C -> sample type: VANILLA n= 88
+AAP -> sample type: VANILLA n= 12
+GOOG -> sample type: VANILLA n= 53
+DAL -> sample type: VANILLA n= 60
+COP -> sample type: VANILLA n= 30
+UBER -> sample type: VANILLA n= 10
+CAH -> sample type: VANILLA n= 24
+PLTR -> sample type: VANILLA n= 58
+LRCX -> sample type: VANILLA n= 26
+VZ -> sample type: VANILLA n= 10
+APH -> sample type: VANILLA n= 12
+BBY -> sample type: VANILLA n= 32
+RBLX -> sample type: VANILLA n= 20
+SCHW -> sample type: VANILLA n= 32
+ADM -> sample type: VANILLA n= 58
+DONE

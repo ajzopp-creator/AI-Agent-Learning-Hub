@@ -1,22 +1,31 @@
 """
 FILE: schemas.py
-VERSION: 2.4
-DATE: 2026-07-10
+VERSION: 3.0
+DATE: 2026-09-10
 AUTHOR: Anthony Zoppi + Claude
 LAYER: schemas
 DESCRIPTION:
-    Pydantic models for every persistent file read or write in P_300.
-    Validates data at the I/O boundary, not after corruption.
+    Pydantic models for the ingest-manifest / VP-input-config half of
+    P_300's schemas (WO-P300-E5.001 file-size split). DataOriginType +
+    the MANIFEST family (SourceFormat, ColumnMapEntry, IgnoredColumnEntry,
+    ValidationRules, IngestManifest) stay here -- this is the file's own
+    core, ~290 lines at Stage 4 before later additions pushed it to 422.
 
-    Stage 4 POC scope:
-      - INPUT models (VP XLSX parsing): VPBarRaw, PatternFileMetadata,
-        PatternFileParse.
-      - MANIFEST models (ingest_manifest.json validation): IngestManifest
-        with SourceFormat / ColumnMapEntry / IgnoredColumnEntry /
-        ValidationRules. Loaded by vp_xlsx_reader.py at startup; structural
-        errors in the manifest surface at load time, not at runtime.
-      - CATALOG ROW models: SymbolRecord, SourceFileRecord, FeatureSetRecord,
-        PatternInstanceRecord, PatternBarRecord, ForwardLabelRecord.
+    Two other families that were previously in this file moved out at
+    this split and are re-exported below for backward compatibility:
+      - INPUT models (VP XLSX parsing) -> schemas_vp_raw.py: VPBarRaw,
+        PatternFileMetadata, PatternFileParse.
+      - CATALOG ROW models -> schemas_catalog_records.py: SymbolRecord,
+        SourceFileRecord, FeatureSetRecord, PatternInstanceRecord,
+        PatternBarRecord, ForwardLabelRecord, PowerGaugeResult.
+
+    schemas_catalog_records.py imports DataOriginType back from this file
+    (PatternInstanceRecord.data_origin_type needs it). Catalog-row names
+    are re-exported lazily via __getattr__ so that importing
+    schemas_catalog_records first (it needs DataOriginType from here)
+    does not re-enter that module while it is still initializing.
+    DataOriginType stays defined in this file; do not move the class
+    below the re-export helpers.
 
     LAUNCH framing convention:
       - anchor_date = launch date (start of the trend the operator flagged)
@@ -29,6 +38,14 @@ DESCRIPTION:
     table empty for the POC.
 
 CHANGELOG:
+    - 2026-09-10 v3.0: Split (WO-P300-E5.001). INPUT models moved to
+      schemas_vp_raw.py, CATALOG ROW models moved to schemas_catalog_
+      records.py, both re-exported below. Catalog-row re-exports are
+      lazy (__getattr__) so importing schemas_catalog_records first
+      does not circular-import FeatureSetRecord from a partially
+      initialized module. This file reduced from 422 lines to the
+      manifest/DataOriginType core. No field, validator, or behavior
+      changed on any moved model.
     - 2026-07-10 v2.4: Added BULK_SCAN to DataOriginType (WO-P300-E2.003
       file #1 of 7 -- physical merge of research_catalog.db STRICT-tier
       patterns into the live catalog). Purely additive -- no existing
@@ -63,16 +80,14 @@ CHANGELOG:
 """
 from __future__ import annotations
 
-from datetime import date, datetime
+import importlib
+from datetime import date
 from enum import Enum
 from typing import Literal, Optional
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from config import (
-    FORWARD_HORIZONS,
-    MAX_WINDOW_LENGTH,
-    MIN_WINDOW_LENGTH,
     ORIGIN_BULK_SCAN,
     ORIGIN_EVAL_SET,
     ORIGIN_PATTERN_IDENT,
@@ -208,215 +223,59 @@ class IngestManifest(BaseModel):
 
 
 # ---------------------------------------------------------------------------
-# INPUT -- VP XLSX parsing
+# RE-EXPORTS -- moved to schemas_vp_raw.py / schemas_catalog_records.py
+# (WO-P300-E5.001 split). Kept here so every existing `from schemas import X`
+# call site continues to work unchanged. VP-raw names are imported
+# eagerly (no cycle). Catalog-row names are resolved by __getattr__
+# below so schemas_catalog_records can import DataOriginType from here
+# without re-entering a partially-initialized catalog_records module.
 # ---------------------------------------------------------------------------
 
-class VPBarRaw(BaseModel):
+from schemas_vp_raw import (  # noqa: E402
+    PatternFileMetadata,
+    PatternFileParse,
+    VPBarRaw,
+)
+
+_CATALOG_RECORD_NAMES = frozenset({
+    "FeatureSetRecord",
+    "ForwardLabelRecord",
+    "PatternBarRecord",
+    "PatternInstanceRecord",
+    "PowerGaugeResult",
+    "SourceFileRecord",
+    "SymbolRecord",
+})
+
+
+def __getattr__(name: str):
+    """Load catalog-row re-exports on first access.
+
+    Breaks the schemas <-> schemas_catalog_records cycle that fires
+    when catalog_records is imported before this shim.
     """
-    One bar as parsed from a VantagePoint History Grid XLSX export.
-    Field order matches architecture §9.2 pattern_bars raw section.
-    """
-    model_config = ConfigDict(frozen=True)
+    if name in _CATALOG_RECORD_NAMES:
+        mod = importlib.import_module("schemas_catalog_records")
+        value = getattr(mod, name)
+        globals()[name] = value
+        return value
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
-    bar_date: date
-    # OHLC -- prices must be strictly positive
-    open: float = Field(gt=0)
-    high: float = Field(gt=0)
-    low: float = Field(gt=0)
-    close: float = Field(gt=0)
-    # Volume -- non-negative; zero permitted on rare quiet days
-    volume: float = Field(ge=0)
-    # VP term differences (can be negative)
-    stdiff: float
-    mtdiff: float
-    ltdiff: float
-    # Predicted price levels and range
-    pred_high: float = Field(gt=0)
-    pred_low: float = Field(gt=0)
-    pred_range: float = Field(ge=0)
-    # VP indicators (dimensionless, can be negative)
-    williams_emai: float
-    psi: float
-    neural_index: float
-    triple_cross_short: float
-    triple_cross_medium: float
-    triple_cross_long: float
-
-    @model_validator(mode="after")
-    def _high_ge_low(self) -> "VPBarRaw":
-        if self.high < self.low:
-            raise ValueError(f"high ({self.high}) < low ({self.low}) for bar")
-        return self
-
-
-class PatternFileMetadata(BaseModel):
-    """
-    Metadata extracted from a Pattern_<start>_<end>_<symbol>.xlsx filename.
-    Produced by the filename parser before any bars are read.
-    """
-    model_config = ConfigDict(frozen=True)
-
-    filename: str
-    symbol: str = Field(min_length=1, max_length=12)
-    pattern_start_date: date
-    pattern_end_date: date
-
-    @field_validator("pattern_end_date")
-    @classmethod
-    def _end_after_start(cls, v: date, info) -> date:
-        start = info.data.get("pattern_start_date")
-        if start is not None and v < start:
-            raise ValueError(
-                f"pattern_end_date ({v}) before pattern_start_date ({start})"
-            )
-        return v
-
-
-class PatternFileParse(BaseModel):
-    """
-    Full result of parsing one Pattern XLSX file: filename metadata plus
-    all bars from the underlying 6/9-month grid (sorted ascending).
-    The pipeline selects the LAUNCH-anchor setup window and forward-label
-    bars from this superset; the file itself contains far more than the
-    window.
-
-    Minimum 60 bars enforces operator's "20 before + trend + 20 after"
-    capture rule. Real files have 130+ bars (6-month) or 190+ (9-month).
-    """
-    metadata: PatternFileMetadata
-    bars: list[VPBarRaw] = Field(min_length=60)
-
-    @field_validator("bars")
-    @classmethod
-    def _bars_sorted_ascending(cls, v: list[VPBarRaw]) -> list[VPBarRaw]:
-        dates = [b.bar_date for b in v]
-        if dates != sorted(dates):
-            raise ValueError("bars must be sorted ascending by bar_date")
-        return v
-
-
-# ---------------------------------------------------------------------------
-# CATALOG ROWS -- Optional[PK] supports pre-insert and post-insert use
-# ---------------------------------------------------------------------------
-
-class SymbolRecord(BaseModel):
-    """symbols table row -- identity lookup."""
-    symbol_id: Optional[int] = None
-    ticker: str = Field(min_length=1, max_length=12)
-
-
-class SourceFileRecord(BaseModel):
-    """source_files table row -- pattern provenance."""
-    source_file_id: Optional[int] = None
-    filename: str
-    symbol_id: int
-    imported_at: datetime
-    row_count: int = Field(gt=0)
-
-
-class FeatureSetRecord(BaseModel):
-    """feature_sets table row -- feature-engineering version metadata."""
-    feature_set_id: Optional[int] = None
-    feature_version: str = Field(min_length=1, max_length=32)
-    description: Optional[str] = None
-    created_at: datetime
-
-
-class PatternInstanceRecord(BaseModel):
-    """
-    pattern_instances table row.
-
-    LAUNCH framing: anchor_date = launch date (start of trend).
-    window_length = count of bars stored in pattern_bars for this pattern
-    (5..20). Setup bars span offsets -(window_length-1) through 0.
-    """
-    pattern_instance_id: Optional[int] = None
-    symbol_id: int
-    source_file_id: int
-    feature_set_id: int
-    anchor_date: date
-    window_length: int = Field(ge=MIN_WINDOW_LENGTH, le=MAX_WINDOW_LENGTH)
-    data_origin_type: DataOriginType
-
-
-class PatternBarRecord(BaseModel):
-    """
-    pattern_bars table row -- raw VP fields plus normalized columns.
-
-    bar_offset = 0 is the anchor (launch day); negative offsets are
-    setup bars before the launch. The bar_offset constraint here is
-    the global bound (-19..0); per-pattern range is implicitly
-    constrained by that pattern's window_length.
-    """
-    pattern_bar_id: Optional[int] = None
-    pattern_instance_id: int
-    bar_offset: int = Field(le=0, ge=-(MAX_WINDOW_LENGTH - 1))
-    bar_date: date
-
-    # Raw VP data (audit trail) -- mirrors VPBarRaw
-    open: float = Field(gt=0)
-    high: float = Field(gt=0)
-    low: float = Field(gt=0)
-    close: float = Field(gt=0)
-    volume: float = Field(ge=0)
-    stdiff: float
-    mtdiff: float
-    ltdiff: float
-    pred_high: float = Field(gt=0)
-    pred_low: float = Field(gt=0)
-    pred_range: float = Field(ge=0)
-    williams_emai: float
-    psi: float
-    neural_index: float
-    triple_cross_short: float
-    triple_cross_medium: float
-    triple_cross_long: float
-
-    # Normalization layer (architecture §9.3) -- cross-symbol comparability
-    close_pct_from_anchor: float
-    range_pct: float = Field(ge=0)
-    body_pct: float
-    volume_zscore: float
-    stdiff_pct: float
-    mtdiff_pct: float
-    ltdiff_pct: float
-    pred_high_pct: float
-    pred_low_pct: float
-    pred_range_pct: float = Field(ge=0)
-
-
-class ForwardLabelRecord(BaseModel):
-    """
-    forward_labels table row -- outcome at one horizon for one pattern.
-    horizon_days must be one of architecture-defined horizons (5/7/10/15/20).
-    """
-    forward_label_id: Optional[int] = None
-    pattern_instance_id: int
-    horizon_days: int
-    future_date: date
-    return_pct: float
-    is_profitable: bool
-
-    @field_validator("horizon_days")
-    @classmethod
-    def _horizon_in_allowed_set(cls, v: int) -> int:
-        if v not in FORWARD_HORIZONS:
-            raise ValueError(
-                f"horizon_days {v} not in allowed set {FORWARD_HORIZONS}"
-            )
-        return v
-
-
-class PowerGaugeResult(BaseModel):
-    """
-    Chaikin Analytics Power Gauge Rating scrape result for one symbol.
-
-    Read-only external data -- not part of the BUY/WATCH/PASS decision
-    path (NFR-1). Attached to the P300 Obsidian note as supplementary
-    context for P_400, never fed back into signal_classifier.
-    """
-    ticker: str
-    rating: str          # e.g. "Very Bullish", "Bullish", "Neutral", "Bearish", "Very Bearish"
-    rating_score: Optional[float] = None   # numeric score if Chaikin exposes one, else None
-    scraped_at: datetime
-    source_url: str
+__all__ = [
+    "DataOriginType",
+    "SourceFormat",
+    "ColumnMapEntry",
+    "IgnoredColumnEntry",
+    "ValidationRules",
+    "IngestManifest",
+    "VPBarRaw",
+    "PatternFileMetadata",
+    "PatternFileParse",
+    "SymbolRecord",
+    "SourceFileRecord",
+    "FeatureSetRecord",
+    "PatternInstanceRecord",
+    "PatternBarRecord",
+    "ForwardLabelRecord",
+    "PowerGaugeResult",
+]

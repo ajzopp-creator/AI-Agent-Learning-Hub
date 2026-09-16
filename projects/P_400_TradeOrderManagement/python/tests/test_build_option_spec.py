@@ -127,3 +127,24 @@ def test_zero_contracts_no_override_returns_no_spec():
 def test_paper_banner_prepended():
     out = render(is_paper=True)
     assert "*** PAPER TRADE -- NOT FOR SUBMISSION TO SCHWAB ***" in out
+
+
+# ---------------------------------------------------------------------------
+# stock_target_2 delegation (WO-P400-E8.003) -- full split-math/rendering
+# coverage lives in test_build_option_spec_scaleout.py; these two just
+# confirm build_option_spec() delegates correctly at its public boundary.
+# ---------------------------------------------------------------------------
+
+def test_no_target_2_unchanged_from_before_wo_e8_003():
+    # Same assertion as test_chart_based_pass_renders_full_grid -- proves
+    # the default (stock_target_2 omitted) path is untouched by this WO.
+    out = render()
+    assert "Scale-Out" not in out
+    assert "PATTERN B -- Single-Leg Option  (1st-Triggers-All)" in out
+
+
+def test_target_2_given_delegates_to_scaleout():
+    out = render(stock_target_2=120.0)
+    assert "PATTERN B -- Single-Leg Option, Scale-Out" in out
+    assert "BRACKET 1 (T1)" in out
+    assert "BRACKET 2 (T2)" in out

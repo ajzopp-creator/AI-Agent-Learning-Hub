@@ -10,13 +10,14 @@ from pathlib import Path
 sys.path.insert(0, r'C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_020_AJZStrategies_PerformanceAnalysisSystem\python\database')
 
 from config import DATABASE_FILE, EXPORTS_DIR
+from infrastructure.systems_registry import get_valid_system_ids
 
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 logger = logging.getLogger(__name__)
 
 REVIEW_CSV  = EXPORTS_DIR / "tos_import_review.csv"
 IMPORT_CSV  = EXPORTS_DIR / "tos_import_review_updated.csv"
-VALID_SYSTEMS = {"P_115","P_116","P_117","P_118","P_300","P_910","P_920","SNT","Day","DAY","TOS_Import","P_105","P_110","P_120","P_210"}
+VALID_SYSTEMS = get_valid_system_ids()
 
 
 def load_tos_imports(conn):

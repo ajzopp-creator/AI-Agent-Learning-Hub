@@ -52,7 +52,7 @@ import logging
 
 from domain.eval_incremental import IncrementalGuardrailError, run_cached_post_batch
 from domain.topk_cache import TopKTieError
-from infrastructure.catalog_reader import PatternMetadata
+from schemas_pipeline_b import PatternMetadata
 from infrastructure.topk_cache_io import bulk_load_topk_cache
 from schemas_eval import ThresholdOverrides, WalkForwardBatch
 from schemas_pipeline_b import ForwardLabelLite, NormalizedBar

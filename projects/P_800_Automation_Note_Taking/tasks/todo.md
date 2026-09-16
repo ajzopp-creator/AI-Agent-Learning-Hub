@@ -9,6 +9,56 @@ the top, reference sections below.
 
 ---
 
+**>>> 2026-09-08 WO-P800-E6.001 P_805 Consensus Dashboard -- design resolved + built:**
+
+Resolved all five OPEN design questions from a P_800-context session:
+section in `Dashboard.md` (not a `.base`), a new dedicated writer (not
+`write_to_vault()`), batch cadence after the 9:15 AM P_805 pipeline,
+live-verified Tracker workbook path
+(`D:\OneDrive\Documents\AJZStrategiesLLC\P_115_TrackerAudit\P_115_118_TrackerDashboard_V2.xlsx`,
+sheet `Tracker Log`, columns Date/Symbol/Step1Verdict), and a Symbol +
+15-trading-day-forward-window join against `{BUY, ASYM}` verdicts.
+
+Built full domain/infrastructure/application layer set (13 files) under
+`python\p805_consensus\`: `config.py`, `schemas.py`,
+`domain\consensus_join.py`, `infrastructure\ranked_csv_reader.py`,
+`infrastructure\tracker_reader.py`,
+`infrastructure\dashboard_section_writer.py`,
+`application\consensus_dashboard_runner.py`, `cli.py`,
+`launch_consensus_dashboard.bat`, plus
+`P_805_ConsensusDashboard_mcp.ps1` at project root. All UTF-8 no-BOM,
+LF-only, verified via the three-check pattern after every write.
+
+One-time manual edit: inserted a marker-delimited `## P_805 Consensus`
+section into `Dashboard.md` (backed up first as
+`Dashboard.md.bak_2026-09-08`).
+
+Not yet run end-to-end -- first execution deferred to a PEH-handoff
+session (never run Python inline through the Windows-MCP bridge --
+confirmed the hang risk live this session on an unrelated `pip show`
+check, recovered by reading site-packages off disk instead). WO status
+moved PENDING -> IN_PROGRESS; still needs a live-verified run and
+Independent Review before CLOSED.
+
+**PEH run #1 (run_this_P800_20260908_182141.py) PASSED** but exposed two
+production bugs Claude Code fixed in `ranked_csv_reader.py`: P_805 writes
+`ranked.csv` as utf-8-sig (BOM caused KeyError on every row -- now opened
+with `encoding="utf-8-sig"`), and older files lack `sector_count` (now
+defaults to 1, matching P_805's own default). Real numbers: YTD 164
+candidates / MTD 15 / Today 0 across 20 email sources, Tracker Log 2,528
+rows loaded.
+
+Today=0 was itself a bug, not a data quirk: `first_seen` lags a day
+behind the file that reports it, so filtering "today" by `first_seen`
+undercounted. Fixed by windowing today/MTD/YTD candidates off which
+FILE a row came from (three independent `read_candidates()` calls) --
+same basis MTD/YTD already used, just applied consistently. Removed
+`domain\consensus_join.py`'s `candidates_in_window()` entirely (wrong
+semantics for this feature, no other caller). Re-staged as
+`run_this_P800_20260908_184114.py` -- awaiting PEH run #2 before the
+Dashboard.md write is authorized.
+
+---
 **>>> 2026-08-12 WO-P800-E4.004 remaining 4 Bases files fixed + p800-project-context skill created:**
 
 Prior session (P_400, same day) found and fixed 2 of 6: `P400_Trades.base`,

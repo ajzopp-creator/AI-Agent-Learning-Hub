@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "C:\Users\Trader\AI-Agent-Learning-Hub\Agentic-Hub-Governance\verify\run_this_P020_20260915_1642_close_e1017_v2.py", line 21, in <module>
+    assert content.count(old_row) == 1, "acceptance criteria review row not found or not unique"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: acceptance criteria review row not found or not unique

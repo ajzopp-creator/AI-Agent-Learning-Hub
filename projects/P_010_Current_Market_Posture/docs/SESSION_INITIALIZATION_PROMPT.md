@@ -1,7 +1,7 @@
-# P_010 System Initialization Prompt (SIP) v2.9
+# P_010 System Initialization Prompt (SIP) v2.10
 **File:** `docs/SESSION_INITIALIZATION_PROMPT.md`
-**Version:** 2.9
-**Last Updated:** 2026-06-18
+**Version:** 2.10
+**Last Updated:** 2026-08-26
 **Pairs With:** `P_010_System_Documentation_v3.md`
 
 ---
@@ -38,8 +38,9 @@ Display: `P_010 [Weekday, Month DD, YYYY] [HH:MM ET]`
 Time via: `[System.TimeZoneInfo]::ConvertTimeBySystemTimeZoneId((Get-Date),"Eastern Standard Time")`
 
 ### Step 2 — Read Posture State
-Read `P_010_RiskConfig.json` (project root). Check `posture_date` vs today:
-- Today's data present → display risk_mode, avg_posture, SPY_posture, QQQ_posture, vxx_signal, intraday_adjustment.
+Read `P_010_RiskConfig.json` (project root). Check the `timestamp` field vs today (not `posture_date` -- that field does not exist in the schema; corrected 2026-08-26, WO-P010-E1.003):
+- `MORNING_RUN_FAILED.flag` present in project root → display `MORNING RUN FAILED -- see flag file and today's P_010_Daily_*.log`; do not treat RiskConfig as current even if the JSON parses cleanly (WO-P010-E1.003 guard).
+- Today's data present, no failure flag → display risk_mode, avg_posture, SPY_posture, QQQ_posture, vxx_signal, intraday_signal.
 - Missing or stale → display: `POSTURE NOT CURRENT — run INIT daily to generate.`
 - Missing `morning_risk_mode` field → flag; ERROR 001 risk (see error corrections log).
 
@@ -56,7 +57,7 @@ Posture date:      [today YYYY-MM-DD | STALE — run INIT daily]
 risk_mode:         [FULL | HALF | OFF]
 avg_posture:       [value]
 SPY / QQQ:         [spy_posture] / [qqq_posture]
-intraday_adj:      [NONE | HALF | REDUCED | not run]
+intraday_signal:   [UPGRADE | CONFIRM | DOWNGRADE | not run]
 vxx_signal:        [BULLISH_CONFIRM | NEUTRAL | CAUTION | WARNING | not run]
 ---------------------------------------------
 ```
@@ -86,6 +87,7 @@ Carry domain rules. Risk mode thresholds, VXX overlay, intraday hierarchy, file 
 | P_010_RiskConfig.json missing | Surface INIT daily prompt |
 | Posture date stale | Surface INIT daily prompt |
 | morning_risk_mode field missing | Flag ERROR 001 risk |
+| MORNING_RUN_FAILED.flag present | Display as failed run; do not present RiskConfig as current (WO-P010-E1.003) |
 
 ---
 
@@ -96,6 +98,7 @@ Carry domain rules. Risk mode thresholds, VXX overlay, intraday hierarchy, file 
 | Project root | `C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_010_Current_Market_Posture\` |
 | Python | `C:\Users\Trader\.conda\envs\p140\python.exe` |
 | Master config | `P_010_RiskConfig.json` (project root) |
+| Failure flag | `MORNING_RUN_FAILED.flag` (project root) -- WO-P010-E1.003 |
 | System doc | `P_010_System_Documentation_v3.md` (project root) |
 | Error log | `docs\P_010_Error_Corrections_Log.md` |
 | Work orders | `Agentic-Hub-Governance\work_orders\` |
@@ -103,6 +106,16 @@ Carry domain rules. Risk mode thresholds, VXX overlay, intraday hierarchy, file 
 ---
 
 ## Changelog
+
+### v2.10 — 2026-08-26
+- WO-P010-E1.003 IMPERATIVE SWEEP closure: documented MORNING_RUN_FAILED.flag
+  fail-loud mechanism (Step 2, Fail-Fast Conditions, Quick Reference) --
+  this SIP had no mention of it despite the mechanism being live since
+  2026-08-10. Corrected Step 2/Step 3 field references: posture_date
+  (never existed in the schema) -> 	imestamp; intraday_adjustment/
+  NONE-HALF-REDUCED (stale v4 field) -> intraday_signal/
+  UPGRADE-CONFIRM-DOWNGRADE (current V5.0 field, matches live
+  P_010_RiskConfig.json and the corrected p010-project-context SKILL.md).
 
 ### v2.9 — 2026-06-18
 - Full rewrite to P_300 SIP pattern. Domain rules (risk thresholds, VXX, intraday hierarchy, file locations) removed — live in system doc. PowerShell execution rules migrated to system doc Section 8 + error corrections log. SIP is now steps-only.
@@ -112,4 +125,6 @@ Carry domain rules. Risk mode thresholds, VXX overlay, intraday hierarchy, file 
 
 ---
 
-**End of P_010 SIP v2.9**
+**End of P_010 SIP v2.10**
+
+

@@ -1,0 +1,20 @@
+WO-P400-E8.002 -- post-edit validation
+Date: 2026-09-15
+
+What this tests:
+Compiles the 3 edited production files and 3 edited/new test files under
+p140 with warnings-as-errors (catches escape-sequence/docstring corruption
+that a plain syntax check misses -- peh-handoff v1.5), then runs the full
+touched test suite: test_earnings_calendar_cache.py, test_earnings_lookup.py,
+test_batch_2b_scoring.py.
+
+Success criteria:
+Compile step clean, all tests in the three files pass (pytest exit code 0).
+
+What to fix on failure:
+If compile fails: read the exact file/line, fix the syntax/escape issue,
+re-run. If a test fails: read which assertion failed -- likely either the
+is_valid_for_current_gate max-age math (7 - 3 = 4 days) or the
+SOURCE_GATE_UNCERTAIN wiring between earnings_lookup.py and
+batch_2b_scoring.py. Do not change test assertions -- they encode the
+WO-P400-E8.002 design (see plan in the P_400 chat session, 2026-09-15).

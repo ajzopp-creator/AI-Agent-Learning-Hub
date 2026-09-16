@@ -1,0 +1,33 @@
+WO-P300-E5.001 step 2 -- import-linter run, take 2
+Date: 2026-09-10
+
+WHAT CHANGED FROM THE FIRST ATTEMPT:
+The prior script (run_this_P300_20260910_211500.py) called
+`python -m importlinter --version`, which fails -- import-linter has
+no __main__.py, so it can't be invoked with -m. It installs as two
+standalone console-script .exes instead: import-linter.exe and
+lint-imports.exe, both confirmed present in
+C:\Users\Trader\.conda\envs\p140\Scripts\ (the pip install itself
+succeeded on the first attempt -- only the version-check invocation
+method was wrong). This version calls lint-imports.exe directly by
+full path.
+
+WHAT IT DOES:
+  1. Confirms lint-imports.exe exists (should already, from the first
+     attempt's successful pip install -- if this step fails, the env
+     may have changed; re-run the install from the first script).
+  2. lint-imports --version as a sanity check.
+  3. lint-imports --config python/.importlinter -- the actual, first
+     real audit. Prints full raw output, no interpretation.
+
+Same read on the result as before:
+  - Exit code 0 / "PASS" = contract holds, done, paste output back.
+  - Non-zero = either a real violation (the useful case -- exactly
+    what this step is for) or a mistake in .importlinter itself
+    (written from documentation, never test-run before now). Paste
+    the full output back rather than diagnosing or editing anything
+    here -- the actual violation chain lint-imports prints is the
+    thing that tells the two apart, not guessing.
+
+Do not edit .importlinter or any production file before pasting the
+output back.

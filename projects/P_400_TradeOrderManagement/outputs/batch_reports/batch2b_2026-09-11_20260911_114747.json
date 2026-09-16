@@ -1,0 +1,41 @@
+{
+  "run_timestamp": "2026-09-11T11:47:47.161651-04:00",
+  "session_date": "2026-09-11",
+  "cash_available": 16622.06,
+  "posture": "OFF",
+  "screened_count": 2,
+  "passed_tier1": 2,
+  "evaluated": 2,
+  "candidates": [
+    {
+      "symbol": "EXPD",
+      "rank": 1,
+      "score": 0.8006,
+      "score_components": {
+        "rr": 1.0,
+        "atr_headroom": 0.5905,
+        "spread": 0.927,
+        "liquidity": 0.3719,
+        "drift": 0.972
+      },
+      "vehicle": "STOCK",
+      "vehicle_reason": "Option BLOCKED by options council (OI_TOO_LOW: open_interest=145 < 150 minimum; SPREAD_TOO_WIDE: spread=45.4% > 10.0% max) -- stock used.",
+      "verdict": "APPROVED",
+      "rr_at_t1": 6.819,
+      "atr_headroom": 2.181,
+      "spread_pct_of_price": 0.073,
+      "drift_pct": 0.042,
+      "dollar_risk": 23.91,
+      "quantity": 3
+    }
+  ],
+  "skipped": [
+    {
+      "symbol": "PENN",
+      "reason": "verdict=BLOCKED (ADVERSE_DRIFT)"
+    }
+  ],
+  "cumulative_risk_if_all_taken": 23.91,
+  "heat_cap": 3535.0488,
+  "heat_warning": null
+}

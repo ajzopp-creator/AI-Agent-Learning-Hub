@@ -1,0 +1,49 @@
+{
+  "run_timestamp": "2026-09-09T13:10:53.338747-04:00",
+  "session_date": "2026-09-09",
+  "cash_available": 15559.75,
+  "posture": "FULL",
+  "screened_count": 4,
+  "passed_tier1": 4,
+  "evaluated": 4,
+  "candidates": [
+    {
+      "symbol": "TER",
+      "rank": 1,
+      "score": 0.3721,
+      "score_components": {
+        "rr": 0.35,
+        "atr_headroom": 0.1744,
+        "spread": 0.9199,
+        "liquidity": 0.5927,
+        "drift": 0.0
+      },
+      "vehicle": "STOCK",
+      "vehicle_reason": "Stock viable (3 sh, R:R 2.10). Option sizes to 0 contracts -- OVERRIDE REQUIRED to trade 1 (risk_per_contract $1481.00). Stock used; option available only via explicit override. -- IV rank > 50, spread structure preferred over single-leg",
+      "verdict": "APPROVED",
+      "rr_at_t1": 2.1,
+      "atr_headroom": 1.3488,
+      "spread_pct_of_price": 0.0801,
+      "drift_pct": 2.298,
+      "dollar_risk": 89.01,
+      "quantity": 3
+    }
+  ],
+  "skipped": [
+    {
+      "symbol": "CSIQ",
+      "reason": "verdict=BLOCKED (STOP_TOO_TIGHT)"
+    },
+    {
+      "symbol": "AEVA",
+      "reason": "verdict=BLOCKED (STOP_TOO_TIGHT)"
+    },
+    {
+      "symbol": "XLG",
+      "reason": "verdict=BLOCKED (STOP_TOO_TIGHT)"
+    }
+  ],
+  "cumulative_risk_if_all_taken": 89.01,
+  "heat_cap": 3535.0488,
+  "heat_warning": null
+}

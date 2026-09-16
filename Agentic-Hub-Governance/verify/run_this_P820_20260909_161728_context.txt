@@ -1,0 +1,22 @@
+P_820 vault write - P_210 signals - 2026-09-09
+
+Task: Write two P_210 (One Click Trading 2PM Income Trade) signals to the
+P_820 vault via write_to_vault("P820", {...}):
+1. NDX call credit spread, signal_date 2026-09-04 (opened 29520/29530
+   @.95 credit, rolled long leg to 29540 @1.10 additional credit, expired
+   ITM for a realized loss)
+2. NDX put credit spread, signal_date 2026-09-09 (opened 29370/29360
+   @1.15 credit, expired OTM near max profit)
+
+Success criteria: both write_to_vault calls return a truthy result and the
+script prints PASS. Confirm on disk after: read back
+C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P820\2026-09-04_NDX.md
+and
+C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P820\2026-09-09_NDX.md
+to verify all fields landed (symbol, why_code=P_210, entry_price, notes).
+
+If it fails: read the traceback, fix the vault_interface import path or
+field mapping (snake_case keys only, per Hub-wide Pydantic rule). Do not
+change the two payload dicts' economics (credit amounts, dates, notes
+content) -- those are confirmed trade data from Tony's Schwab statement
+and CSV export, not test fixtures. Paste full output back to Tony.

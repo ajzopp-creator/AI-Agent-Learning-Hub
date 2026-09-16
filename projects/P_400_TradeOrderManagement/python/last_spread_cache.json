@@ -269,6 +269,101 @@
       "half_spread": 0.11500000000000199,
       "price": 113.195,
       "observed_at": "2026-09-04T15:19:56Z"
+    },
+    "BA": {
+      "half_spread": 0.04999999999999716,
+      "price": 213.65,
+      "observed_at": "2026-09-08T15:54:23Z"
+    },
+    "CPRI": {
+      "half_spread": 0.004999999999999893,
+      "price": 13.135,
+      "observed_at": "2026-09-08T15:54:28Z"
+    },
+    "TLN": {
+      "half_spread": 0.4199999999999875,
+      "price": 329.22,
+      "observed_at": "2026-09-08T15:54:32Z"
+    },
+    "ASO": {
+      "half_spread": 0.019999999999999574,
+      "price": 44.56,
+      "observed_at": "2026-09-08T15:54:37Z"
+    },
+    "EWBC": {
+      "half_spread": 0.10500000000000398,
+      "price": 130.33,
+      "observed_at": "2026-09-08T15:54:40Z"
+    },
+    "CBSH": {
+      "half_spread": 0.014999999999997016,
+      "price": 58.54,
+      "observed_at": "2026-09-08T15:54:43Z"
+    },
+    "TER": {
+      "half_spread": 0.3050000000000068,
+      "price": 380.61,
+      "observed_at": "2026-09-09T17:10:42Z"
+    },
+    "CSIQ": {
+      "half_spread": 0.009999999999999787,
+      "price": 13.47,
+      "observed_at": "2026-09-09T17:10:46Z"
+    },
+    "AEVA": {
+      "half_spread": 0.010000000000000675,
+      "price": 15.9,
+      "observed_at": "2026-09-09T17:10:48Z"
+    },
+    "XLG": {
+      "half_spread": 0.004999999999999005,
+      "price": 62.67,
+      "observed_at": "2026-09-09T17:10:50Z"
+    },
+    "EXPD": {
+      "half_spread": 0.10999999999999943,
+      "price": 191.69,
+      "observed_at": "2026-09-11T15:59:24Z"
+    },
+    "PENN": {
+      "half_spread": 0.005000000000000782,
+      "price": 17.565,
+      "observed_at": "2026-09-11T15:47:43Z"
+    },
+    "ADP": {
+      "half_spread": 0.12999999999999545,
+      "price": 275.705,
+      "observed_at": "2026-09-14T17:46:07Z"
+    },
+    "NFLX": {
+      "half_spread": 0.005000000000002558,
+      "price": 78.075,
+      "observed_at": "2026-09-15T16:33:12Z"
+    },
+    "EHC": {
+      "half_spread": 0.06499999999999773,
+      "price": 121.69,
+      "observed_at": "2026-09-15T16:33:17Z"
+    },
+    "SELF": {
+      "half_spread": 0.015000000000000124,
+      "price": 5.065,
+      "observed_at": "2026-09-15T16:33:21Z"
+    },
+    "FLNT": {
+      "half_spread": 0.09000000000000008,
+      "price": 3.24,
+      "observed_at": "2026-09-15T16:33:24Z"
+    },
+    "TTWO": {
+      "half_spread": 0.05000000000001137,
+      "price": 215.25,
+      "observed_at": "2026-09-15T16:33:28Z"
+    },
+    "CARG": {
+      "half_spread": 0.030000000000001137,
+      "price": 35.0,
+      "observed_at": "2026-09-15T16:33:30Z"
     }
   }
 }

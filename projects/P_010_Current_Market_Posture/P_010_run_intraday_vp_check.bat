@@ -38,6 +38,19 @@ if %errorlevel% equ 0 (
 )
 
 echo.
+
+REM --- Refresh cash balance via P_020 Schwab pull (best-effort, non-fatal) ---
+echo Refreshing cash balance (P_020 Schwab pull)...
+"C:\Users\Trader\.conda\envs\p140\python.exe" "C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_020_AJZStrategies_PerformanceAnalysisSystem\python\database\P_020_Trade_Manager.py" balance --account AJZ >> "%logfile%" 2>&1
+
+if %errorlevel% equ 0 (
+    echo [SUCCESS] Cash balance refreshed in P_000_Account_Parameters_Current.md
+) else (
+    echo [WARNING] Cash balance refresh failed - check %logfile%
+    echo   Intraday data is still valid - this is non-critical.
+)
+
+echo.
 echo ================================================================================
 echo.
 

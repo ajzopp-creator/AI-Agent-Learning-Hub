@@ -11,9 +11,6 @@ import pytest
 
 
 from schemas import AccountParams, OptionChainInput, PostureSnapshot
-from shared_resources.python_utils.signal_schemas import (
-    AssetClass, SignalContext, SignalMetadata, SignalV2,
-)
 from application import evaluate_options as eo_module
 from application.evaluate_options import evaluate_options
 
@@ -21,31 +18,9 @@ from application.evaluate_options import evaluate_options
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
-
-def make_packet(**kwargs) -> SignalV2:
-    defaults = dict(
-        signal_id="TEST-2026-06-30-001",
-        signal_timestamp="2026-06-30T09:00:00Z",
-        signal_source="P_300",
-        strategy="dip_buy",
-        symbol="TEST",
-        asset_class=AssetClass.STOCK,
-        guideline_entry=100.0, guideline_stop=95.0, guideline_target=115.0,
-        signal_horizon="3-5 days",
-        confidence_level="MEDIUM",
-        position_size=1,
-        context=SignalContext(
-            close_at_signal=100.0, trailing_volume_30d=1000000.0,
-            signal_rationale="test fixture",
-        ),
-        signal_metadata=SignalMetadata(
-            session_date="2026-06-30", chart_timeframe="1D",
-            signal_source_link="test\\path.md",
-        ),
-    )
-    defaults.update(kwargs)
-    return SignalV2(**defaults)
-
+# WO-P400-E8.003: evaluate_options() no longer takes a packet -- symbol/
+# stock_stop/stock_target passed directly below (values match what
+# make_packet() used to supply: symbol="TEST", stop=95.0, target=115.0).
 
 def make_chain(**kwargs) -> OptionChainInput:
     defaults = dict(
@@ -88,7 +63,8 @@ def test_council_pass_renders_spec(monkeypatch):
     chain = make_chain()
     _patch_readers(monkeypatch, chain)
     result = evaluate_options(
-        packet=make_packet(), snapshot_raw=make_snapshot(),
+        symbol="TEST", stock_stop=95.0, stock_target=115.0,
+        snapshot_raw=make_snapshot(),
         chain_path="chain_TEST.json", cash_available=6000.0, stock_rr=2.5,
     )
     assert result.verdict in ("PASS", "CAUTION")
@@ -104,7 +80,8 @@ def test_council_block_no_spec(monkeypatch):
     chain = make_chain(open_interest=50)  # < 150 minimum -> OI_TOO_LOW block
     _patch_readers(monkeypatch, chain)
     result = evaluate_options(
-        packet=make_packet(), snapshot_raw=make_snapshot(),
+        symbol="TEST", stock_stop=95.0, stock_target=115.0,
+        snapshot_raw=make_snapshot(),
         chain_path="chain_TEST.json", cash_available=6000.0, stock_rr=2.5,
     )
     assert result.verdict == "BLOCK"
@@ -128,6 +105,7 @@ def test_missing_chain_file_raises(monkeypatch):
     ))
     with pytest.raises(FileNotFoundError):
         evaluate_options(
-            packet=make_packet(), snapshot_raw=make_snapshot(),
+            symbol="TEST", stock_stop=95.0, stock_target=115.0,
+            snapshot_raw=make_snapshot(),
             chain_path="chain_MISSING.json", cash_available=6000.0, stock_rr=2.5,
         )

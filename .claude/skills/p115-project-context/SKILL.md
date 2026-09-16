@@ -42,7 +42,7 @@ architecture doc, loaded on demand.
 | Python | `C:\Users\Trader\.conda\envs\p140\python.exe` (shared conda env â€” never suggest a new venv) |
 | Account params | `<Hub>\projects\P_000_PythonClaudeLocalLLM\config\P_000_Account_Parameters_Current.md` â€” read live, never hard-code |
 | Risk config | `<Hub>\projects\P_010_Current_Market_Posture\P_010_RiskConfig.json` â€” re-read fresh before every packet emission and before writing MarketDirection, not just at INIT |
-| Vault output | `<Hub>\trading_journal\TradeManagement\P115\` |
+| Vault output | `<Hub>\trading_journal\TradeOrderManagement\P115\` (corrected 2026-09-14 -- was documented as TradeManagement\P115\, confirmed wrong against a live write_to_vault("P115",...) call; real writes land under TradeOrderManagement\P115\) |
 | Chaikin enrichment | `<Hub>\shared_resources\chaikin_enrichment\` (shared, P_800-owned) -- batch via Hub-root `RunChaikinBatch.ps1 -Schema P115`; real Ack 2026-07-25 (EMR/OGN/PH enriched, read back confirmed, WO-P800-E4.001) |
 | Signal packets (P_400 handoff) | `<Hub>\trading_journal\TradeOrderManagement\signals\*_v2.0.json` |
 | PEH verify dir | `<Hub>\Agentic-Hub-Governance\verify\` â€” write `run_this_P115_<TS>.py` + `_context.txt` here BEFORE every MCP Python call or file write (peh-handoff v1.4, timestamped names, broadened scope) |
@@ -204,6 +204,11 @@ remain in P_115's own files. Never reintroduce one.
 8. STEP 2 = emit the SIGNAL_V2 packet, full stop (architecture v1.3, 2026-07-24). Output STEP 3 in the locked compact labeled block format -- never prose.
 9. Chart Final Verdict overrides LogEntry BUY/ASYM if they conflict during
    market hours â€” but flag the divergence, don't silently resolve it.
+10. Before evaluating whether any candidate variable helps pick winners
+    (a regime, an indicator, a filter), check
+    `Trading_Projects_Folder_Architecture.md` -> "Trading Research
+    Standards" -- compare base-rate-adjusted lift, not raw win rate,
+    across buckets (ref WO-P010-E2.001, added 2026-09-13).
 
 **Must Not:**
 1. Ask the user for P_118 PatternType â€” read it from the chart.

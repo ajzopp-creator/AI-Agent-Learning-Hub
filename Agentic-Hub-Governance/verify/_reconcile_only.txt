@@ -1,0 +1,6 @@
+exit code: 0
+STDOUT:
+
+Reconcile complete -- closed: 1  still open: 0  not in pull window: 0
+
+STDERR:

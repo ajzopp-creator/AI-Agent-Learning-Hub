@@ -1,0 +1,27 @@
+Task: close the --source-link placeholder gap flagged on the NFLX and ADP SIGNAL_V2
+emissions (2026-09-14). Writes the real P_115 audit-trail vault note (schema P115,
+markdown, via write_to_vault) for each ticker, then patches each already-emitted
+SIGNAL_V2 packet's signal_metadata.signal_source_link from the placeholder path
+to the real note path.
+
+What this tests: write_to_vault("P115", data) actually produces a new/changed file
+in trading_journal\TradeManagement\P115\ for each symbol (checked via a before/after
+mtime snapshot, not the function's boolean return alone), and that each packet's
+JSON is updated and re-readable afterward.
+
+Field mapping used: same diagnostics as the STEP1 27-col rows already given to
+Tony in chat (Fund/Anal/Candle/Setup/entry/stop/target/risk_pct/account_balance),
+translated to the P115 vault schema's snake_case field names per
+obsidian_writers\domain\vault_schemas.py. signal_source is "P_116" for both
+(tracker provenance), matching the SignalSource column already logged -- this is
+separate from the SIGNAL_V2 packet's signal_source field, which stays "P_115"
+(scoring-engine identity) and is untouched by this script.
+
+If it fails: read the actual error. If write_to_vault raises ValueError, a
+required/unknown field name is likely wrong against vault_schemas.py -- reread
+that schema before guessing a fix. Do not silently drop or rename fields to make
+it pass. Do not touch the SIGNAL_V2 packets' signal_source, entry/stop/target, or
+confidence_level/strategy/trailing_volume_30d fields -- this script only touches
+signal_metadata.signal_source_link.
+
+Do not change test assertions.

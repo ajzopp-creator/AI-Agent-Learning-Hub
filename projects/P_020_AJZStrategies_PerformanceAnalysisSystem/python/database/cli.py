@@ -6,6 +6,10 @@ Commands (run from python\\database\\ dir, p140 env):
     python cli.py auth --project ALL     -- same as above, explicit
     python cli.py auth --project P_020   -- (re)issue P_020's own Schwab token
     python cli.py auth --project P_400   -- (re)issue P_400's Schwab token
+    python cli.py reconcile --account AJZ --start 2026-08-01 --end 2026-09-07
+                                          -- reconcile open P_400 LIVE orders (WO-P400-E6.001)
+    python cli.py reconcile --paper --statement <path to Account Statement CSV>
+                                          -- reconcile open P_400 PAPER orders (WO-P400-E6.001)
 
 ALL is the standard weekly path, and now the default if --project is
 omitted entirely. Schwab revokes at the app-registration level, so two
@@ -44,6 +48,27 @@ def main() -> int:
              "project (default if omitted)",
     )
 
+    p_reconcile = sub.add_parser(
+        "reconcile", help="Reconcile open P_400 orders against Schwab or a paper statement (WO-P400-E6.001)"
+    )
+    p_reconcile.add_argument(
+        "--account", default="AJZ", help="Account key, e.g. AJZ, IRA (default AJZ) -- live path only"
+    )
+    p_reconcile.add_argument(
+        "--start", default=None, help="ISO start datetime for the Schwab orders pull -- live path only"
+    )
+    p_reconcile.add_argument(
+        "--end", default=None, help="ISO end datetime for the Schwab orders pull -- live path only"
+    )
+    p_reconcile.add_argument(
+        "--paper", action="store_true",
+        help="Reconcile PAPER orders against a statement file instead of a live Schwab pull",
+    )
+    p_reconcile.add_argument(
+        "--statement", default=None,
+        help="Path to a raw TOS/paperMoney Account Statement CSV -- required with --paper",
+    )
+
     args = parser.parse_args()
 
     if args.cmd == "auth":
@@ -55,6 +80,15 @@ def main() -> int:
         from application.schwab_auth_commands import cmd_auth
 
         return cmd_auth(args.project)
+
+    if args.cmd == "reconcile":
+        from application.reconcile_command import run_reconcile_command
+
+        run_reconcile_command(
+            args.account, args.start, args.end,
+            paper=args.paper, statement=args.statement,
+        )
+        return 0
 
     parser.print_help()
     return 1

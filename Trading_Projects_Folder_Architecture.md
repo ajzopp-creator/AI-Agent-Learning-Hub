@@ -394,3 +394,39 @@ If renamed in the future, all .bat files across P_010 (3 files), P_020 (10+ file
 and P_300 (2 files) must be updated to point to the new environment path.
 
 ---
+## Trading Research Standards
+
+Durable, cross-project rules for evaluating trade-selection variables and
+research findings from the Hub's own data -- distinct from a project's
+Error Corrections Log (that project's own bug/incident history) and from
+the Obsidian `trading_journal\KnowledgeBase\` (external reading material,
+triaged via the kb-review-convention skill, not Hub-derived findings).
+Tracked in `P_000_Enhancement_Backlog.md`; the standard itself lives here
+so any project session can reference it without pulling in another
+project's WO.
+
+### Standard: base-rate-adjusted lift, not raw win rate
+
+**Rule:** When testing whether a candidate variable (a regime, an
+indicator, a filter) helps pick winning trades, do not compare raw win
+rate across buckets of that variable. Raw win rate moves with the
+bucket's own ambient base rate -- more things "work" in some regimes
+regardless of signal quality -- and will show an apparent edge that isn't
+coming from the variable under test. Compare each bucket's signal win
+rate against that SAME bucket's own base rate
+(lift = signal_win% - bucket_base_win%), then compare lift across
+buckets. A variable only adds picking power if its lift, not its raw win
+rate, is higher in one bucket than another.
+
+**Origin:** WO-P010-E2.001 (2026-09) -- P_300 BUY signals showed OFF-mode
+raw win% >= FULL-mode raw win% (72.8% vs 66.9%), which looked like OFF
+was the stronger regime for the signal. Base-rate-adjusted lift showed
+the opposite: BUY lift over its own regime base rate was HIGHER in FULL
+(+18.5pp, 2025) than in OFF (+14.6pp). Real closed P_020 trades agreed
+with the lift finding (FULL 61.5% win vs OFF 20.0% win), not the raw
+number. Decision: no change to P_010's OFF-mode size cut for P_300.
+
+**Applies to:** any future "does X help pick winners" question across
+P_115, P_400, P_300, or a new project.
+
+---

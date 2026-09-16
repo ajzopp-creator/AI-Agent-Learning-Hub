@@ -3,7 +3,7 @@ FILE: smoke_loo_replay.py
 VERSION: 1.0
 DATE: 2026-05-19
 AUTHOR: Anthony Zoppi + Claude
-PURPOSE: Parity smoke for utilities.loo_replay. Verifies the harness's
+PURPOSE: Parity smoke for tools.loo_replay. Verifies the harness's
          threshold-overridable AND-gate produces bit-identical output to
          domain.signal_classifier.classify_per_horizon at config defaults
          (overrides=None). No DB dependency.
@@ -32,7 +32,7 @@ sys.path.insert(0, str(_PYTHON_DIR))
 
 from domain import signal_classifier  # noqa: E402
 from schemas_pipeline_b import AggregatedSignalPerHorizon  # noqa: E402
-from utilities.loo_replay import _classify_per_horizon_overridable  # noqa: E402
+from tools.loo_replay import _classify_per_horizon_overridable  # noqa: E402
 
 
 def _s(h, n, wr, mr, sr, z):

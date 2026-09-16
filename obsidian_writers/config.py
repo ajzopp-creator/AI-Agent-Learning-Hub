@@ -1,6 +1,15 @@
 """config.py — All paths and constants for the obsidian_writers package.
 
 CHANGELOG:
+  v2.6  2026-09-06  Added KB_ORIGIN_SUBFOLDER_MAP = {"Email": "KnowledgeBase/Newsletters"}
+                    (WO-P800-E5.001). Routes P_805 newsletter-derived KB notes to a
+                    separate subfolder from Tony's manually-clipped research, both
+                    still covered by the same KB_Articles.base (file.inFolder()
+                    matches nested subfolders, confirmed against Obsidian's own
+                    function reference -- no .base edit needed). Additive only --
+                    VAULT_FOLDER_MAP and every other map in this file unchanged.
+                    Consulted only by filename_builder.build_filepath() for the KB
+                    schema.
   v2.5  2026-07-24  Added APPROVED_WITH_SEVERE_WARNING to VERDICT_MAP -> "BUY"
                     (WO-P400-E3.011). Gap found live: SEVERE_WARNING verdict tier
                     added to P_400 council.py 2026-07-20, never propagated here --

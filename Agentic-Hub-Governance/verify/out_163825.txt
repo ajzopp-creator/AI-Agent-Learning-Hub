@@ -1,0 +1,3 @@
+Added column: expiration_date
+Added column: settlement_price
+Migration complete.

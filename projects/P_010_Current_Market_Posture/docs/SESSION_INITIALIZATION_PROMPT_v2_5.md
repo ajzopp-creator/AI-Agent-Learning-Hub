@@ -953,3 +953,4 @@ FROG: High Handle, filtered as ASYM → Conservative entry
 ---
 
 **END OF SESSION INITIALIZATION PROMPT v2.5**
+Replaced p010-project-context

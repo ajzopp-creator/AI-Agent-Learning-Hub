@@ -16,6 +16,9 @@ Commands (run from python/ dir, p140 env):
     python cli.py dossier SYMBOL                -- WO-P400-E4.003, computed technical dossier (items 1-8)
     python cli.py audit-book                    -- book vs. real AJZ Schwab positions, Tony directive 2026-07-24
     python cli.py batch-2b --cash DOLLARS [--earnings-date YYYY-MM-DD] -- WO-P400-E5.003, Tier-2B batch runner
+    python cli.py size-option SYMBOL --snapshot FILE --chain FILE --cash DOLLARS --stop X [--target X] [--target-2 X]
+        -- WO-P400-E8.003, packet-free options sizer/spec (works after the signal packet is archived);
+           at least one of --target/--target-2 required, both renders a two-bracket scale-out spec
 
 Session paper mode: python cli.py --paper-session <subcommand>
 
@@ -29,6 +32,7 @@ import datetime
 import logging
 
 from config import LOG_DIR, TradeMode
+from infrastructure.params_reader import read_params
 
 
 def _setup_logging() -> None:
@@ -50,6 +54,25 @@ def _resolve_mode(session_paper: bool, trade_paper: bool) -> TradeMode:
     return TradeMode.REAL
 
 
+def _resolve_cash(args: argparse.Namespace) -> float:
+    """Return --cash if given, else the auto-pulled balance from P_000 params.
+
+    P_010's daily/intraday batches now trigger a P_020 Schwab balance pull
+    twice a day. --cash still overrides per trade when Tony passes it;
+    absence of both is a hard stop, not a silent 0.
+    """
+    if args.cash is not None:
+        return args.cash
+    params = read_params()
+    if params.cash_available is None:
+        raise SystemExit(
+            "No --cash given and no auto-pulled cash balance on file yet. "
+            "Pass --cash DOLLARS, or run a P_020 balance pull "
+            "(python P_020_Trade_Manager.py balance --account AJZ)."
+        )
+    return params.cash_available
+
+
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="p400")
     parser.add_argument("--paper-session", action="store_true", default=False)
@@ -60,7 +83,7 @@ def _build_parser() -> argparse.ArgumentParser:
     p_eval = sub.add_parser("evaluate")
     p_eval.add_argument("symbol")
     p_eval.add_argument("--snapshot", required=True)
-    p_eval.add_argument("--cash", type=float, required=True)
+    p_eval.add_argument("--cash", type=float, required=False, default=None)
     p_eval.add_argument("--target", type=float, default=None)
     p_eval.add_argument("--paper", action="store_true", default=False)
     p_eval.add_argument("--pre-market", action="store_true", default=False)
@@ -72,10 +95,22 @@ def _build_parser() -> argparse.ArgumentParser:
     p_eval.add_argument("--chain-short", dest="chain_short", default=None,
                         help="Path to chain_SYMBOL.json for spread short leg (required with --spread)")
 
+    p_size_opt = sub.add_parser("size-option")
+    p_size_opt.add_argument("symbol")
+    p_size_opt.add_argument("--snapshot", required=True)
+    p_size_opt.add_argument("--chain", required=True, help="Path to chain_SYMBOL.json")
+    p_size_opt.add_argument("--cash", type=float, required=False, default=None)
+    p_size_opt.add_argument("--stop", type=float, required=True)
+    p_size_opt.add_argument("--target", type=float, default=None)
+    p_size_opt.add_argument("--target-2", dest="target_2", type=float, default=None)
+    p_size_opt.add_argument("--paper", action="store_true", default=False)
+    p_size_opt.add_argument("--signal-source", dest="signal_source", default="MANUAL")
+    p_size_opt.add_argument("--signal-date", dest="signal_date", default=None)
+
     p_spec = sub.add_parser("spec")
     p_spec.add_argument("symbol")
     p_spec.add_argument("--snapshot", required=True)
-    p_spec.add_argument("--cash", type=float, required=True)
+    p_spec.add_argument("--cash", type=float, required=False, default=None)
     p_spec.add_argument("--target", type=float, default=None)
     p_spec.add_argument("--paper", action="store_true", default=False)
     p_spec.add_argument("--pre-market", action="store_true", default=False)
@@ -85,7 +120,7 @@ def _build_parser() -> argparse.ArgumentParser:
     p_cmp.add_argument("symbol")
     p_cmp.add_argument("--snapshot", required=True)
     p_cmp.add_argument("--chain", required=True, help="Path to chain_SYMBOL.json")
-    p_cmp.add_argument("--cash", type=float, required=True)
+    p_cmp.add_argument("--cash", type=float, required=False, default=None)
 
     p_rec = sub.add_parser("record")
     p_rec.add_argument("symbol")
@@ -110,7 +145,7 @@ def _build_parser() -> argparse.ArgumentParser:
     p_dossier.add_argument("symbol")
 
     p_batch = sub.add_parser("batch-2b")
-    p_batch.add_argument("--cash", type=float, required=True)
+    p_batch.add_argument("--cash", type=float, required=False, default=None)
     p_batch.add_argument("--earnings-date", dest="earnings_date", default=None,
                           help="Session date YYYY-MM-DD for the batch report filename; defaults to today ET. "
                                "No longer selects an earnings file -- WO-P400-E5.002 reads the FMP cache.")
@@ -136,7 +171,7 @@ def main() -> int:
     if args.cmd == "evaluate":
         mode = _resolve_mode(session_paper, args.paper)
         return commands.cmd_evaluate(
-            args.symbol, args.snapshot, args.cash, mode,
+            args.symbol, args.snapshot, _resolve_cash(args), mode,
             target_override=getattr(args, "target", None),
             pre_market=getattr(args, "pre_market", False),
             qty_override=getattr(args, "qty_override", None),
@@ -148,12 +183,12 @@ def main() -> int:
     if args.cmd == "spec":
         mode = _resolve_mode(session_paper, args.paper)
         return commands.cmd_spec(
-            args.symbol, args.snapshot, args.cash, mode,
+            args.symbol, args.snapshot, _resolve_cash(args), mode,
             target_override=getattr(args, "target", None),
             pre_market=getattr(args, "pre_market", False),
             qty_override=getattr(args, "qty_override", None))
     if args.cmd == "compare":
-        return commands.cmd_compare(args.symbol, args.snapshot, args.chain, args.cash)
+        return commands.cmd_compare(args.symbol, args.snapshot, args.chain, _resolve_cash(args))
     if args.cmd == "record":
         return commands.cmd_record(args.symbol, order_id=args.order_id, decline=args.decline, paper=args.paper)
     if args.cmd == "fetch-snapshot":
@@ -166,7 +201,7 @@ def main() -> int:
     if args.cmd == "batch-2b":
         mode = _resolve_mode(session_paper, False)
         from application.batch_2b import cmd_batch_2b
-        return cmd_batch_2b(args.cash, earnings_date=args.earnings_date, trade_mode=mode)
+        return cmd_batch_2b(_resolve_cash(args), earnings_date=args.earnings_date, trade_mode=mode)
     if args.cmd == "refresh-earnings-calendar":
         from application.refresh_earnings_calendar import cmd_refresh_earnings_calendar
         return cmd_refresh_earnings_calendar()
@@ -176,6 +211,13 @@ def main() -> int:
     if args.cmd == "audit-book":
         from application.audit_book import cmd_audit_book
         return cmd_audit_book()
+    if args.cmd == "size-option":
+        from application.size_option_standalone import cmd_size_option
+        return cmd_size_option(
+            args.symbol, args.snapshot, args.chain, args.stop, _resolve_cash(args),
+            stock_target=args.target, stock_target_2=args.target_2,
+            is_paper=args.paper, signal_source=args.signal_source,
+            signal_date=args.signal_date)
     return commands.cmd_reader()
 
 

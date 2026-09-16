@@ -97,3 +97,4 @@ after each successful write.
 | Version | Date | Change |
 |---|---|---|
 | 1.0 | 2026-04-25 | Initial handoff after Phase 2 planning session |
+Replaced p010-project-context

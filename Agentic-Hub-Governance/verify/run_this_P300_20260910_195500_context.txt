@@ -1,0 +1,45 @@
+WO-P300-E5.001 -- Batch 1 verification
+Date: 2026-09-10
+
+WHAT THIS TESTS:
+Batch 1 of the import-linter contract prep: PatternMetadata and
+MineCandidateRow were moved out of infrastructure/ (catalog_reader.py,
+mine_report_writer.py) into schemas modules, since domain modules were
+importing them directly from infrastructure -- an architecture-rule
+violation the WO exists to stop. Along the way, schemas.py (422 lines)
+and schemas_pipeline_b.py (433 lines) were both over the 300-line cap;
+both were split into smaller files with the original filenames kept as
+thin backward-compatible re-export shims, so none of their existing
+20 + 11 callers needed to change.
+
+This script:
+  1. Compiles every new/edited/test file under -W error::SyntaxWarning
+  2. Actually imports every new schema module + the two shims
+  3. Confirms both shims (schemas.py, schemas_pipeline_b.py) still
+     expose every original name
+  4. Imports every edited domain/infrastructure/application file
+  5. Confirms PatternMetadata and MineCandidateRow are each a SINGLE
+     class definition project-wide, and every import path (old shim,
+     new direct path, every caller) resolves to the identical object
+     -- not a silent duplicate
+
+SUCCESS CRITERIA: prints PASS with no FAIL lines.
+
+WHAT TO FIX ON FAILURE:
+- A compile FAIL means a real syntax error in that file -- read the
+  traceback, fix the file directly (str_replace or full rewrite,
+  whichever's cleaner), do not touch test assertions.
+- An import FAIL is almost always either (a) a missing import in the
+  file itself, or (b) the schemas.py <-> schemas_catalog_records.py
+  circular-import ordering (schemas.py's re-export imports at the
+  bottom must stay AFTER the DataOriginType class definition -- if
+  that got reordered, restore it).
+- A shim-completeness FAIL means one of the split-out files is missing
+  a class, or its name doesn't match what the shim tries to re-export
+  -- check the exact class name in the new file against the shim's
+  import list.
+- An identity-check FAIL would mean a duplicate class definition
+  exists somewhere the file sweep missed -- grep the whole python/
+  tree for a second `class PatternMetadata` or `class MineCandidateRow`.
+
+Do not change test assertions. Paste the full console output back.

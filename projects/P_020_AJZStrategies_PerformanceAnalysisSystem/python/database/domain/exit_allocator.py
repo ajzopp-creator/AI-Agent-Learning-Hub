@@ -153,6 +153,10 @@ def _build_trade_dict(entry: Dict, slots: List[Dict]) -> Dict:
         "total_commissions": entry["fees"],
         "source": "schwab_api",
         "schwab_transaction_id": entry["schwab_transaction_id"],
+        # WO-P020-E1.018 -- carried through so a still-open option trade
+        # keeps its expiration/settlement snapshot even with no exit yet.
+        "expiration_date": entry.get("expiration_date"),
+        "settlement_price": entry.get("settlement_price"),
     }
     for n, slot in enumerate(slots, start=1):
         trade[f"exit_{n}"] = slot

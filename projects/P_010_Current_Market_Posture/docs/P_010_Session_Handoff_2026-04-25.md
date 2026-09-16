@@ -93,3 +93,4 @@ To carry into Claude memory in the next session:
 - Windows-MCP hangs when spawning p140 python.exe and waiting for output. **Workaround: write .py file, fire-and-poll output file via Start-Process without -Wait.**
 - VP Excel schema verified: row 0 is garbage, real data row 1. `Volume` column exists. Date is datetime64.
 - claude_desktop_config.json `obsidian` server now points at `p140\python.exe -m mcp_obsidian` (not uvx).
+Replaced p010-project-context

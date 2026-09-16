@@ -75,7 +75,7 @@ from domain.eval_incremental import (  # noqa: E402
 )
 from domain.eval_scoring import run_walk_forward  # noqa: E402
 from domain.topk_cache import seed_full_catalog  # noqa: E402
-from infrastructure.catalog_reader import PatternMetadata  # noqa: E402
+from schemas_pipeline_b import PatternMetadata  # noqa: E402
 from schemas_eval import WalkForwardBatch  # noqa: E402
 from schemas_pipeline_b import ForwardLabelLite, NormalizedBar  # noqa: E402
 

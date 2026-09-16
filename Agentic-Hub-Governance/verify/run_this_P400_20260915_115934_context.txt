@@ -1,0 +1,20 @@
+WO-P400-E8.002 -- pre-code regression gate
+Date: 2026-09-15
+
+What this tests:
+Runs the EXISTING test suites for infrastructure/earnings_calendar_cache.py
+and application/earnings_lookup.py, unmodified, before WO-P400-E8.002's
+edits land on either file. Confirms no pre-existing failure is present
+to build on top of.
+
+Success criteria:
+Both test files collect and pass in full (pytest exit code 0).
+
+What to fix on failure:
+Do NOT touch WO-P400-E8.002's planned changes to make this pass -- a
+failure here means something ALREADY broken in one of these two files
+or their dependencies, unrelated to E8.002. Read the pytest output,
+identify the failing test(s), and report back before any E8.002 edit
+proceeds.
+
+Do not change test assertions.

@@ -53,11 +53,10 @@ from domain import aggregator  # noqa: E402
 from domain.eval_scoring import (  # noqa: E402
     _classify_signal_overridable, _corpus_pids, _label_correctness,
 )
-from infrastructure.catalog_reader import PatternMetadata  # noqa: E402
 from schemas_eval import (  # noqa: E402
     ThresholdOverrides, TopKMatch, WalkForwardResult,
 )
-from schemas_pipeline_b import ForwardLabelLite  # noqa: E402
+from schemas_pipeline_b import ForwardLabelLite, PatternMetadata  # noqa: E402
 
 GapStatus = Literal["ok", "degenerate", "gap"]
 

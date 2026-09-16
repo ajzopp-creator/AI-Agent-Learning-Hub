@@ -70,6 +70,8 @@ def build_kb_record(eml_path: Path, email_subject: str, email_from: str, ai_summ
     """Build KBRecord dict for P_800 write handler."""
     mtime = datetime.fromtimestamp(eml_path.stat().st_mtime).date()
     return {
+        "signal_date": mtime.isoformat(),
+        "written_by": "P_805/kb_writer",
         "date": mtime,
         "title": email_subject or eml_path.stem,
         "kb_type": "Article",

@@ -1,0 +1,10 @@
+DRY RUN -- pass --commit to write changes
+
+trade_id=3160  long   entry=6.05  exit=0.00  pnl=-605.00  hold_days=0
+trade_id=3162  short  entry=7.20  exit=0.00  pnl=+720.00  hold_days=0
+trade_id=3159  long   entry=3.90  exit=0.00  pnl=-390.00  hold_days=0
+trade_id=3163  short  entry=4.99  exit=0.00  pnl=+499.00  hold_days=0
+
+Total P&L across 4 legs: +224.00
+
+PASS

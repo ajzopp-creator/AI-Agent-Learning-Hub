@@ -62,8 +62,9 @@ if str(_PYTHON_DIR) not in sys.path:
     sys.path.insert(0, str(_PYTHON_DIR))
 
 from domain.pattern_miner import mine_bars  # noqa: E402
-from infrastructure.mine_report_writer import MineCandidateRow  # noqa: E402
+
 from schemas_bulk import BulkBarRaw  # noqa: E402
+from schemas_mine import MineCandidateRow  # noqa: E402
 
 # Float-equality tolerance for move_pct comparison. Not a business
 # threshold (MINE_MOVE_THRESHOLD stays the only one of those) -- this

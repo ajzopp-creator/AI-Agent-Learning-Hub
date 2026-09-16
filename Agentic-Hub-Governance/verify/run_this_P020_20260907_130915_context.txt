@@ -1,0 +1,64 @@
+WO-P400-E6.001 Scope item 2 -- File 4 of 18 (infrastructure\schwab_order_puller.py) -- 2026-09-07
+
+What this tests: Claude wrote
+projects\P_020_AJZStrategies_PerformanceAnalysisSystem\python\database\
+infrastructure\schwab_order_puller.py directly via windows-mcp FileSystem
+(mode=write) -- new file. Direct Test-Path/Length check succeeded (2,325
+bytes). Skipped the compile subprocess call via windows-mcp:PowerShell --
+it has stalled 4+ min on every file this session so far (3 for 3), relay
+confirmed healthy each time via a fast ping right after. Handing straight
+to Claude Code.
+
+IMPORTANT -- this file's real function calls the live Schwab API. This
+verification script does NOT call get_orders_for_account() and does NOT
+authenticate to Schwab. No network access, no live order pull. It only
+proves the file is structurally sound (compiles, imports without eagerly
+touching the network, correct function signature). Confirming it actually
+returns real orders from Schwab is a separate, later step Tony runs
+himself when this build is wired up end-to-end -- not part of this
+handoff.
+
+This script:
+  1. Confirms the file exists with a plausible line count.
+  2. Compiles under warnings-as-errors.
+  3. Imports the module and confirms that alone doesn't error or hang --
+     proves P_020_Schwab_Token_Manager (and the `schwab` package) are
+     only imported lazily inside _get_client(), not at module scope.
+  4. Checks get_orders_for_account()'s signature exactly matches the
+     approved plan: account_hash (required, no default), then
+     from_entered_datetime / to_entered_datetime / status / max_results
+     (all default None), in that order.
+  5. Source-inspects the module to confirm _get_client() is never called
+     at module scope (belt-and-braces on top of check 3).
+
+Success criteria: script prints "PASS: schwab_order_puller.py validated
+(no live API call made)." and a
+run_this_P020_20260907_130915.py.done file appears with status: PASS.
+
+What Claude Code should fix on failure:
+- Line count out of [50, 90]: read the file directly for a
+  chunk-boundary merge or truncation.
+- Compile error: same known failure modes as prior handoffs this
+  session.
+- Import hangs or raises ModuleNotFoundError for 'schwab': this means
+  P_020_Schwab_Token_Manager (or schwab itself) got imported at module
+  scope instead of lazily inside _get_client() -- move the import
+  inside the function, matching schwab_positions.py's existing pattern
+  in the same folder.
+- Signature mismatch: compare against schwab_positions.py's
+  pull_positions() in the same file for the established
+  Optional[...] = None style, fix schwab_order_puller.py to match.
+- _get_client() found at module scope: same fix as the import-hang case
+  above -- it must only appear inside get_orders_for_account()'s body.
+
+Do not change test assertions. Do not add a call to
+get_orders_for_account() anywhere in this test script or in any fix --
+that would attempt a real Schwab API call, which is explicitly out of
+scope for this handoff.
+
+Sequencing note: file 4 of 18. Files 1-3 (migration, schemas.py Order
+model, domain\order_linkage.py) already validated PASS earlier today.
+Next in the P_020 sequence:
+infrastructure\paper_order_history_parser.py (~190 lines, the largest
+single lift in this build -- new parser for the raw TOS Account
+Statement CSV's Order History section, which nothing today reads).

@@ -38,6 +38,12 @@ def cmd_record_submit(symbol: str, order_id: str, paper: bool = False) -> int:
     to PAPER for this write only -- the eval_cache file on disk is never
     mutated, so a later `record` call for the same symbol isn't silently
     stuck in PAPER mode from an unrelated earlier call.
+
+    Also writes the order into P_020's orders table (WO-P400-E6.001) via
+    order_submit_writer, so it can be reconciled against Schwab and
+    promoted into P_020's trades table later. Independent of the vault
+    write above -- one failing doesn't block or get blocked by the other;
+    both statuses print.
     """
     cached = read_eval_cache(symbol)
     if cached is None:
@@ -59,6 +65,22 @@ def cmd_record_submit(symbol: str, order_id: str, paper: bool = False) -> int:
     print(f"SUBMITTED record written: {symbol}  order_id={order_id}  "
           f"mode={fields['trade_mode_value']}  "
           f"(vault_write={'OK' if written else 'FAILED'})")
+
+    from infrastructure.order_submit_writer import write_order_to_p020
+
+    p020_order_id = write_order_to_p020(
+        symbol=symbol,
+        order_id=order_id,
+        verdict=verdict,
+        entry_price=fields["entry_price"],
+        stop_price=fields["stop_price"],
+        target_1=fields["target_1"],
+        position_size=fields["position_size"],
+        signal_source=fields["signal_source"],
+        trade_mode_value=fields["trade_mode_value"],
+    )
+    print(f"P_020 order write: {'OK (order_id=' + str(p020_order_id) + ')' if p020_order_id else 'SKIPPED/FAILED'}")
+
     return 0 if written else 1
 
 

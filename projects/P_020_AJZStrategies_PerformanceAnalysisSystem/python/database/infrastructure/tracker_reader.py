@@ -8,6 +8,7 @@ import openpyxl
 from pydantic import ValidationError
 
 from config import TRACKER_DASHBOARD
+from infrastructure.systems_registry import get_valid_system_ids
 from schemas import TrackerEntry, TrackerLookup
 
 logger = logging.getLogger(__name__)
@@ -29,7 +30,7 @@ _SIGNAL_MAP = {
     "P117:WALLSTZEN"             : "P_117",
 }
 
-_VALID_SYSTEMS = {"P_115","P_116","P_117","P_118","P_300","P_910","P_920","Day","SNT","TOS_Import","P_105","P_110","P_120","P_210"}
+_VALID_SYSTEMS = get_valid_system_ids()
 
 def _normalize_signal(raw: str) -> str:
     """Map Tracker signal_source variants to a valid system_id."""

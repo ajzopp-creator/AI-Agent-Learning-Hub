@@ -1,0 +1,94 @@
+WO-P400-E6.001 Scope item 2 -- File 8 of 18 (cli.py extend +
+reconcile_command.py's run_reconcile_command() new) -- 2026-09-07
+
+Both files written directly via windows-mcp FileSystem (mode=write, full
+rewrite for both -- reconcile_command.py got a new function inserted
+between two existing ones, cli.py got a new subcommand block added).
+Durable-signal Test-Path/Length checks succeeded directly via PowerShell
+(reconcile_command.py: 7,432 bytes; cli.py: 3,158 bytes). Skipped the
+compile subprocess call via windows-mcp:PowerShell -- stalled 4+ min on
+every file this session so far. Handing straight to Claude Code.
+
+IMPORTANT -- zero live calls anywhere in this script. Before anything
+runs, it monkeypatches:
+  - infrastructure.schwab_positions.get_account_hash (no real Schwab API)
+  - infrastructure.db_client.get_connection (no real production DB --
+    returns a bare :memory: connection when a placeholder is needed at
+    all)
+  - application.reconcile_command.reconcile_live_orders (already
+    thoroughly tested end-to-end in the file-7 handoff -- this script
+    only needs to confirm run_reconcile_command() calls it with the
+    right arguments and handles its return value, not re-prove its
+    internal logic)
+  - application.schwab_auth_commands.cmd_auth_all / cmd_auth (regression
+    check on the pre-existing 'auth' subcommand, also no real OAuth flow)
+
+What it does:
+  1. Compiles both files under warnings-as-errors.
+  2. run_reconcile_command() happy path: calls it directly with
+     account='AJZ', confirms account_id 'AJZ6348' resolves to
+     last4='6348' correctly, confirms the (mocked) account_hash/start/end
+     values are passed through to reconcile_live_orders() unchanged, and
+     confirms the printed summary line contains the exact counts
+     returned by the mock ("closed: 1", "still open: 2", "not in pull
+     window: 0").
+  3. run_reconcile_command() hash-resolution failure: mocks
+     get_account_hash to return None, confirms this raises SystemExit(1)
+     cleanly rather than crashing further down (e.g. a None passed into
+     get_connection or reconcile_live_orders).
+  4. cli.py 'reconcile' dispatch: sets sys.argv to a full reconcile
+     command line, confirms cli.main() returns 0 and calls the (mocked)
+     run_reconcile_command with exactly the parsed --account/--start/
+     --end values.
+  5. cli.py --account default: confirms omitting --account defaults to
+     'AJZ', matching the CLI help text.
+  6. cli.py required args: confirms omitting --start/--end raises
+     SystemExit (argparse's own required=True enforcement, not custom
+     code) -- a genuinely missing case would otherwise silently proceed
+     with None dates.
+  7. cli.py 'auth' REGRESSION: confirms the pre-existing 'auth'
+     subcommand (no --project = ALL = cmd_auth_all(); --project P_020 =
+     cmd_auth('P_020')) still dispatches correctly after the reconcile
+     subcommand was added alongside it.
+
+Success criteria: script prints "PASS: cli.py reconcile subcommand and
+run_reconcile_command() validated (no live calls made)." and a
+run_this_P020_20260907_205600.py.done file appears with status: PASS.
+
+What Claude Code should fix on failure:
+- Compile errors: same known failure modes as prior handoffs.
+- last4 wrong: check run_reconcile_command()'s account_id[-4:] slice --
+  resolve_account_id('AJZ', account_label="") must still return
+  'AJZ6348' (read application/import_command.py's mapping dict directly
+  if this fails -- it should be unchanged).
+- account_hash/start/end not passed through: read
+  run_reconcile_command()'s call to reconcile_live_orders() directly --
+  likely an argument order or keyword mismatch.
+- SystemExit(1) not raised on hash failure: check the
+  `if account_hash is None: ... sys.exit(1)` branch is still there and
+  reachable (not gated behind an unrelated condition).
+- cli.py dispatch wrong: read the new `if args.cmd == "reconcile":`
+  block in cli.py's main() directly against the argparse subparser
+  definition just above it -- likely an attribute name mismatch
+  (args.account vs a typo).
+- Required-args check failing to raise: confirm p_reconcile.add_argument
+  for --start/--end still has required=True (not silently dropped or
+  given a default).
+- 'auth' regression failure: read cli.py's 'auth' dispatch block --
+  should be completely unchanged from before this session; if it broke,
+  the reconcile subcommand's insertion point likely disturbed it (check
+  for a misplaced return or an extra parser.add_subparsers() call).
+
+Do not change test assertions. All argument values in the fixtures
+(account='IRA', dates, etc.) are arbitrary but exact -- confirm they
+flow through unchanged rather than adjusting the test to match wrong
+code.
+
+Sequencing note: file 8 of 18, and the live path is now fully wired
+end-to-end (files 1-8): pull -> link -> reconcile -> write -> promote ->
+CLI. Next in the P_020 sequence per the WO's build-order narrative: the
+shared p020_order_writer.py, then P_400's own
+infrastructure\order_submit_writer.py (submit side -- live orders start
+flowing end-to-end in both directions). Paper support
+(infrastructure\paper_order_history_parser.py, domain\order_reconciler.py's
+paper wiring) stays deferred to near the end of this build.

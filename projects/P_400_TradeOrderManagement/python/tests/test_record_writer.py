@@ -85,6 +85,30 @@ def test_base_write_passes_required_fields(monkeypatch):
     assert captured["data"]["p300_linked"] is True
 
 
+def test_target_2_defaults_to_none(monkeypatch):
+    # WO-P400-E8.003 follow-on: target_2 is optional -- every pre-WO
+    # caller (which never passes it) keeps writing None, matching the
+    # vault schema's existing null default on every note before this fix.
+    captured = _capture_vault_write(monkeypatch)
+    write_p400_record(
+        symbol="TEST", verdict="APPROVED", risk_mode="OFF",
+        entry_price=100.0, stop_price=95.0, target_1=115.0,
+        position_size=3, signal_source="P_300", trade_mode_value="REAL",
+    )
+    assert captured["data"]["target_2"] is None
+
+
+def test_target_2_passed_through_when_given(monkeypatch):
+    captured = _capture_vault_write(monkeypatch)
+    write_p400_record(
+        symbol="TEST", verdict="APPROVED", risk_mode="OFF",
+        entry_price=100.0, stop_price=95.0, target_1=110.0, target_2=120.0,
+        position_size=3, signal_source="P_300", trade_mode_value="REAL",
+    )
+    assert captured["data"]["target_1"] == 110.0
+    assert captured["data"]["target_2"] == 120.0
+
+
 def test_vault_write_failure_returns_false(monkeypatch):
     def fake_write(schema_name, data):
         raise OSError("disk full")

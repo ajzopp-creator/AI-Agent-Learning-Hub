@@ -1,0 +1,3 @@
+orders rows: 1
+max order_id: 4
+trade 3156 exists: 0

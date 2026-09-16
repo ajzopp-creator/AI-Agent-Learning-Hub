@@ -112,6 +112,8 @@ def _build_trade(raw: Dict, params: Dict, account_id: str) -> Optional[Trade]:
             schwab_transaction_id=raw.get("schwab_transaction_id"),
             reason=raw.get("reason"),
             signal_strength=raw.get("signal_strength"),
+            expiration_date=raw.get("expiration_date"),
+            settlement_price=raw.get("settlement_price"),
         )
     except (KeyError, ValueError, TypeError) as e:
         logger.warning(f"Skipping malformed trade record: {e} — {raw}")
@@ -264,21 +266,18 @@ def run_ingest(
             updated += 1
             audit.append(
                 f"UPDATED: {raw.get('underlying_symbol')} {raw.get('open_date')} "
-                f"system={raw.get('system')} new_exits={new_exits} "
-                f"(existing entry, exits attached)"
+                f"system={raw.get('system')} new_exits={new_exits} (existing entry, exits attached)"
             )
         elif outcome == "unchanged":
             skipped += 1
             audit.append(
-                f"UNCHANGED (duplicate, no new exits): "
-                f"{raw.get('underlying_symbol')} {raw.get('open_date')}"
+                f"UNCHANGED (duplicate, no new exits): {raw.get('underlying_symbol')} {raw.get('open_date')}"
             )
         else:  # error
             skipped += 1
             audit.append(
-                f"ERROR: {raw.get('underlying_symbol')} {raw.get('open_date')} "
-                f"duplicate txn_id but existing trade_id not found "
-                f"txn_id={raw.get('schwab_transaction_id')}"
+                f"ERROR: {raw.get('underlying_symbol')} {raw.get('open_date')} duplicate txn_id but "
+                f"existing trade_id not found txn_id={raw.get('schwab_transaction_id')}"
             )
 
     audit.append("=" * 50)

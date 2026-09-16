@@ -65,7 +65,7 @@ if str(_PYTHON_DIR) not in sys.path:
 
 from config import FORWARD_HORIZONS, MODELS_DIR, ORIGIN_BULK_SCAN, ORIGIN_PATTERN_IDENT, REPORTS_DIR  # noqa: E402
 from infrastructure import catalog_reader  # noqa: E402
-from infrastructure.catalog_reader import PatternMetadata  # noqa: E402
+from schemas_pipeline_b import PatternMetadata  # noqa: E402
 from schemas_eval import ThresholdOverrides, WalkForwardBatch  # noqa: E402
 from schemas_pipeline_b import ForwardLabelLite, NormalizedBar  # noqa: E402
 from utilities.db_connect import connection_context  # noqa: E402

@@ -1,0 +1,59 @@
+top-level keys: ['account_label', 'start_date', 'end_date', 'pull_timestamp', 'transaction_count', 'transactions']
+num transactions: 14
+---
+txn type/status: TRADE VALID
+txn keys: ['activityId', 'time', 'accountNumber', 'type', 'status', 'subAccount', 'tradeDate', 'positionId', 'orderId', 'netAmount', 'transferItems']
+instrument keys: ['assetType', 'status', 'symbol', 'uniformSymbol', 'description', 'instrumentId', 'closingPrice', 'expirationDate', 'optionDeliverables', 'optionPremiumMultiplier', 'putCall', 'strikePrice', 'type', 'underlyingSymbol']
+instrument: {
+  "assetType": "OPTION",
+  "status": "ACTIVE",
+  "symbol": "NDXP  260911C29490000",
+  "uniformSymbol": "NDXP  260911C29490000",
+  "description": "NASDAQ 100 INDEX 09/11/2026 $29490 Call",
+  "instrumentId": 258314126,
+  "closingPrice": 0.0001,
+  "expirationDate": "2026-09-11T04:00:00+0000",
+  "optionDeliverables": [
+    {
+      "rootSymbol": "NDXP",
+      "strikePercent": 100,
+      "deliverableNumber": 1,
+      "deliverableUnits": 100.0
+    }
+  ],
+  "optionPremiumMultiplier": 100,
+  "putCall": "CALL",
+  "strikePrice": 29490.0,
+  "type": "VANILLA",
+  "underlyingSymbol": "NDXP"
+}
+positionEffect: OPENING
+---
+txn type/status: TRADE VALID
+txn keys: ['activityId', 'time', 'accountNumber', 'type', 'status', 'subAccount', 'tradeDate', 'positionId', 'orderId', 'netAmount', 'transferItems']
+instrument keys: ['assetType', 'status', 'symbol', 'uniformSymbol', 'description', 'instrumentId', 'closingPrice', 'expirationDate', 'optionDeliverables', 'optionPremiumMultiplier', 'putCall', 'strikePrice', 'type', 'underlyingSymbol']
+instrument: {
+  "assetType": "OPTION",
+  "status": "ACTIVE",
+  "symbol": "NDXP  260911C29500000",
+  "uniformSymbol": "NDXP  260911C29500000",
+  "description": "NASDAQ 100 INDEX 09/11/2026 $29500 Call",
+  "instrumentId": 255798332,
+  "closingPrice": 0.0001,
+  "expirationDate": "2026-09-11T04:00:00+0000",
+  "optionDeliverables": [
+    {
+      "rootSymbol": "NDXP",
+      "strikePercent": 100,
+      "deliverableNumber": 1,
+      "deliverableUnits": 100.0
+    }
+  ],
+  "optionPremiumMultiplier": 100,
+  "putCall": "CALL",
+  "strikePrice": 29500.0,
+  "type": "VANILLA",
+  "underlyingSymbol": "NDXP"
+}
+positionEffect: OPENING
+DONE, total ndxp legs found in scan: 2

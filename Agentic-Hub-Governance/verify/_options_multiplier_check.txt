@@ -1,0 +1,9 @@
+Recent NON-P400 options trades (entry/exit price vs exit_pnl):
+  trade 3153 NDXP long qty=1.0 entry=3.55 exit=5.15 exit_pnl=160.0 implied_multiplier=100.0
+  trade 3151 ABT long qty=1.0 entry=8.0 exit=4.4 exit_pnl=-360.0 implied_multiplier=100.0
+  trade 3147 AA long qty=1.0 entry=9.85 exit=9.4 exit_pnl=-45.0 implied_multiplier=100.0
+  trade 3146 ADM long qty=1.0 entry=6.5 exit=8.7 exit_pnl=220.0 implied_multiplier=100.0
+  trade 3145 GOOGL long qty=4.0 entry=1.87 exit=0.76 exit_pnl=-444.0 implied_multiplier=100.0
+  trade 3131 GE long qty=4.0 entry=2.33 exit=1.01 exit_pnl=-528.0 implied_multiplier=100.0
+  trade 3129 XYZ long qty=1.0 entry=4.65 exit=3.45 exit_pnl=-120.0 implied_multiplier=100.0
+  trade 3128 GM long qty=4.0 entry=1.71 exit=0.97 exit_pnl=-296.0 implied_multiplier=100.0

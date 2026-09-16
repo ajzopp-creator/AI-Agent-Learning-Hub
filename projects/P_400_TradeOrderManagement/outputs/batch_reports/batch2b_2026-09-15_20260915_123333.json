@@ -1,0 +1,74 @@
+{
+  "run_timestamp": "2026-09-15T12:33:33.303640-04:00",
+  "session_date": "2026-09-15",
+  "cash_available": 16397.0,
+  "posture": "OFF",
+  "screened_count": 6,
+  "passed_tier1": 6,
+  "evaluated": 6,
+  "candidates": [
+    {
+      "symbol": "NFLX",
+      "rank": 1,
+      "score": 0.6635,
+      "score_components": {
+        "rr": 1.0,
+        "atr_headroom": 0.2149,
+        "spread": 0.9936,
+        "liquidity": 1.0,
+        "drift": 0.0
+      },
+      "vehicle": "STOCK",
+      "vehicle_reason": "Option BLOCKED by options council (OI_TOO_LOW: open_interest=32 < 150 minimum) -- stock used.",
+      "verdict": "APPROVED",
+      "rr_at_t1": 13.971,
+      "atr_headroom": 1.4298,
+      "spread_pct_of_price": 0.0064,
+      "drift_pct": -2.284,
+      "dollar_risk": 29.39,
+      "quantity": 9
+    },
+    {
+      "symbol": "EHC",
+      "rank": 2,
+      "score": 0.5496,
+      "score_components": {
+        "rr": 1.0,
+        "atr_headroom": 0.0635,
+        "spread": 0.9466,
+        "liquidity": 0.385,
+        "drift": 0.0
+      },
+      "vehicle": "STOCK",
+      "vehicle_reason": "Option BLOCKED by options council (OI_TOO_LOW: open_interest=11 < 150 minimum; SPREAD_TOO_WIDE: spread=15.4% > 10.0% max) -- stock used.",
+      "verdict": "APPROVED",
+      "rr_at_t1": 11.237,
+      "atr_headroom": 1.1271,
+      "spread_pct_of_price": 0.0534,
+      "drift_pct": -2.139,
+      "dollar_risk": 17.7,
+      "quantity": 6
+    }
+  ],
+  "skipped": [
+    {
+      "symbol": "SELF",
+      "reason": "verdict=BLOCKED (STOP_TOO_TIGHT)"
+    },
+    {
+      "symbol": "FLNT",
+      "reason": "verdict=BLOCKED (SPREAD_TOO_WIDE)"
+    },
+    {
+      "symbol": "TTWO",
+      "reason": "verdict=BLOCKED (STOP_TOO_TIGHT)"
+    },
+    {
+      "symbol": "CARG",
+      "reason": "verdict=BLOCKED (RR_BELOW_MIN)"
+    }
+  ],
+  "cumulative_risk_if_all_taken": 47.09,
+  "heat_cap": 3535.0488,
+  "heat_warning": "2 APPROVED candidates -- cumulative risk if all taken $47.09 vs heat cap $3535.05 (within cap). Not enforced -- each evaluate sizes independently (SIP v2.4, RISK never blocks)."
+}

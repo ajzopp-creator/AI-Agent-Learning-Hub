@@ -1,0 +1,26 @@
+P_820 doc edit - add P_210 routing - 2026-09-09
+
+Task: Apply 6 targeted .replace() edits (each guarded by an exact
+occurrence-count == 1 check) to
+C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_820_OrderSignalCapture\docs\P_820_SYSTEM_DOCUMENTATION.md
+adding P_210 (One Click Trading 2PM Income Trade) to the routing table,
+alongside SNT/P_116, plus its end-of-day write-timing rule. Backup
+already exists at P_820_SYSTEM_DOCUMENTATION.md.backup_2026-09-09 --
+do not re-create it.
+
+Success criteria: script prints "All 6 edits applied." then "PASS".
+Confirm on disk after: read the doc back and grep for "P_210" -- expect
+5 occurrences (Section 2.1 MUST bullet, Section 4 table, Workflow 6.1
+decision gate, Section 8 session log, notes text), plus confirm the
+header now reads Version 1.3 / Last Updated 2026-09-09 and the footer
+reads v1.3 -- 2026-09-09.
+
+If it fails: the occurrence-count guard raising ValueError means the
+file's exact wording no longer matches what this script expects (most
+likely someone edited the doc between the read and this run). Do not
+loosen the guard or force a replace on 0 or 2+ occurrences -- re-read
+the live file, rebuild the old_str for whichever edit failed against
+the actual current text, and re-stage. Do not change the new_str
+content (the P_210 routing text and session log entry) -- that's
+confirmed from this chat, not a test fixture. Paste full output back
+to Tony.

@@ -1,0 +1,54 @@
+Perform an Independent Review of WO-P010-E2.002 at:
+C:\Users\Trader\AI-Agent-Learning-Hub\Agentic-Hub-Governance\work_orders\WO-P010-E2.002.md
+
+You are a SEPARATE session from whichever session implemented this WO,
+per WO_COMPLETION_GATE.md's Independent Review Requirement (same folder
+as the WO -- read it first for what Independent Review is and is not).
+
+Project root: C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_010_Current_Market_Posture
+
+Steps:
+1. Read the WO file in full -- WHY, scope/fix section, Acceptance
+   Criteria, Files Built/Changed if present, Completion Gate, Occurrence
+   Log.
+2. Re-verify EVERY Acceptance Criteria item against live code, live
+   tests, and live data -- never trust the WO's own prose as evidence.
+   Where the WO names specific files, tests, or commands, run/read them
+   yourself and quote actual output.
+3. Re-run this project's regression test suite live (find its test
+   folder(s) -- commonly tests\ and/or python\*\tests\ -- and its
+   conda/python interpreter, commonly
+   C:\Users\Trader\.conda\envs\p140\python.exe) and confirm the actual
+   pass/fail count. Do not trust a pass count stated in the WO -- verify
+   it yourself.
+4. If the WO lists specific files it built or changed, compile-check
+   each one under p140 with:
+     python -W error::SyntaxWarning -m py_compile <file>
+   and check each file's line count against this Hub's 300-line-per-file
+   hard cap (flag anything at or over 300).
+5. If the WO describes a live smoke test or a specific command to run,
+   run it yourself and confirm the behavior matches what's claimed.
+6. Check for any project-specific INIT/context skill for this project
+   (search .claude\skills\ or ask if unsure) and follow any project-
+   specific rules it names for this kind of review.
+
+Verdict:
+If everything above holds: edit ONLY the WO file (WO-P010-E2.002.md) to add an
+"## Independent Review (2026-09-15)" section
+documenting exactly what you re-verified and how -- be specific (actual
+counts, actual line counts, actual command output), not vague. Check the
+Independent Review Acceptance Criteria box. Change the Status line at
+the top from OWNER_DONE to CLOSED with a one-line note.
+
+If ANYTHING does not hold -- a test fails, a claim doesn't match what you
+find, a file is over 300 lines, something the WO says was built isn't
+actually there -- do NOT mark it CLOSED. Add the same Independent Review
+section documenting the specific discrepancy, leave Status as
+OWNER_DONE, and add a clear "BLOCKED ON:" line describing exactly what
+needs fixing.
+
+Do not modify, edit, or create any file other than WO-P010-E2.002.md. Do not fix
+anything you find wrong -- your job is to report, not to fix. Running
+tests/compiles read-only against the code (which may write
+__pycache__/.pytest_cache as a side effect) is expected; writing to any
+other tracked file is not.

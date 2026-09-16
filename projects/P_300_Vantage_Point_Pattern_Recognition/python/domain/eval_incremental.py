@@ -70,11 +70,10 @@ from domain import aggregator, topk_cache
 from domain.eval_scoring import (
     _classify_signal_overridable, _corpus_pids, _label_correctness,
 )
-from infrastructure.catalog_reader import PatternMetadata
 from schemas_eval import (
     ThresholdOverrides, TopKMatch, WalkForwardBatch, WalkForwardResult,
 )
-from schemas_pipeline_b import ForwardLabelLite, NormalizedBar
+from schemas_pipeline_b import ForwardLabelLite, NormalizedBar, PatternMetadata
 
 
 class IncrementalGuardrailError(ValueError):

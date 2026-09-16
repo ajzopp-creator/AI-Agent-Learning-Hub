@@ -77,8 +77,12 @@ def _translate_stop(entry_premium: float, delta: float, stock_risk: float) -> fl
     return max(round(option_stop, 2), 0.01)
 
 
-def _translate_target(entry_premium: float, delta: float, stock_reward: float) -> float:
+def translate_target_premium(entry_premium: float, delta: float, stock_reward: float) -> float:
     """Delta-translate a stock target to option premium target.
+
+    Public (WO-P400-E8.003): reused by build_option_spec_scaleout.py to
+    render a second target's option-premium equivalent without a second
+    sizing run -- same one formula, one place.
 
     Args:
         entry_premium: Option entry premium (mid price).
@@ -156,7 +160,7 @@ def size_option_chart_based(
     stock_reward = stock_target - stock_entry
 
     option_stop = _translate_stop(chain.mid, chain.delta, stock_risk)
-    option_target = _translate_target(chain.mid, chain.delta, stock_reward)
+    option_target = translate_target_premium(chain.mid, chain.delta, stock_reward)
 
     risk_per_contract = round((chain.mid - option_stop) * 100, 2)
     premium_per_contract = round(chain.mid * 100, 2)

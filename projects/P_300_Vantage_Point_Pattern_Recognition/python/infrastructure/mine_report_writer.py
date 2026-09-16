@@ -26,7 +26,6 @@ from __future__ import annotations
 
 import csv
 import sys
-from dataclasses import dataclass
 from datetime import date, datetime
 from pathlib import Path
 
@@ -42,22 +41,7 @@ _CSV_FIELDS = [
 ]
 
 
-@dataclass(frozen=True)
-class MineCandidateRow:
-    """One mined candidate with its symbol attached (pattern_miner.py's
-    MinedCandidate is deliberately symbol-less -- the caller knows the
-    symbol from the file being scanned). Formatting layer's own input
-    contract, not a DB row model -- this WO persists nothing to any
-    catalog in Phase 1."""
-    symbol: str
-    anchor_date: date
-    pattern_class: str
-    horizon_days: int
-    move_pct: float
-    standard_horizon: bool
-    bars_since_crossover: int
-    entry_tier: str
-    keep: str = "YES"
+from schemas_mine import MineCandidateRow  # noqa: E402
 
 
 def format_mine_report(rows: list[MineCandidateRow]) -> str:

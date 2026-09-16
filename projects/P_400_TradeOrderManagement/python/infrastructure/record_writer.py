@@ -27,6 +27,7 @@ def write_p400_record(
     position_size: int,
     signal_source: str,
     trade_mode_value: str,
+    target_2: Optional[float] = None,
     drop_reason: Optional[str] = None,
     signal_date: Optional[str] = None,
     order_id: Optional[str] = None,
@@ -81,6 +82,10 @@ def write_p400_record(
         "entry_price": entry_price,
         "stop_price": stop_price,
         "target_1": target_1,
+        # WO-P400-E8.003 follow-on: vault schema (obsidian_writers\domain\vault_schemas.py)
+        # already defines target_2 (same situation as why_code below) -- was never
+        # populated by any P_400 write path until now. No schema change either side.
+        "target_2": target_2,
         "position_size": position_size,
         "order_id": order_id,
         # WO-P020-E1.007 Part 2 / WO-P400-E6.001: signal_source was already

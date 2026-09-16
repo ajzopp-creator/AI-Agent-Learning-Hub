@@ -22,6 +22,15 @@ if (-not (Test-Path $LOGS)) { New-Item -ItemType Directory -Path $LOGS | Out-Nul
 
 # Load shared launcher
 . "$HUB_ROOT\shared_resources\hub_mcp_launcher.ps1"
+if (-not (Get-Command Invoke-HubBat -ErrorAction SilentlyContinue)) {
+    # Transient dot-source race (ref EC-009) -- retry once before giving up
+    Start-Sleep -Milliseconds 500
+    . "$HUB_ROOT\shared_resources\hub_mcp_launcher.ps1"
+}
+if (-not (Get-Command Invoke-HubBat -ErrorAction SilentlyContinue)) {
+    Write-Output "FATAL: hub_mcp_launcher.ps1 failed to load Invoke-HubBat after retry -- aborting, nothing was run."
+    exit 1
+}
 
 Write-Output "============================================================"
 Write-Output " P_805 DAILY PIPELINE  —  MCP-Safe Launcher"

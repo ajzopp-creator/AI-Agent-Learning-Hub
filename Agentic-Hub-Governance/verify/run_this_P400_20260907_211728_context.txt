@@ -1,0 +1,107 @@
+WO-P400-E6.001 Scope item 2 -- File 10 of 18 (P_400 config.py +
+ACCOUNT_ID, infrastructure\order_submit_writer.py new,
+application\record_commands.py extend) -- 2026-09-07
+
+This is the first handoff this session inside P_400's own project folder
+(all previous ones were P_020 or shared_resources). All 3 files written
+directly via windows-mcp FileSystem (config.py via append=True, the
+other two via mode=write). Durable-signal Test-Path/Length checks
+succeeded directly via PowerShell (config.py: 14,025 bytes;
+order_submit_writer.py: 3,372 bytes; record_commands.py: 4,813 bytes).
+Skipped the compile subprocess call via windows-mcp:PowerShell -- stalled
+4+ min on every file this session so far. Handing straight to Claude
+Code.
+
+Two real findings from this session, already surfaced to and approved
+by Tony before writing:
+  1. side is hardcoded 'long' in order_submit_writer.py -- confirmed via
+     spread_sizer.py/build_spread_spec.py that every P_400 structure is
+     currently a debit position (stock buys, long options, debit
+     spreads), nothing sold-to-open exists in this codebase. Not a
+     guess; there's no short/credit mechanism to derive it from.
+  2. ACCOUNT_ID didn't exist anywhere in P_400's config.py -- added as a
+     single new constant ('AJZ6348'), since IRA9885 is buy-and-hold
+     (per Tony's own account description) and P_400 only ever trades
+     the active account.
+
+IMPORTANT -- a real bug in an EARLIER DRAFT of this handoff's own test
+script was caught and fixed before sending: record_commands.py imports
+read_eval_cache and write_p400_record at MODULE TOP LEVEL ("from
+infrastructure.x import y"), unlike write_order_to_p020 which it imports
+LOCALLY inside cmd_record_submit() (same lazy-import style as every
+other file this session). That means this script patches
+application.record_commands.read_eval_cache /
+application.record_commands.write_p400_record directly (the names
+already bound in record_commands' own namespace), NOT
+infrastructure.eval_cache.read_eval_cache or
+infrastructure.record_writer.write_p400_record -- patching the origin
+modules would silently not reach cmd_record_submit() at all, since it
+never re-imports them per call. write_order_to_p020 IS patched via its
+origin module (infrastructure.order_submit_writer), correctly, since
+that one IS a local per-call import.
+
+What it does:
+  1. Compiles all 3 files under warnings-as-errors.
+  2. config.py: confirms 3 pre-existing constants are still present
+     (regression) and ACCOUNT_ID == 'AJZ6348'.
+  3. order_submit_writer.py happy path: calls write_order_to_p020()
+     directly, confirms every field reaching the (mocked) submit_order()
+     is mapped correctly -- side always 'long', account_id from
+     config.ACCOUNT_ID, qty == position_size (not hardcoded), why_code ==
+     signal_source, schwab_order_id/council_verdict/source_project all
+     correct.
+  4. order_submit_writer.py exception safety: mocks submit_order to
+     raise, confirms write_order_to_p020() catches it and returns None
+     rather than propagating -- matches record_writer.py's "I/O failure
+     never blocks the eval result" philosophy.
+  5. cmd_record_submit() happy path: mocks read_eval_cache/
+     write_p400_record/write_order_to_p020, confirms both writes fire
+     with the right fields (especially position_size/entry_price flowing
+     through to the P_020 side) and the printed output includes the
+     P_020 write's outcome.
+  6. paper=True override: confirms the PAPER override reaches the P_020
+     write too, not just the vault write -- this was a real risk since
+     the P_020 call reads fields["trade_mode_value"] AFTER the override
+     is applied, but only if the override happens before that read.
+  7. Missing-cache short-circuit: confirms an unresolvable symbol returns
+     1 and never attempts the P_020 write at all.
+  8. cmd_record_decline() regression: confirms it's completely
+     unaffected -- no P_020 write path exists there at all.
+
+Success criteria: script prints "PASS: config.py, order_submit_writer.py,
+and record_commands.py validated (no live calls made)." and a
+run_this_P400_20260907_211728.py.done file appears with status: PASS.
+
+What Claude Code should fix on failure:
+- Compile errors: same known failure modes as prior handoffs this
+  session.
+- ACCOUNT_ID missing/wrong: check the appended block at the end of
+  config.py landed correctly (append should never disturb earlier
+  content).
+- Field-mapping wrong in order_submit_writer.py: read write_order_to_p020()'s
+  call to submit_order() directly against this script's expected kwargs.
+- Exception not caught: check the try/except wraps the submit_order()
+  call specifically, not some other line.
+- cmd_record_submit() field mismatches: read the new
+  "from infrastructure.order_submit_writer import write_order_to_p020"
+  block and its call directly against fields[...] -- likely a keyword
+  typo or wrong fields[] key.
+- paper-override not reaching P_020 write: confirm the write_order_to_p020()
+  call happens AFTER the `if paper: fields = {**fields, ...}` line, not
+  before it (ordering bug, not a logic bug, if this fails).
+- Missing-cache or decline regression failures: these return paths
+  should be completely unchanged from before this session -- if broken,
+  the new code was likely inserted above an early `return` instead of
+  after it.
+
+Do not change test assertions. All field values in the fixtures are
+arbitrary but exact -- confirm they flow through unchanged.
+
+Sequencing note: file 10 of 18. Live orders now flow end-to-end in BOTH
+directions: P_400 submits (this handoff) -> P_020 reconciles (files 1-8)
+-> P_800 should surface it in the vault next. Per the WO's build-order
+narrative: P_800\regenerate_p400_notes.py (vault becomes a real
+generated view for live orders) is next, then
+paper_order_history_parser.py (the largest single lift, deferred until
+now on purpose), then paper gets wired into order_reconciler.py/
+reconcile_command.py last.

@@ -151,21 +151,49 @@ Schwab command). Third instance of this gap-class would need a structural
 fix, not another changelog line.
 
 **batch-2b's earnings source is different from the manual flow above --
-read this before offering batch-2b (WO-P400-E5.002, 2026-08-08; found live
-2026-08-11 on HAL/VKTX).** `batch-2b` does NOT use Bucket B web-search or
-the old manual `earnings_YYYY-MM-DD.json` bridge file -- that file is dead
-code for batch-2b as of E5.002 (`infrastructure/earnings_file.py`, still on
-disk, called by nothing). `application/earnings_lookup.py` reads
+read this before offering batch-2b (WO-P400-E5.002, 2026-08-08, REVISED by
+WO-P400-E6.004, 2026-08-19; this section itself described the pre-revision
+hard-fail behavior for 26 days after the fix shipped -- corrected
+2026-09-14, caught only because Tony asked why the design didn't just
+approximate a missing date).** `batch-2b` does NOT use Bucket B web-search
+or the old manual `earnings_YYYY-MM-DD.json` bridge file -- that file is
+dead code for batch-2b as of E5.002 (`infrastructure/earnings_file.py`,
+still on disk, called by nothing). `application/earnings_lookup.py` reads
 `earnings_calendar_cache.json` exclusively (Nasdaq public calendar,
-refreshed via `cli.py refresh-earnings-calendar`). A PASS symbol missing
-from that cache -- e.g. a real, liquid, well-known ticker whose next-earnings
-date simply isn't officially confirmed by Nasdaq yet -- hard-fails the
-WHOLE batch (`EarningsDataMissing`, no per-symbol skip/override exists).
-Running `refresh-earnings-calendar` will NOT help if Nasdaq itself hasn't
-posted a date yet -- confirmed live: HAL/VKTX still absent after a fresh
-pull. The only way through today is the manual per-symbol
-`fetch-snapshot`/`fetch-chain`/`compare` flow (Bucket B web-search-sourced
-earnings), which does not touch the cache at all.
+refreshed via `cli.py refresh-earnings-calendar`).
+
+**Current behavior (post E6.004, both revisions same day 2026-08-19): a
+PASS symbol missing from the cache is neither batch-fatal nor skipped.**
+It gets `next_earnings_date=None`, treated as confirmed clear, evaluated
+normally. Deliberate, not a blind default: `EARNINGS_CALENDAR_LOOKAHEAD_DAYS`/
+`_LOOKBACK_BUFFER_DAYS` (config.py, 7/5) were cut down from 83/7 specifically
+to match MACRO's actual gate (`EARNINGS_WINDOW_FORWARD_DAYS`/`_BACKWARD_DAYS`,
+3/2) -- absence from a pull this narrow is meant to mean "no earnings in
+the window that matters," not "unknown."
+
+**Live risk this design doesn't cover (found 2026-09-14, checking
+NFLX/EHC/SELF): the pull window is anchored to `pulled_date`, not today.**
+`is_stale()` only fires past `EARNINGS_CALENDAR_MAX_STALENESS_DAYS` (35
+days), but the "absence = clear" inference is only actually valid while
+today's 3-day-forward/2-day-back gate window still falls inside the
+original pull's [pulled_date-5, pulled_date+7] capture window -- roughly
+the first 3-4 days after a pull, not 35. A cache pulled 26 days ago
+(observed live, today) has zero overlap with today's real gate window --
+a "confirmed clear" on a missing symbol right now isn't actually checked
+against today's date, only against a window that closed weeks ago. The
+35-day threshold guards a different failure (an ancient, never-refreshed
+cache) and does not guard this one.
+
+**Fixed (WO-P400-E8.002, 2026-09-15):** `earnings_calendar_cache.py`
+gained `is_valid_for_current_gate(cache)`, deriving the effective-validity
+ceiling from existing config (`EARNINGS_CALENDAR_LOOKAHEAD_DAYS -
+EARNINGS_WINDOW_FORWARD_DAYS` = 4 days at current settings, not a new
+hardcoded constant). `earnings_lookup.py`'s missing-symbol branch checks
+it before defaulting to confirmed-clear; past that window the symbol gets
+`source=SOURCE_GATE_UNCERTAIN` instead, and `batch_2b_scoring.py`'s
+`_process_symbol()` skips it (non-fatal, same per-symbol pattern E6.004
+already established) rather than silently evaluating it as clear. See
+Bugs Already Fixed below.
 
 **Chain data (options):**
 ```
@@ -190,6 +218,38 @@ Tony's TOS ThinkScript exactly (verified against MRCY, all 5 levels
 exact). **Item 9 (chart pattern) is never computed** — geometric shape ID
 is a judgment call (Tony confirmed 2026-07-21); Claude narrates it over
 the printed table in STEP 3A, no screenshot.
+
+**Vehicle compare & evaluate CLI syntax (learned live 2026-09-14, ADP
+run, WO-P400-E8.001-adjacent -- no WO opened, doc-sync gap only):**
+```
+cli.py compare SYMBOL --snapshot PATH --chain PATH --cash AMOUNT
+```
+Calls `domain\vehicle_selector.compare_vehicles()`. `--snapshot`/`--chain`
+must already exist on disk (`fetch-snapshot`/`fetch-chain` first) --
+`compare` does not auto-fetch and fails immediately without them.
+```
+cli.py evaluate SYMBOL --cash AMOUNT
+```
+**No `--vehicle` flag exists on `evaluate`.** STOCK is the default path
+(Tony confirmed 2026-09-14: no `--options` flag passed = STOCK route);
+exact option-path flag name not yet confirmed. `evaluate`'s own printed
+table never prints a literal vehicle name -- confirmed twice live
+
+**`--cash` is now optional Hub-wide on cli.py (WO-P010-E2.002, 2026-09-15):**
+omit it and `_resolve_cash()` falls back to the auto-pulled balance in
+P_000's Account Parameters (P_020 refreshes it 9:30 AM + 2:00 PM via
+P_010's cycle). The `AMOUNT` shown in the examples above still overrides
+per trade when Tony passes it.
+(2026-09-14, ADP): a run_this script asserting on `STOCK` in evaluate's
+stdout FAILed even though evaluate genuinely succeeded (verdict=APPROVED,
+all five council roles PASS). The downstream
+```
+cli.py spec SYMBOL
+```
+DOES print it -- its order-pattern header names the vehicle (observed:
+`PATTERN A -- Stock OCO Bracket`, 3-leg entry/T1/stop table). To assert
+vehicle routing in a run_this script, check `spec`'s output or which
+compare-selected flags fed the command -- never `evaluate`'s own stdout.
 
 **Record trade_mode (WO-P400-E5.001, 2026-07-29):** `record` accepts
 `--paper` independently of what `evaluate`/`spec` cached. Fill-time is
@@ -255,6 +315,7 @@ alongside or immediately after this skill, same session, per
 | E7.001 | `get_extended_quote_data()` (new, WO-P400-E7.001) only checked bid/ask for None -- Schwab's `extended` node returns 0.0 (not null) when no active extended-session market exists for a symbol, which would have let a fake zero-spread snapshot pass the spread-sanity gate looking like a perfect fill. Found live 2026-08-31 on CME/SPGI/WFC (all three, 17:41 ET after-hours). | Added bid <= 0 / ask <= 0 guard, treated same as missing data (returns None, fails loud, no file written). Test: ``test_get_extended_quote_data_returns_none_on_zero_bid_ask``. |
 | E6.004 | `batch-2b` aborted the WHOLE batch on one earnings-cache miss instead of skipping just that symbol -- `batch_2b_scoring.py` already had a per-symbol skip mechanism for this exact case, but it imported `EarningsDataMissing`/`require_entry` from the OLD dead `infrastructure.earnings_file` module, not the live `application.earnings_lookup` module `build_entries_for_symbols()` actually raises from -- two same-named classes in two modules, the real exception blew past the catch and up into `cmd_batch_2b()`'s top-level abort. Found live 2026-08-19: ALGN cache miss killed a clean 12-symbol batch. | Revision 1 fixed the abort (`build_entries_for_symbols()` omits the symbol instead of raising, `_process_symbol()` catches it into the existing `skipped` list). Revision 2, same session: root cause traced further -- MACRO's real gate (`earnings_in_window()`) only ever checks 3-days-forward/2-days-back from today (Tony's call 2026-07-28, confirmed 2026-08-19 as "the real trading Window"), so the 83-day calendar pull was fetching 12x more than the gate consumes, into a data source that's genuinely sparse past ~2 weeks anyway. `EARNINGS_CALENDAR_LOOKAHEAD_DAYS` cut 83->7 (`config.py`); a missing symbol now gets a confirmed-clear entry (`next_earnings_date=None`) instead of a skip, since absence in a window this narrow IS the real answer, not an unknown. Live-verified 2026-08-19: 11-symbol batch, zero data-availability skips, every symbol reached a real QUANT verdict (2 SBLK APPROVED, 9 genuine BLOCKs). See WO-P400-E6.004. |
 | E6.006 | `batch-2b`'s printed table showed `VEHICLE=STOCK` with zero reason for every candidate -- indistinguishable from options never being checked at all. Tony caught it live: "where is Option evaluation??" Traced and confirmed NOT a correctness bug -- `chain_SBLK.json` proved a real contract was fetched and correctly rejected (spread_pct_of_mid=26.67% vs. 10% max). `compare_vehicles()` already builds a full `recommendation_reason` string; `batch_2b_scoring.py`'s `_vehicle_comparison()` just discarded it before it reached the report. | `RankedCandidate` gained `vehicle_reason: str` (`schemas.py`); `_vehicle_comparison()` returns the reason on every path including the chain-fetch-failure early exit (previously reason-less); `_print_ranked_table()` prints it under each row. Pure reporting fix -- vehicle-selection logic itself untouched. See WO-P400-E6.006. Live-table verification pending next signal batch (today's inbox already fully archived by the time this landed). |
+| E8.002 | Earnings-cache "confirmed clear" default for a missing symbol was checked against `is_stale()`'s 35-day threshold, not against whether today still falls inside the *original pull's* narrow `[pulled_date-5, pulled_date+7]` capture window -- roughly a 4-day effective validity, not 35. Found live 2026-09-14 (NFLX/EHC/SELF), harmless that day only because their real dates were far out. | New `is_valid_for_current_gate(cache)` in `earnings_calendar_cache.py` (derived from `EARNINGS_CALENDAR_LOOKAHEAD_DAYS - EARNINGS_WINDOW_FORWARD_DAYS`, no new hardcoded constant); `earnings_lookup.py`'s missing-symbol branch checks it before defaulting to confirmed-clear, tagging `source=SOURCE_GATE_UNCERTAIN` when invalid; `batch_2b_scoring.py`'s `_process_symbol()` skips that case (non-fatal, same per-symbol pattern as E6.004). Tests: `test_is_valid_for_current_gate_*` (3), `test_symbol_absent_and_gate_invalid_returns_uncertain`, `test_process_symbol_skips_gate_uncertain_earnings_entry`. Full suite live-verified 395 passed. See WO-P400-E8.002. |
 ---
 
 ## Layer Architecture (Hub Standard)
@@ -361,6 +422,11 @@ is the cautionary example: a log line is not a council verdict.
     (WO-P400-E5.001) -- do not ask Tony to resolve it as an open question
     if he's already stated it; do not require `--paper` on an earlier
     `evaluate`/`spec` call. Fill-time is the correct decision point.
+15. Before evaluating whether any candidate variable (a gate, a regime, a
+    council flag) helps pick winners, check
+    `Trading_Projects_Folder_Architecture.md` -> "Trading Research
+    Standards" -- compare base-rate-adjusted lift, not raw win rate,
+    across buckets (ref WO-P010-E2.001, added 2026-09-13).
 
 **Must Not:**
 1. Hardcode a risk_mode, account balance, or position cap that should be
@@ -431,6 +497,14 @@ is the cautionary example: a log line is not a council verdict.
   "P_400 already knows this happened, the skill file just wasn't told."
 
 ## Changelog
+
+### 2026-09-15
+- WO-P400-E8.002: Bugs Already Fixed row added -- earnings-cache
+  "confirmed clear" default now gated on `is_valid_for_current_gate()`
+  (~4-day effective window derived from existing config), not just
+  `is_stale()`'s 35-day check. Live Data & Dossier Automation section
+  updated with a Fixed note under the 2026-09-14 gap it closes. Full
+  suite live-verified 395 passed, 0 failed.
 
 ### 2026-09-06
 - Added Attribution Standard section (WO-P000-E22.001, pointer only) --

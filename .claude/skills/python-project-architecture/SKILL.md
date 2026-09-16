@@ -100,6 +100,30 @@ Never guess a path owned by another project: (1) search the owning project's doc
 | P_115 | `P_115_118_TrackerDashboard_V2.xlsx` — OneDrive |
 | P_020 | SQLite DB — confirm path from P_020 docs |
 
+## Cross-Project Bridge Imports
+Any module that reaches into another project's folder via `sys.path.insert` (e.g. `p020_order_writer.py` bridging into P_020's `database\` folder) must load the foreign module under a private alias with `importlib.util`, never a bare `import`:
+
+```python
+import importlib.util
+
+spec = importlib.util.spec_from_file_location("p020_schemas", target_path)
+foreign_mod = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(foreign_mod)
+# foreign_mod.Exit, foreign_mod.Order, foreign_mod.Trade
+```
+
+**Never** `sys.path.insert` + bare `import name`. The bare name lands in `sys.modules` globally — if the calling project has ANY same-named top-level module (its own `schemas.py`, `config.py`, etc.), Python returns the cached one silently instead of re-resolving via the inserted path, and the failure surfaces as a missing-attribute error pointing at the wrong file. Root cause: the target folder (e.g. P_020's `database\`) isn't an installed/namespaced package — it's sys.path-inserted directly, so every module inside it lives at the bare top level of `sys.modules`, exposed to collision with any same-named module anywhere else in the Hub.
+
+Confirmed live 3x, same root cause, different name each time: `infrastructure`/`domain` (WO-P400-E6.001, 2026-09-07), `config` (2026-09-09), `schemas` (2026-09-11) — each fixed reactively by adding the name to an allowlist tuple (`_COLLIDING_PACKAGES`) in the bridge module, which only protects names already caught in production. `importlib.util` with a private alias avoids the whole class permanently — write every **new** bridge module this way from the start. Existing allowlist-based bridges aren't required to be rewritten unless touched for another reason anyway.
+
+**Related pitfalls, same root cause (flat sys.path, no real packages):**
+
+| Pitfall | Guard |
+|---|---|
+| Import side effects | A bridged module that configures logging or a singleton client on import silently no-ops on its 2nd load in the same process (Python thinks it's already loaded) — don't rely on import-time side effects in any module reachable via a bridge |
+| Stale `__pycache__` | Python invalidates by mtime+size, normally safe — but a copy tool that doesn't preserve mtime can leave a stale `.pyc` shadowing a real edit; clear `__pycache__` if an edited bridge file doesn't seem to take effect |
+| Direct-run vs. import path | Running `python cli.py` vs. importing `cli` as a module gives a different `sys.path[0]` — never `import` another project's `cli.py`; always invoke it as `python cli.py` from its own directory (already standard practice Hub-wide — this is why) |
+
 ## Common Mistakes
 | Mistake | Correct approach |
 |---|---|
@@ -113,6 +137,7 @@ Never guess a path owned by another project: (1) search the owning project's doc
 | Infra concerns in `application/` | Move to `infrastructure/` |
 | Module with two reasons to change | Split into two, one reason each |
 | Rewriting without checking test file | Run `tests/test_<module>.py` first — a rewrite can silently drop a prior fix (M-082, WO-P300-E3.002) |
+| Bridging into another project via `sys.path.insert` + bare `import` | Use `importlib.util.spec_from_file_location` with a private alias (see Cross-Project Bridge Imports) |
 
 ## Quick Reference
 ```
@@ -126,6 +151,7 @@ PROCESS BOUNDARY:      One reason to change · ≤5 fns soft · application = or
 SCHEMAS:               Required for ALL non-temp file reads/writes
 REGRESSION TESTS:      tests/test_<module>.py per fixed file — run before rewriting, never delete
 CROSS-PROJECT FILES:   Search owning project's docs first — never guess
+CROSS-PROJECT IMPORTS: importlib.util private alias for bridge modules — never sys.path.insert + bare import
 ONE FILE/BLOCK:        Always
 COMPLETION MARKER:     ✅ FILE COMPLETE: name.py (N lines)
 PAUSE IF NEEDED:       ⏸ PAUSING — type "continue" to proceed
@@ -140,5 +166,6 @@ PAUSE IF NEEDED:       ⏸ PAUSING — type "continue" to proceed
 | LLM preference | Local LM Studio → Claude API (fallback) |
 
 ## Last Updated
+2026-09-11 — Cross-Project Bridge Imports section added: `importlib.util.spec_from_file_location` with a private alias required for all new sys.path-bridge modules, replacing the reactive `_COLLIDING_PACKAGES` allowlist pattern. Common Mistakes +1 row, Quick Reference +1 line. Origin: `p020_order_writer.py` — same `sys.modules` bare-name collision hit `infrastructure`/`domain` (2026-09-07), `config` (2026-09-09), and `schemas` (2026-09-11), three live incidents, same root cause, each patched reactively. Related-pitfalls table added (import side effects, `__pycache__` staleness, direct-run vs. import `sys.path[0]`) — same root cause, not yet hit live, flagged proactively.
 2026-07-12 — Compression pass: layer/mistake sections converted to tables, prose trimmed throughout; no rule, path, or condition removed. Regression Test Governance added same day (Hub-wide, non-negotiable) — Step 0 +item 10, folder +tests/, Common Mistakes +1 row, Quick Reference +1 line. Origin: WO-P300-E3.002, M-082 fixed then silently lost 3 versions later in a rewrite.
 2026-05-30 — Process Boundary Standard added (Layer → Process → Module → Functions). Full rewrite/compression (~40% token reduction). Infra-in-application anti-pattern + Step 0 process-boundary check added.

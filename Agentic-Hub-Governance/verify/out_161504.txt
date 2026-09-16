@@ -1,0 +1,3 @@
+trades by account_id: [('AJZ6348', 438), ('IRA9885', 9), ('PAPER', 193)]
+total trades: (640,)
+DONE

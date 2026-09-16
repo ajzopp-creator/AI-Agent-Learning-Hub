@@ -99,6 +99,14 @@ def cmd_positions(args: argparse.Namespace) -> None:
     run_positions_command(args.account)
 
 
+# ── Expiration auto-close (logic in application/close_expired_options.py) --
+
+def cmd_close_expired_options(args: argparse.Namespace) -> None:
+    """Auto-close 0DTE cash-settled option trades past expiration (WO-P020-E1.018)."""
+    from application.close_expired_options import run_close_expired_options
+    run_close_expired_options(commit=args.commit)
+
+
 # ── Export / Analyze ────────────────────────────────────────────────────────
 
 def cmd_export(args: argparse.Namespace) -> None:
@@ -182,6 +190,13 @@ def _build_parser() -> argparse.ArgumentParser:
     p_positions = sub.add_parser("positions", help="Display current open positions from Schwab")
     p_positions.add_argument("--account", default="AJZ", help="Account: AJZ or IRA (default: AJZ)")
 
+    p_close_expired = sub.add_parser(
+        "close-expired-options",
+        help="Auto-close 0DTE cash-settled option trades past expiration (WO-P020-E1.018)",
+    )
+    p_close_expired.add_argument("--commit", action="store_true",
+                                 help="Write the closes (default: dry-run preview only)")
+
     return parser
 
 
@@ -200,6 +215,7 @@ def main() -> None:
         "analyze"  : cmd_analyze,
         "balance"  : cmd_balance,
         "positions": cmd_positions,
+        "close-expired-options": cmd_close_expired_options,
     }
     dispatch[args.command](args)
 

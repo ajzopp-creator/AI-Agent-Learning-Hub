@@ -167,3 +167,4 @@ scaffolding with a synthetic trade list.
 | Version | Date | Change |
 |---|---|---|
 | 1.0 | 2026-04-26 | Initial handoff after Workstreams A, B, C build session |
+Replaced p010-project-context

@@ -1,0 +1,9 @@
+# P_000_DailyProjects.txt
+# Daily boot list for P_000_StartUp_ClaudeDesktop.ps1
+# One project ID per line (e.g. P115). Lines starting with # are ignored.
+# Edit this file directly to add or remove projects from the daily run --
+# no need to touch the script. A -Projects override on the command line
+# takes precedence over this file for a single ad-hoc run.
+P115
+P300
+P400

@@ -63,6 +63,7 @@ class AccountParams(BaseModel):
     account_balance: float
     risk_per_trade: float
     max_position: float
+    cash_available: Optional[float] = None
 
 
 class SnapshotDict(BaseModel):

@@ -58,9 +58,9 @@ if str(_PYTHON_DIR) not in sys.path:
 
 from config import TOP_K_MATCHES  # noqa: E402
 from domain import similarity  # noqa: E402
-from infrastructure.catalog_reader import PatternMetadata  # noqa: E402
+
 from schemas_eval import TopKMatch  # noqa: E402
-from schemas_pipeline_b import NormalizedBar  # noqa: E402
+from schemas_pipeline_b import NormalizedBar, PatternMetadata  # noqa: E402
 
 # _partition_unaffected is imported LAZILY inside update_for_new_batch,
 # not here at module level: domain/eval_incremental.py imports THIS

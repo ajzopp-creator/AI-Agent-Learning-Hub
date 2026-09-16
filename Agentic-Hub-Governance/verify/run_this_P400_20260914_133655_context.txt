@@ -1,0 +1,34 @@
+P_400 Trade Order Management -- PEH handoff
+Date: 2026-09-14
+Phase/WO: none open (post-screen-all, symbol selection step, Must #13 vehicle-selection-first)
+
+What happened: Tony pasted a Tier-1 screen-all result. 4 symbols PASS
+(ADP RR=10.42, NFLX RR=8.62, EHC RR=5.59, SELF RR=5.50), 17 FAIL on
+RR_BELOW_MIN. Claude recommended proceeding with ADP (highest RR) next.
+Per p400-project-context Must #13, vehicle selection is options-first --
+`cli.py compare ADP` must run and its recommended field (STOCK, OPTION,
+SPREAD, OPTION_OVERRIDE_ONLY, or NEITHER) followed into the matching
+command, before any evaluate.
+
+A direct synchronous windows-mcp:PowerShell call running
+`python.exe cli.py compare ADP` stalled the full 4-minute relay ceiling
+with no result (ref peh-handoff v1.12: any direct sync python.exe call
+carries this risk, not just `-c` one-liners). Per peh-handoff Sequence
+step 4, this handoff was staged instead of retrying the call.
+
+What the script tests: that `cli.py compare ADP` runs cleanly (exit 0)
+from the project's python\ folder using the p140 interpreter, and that
+its output contains a recognizable vehicle recommendation token (STOCK,
+OPTION, SPREAD, or NEITHER).
+
+Success criteria: script prints PASS, .done marker shows status=PASS,
+and the captured stdout shows a vehicle recommendation.
+
+If it fails: read the captured STDOUT/STDERR in the script's own
+output, diagnose (missing snapshot data, Schwab auth, import error,
+etc.), propose a fix, do NOT change what the script asserts -- fix the
+underlying `compare` path/command it's exercising instead.
+
+Do not change test assertions. Do not modify any production file under
+projects\P_400_TradeOrderManagement\ -- this script only shells out to
+the existing CLI and reads its output.

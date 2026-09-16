@@ -9,7 +9,7 @@ echo.
 
 set "PROJECT_ROOT=C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_300_Vantage_Point_Pattern_Recognition"
 set "PYTHON=C:\Users\Trader\.conda\envs\p140\python.exe"
-set "SCRIPT=%PROJECT_ROOT%\python\utilities\preflight_status.py"
+set "SCRIPT=%PROJECT_ROOT%\python\tools\preflight_status.py"
 
 echo [STEP 1] Gathering catalog + LM Studio status...
 echo.

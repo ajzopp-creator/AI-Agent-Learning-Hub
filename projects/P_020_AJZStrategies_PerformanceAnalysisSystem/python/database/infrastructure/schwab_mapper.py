@@ -21,11 +21,14 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 from domain.exit_allocator import allocate_exits, is_entry_fill, is_exit_fill
+from infrastructure.schwab_instrument_parser import (
+    extract_expiration_fields,
+    extract_instrument,
+    map_asset_type,
+    sum_fees,
+)
 
 logger = logging.getLogger(__name__)
-
-# Fee types Schwab includes in transferItems as CURRENCY instruments
-_FEE_TYPES = {"COMMISSION", "SEC_FEE", "OPT_REG_FEE", "TAF_FEE", "EXCHANGE_FEE"}
 
 # Money market / sweep fund symbols to exclude from trade ingestion
 _EXCLUDED_SYMBOLS = {"SNVXX", "SNSXX", "SWVXX"}
@@ -72,62 +75,6 @@ def _parse_datetime(dt_str: str) -> Optional[datetime]:
         return None
 
 
-def _extract_instrument(transfer_items: List[Dict]) -> Optional[Dict]:
-    """Extract the non-CURRENCY instrument item from transferItems.
-
-    NOTE: returns only the first non-CURRENCY leg found. Multi-leg orders
-    (spreads) have more than one such leg -- not yet supported, tracked in
-    WO-P020-E1.002. Single-leg calls/puts/stock are unaffected.
-
-    Args:
-        transfer_items: List of transferItem dicts from a Schwab transaction.
-
-    Returns:
-        The instrument transferItem dict, or None if not found.
-    """
-    for item in transfer_items:
-        instrument = item.get("instrument", {})
-        if instrument.get("assetType") not in ("CURRENCY", None):
-            return item
-    return None
-
-
-def _sum_fees(transfer_items: List[Dict]) -> float:
-    """Sum all fee amounts from CURRENCY transferItems.
-
-    Args:
-        transfer_items: List of transferItem dicts.
-
-    Returns:
-        Total fees as a positive float rounded to 2 decimal places.
-    """
-    total = 0.0
-    for item in transfer_items:
-        instrument = item.get("instrument", {})
-        if instrument.get("assetType") == "CURRENCY":
-            fee_type = item.get("feeType", "")
-            if fee_type in _FEE_TYPES:
-                total += abs(item.get("amount", 0.0))
-    return round(total, 2)
-
-
-def _map_asset_type(schwab_asset_type: str, put_call: Optional[str]) -> str:
-    """Map Schwab assetType + putCall to our schema asset_type.
-
-    Args:
-        schwab_asset_type: 'OPTION' or 'EQUITY' from Schwab.
-        put_call: 'CALL', 'PUT', or None.
-
-    Returns:
-        Schema asset_type: 'call', 'put', 'stock'.
-    """
-    if schwab_asset_type == "OPTION":
-        if put_call == "PUT":
-            return "put"
-        return "call"
-    return "stock"
-
-
 def _parse_transaction(txn: Dict) -> Optional[Dict]:
     """Parse a single Schwab transaction into a normalized fill dict.
 
@@ -141,7 +88,7 @@ def _parse_transaction(txn: Dict) -> Optional[Dict]:
         return None
 
     items = txn.get("transferItems", [])
-    instrument_item = _extract_instrument(items)
+    instrument_item = extract_instrument(items)
     if not instrument_item:
         return None
 
@@ -151,6 +98,8 @@ def _parse_transaction(txn: Dict) -> Optional[Dict]:
     position_eff = instrument_item.get("positionEffect", "")
     amount       = instrument_item.get("amount", 0.0)  # negative = sell
     price        = instrument_item.get("price", 0.0)
+    mapped_asset_type = map_asset_type(asset_type, put_call)
+    expiration_fields  = extract_expiration_fields(instrument, mapped_asset_type)
 
     # Underlying symbol — use underlyingSymbol for options, symbol for equity
     underlying = (
@@ -174,7 +123,7 @@ def _parse_transaction(txn: Dict) -> Optional[Dict]:
     direction = "long" if amount > 0 else "short"
 
     qty      = abs(amount)
-    fees     = _sum_fees(items)
+    fees     = sum_fees(items)
     trade_dt = _parse_datetime(txn.get("tradeDate") or txn.get("time", ""))
     trade_dt_local = trade_dt.astimezone().replace(tzinfo=None) if trade_dt else None
     trade_date = trade_dt_local.date() if trade_dt_local else None
@@ -184,7 +133,7 @@ def _parse_transaction(txn: Dict) -> Optional[Dict]:
         "order_id"             : str(txn.get("orderId", "")),
         "underlying_symbol"    : underlying,
         "full_symbol"          : instrument.get("symbol", "").strip(),
-        "asset_type"           : _map_asset_type(asset_type, put_call),
+        "asset_type"           : mapped_asset_type,
         "direction"            : direction,
         "position_effect"      : position_eff,
         "open_date"            : trade_date,
@@ -194,6 +143,8 @@ def _parse_transaction(txn: Dict) -> Optional[Dict]:
         "fees"                 : fees,
         "net_amount"           : txn.get("netAmount", 0.0),
         "schwab_transaction_id": str(txn.get("activityId", "")),
+        "expiration_date"      : expiration_fields["expiration_date"],
+        "settlement_price"     : expiration_fields["settlement_price"],
     }
 
 

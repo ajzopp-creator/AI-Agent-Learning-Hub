@@ -56,7 +56,7 @@ sys.path.insert(0, str(_PYTHON_DIR))
 from domain.eval_scoring import (  # noqa: E402
     estimate_full_rescore_seconds, run_walk_forward,
 )
-from infrastructure.catalog_reader import PatternMetadata  # noqa: E402
+from schemas_pipeline_b import PatternMetadata  # noqa: E402
 from infrastructure.eval_io import (  # noqa: E402
     read_cached_walk_forward, write_walk_forward_cache,
 )

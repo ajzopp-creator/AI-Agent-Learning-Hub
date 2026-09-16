@@ -221,7 +221,7 @@ Gate 1 risk dollars come from the **P_010 risk_mode re-read fresh at size time**
 
 **Options risk:** dollar risk capped at premium-at-risk to the stop, delta-adjusted with a theta/IV-crush haircut. Never `(entry - stop)` stock math on a contract.
 
-**Cash is per-trade, not tracked:** Tony provides available buying power per trade. Do not subtract trades from a running cash balance between gates.
+**Cash: auto-pulled with per-trade override (WO-P010-E2.002):** P_020 refreshes Cash Available for Trading in P_000's Account Parameters twice daily (9:30 AM + 2:00 PM, via P_010's cycle). `--cash` on the P_400 CLI is optional -- when omitted, `cli.py`'s `_resolve_cash()` falls back to that auto-pulled figure; Tony can still override per trade by passing `--cash AMOUNT`. Do not subtract trades from the balance between gates -- each trade sizes independently against whatever figure is on file at that moment.
 
 ### 3.4 Risk Mode Standard
 

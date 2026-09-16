@@ -1,0 +1,59 @@
+Task: P_118 STEP 2 emission -- EHC (BUY, EP 124.35) and GCT (ASYM, EP 53.45), 2026-09-14.
+SignalSource=P_118 for both -- the batch header was "P_118 STEPS 1" and no new header
+preceded these trailing "STEPS 1-2 [TICKER EP:x]" entries, per the 2026-08-21 lesson
+(batch header governs SignalSource, not the chart indicator shown -- the P_115_BuyTheDip
+chart on both is the expected P_118-mandatory P_115 recheck engine, not evidence these
+are P_115-sourced).
+
+What this tests: cli.py emits both SIGNAL_V2 packets and the expected output files land
+on disk with a plausible size (Test-Path directly, per the 2026-09-14 stdout-parsing
+false-FAIL lesson).
+
+Diagnostics:
+EHC: Fund 4 (200-MA 14.6% NORMAL, no penalty), Anal 3, Candle 2, Setup 3, STR 0,
+HybridTier 7. Chart verdict BUY, matches. PatternType read from chart image: Flat Base
+(prior high ~127.5 early in the window, multi-week tight base ~118-123, ~7% depth,
+breakout attempt on 3 consecutive up days with Bull Signal markers ~9/9-9/11).
+GCT: Fund 2 (200-MA 27.4% NORMAL, no penalty), Anal 3, Candle 2, Setup 3, STR 0,
+HybridTier 5 -- does not clear BUY>=6, but chart's own Verdict is "ASYM Setup: Review"
+and meets AsymmetricSetup criteria (Anal>=3, Fund>=2) -- Chart-is-King, logged ASYM not
+BUY. PatternType read from chart image: Double Bottom (two comparable low touches
+~44-45, mid-Aug and again ~9/2-9/3, breakout on 2 up days with Bull Signal markers).
+
+Fund Verification (mandatory for P_118 BUY/ASYM per V111, unlike P_116): ran for both.
+EHC -- ROE ~23-24% (multiple sources), Debt/Capital ~45-50%, FCF positive ($400-460M) --
+clean, no >1-tier mismatch against submitted Fund=4, no hold triggered.
+GCT -- ROE ~30-32%, Debt/Capital ~49% (debt ~$507M vs equity ~$534M), FCF positive on a
+TTM basis (one recent quarter was negative, noted) -- clean, no >1-tier mismatch against
+submitted Fund=2, no hold triggered.
+
+No earnings flag for either: EHC last reported 8/5/26, next ~10/28/26 (projected, not
+confirmed); GCT last reported ~8/6/26, next ~early Nov 2026 (projected) -- neither
+imminent.
+
+FLAGGED ASSUMPTIONS -- confirm or correct with Tony, don't let this pass silently:
+- --confidence EHC=HIGH, GCT=MEDIUM: no locked HybridTier->confidence formula exists.
+  EHC reasoned HIGH (HybridTier=7, clears floor with room, NORMAL Fund). GCT reasoned
+  MEDIUM (ASYM is inherently a lower-conviction category than a clean BUY, independent
+  of any formula).
+- --strategy "breakout" for both: this one IS a documented example in
+  signal_schemas.py's strategy field comment (dip_buy | breakout | mean_reversion |
+  etc), unlike the earlier "bounce_income" label used for P_116 signals which had no
+  documented precedent.
+- --volume 11467 (EHC) / 11388 (GCT): derived as RVOL x VolumeAvg(20) from the chart,
+  same estimation approach as NFLX/ADP -- not a directly-read chart value.
+- --source-link placeholders: no P_800 vault note written for either yet -- same
+  pattern as NFLX/ADP, close this gap the same way (write_to_vault("P115", ...) for
+  both, then patch signal_metadata.signal_source_link on both packets) as a follow-up
+  step, same as was done for NFLX/ADP.
+- ANET in the accompanying 8-ticker PASS batch was missing one numeric value (4 values
+  instead of the usual 5: Fund/Anal/Candle/Setup with no STR shown) -- logged as PASS
+  with STR left blank rather than guessed, since HybridTier (Fund+Anal=5) is <6 either
+  way and doesn't change the PASS verdict. Flag to Tony, don't silently backfill STR.
+
+If it fails: read the actual error. Do NOT change --source -- must stay P_115 (packet
+signal_source is always P_115 regardless of scan origin; the tracker's SignalSource
+column is the P_118 one, separate field, untouched by this script). Do not silently
+substitute values to make it pass -- flag back to Tony.
+
+Do not change test assertions.

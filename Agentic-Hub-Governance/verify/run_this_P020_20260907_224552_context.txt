@@ -1,0 +1,115 @@
+WO-P400-E6.001 Scope item 2 -- File 12 of 18
+(infrastructure\paper_order_history_parser.py, new) -- 2026-09-07
+
+The largest single lift in this build, per the WO's own sizing. Before
+writing anything, found and read the real TOS Parser README plus two
+actual paper Account Statement exports on disk
+(data\tos_exports\paper\D_020_2026-07-27_YTD_AccountStatement.csv, the
+full unfiltered statement -- and a CPAY-filtered debugging export) to
+ground the design in real column data rather than guessing at a raw
+broker-statement format. Confirmed with Tony: same reconciliation logic
+for paper and live -- this file's only job is translating TOS's flat,
+annotation-based bracket representation (Spread column: "TRG BY #<id>",
+"OCO #<id>", "RE #<id>") into the same Schwab-shaped dict
+domain\order_linkage.py already knows how to walk, so
+order_linkage.build_order_chain() and order_reconciler.reconcile_order()
+run byte-for-byte UNCHANGED on paper orders.
+
+Three scoping simplifications, all flagged to and approved by Tony
+before writing ("go"):
+  1. Multi-leg combo orders (IRON CONDOR, VERTICAL, etc.) collapse to
+     their primary leg only -- continuation leg rows (no Order ID of
+     their own) are skipped, not modeled as separate legs. Same
+     simplification order_linkage.py already makes for Schwab spreads.
+  2. "RE #<id>" (order replaced/modified) rows are skipped, not
+     chain-followed to the order they replaced.
+  3. No distinct fill timestamp exists in the Order History section
+     (only "Time Placed") -- closeTime is set equal to enteredTime as a
+     best-effort approximation. Also: MKT orders show '~' instead of a
+     price in this section (real fill price lives in the separate
+     Account Trade History section, out of scope here) -- avg_fill_price
+     correctly comes back None for these rather than a fabricated
+     number, since order_reconciler.py already handles a None fill
+     price gracefully (this behavior is directly exercised by check 6
+     below, not just asserted).
+
+File written directly via windows-mcp FileSystem (mode=write). Durable-
+signal Test-Path/Length check succeeded directly via PowerShell (9,501
+bytes). Skipped the compile subprocess call via windows-mcp:PowerShell --
+stalled 4+ min on every file this session so far. Handing straight to
+Claude Code.
+
+IMPORTANT -- this script's synthetic test CSV is built from REAL rows
+copied VERBATIM from the actual 2026-07-27 YTD paper statement on disk
+(MRCY bracket, SPY IRON CONDOR, EMR expired order) -- not invented
+fixtures. The ONE deliberate deviation: one MRCY OCO child's status was
+changed from WORKING to FILLED (both were still open in the real file
+as of that export date) so Tier-1 reconciliation has something to
+actually resolve in this test. The real production statement file
+itself is never opened by this script -- a temp file holds the
+synthetic content, cleaned up (shutil.rmtree) regardless of pass/fail.
+
+What it does:
+  1. Confirms the file exists with a plausible line count, compiles
+     under warnings-as-errors.
+  2. Parses the synthetic CSV, confirms exactly 3 root orders (MRCY
+     entry, SPY condor, EMR) with the correct order_ids -- the two MRCY
+     bracket children are correctly NOT also present at the root level.
+  3. Confirms the MRCY entry order (5374526392) has orderStrategyType=
+     'TRIGGER' (has children) and exactly 2 children with the correct
+     order_ids (5374526395, 5374526394) -- bracket reassembly from the
+     TRG BY annotations worked.
+  4. Confirms the EMR order's status cleaned from the raw '(0) EXPIRED'
+     to 'EXPIRED'.
+  5. Confirms the SPY IRON CONDOR collapsed to a single primary leg
+     (qty=1, orderStrategyType='SINGLE') -- the 3 continuation leg rows
+     were correctly skipped, not turned into phantom children.
+  6. THE CORE CLAIM: feeds the MRCY root dict into
+     domain.order_linkage.build_order_chain() (completely unmodified
+     import, no special-casing for paper) and confirms it walks
+     correctly -- 2 descendants found, the FILLED child identified
+     correctly. Then feeds that chain into
+     domain.order_reconciler.reconcile_order() (also unmodified) and
+     confirms Tier 1 matches, entry_date=2026-07-24 is correct, AND
+     realized_pnl comes back None (not a fabricated number) because the
+     FILLED exit's price was '~' (MKT order, unrecoverable from this
+     section) -- proving the None-fill-price path is real, not just
+     theoretical.
+
+Success criteria: script prints "PASS: paper_order_history_parser.py
+validated -- same reconciliation code path as live orders." and a
+run_this_P020_20260907_224552.py.done file appears with status: PASS.
+
+What Claude Code should fix on failure:
+- Compile errors: same known failure modes as prior handoffs this
+  session.
+- Wrong root count/wrong bracket nesting: read _find_section_rows()'s
+  section-boundary detection and _is_primary_order_row()'s column-index
+  logic directly against this script's SYNTHETIC_CSV constant --
+  compare column positions carefully, this section's header has two
+  unlabeled columns and off-by-one errors are the likely failure mode.
+- Status cleanup wrong: read _clean_status()'s regex directly -- the
+  leading-count-prefix pattern is `^\(\d+\)\s*`, not a plain lstrip.
+- Multi-leg collapse failing (continuation rows becoming phantom
+  children or roots): confirm _is_primary_order_row() requires BOTH a
+  non-empty Time Placed AND an extractable Order ID -- a continuation
+  leg row has neither.
+- Check 6 (core claim) failing: this is the most important check in
+  this handoff. If build_order_chain() or reconcile_order() themselves
+  need a fix to accept this parser's output, STOP and flag to Tony
+  before changing either of those two files -- they are shared,
+  already-validated production code paths for LIVE orders too, and a
+  paper-specific special-case inside them would violate the explicit
+  "same logic for paper and schwab" requirement this whole file exists
+  to satisfy. The fix, if needed, almost certainly belongs in THIS
+  file's _build_order_dict(), not in order_linkage.py/order_reconciler.py.
+
+Do not change test assertions. All row data in SYNTHETIC_CSV is
+verbatim from the real production statement file except the one
+documented MRCY status change.
+
+Sequencing note: file 12 of 18 (the largest lift) complete. Per the WO's
+build-order narrative, this is genuinely last except for wiring: paper
+support gets wired into domain\order_reconciler.py's candidate-exit
+lookup and application\reconcile_command.py's orchestration as the
+final step of this entire WO-P400-E6.001 Scope item 2 build.

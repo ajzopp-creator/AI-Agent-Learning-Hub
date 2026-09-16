@@ -26,11 +26,11 @@ import sys
 from pathlib import Path
 
 from application.ledger_fill import fill_ledger  # noqa: E402
-from utilities.catalog_summary import run_summary  # noqa: E402
-from utilities.check_pattern import run_check  # noqa: E402
+from tools.catalog_summary import run_summary  # noqa: E402
+from tools.check_pattern import run_check  # noqa: E402
 from utilities.inspect_pattern import run_inspect  # noqa: E402
-from utilities.ledger_calibration import calibrate_ledger  # noqa: E402
-from utilities.vp_export_integrity_check import run_integrity_check  # noqa: E402
+from tools.ledger_calibration import calibrate_ledger  # noqa: E402
+from tools.vp_export_integrity_check import run_integrity_check  # noqa: E402
 
 
 def _cmd_catalog_summary(args: argparse.Namespace) -> int:

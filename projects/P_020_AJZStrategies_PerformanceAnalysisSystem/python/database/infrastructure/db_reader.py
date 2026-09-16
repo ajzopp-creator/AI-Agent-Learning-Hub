@@ -207,3 +207,76 @@ def get_trade_summary(
     rows = conn.execute(sql, params).fetchall()
     logger.debug(f"get_trade_summary → {len(rows)} rows")
     return rows
+
+
+# ── Order queries (WO-P400-E6.001 Scope item 2) ─────────────────────────────
+
+def get_open_real_orders(
+    conn: sqlite3.Connection,
+    account_id: Optional[str] = None,
+) -> List[sqlite3.Row]:
+    """Fetch REAL (non-paper) orders not yet in a terminal state -- the
+    candidate pool for application.reconcile_command's live reconciliation.
+
+    Args:
+        conn: Active SQLite connection.
+        account_id: Optional account filter.
+
+    Returns:
+        List of sqlite3.Row objects with trade_mode='REAL', a
+        schwab_order_id set, and status not in
+        ('closed', 'canceled', 'expired').
+    """
+    sql = """
+        SELECT * FROM orders
+         WHERE trade_mode = 'REAL'
+           AND schwab_order_id IS NOT NULL
+           AND status NOT IN ('closed', 'canceled', 'expired')
+    """
+    params: List[str] = []
+    if account_id:
+        sql += " AND account_id = ?"
+        params.append(account_id)
+    sql += " ORDER BY submitted_ts ASC"
+    rows = conn.execute(sql, params).fetchall()
+    logger.debug(f"get_open_real_orders → {len(rows)} rows")
+    return rows
+
+
+def get_open_paper_orders(
+    conn: sqlite3.Connection,
+    account_id: Optional[str] = None,
+) -> List[sqlite3.Row]:
+    """Fetch PAPER orders not yet in a terminal state -- the candidate
+    pool for application.reconcile_command's paper reconciliation.
+
+    Same shape as get_open_real_orders() -- trade_mode='PAPER' instead
+    of 'REAL'. schwab_order_id here holds the TOS/paperMoney order ID
+    Tony reports at record-submit time (same order_id param
+    record_commands.cmd_record_submit() takes for both real and paper),
+    which is what paper_order_history_parser.py's parsed orderId values
+    get matched against.
+
+    Args:
+        conn: Active SQLite connection.
+        account_id: Optional account filter.
+
+    Returns:
+        List of sqlite3.Row objects with trade_mode='PAPER', a
+        schwab_order_id set, and status not in
+        ('closed', 'canceled', 'expired').
+    """
+    sql = """
+        SELECT * FROM orders
+         WHERE trade_mode = 'PAPER'
+           AND schwab_order_id IS NOT NULL
+           AND status NOT IN ('closed', 'canceled', 'expired')
+    """
+    params: List[str] = []
+    if account_id:
+        sql += " AND account_id = ?"
+        params.append(account_id)
+    sql += " ORDER BY submitted_ts ASC"
+    rows = conn.execute(sql, params).fetchall()
+    logger.debug(f"get_open_paper_orders → {len(rows)} rows")
+    return rows

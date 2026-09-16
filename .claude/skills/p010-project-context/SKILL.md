@@ -52,6 +52,7 @@ demand.
 | Failure flag | `MORNING_RUN_FAILED.flag` (project root) -- written/cleared by `P_010_daily_posture_v5.py`; `P_010_daily_posture.bat` skips STEP 2 (note writer) if present; Guardian checks it too (WO-P010-E1.003) |
 | Toast notifier | `python\toast_notify.py` -- BurntToast-based, NOT windows-mcp:Notification (that tool needs a live MCP session; unattended runs have none). See ERROR 003. |
 | Staleness check | `python\staleness_check.py` -- keys off RiskConfig's `timestamp` field, never `grid_date` (grid_date legitimately lags over weekends) |
+| Grid freshness check | `python\grid_freshness_check.py` -- compares SPY/QQQ/VXX `grid_date` against `expected_trading_day()` (weekends + `MARKET_HOLIDAYS_<year>` holidays); on stale, writes `MORNING_RUN_FAILED.flag` with a `STALE GRID DATA` message and reuses E1.003's toast infra (ERROR 005, WO-P010-E1.004/E1.005) |
 | Note writer split | `python\note_api_fetchers.py` / `note_content_builders.py` / `note_template_engine.py` -- extracted from the note writer 2026-08-10 to clear the 300-line limit; `P_010_write_daily_note.py` is orchestration only now |
 | Intraday split | `python\intraday_risk_logic.py` -- PRANGE validation + risk-mode decision, extracted 2026-08-10; `P_010_intraday_vp_check_v4.py` is orchestration only now |
 
@@ -310,6 +311,13 @@ work immediately | **Sync Blocked** [YELLOW] | **Server Error** [YELLOW] |
    successful, even if the console printed `[SUCCESS]` (WO-P010-E1.003
    guard; see Anti-Pattern 9 and ERROR 003 caveat on notification
    reliability).
+8. Before treating `MORNING_RUN_FAILED.flag` as a script exception, read
+   its content -- a message starting "STALE GRID DATA" means
+   grid_freshness_check.py caught an old VantagePoint export (ERROR 005),
+   not a code failure. A flag firing on the first trading morning after a
+   market holiday not yet in `MARKET_HOLIDAYS_<year>` is expected, not a
+   regression -- check the holiday list is current for the year before
+   treating it as a new bug (WO-P010-E1.004/E1.005).
 
 **Must Not:**
 1. Let the VXX signal influence `risk_mode` — advisory layer only.
@@ -365,6 +373,15 @@ Do NOT load reflexively — this SKILL covers routine INIT and troubleshooting.
   per Hub-wide rule in `WO_COMPLETION_GATE.md`)
 
 ## Changelog
+
+### 2026-09-12
+- WO-P010-E1.004/E1.005 Independent Review + closure (separate P_010
+  session, per Hub governance): grid_freshness_check.py entry added to
+  Critical Paths; new Must rule 8 (read MORNING_RUN_FAILED.flag content,
+  holiday-list currency) added. Logged as ERROR 005 in
+  docs\P_010_Error_Corrections_Log.md. Live-verified against real
+  09/05-09/09 logs (Labor Day case, zero false positive) and a genuine
+  stale-grid catch the same session (09/12).
 
 ### 2026-08-26
 - WO-P010-E1.003 IMPERATIVE SWEEP closure: documented the

@@ -10,6 +10,8 @@
 # Last updated: 2026-08-29 (added Ack Scope -- doc-only/governance WOs no longer require per-project Acks, only WOs that change something a project's code/config/schema directly depends on; ref WO-P000-E2.001)
 # Last updated: 2026-09-04 (restored Enforcement section -- 2026-07-29 changelog line above claimed it was added but body never contained it; found while backfilling WO-P010-E1.004/E1.005 Completion Gate blocks; ref EC-005, WO-P000-E9.001)
 # Last updated: 2026-09-06 (added PREMISE VERIFICATION checklist item + "Why" section -- three of four delegated child WOs under WO-P000-E22.001 inherited materially wrong "current state" claims from the parent WO's own scope summary; ref WO-P000-E25.001/E26.001/E27.001)
+# Last updated: 2026-09-08 (added Status Header Sync rule + INIT Daily Check bullet -- Status: line is free text never re-derived from body sections added later; hit E5.004, E5.001, E2.016, E5.005, E5.006, E6.001, same failure shape every time, each corrected as a one-off; ref EC-008, WO-P400-E6.001)
+# Last updated: 2026-09-08 (Status Header Sync now fires whenever a WO is opened, not only at INIT -- WO-P400-E7.001 went stale in a session that skipped INIT entirely, so the INIT-only version could not have caught it; ref EC-011)
 
 ---
 
@@ -68,6 +70,36 @@ underlying work is otherwise finished -- the missing block is itself the
 gate failure. (ref EC-005, WO-P000-E9.001; restores wording the
 2026-07-29 changelog line claimed was added but was never actually
 present in this file's body -- found 2026-09-04.)
+
+---
+
+## Status Header Sync (added 2026-09-08, ref EC-008, WO-P400-E6.001)
+
+The `Status:` line at the top of a WO is free text -- nothing re-derives
+it from the sections below, so it silently goes stale the moment a
+session adds a new dated status block (BUILD COMPLETE / FIX APPLIED /
+CODE BUILT / LIVE VERIFIED / ROOT-CAUSE FIX / etc.) without also
+touching line 1.
+
+Rule: any edit that adds a new dated status-bearing section to a WO body
+must update the `Status:` line in the *same* edit -- never a follow-up,
+never deferred to "sync it later."
+
+Root cause: this has hit the same shape repeatedly -- E5.004, E5.001,
+E2.016, E5.005, E5.006, and E6.001 (Status still read "Actual code not
+started" a day after a full 13-file BUILD COMPLETE section landed below
+it) -- each corrected as a one-off, never fixed structurally until now.
+
+**Trigger scope (added 2026-09-08, ref EC-011):** this check is not
+gated on INIT having run. Any time a session opens a WO file for any
+reason -- read or edit -- it checks that WO's `Status:` line against the
+most recent dated section in the body at that point, before doing
+anything else with the file. WO-P400-E7.001 went stale the same day
+this rule was written, in a session that had explicitly skipped INIT --
+an INIT-only version of this check would not have caught it. INIT's
+Daily Check (below) is a broader periodic sweep across every open WO
+regardless of whether it's touched that session; it supplements this
+per-open check, it does not replace it.
 
 ---
 
@@ -231,3 +263,4 @@ At session start P_000 INIT confirms:
 - Any WO marked OWNER_DONE since last session has this checklist present and complete
 - No DRAFT files are orphaned in the ledger alongside a registered WO
 - Affects: field is populated on all OPEN/PENDING WOs
+- Status: line's summary matches the most recent dated section in the body -- not just line 1 (ref Status Header Sync above; this is the periodic sweep, not the only trigger -- see Trigger scope there for the per-open check that fires with or without INIT)

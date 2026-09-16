@@ -135,3 +135,53 @@ Verify     : Re-ran P_010_run_intraday_vp_check.bat live (2026-08-26,
 
 ================================================================================
 
+
+ERROR 005 -- Silent Stale VantagePoint Grid Export Not Detected (No Holiday Calendar)
+Date Fixed : 2026-08-30 (grid freshness check), holiday calendar same date;
+             Independent Review + this log entry 2026-09-12
+Severity   : HIGH (no fail-loud path existed for stale INPUT data, as
+             opposed to a failed script run -- risk_mode was silently
+             computed off multi-day-old grid data for two full trading
+             days in the original 2026-08-28 incident, ref WO-P010-E1.004
+             WHY section)
+Symptom    : P_010_daily_posture_v5.py ran successfully and wrote a clean
+             P_010_RiskConfig.json every morning even when the underlying
+             VantagePoint History Grid exports had not been refreshed for
+             multiple trading nights. staleness_check.py (ERROR 001/
+             WO-P010-E1.003) keys off RiskConfig's timestamp -- proves the
+             script ran, not that the data it ran on was fresh.
+Root Cause : No comparison existed between grid_date (SPY/QQQ/VXX) and the
+             expected trading day. A naive Mon-Fri "expected = yesterday"
+             rule also false-positives on the trading day after a market
+             holiday, since no holiday calendar existed anywhere in the
+             Hub (WO-P010-E1.004), and the original weekend-only
+             walk-back math mis-computed the reference date on a
+             Saturday/Sunday run (WO-P010-E1.005, found live 2026-08-30).
+Fix Applied: New module grid_freshness_check.py: expected_trading_day()
+             steps back one day at a time from today, skipping weekends
+             AND a hardcoded MARKET_HOLIDAYS_<year> set (10 NYSE/Nasdaq
+             closures), returning the first valid prior trading day.
+             check_grid_freshness() compares this against SPY/QQQ/VXX
+             grid_date and reuses WO-P010-E1.003's existing
+             MORNING_RUN_FAILED.flag + toast_notify.py infrastructure --
+             no new alerting path, no .bat/Guardian/downstream changes
+             needed. Called from P_010_daily_posture_v5.py immediately
+             after grid dates are parsed.
+Rule       : A script exiting cleanly is not proof its INPUT data is
+             current -- check the data's own dated fields (grid_date, not
+             just RiskConfig's timestamp) against the expected prior
+             trading day, holidays included. MARKET_HOLIDAYS_<year> in
+             grid_freshness_check.py must be refreshed every December for
+             the coming year, source: NYSE Group's official holiday
+             calendar announcement.
+Verify     : Unit-verified 2026-08-29/30 (9/9 tests passing) plus a
+             real-money live incident 2026-08-30 (Sunday run correctly
+             walked back to Friday, not Saturday). Independent, live
+             production confirmation 2026-09-12: the Tuesday-after-Labor-
+             Day case (09/08, expects 09/04) passed with zero false
+             positive, and a genuine multi-day-stale grid was caught and
+             named correctly the same session (09/12, "1d behind expected
+             09/11"). See WO-P010-E1.004 and WO-P010-E1.005 Independent
+             Review sections.
+
+================================================================================

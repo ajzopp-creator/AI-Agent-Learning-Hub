@@ -150,3 +150,23 @@ P000_PARAMS_FILE = (
     PROJECT_ROOT.parent / "P_000_PythonClaudeLocalLLM"
     / "config" / "P_000_Account_Parameters_Current.md"
 )
+
+
+# -- Cash-settled option roots for auto-close-on-expiration (WO-P020-E1.018) --
+# 0DTE options on these underlyings settle in cash with no closing Schwab
+# transaction -- see domain/expiration_closer.py. DELIBERATELY NOT auto-
+# detected: Schwab's own transaction data gives no reliable field to tell a
+# cash-settled index option (NDXP) apart from an assignable equity/ETF
+# option (SPY) -- assetType is "OPTION" and type is "VANILLA" for both,
+# confirmed by scanning every live pull file on disk 2026-09-15. Getting
+# this list wrong would misrepresent a real assignment as a cash close and
+# silently lose the resulting stock position -- add a symbol here only on
+# Tony's explicit confirmation it is cash-settled (SPX/SPXW/RUT/RUTW/XSP/VIX
+# are the standard CBOE cash-settled index roots if this list ever grows).
+CASH_SETTLED_OPTION_ROOTS = frozenset({"NDXP"})
+
+# Minimum whole days past expiration before a 0DTE position is eligible for
+# auto-close. Guards the "hasn't settled yet" false-positive risk named in
+# WO-P020-E1.018's own Acceptance Criteria -- same-day is never eligible,
+# even if the option's instrument.closingPrice already looks final.
+EXPIRATION_CLOSE_BUFFER_DAYS = 1

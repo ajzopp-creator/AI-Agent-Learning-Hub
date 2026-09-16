@@ -1,0 +1,240 @@
+# ----------------------------------------------------------------------
+# P_110_TradeTheBounce_V4
+# Multi-Timeframe (Daily + 4-Hour) Bounce Trading Engine
+# Architecture: Model-View-Controller (MVC)
+# Formerly: Script_ID_P_110_BounceTrade_OIL_v3 (renamed on this revision)
+#
+# v4 CHANGELOG (fixes applied to v3 / OIL_v3):
+#   1. Same-bar composite firing (the exact bug V5 fixed in the
+#      companion TrueBounceConfirmation indicator) -- setup detection
+#      (trend + zone proximity) now decouples from the trigger
+#      (RSI/engulfing/volume) via a rolling setupWindow, instead of
+#      requiring both on the identical bar.
+#   2. Structural stop -- stopLossBuy now anchors to the actual
+#      support/fib floor (minus an ATR buffer) instead of a pure
+#      ATR-off-close distance that could float above the level the
+#      trade thesis depends on.
+#   3. ADX asymmetry removed -- isDowntrend now requires ADX >
+#      adxThreshold same as isUptrend; dropped the isLowerLow-in-chop
+#      branch that let a weak, non-trending market qualify as
+#      "downtrend."
+#   4. nearSupport/nearSupport4H now test LOW touching the zone (the
+#      actual bounce moment), not CLOSE already reclaimed above it --
+#      ported from the validated V5 pattern.
+#   5. weakeningUptrend (daily + 4H) folded into finalUptrend's own
+#      self-referential def instead of a separately-declared variable
+#      referencing finalUptrend[1] -- ThinkScript rejected the latter
+#      as a forward reference ("No such variable: finalUptrend" /
+#      "finalUptrend4H"). Same-line self-reference (the pattern
+#      supportLevel/resistanceLevel already use) is required; a
+#      cross-variable [1] reference to a not-yet-declared def is not.
+#   6. volumeLookback 5 -> 20, matching the Hub-wide volume-SMA
+#      convention (P_300, Break-and-Retest).
+#   7. bullishEngulfing redefined as true body engulfment, not a full
+#      outside-bar (was stricter/rarer than the name implied).
+#   8. Short-side execution removed (SellSignal, stopLossSell,
+#      targetSell, sell alert, bearishEngulfing) -- every other
+#      strategy in the system is long-only; downtrend classification
+#      is retained as dashboard context only, not a trade trigger.
+#   9. arrowCooldownBars added to suppress duplicate signals firing
+#      repeatedly while price chops inside the same zone.
+#
+# KNOWN GAP NOT FIXED HERE: no ADX-equivalent trend-strength gate on
+# the 4H leg -- ThinkScript's cross-timeframe DMI reference syntax
+# isn't something verifiable without a live compile, so
+# isUptrend4H/isDowntrend4H remain EMA/close-only, same as v3.
+# ----------------------------------------------------------------------
+
+######### MODEL: PARAMETERS & INDICATORS #########
+
+input shortLength = 20;          # Short EMA period (Daily)
+input longLength = 50;           # Long SMA period (Daily)
+input shortLength4H = 20;        # Short EMA period (4-Hour)
+input longLength4H = 50;         # Long EMA period (4-Hour)
+input fastLength = 10;           # Fast EMA for recent price action (Daily)
+input fastLength4H = 10;         # Fast EMA for recent price action (4-Hour)
+input adxLength = 14;            # ADX period
+input adxThreshold = 25;         # ADX threshold for strong trend
+input pivotLookback = 5;         # Lookback for pivot high/low (Historical)
+input fibLookback = 20;          # Lookback for Fibonacci levels
+input rsiLength = 14;            # RSI length
+input rsiOversold = 30;          # RSI oversold threshold
+input rsiOverbought = 70;        # RSI overbought threshold (unused now, kept for reference)
+input volumeLookback = 20;       # Volume lookback period (was 5 in v3)
+input atrLength = 14;            # ATR period
+input atrMultiplierStop = 1.5;   # ATR buffer below the structural floor (was: off-close distance)
+input atrMultiplierTarget = 3.0; # ATR multiplier for target
+input proximityPercent = 2.0;    # Percentage buffer around S/R zones
+input confirmWindowBars = 5;     # Bars allowed between setup and trigger
+input arrowCooldownBars = 5;     # Bars to suppress a repeat signal
+
+# --- Daily Calculations ---
+def avgVolume = Average(volume, volumeLookback);
+def volumeSpike = volume > avgVolume * 1.5;
+
+def EMA_short = ExpAverage(close, shortLength);
+def SMA_long = SimpleMovingAvg(close, longLength);
+def EMA_fast = ExpAverage(close, fastLength);
+def ADX = DMI(adxLength).ADX;
+
+def isLowerLow = low < Lowest(low[1], pivotLookback);
+def isLowerHigh = high < Highest(high[1], pivotLookback);
+
+def isUptrend = close > SMA_long and EMA_short > SMA_long and EMA_fast > EMA_short and ADX > adxThreshold;
+def isDowntrend = close < SMA_long and EMA_short < SMA_long and EMA_fast < EMA_short and ADX > adxThreshold;
+
+# Self-referential: weakening check folded directly in, same pattern
+# as supportLevel/resistanceLevel below. Do NOT split this into a
+# separate weakeningUptrend def that references finalUptrend[1] --
+# that is a forward reference ThinkScript will reject.
+def finalUptrend = isUptrend and !(finalUptrend[1] and (isLowerLow or isLowerHigh or EMA_fast < EMA_short));
+def finalDowntrend = isDowntrend;
+def finalNeutral = !finalUptrend and !finalDowntrend;
+
+# Non-Repainting Daily Support/Resistance Pivots
+def pivotHigh = high[pivotLookback] == Highest(high, pivotLookback * 2 + 1);
+def pivotLow = low[pivotLookback] == Lowest(low, pivotLookback * 2 + 1);
+def supportLevel = if pivotLow then low[pivotLookback] else supportLevel[1];
+def resistanceLevel = if pivotHigh then high[pivotLookback] else resistanceLevel[1];
+
+def swingHigh = Highest(high, fibLookback);
+def swingLow = Lowest(low, fibLookback);
+def fibRange = swingHigh - swingLow;
+def fib_50 = swingHigh - fibRange * 0.50;
+def fibSupportValue = if finalUptrend then fib_50 else Double.NaN;
+def fibResistanceValue = if finalDowntrend then (swingLow + fibRange * 1.50) else Double.NaN;
+
+def RSI_daily = RSI(rsiLength);
+def bullishEngulfing = finalUptrend and close[1] < open[1] and close > open and close >= open[1] and open <= close[1];
+
+# --- 4-Hour Calculations ---
+def AggFix4H = max(GetAggregationPeriod(), AggregationPeriod.FOUR_HOURS);
+def close4H = close(period = AggFix4H);
+def low4H = low(period = AggFix4H);
+def high4H = high(period = AggFix4H);
+def open4H = open(period = AggFix4H);
+
+def avgVolume4H = Average(volume(period = AggFix4H), volumeLookback);
+def volumeSpike4H = volume(period = AggFix4H) > avgVolume4H * 1.5;
+
+def EMA_short4H = ExpAverage(close4H, shortLength4H);
+def EMA_long4H = ExpAverage(close4H, longLength4H);
+def EMA_fast4H = ExpAverage(close4H, fastLength4H);
+
+def isLowerLow4H = low4H < Lowest(low4H[1], pivotLookback);
+def isLowerHigh4H = high4H < Highest(high4H[1], pivotLookback);
+
+def isUptrend4H = close4H > EMA_long4H and EMA_short4H > EMA_long4H and EMA_fast4H > EMA_short4H;
+def isDowntrend4H = close4H < EMA_long4H and (EMA_short4H < EMA_long4H or EMA_fast4H < EMA_short4H);
+
+def finalUptrend4H = isUptrend4H and !(finalUptrend4H[1] and (isLowerLow4H or isLowerHigh4H or EMA_fast4H < EMA_short4H));
+def finalDowntrend4H = isDowntrend4H;
+def finalNeutral4H = !finalUptrend4H and !finalDowntrend4H;
+
+# Non-Repainting 4H S/R Retention
+def pivotHigh4H = high4H[pivotLookback] == Highest(high4H, pivotLookback * 2 + 1);
+def pivotLow4H = low4H[pivotLookback] == Lowest(low4H, pivotLookback * 2 + 1);
+def supportLevel4H = if pivotLow4H then low4H[pivotLookback] else supportLevel4H[1];
+def resistanceLevel4H = if pivotHigh4H then high4H[pivotLookback] else resistanceLevel4H[1];
+
+# 4H RSI Engine
+def priceChange4H = close4H - close4H[1];
+def gain4H = if priceChange4H > 0 then priceChange4H else 0;
+def loss4H = if priceChange4H < 0 then -priceChange4H else 0;
+def avgGain4H = WildersAverage(gain4H, rsiLength);
+def avgLoss4H = WildersAverage(loss4H, rsiLength);
+def RS4H = if avgLoss4H == 0 then 100 else avgGain4H / avgLoss4H;
+def RSI4H = 100 - (100 / (1 + RS4H));
+
+def bullishEngulfing4H = finalUptrend4H and close4H[1] < open4H[1] and close4H > open4H and close4H >= open4H[1] and open4H <= close4H[1];
+
+######### CONTROLLER: EXECUTION & SIGNALS #########
+
+# Zone proximity tests the LOW touching the zone (the actual bounce
+# moment), not the close already reclaimed above it -- ported from the
+# validated V5 confirmation-indicator pattern.
+def nearSupport = low <= supportLevel * (1 + proximityPercent / 100)
+                or low <= fibSupportValue * (1 + proximityPercent / 100);
+def nearSupport4H = low4H <= supportLevel4H * (1 + proximityPercent / 100);
+
+# Setup stage: trend alignment + zone proximity.
+def nearSupportSetup = finalUptrend and finalUptrend4H and nearSupport and nearSupport4H;
+
+# Setup only needs to have occurred within the last confirmWindowBars
+# bars, not on this exact bar -- the core V5 fix, ported in.
+def setupWindow = Sum(nearSupportSetup, confirmWindowBars) > 0;
+
+# Trigger: the actual reversal evidence, checked fresh on the
+# confirmation bar.
+def triggerCondition = RSI_daily < rsiOversold or RSI4H < rsiOversold or
+                        bullishEngulfing or bullishEngulfing4H or
+                        volumeSpike or volumeSpike4H;
+
+def confirmationRaw = setupWindow and triggerCondition;
+
+# Prevent duplicate arrows while price chops inside the same zone.
+def recentConfirmation = Sum(confirmationRaw[1], arrowCooldownBars) > 0;
+def bullishBounce = confirmationRaw and !recentConfirmation;
+
+# ATR + Structural Stop and Target
+def ATR = Average(TrueRange(high, close, low), atrLength);
+
+# Stop anchors to the actual support/fib floor -- the level the trade
+# thesis depends on -- not a pure ATR distance off close, which could
+# float above the level entirely if confirmation fires several bars
+# into the setup window.
+def structuralFloor = if IsNaN(fibSupportValue) then supportLevel else Min(supportLevel, fibSupportValue);
+def stopLossBuy = if bullishBounce then structuralFloor - (ATR * atrMultiplierStop) else Double.NaN;
+def targetBuy = if bullishBounce then close + (ATR * atrMultiplierTarget) else Double.NaN;
+
+######### VIEW: PLOTS, LABELS & VISUALS #########
+
+# S/R Levels (visual context; resistance retained for reference even
+# though short execution has been removed)
+plot PivotSupport = supportLevel;
+plot FibSupport = fibSupportValue;
+plot PivotResistance = resistanceLevel;
+plot FibResistance = fibResistanceValue;
+
+PivotSupport.SetDefaultColor(Color.GREEN);
+FibSupport.SetDefaultColor(Color.YELLOW);
+PivotResistance.SetDefaultColor(Color.RED);
+FibResistance.SetDefaultColor(Color.ORANGE);
+PivotSupport.SetPaintingStrategy(PaintingStrategy.HORIZONTAL);
+FibSupport.SetPaintingStrategy(PaintingStrategy.HORIZONTAL);
+PivotResistance.SetPaintingStrategy(PaintingStrategy.HORIZONTAL);
+FibResistance.SetPaintingStrategy(PaintingStrategy.HORIZONTAL);
+
+# Signal Arrow (long-only -- short signal removed, see changelog #8)
+plot BuySignal = if bullishBounce then low - (ATR * 0.2) else Double.NaN;
+BuySignal.SetPaintingStrategy(PaintingStrategy.ARROW_UP);
+BuySignal.SetDefaultColor(Color.GREEN);
+BuySignal.SetLineWeight(3);
+
+# Target and Stop
+plot BuyStop = stopLossBuy;
+plot BuyTarget = targetBuy;
+BuyStop.SetDefaultColor(Color.RED);
+BuyTarget.SetDefaultColor(Color.GREEN);
+BuyStop.SetPaintingStrategy(PaintingStrategy.HORIZONTAL);
+BuyTarget.SetPaintingStrategy(PaintingStrategy.HORIZONTAL);
+
+# Dashboard Labels
+AddLabel(yes, if finalUptrend then "Daily Uptrend" else if finalDowntrend then "Daily Downtrend" else "Daily Neutral",
+         if finalUptrend then Color.GREEN else if finalDowntrend then Color.RED else Color.YELLOW);
+AddLabel(yes, if finalUptrend4H then "4H Uptrend" else if finalDowntrend4H then "4H Downtrend" else "4H Neutral",
+         if finalUptrend4H then Color.GREEN else if finalDowntrend4H then Color.RED else Color.YELLOW);
+AddLabel(yes, "ADX: " + Round(ADX, 2), if ADX > adxThreshold then Color.GREEN else Color.GRAY);
+
+AddLabel(yes, "Setup: " + (if setupWindow then "YES" else "NO"),
+         if setupWindow then Color.CYAN else Color.GRAY);
+AddLabel(yes, "Confirm: " + (if bullishBounce then "YES" else "NO"),
+         if bullishBounce then Color.GREEN else Color.GRAY);
+
+AddLabel(bullishBounce, "MTF Buy Signal: Bounce Confirmed", Color.GREEN);
+
+# Dynamic Canvas Visual Alert (long-only)
+AssignBackgroundColor(if bullishBounce then Color.DARK_GREEN else Color.CURRENT);
+
+# Alert
+Alert(bullishBounce, "MTF Bullish Bounce Signal", Alert.BAR, Sound.Bell);

@@ -1,0 +1,3 @@
+No open trades eligible for expiration auto-close.
+
+Dry run -- no DB writes. Add --commit to write.

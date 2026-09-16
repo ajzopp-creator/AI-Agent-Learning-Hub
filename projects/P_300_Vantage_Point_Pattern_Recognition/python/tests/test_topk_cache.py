@@ -34,7 +34,7 @@ sys.path.insert(0, str(_PYTHON_DIR))
 from domain import similarity  # noqa: E402
 from domain.eval_incremental import _partition_unaffected  # noqa: E402
 from domain.topk_cache import TopKTieError, _displace, update_for_new_batch  # noqa: E402
-from infrastructure.catalog_reader import PatternMetadata  # noqa: E402
+from schemas_pipeline_b import PatternMetadata  # noqa: E402
 from schemas_eval import TopKMatch  # noqa: E402
 
 

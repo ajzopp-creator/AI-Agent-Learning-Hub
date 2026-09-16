@@ -43,17 +43,43 @@ def test_symbol_absent_from_cache_is_confirmed_clear(monkeypatch):
     that matters' -- a confirmed clear, not raised as EarningsDataMissing.
     Stale test found and fixed same session as WO-P400-E6.003 while
     running the full suite (2026-08-20) -- E6.004 itself was never updated
-    to match Revision 2's own behavior change."""
+    to match Revision 2's own behavior change.
+
+    WO-P400-E8.002 (2026-09-15) added a precondition: this confirmed-clear
+    path only applies while is_valid_for_current_gate() is True --
+    monkeypatched True here deliberately; see
+    test_symbol_absent_and_gate_invalid_returns_uncertain below for the
+    False case this test used to not distinguish."""
     cache = _cache({})
     monkeypatch.setattr(lookup_mod, "load_cache", lambda: cache)
     monkeypatch.setattr(lookup_mod, "is_stale", lambda c: False)
+    monkeypatch.setattr(lookup_mod, "is_valid_for_current_gate", lambda c: True)
     monkeypatch.setattr(lookup_mod, "_lookup_sector", lambda s: None)
 
     entries = lookup_mod.build_entries_for_symbols(["ZZZZ"])
     assert "ZZZZ" in entries
     assert entries["ZZZZ"].next_earnings_date is None
-    assert entries["ZZZZ"].source == "nasdaq_calendar_confirmed_clear"
+    assert entries["ZZZZ"].source == lookup_mod.SOURCE_CONFIRMED_CLEAR
     assert entries["ZZZZ"].date_confirmed is True
+
+
+def test_symbol_absent_and_gate_invalid_returns_uncertain(monkeypatch):
+    """WO-P400-E8.002 (found live 2026-09-14, NFLX/EHC/SELF): once the
+    cache's own capture window no longer reaches today's gate window,
+    'absent from cache' must stop meaning 'confirmed clear' -- it means
+    genuinely unknown, and batch_2b_scoring.py's per-symbol skip is the
+    correct place to act on that, not a silent clear default here."""
+    cache = _cache({})
+    monkeypatch.setattr(lookup_mod, "load_cache", lambda: cache)
+    monkeypatch.setattr(lookup_mod, "is_stale", lambda c: False)
+    monkeypatch.setattr(lookup_mod, "is_valid_for_current_gate", lambda c: False)
+    monkeypatch.setattr(lookup_mod, "_lookup_sector", lambda s: None)
+
+    entries = lookup_mod.build_entries_for_symbols(["ZZZZ"])
+    assert "ZZZZ" in entries
+    assert entries["ZZZZ"].next_earnings_date is None
+    assert entries["ZZZZ"].source == lookup_mod.SOURCE_GATE_UNCERTAIN
+    assert entries["ZZZZ"].date_confirmed is False
 
 
 def test_stale_cache_still_returns_entries(monkeypatch, capsys):

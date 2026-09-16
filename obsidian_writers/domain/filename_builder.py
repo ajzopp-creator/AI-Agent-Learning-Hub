@@ -17,6 +17,14 @@ json schemas (P400SIG, SIGNAL_V2): filename is signal date + symbol + a
   signal_timestamp (packets carry no signal_date field).
 
 CHANGELOG:
+  v2.4  2026-09-06  Added KB_ORIGIN_SUBFOLDER_MAP routing to build_filepath()'s
+                    KB branch (WO-P800-E5.001): checks the map by
+                    data.get("origin") before falling back to
+                    VAULT_FOLDER_MAP["KB"]. Separates P_805 newsletter-derived
+                    KB notes from Tony's manually-clipped research without a
+                    new schema or a .base edit. Scoped to schema_name == "KB"
+                    only -- P115/P300/P400/P400_PAPER/P400SIG/SIGNAL_V2/P020/
+                    P820 branches unchanged.
   v2.3  2026-07-21  P400_PAPER added to the P300/P400 identifier branch
                     (WO-P400-E2.019): paper trades now resolve a ticker-based
                     filename identically to real P400 trades; folder
@@ -64,7 +72,10 @@ def build_filepath(schema_name: str, data: dict[str, Any]) -> Path:
                          route to a separate vault folder via
                          VAULT_FOLDER_MAP, same identifier logic as P400
                          -- WO-P400-E2.019)
-        KB           →  YYYY-MM-DD_SLUG.md  (slug from title)
+        KB           →  YYYY-MM-DD_SLUG.md  (slug from title; routed to a
+                         KB_ORIGIN_SUBFOLDER_MAP subfolder when data["origin"]
+                         matches a mapped key, otherwise the KB root --
+                         WO-P800-E5.001)
     json schemas:
         P400SIG      →  YYYY-MM-DD_SYMBOL_signal.json
         SIGNAL_V2    →  YYYY-MM-DD_SYMBOL_v2.0.json

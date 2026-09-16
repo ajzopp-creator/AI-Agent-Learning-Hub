@@ -1,0 +1,57 @@
+P_400 Trade Order Management -- PEH handoff
+Date: 2026-09-14
+Phase/WO: none open (post-compare, evaluate step, Must #13 continuation)
+
+Context: Tier-1 screen-all PASSed ADP (RR=10.42 raw screen). `cli.py compare
+ADP` (prior handoff run_this_P400_20260914_133655, PASSed) recommended
+vehicle=STOCK -- option leg (275C 2026-10-23) BLOCKED by options council
+(OI=1 < 150 min, spread=29.1% > 10% max). Three-gate STOCK size came back
+as 2 shares, dollar risk $22.89, R:R 8.36 at T1, under risk_mode=OFF
+(avg_posture=-1.021454, spy=-2.048, qqq=0.005 as of 2026-09-14 09:21 ET).
+
+Earnings: next 2026-10-28, last 2026-07-29, sector Industrials (web-search
+sourced, Bucket B). 2026-10-28 is 44 days out -- outside the 3-day
+EARNINGS_WINDOW_FORWARD_DAYS, so MACRO should NOT block on earnings for
+this evaluate.
+
+Cash figure: using $16,729.05 (Cash Available for Trading,
+P_000_Account_Parameters_Current.md, pulled 2026-09-12) -- same figure the
+prior compare handoff used. Tony has NOT supplied a live cash figure for
+this specific evaluate; Gate 2 (cash) is not expected to bind here since
+2 shares x $275.70 = $551.40 is far under any plausible cash gate --
+Gate 1 (risk-based) or Gate 3 (concentration, $736.47 cap at OFF) is the
+likely binding constraint. If the script's evaluate output shows Gate 2
+as the binding gate, flag that explicitly -- it would mean the cash
+figure actually matters and Tony should be asked for a current number
+before this result is trusted.
+
+What the script tests: that `cli.py evaluate ADP` (or the correct
+subcommand/flags -- introspect `cli.py evaluate --help` or `cli.py --help`
+first if `evaluate ADP` alone errors, same pattern as the prior compare
+handoff needing --snapshot/--chain/--cash) runs cleanly against the
+already-fetched ADP snapshot/chain data, passes vehicle=STOCK through
+(per Must #13, p400-project-context skill -- follow compare's recommended
+field into the matching command, do not re-run compare), and returns one
+of the four verdict tiers: APPROVED, APPROVED_WITH_CAUTION,
+APPROVED_WITH_SEVERE_WARNING, or BLOCKED.
+
+Success criteria: script prints PASS, .done marker shows status=PASS, and
+the captured stdout contains one of the four verdict-tier strings above,
+plus each council role's vote (QUANT/RISK/MACRO/TAPE/BEHAVIORAL).
+
+Reminder (RISK never blocks, Architecture v2.2/SIP v2.4 standing
+directive): heat/position-count/daily-loss/sector checks from RISK should
+downgrade to APPROVED_WITH_SEVERE_WARNING, never a hard BLOCK -- if the
+output shows RISK producing a hard BLOCK, that's a regression worth
+flagging back to Tony, not something to silently work around.
+
+If it fails: read the captured STDOUT/STDERR, diagnose (wrong CLI
+flags/subcommand name is expected and fine to correct in THIS script;
+a real production error in evaluate_signal.py/council.py is not -- propose
+a fix for Tony to review, don't silently patch production code). Paste
+full output back to Tony either way. Do not change test assertions
+(the four-verdict-tier check and the vehicle=STOCK pass-through check).
+
+Do not modify any production file under
+projects\P_400_TradeOrderManagement\ -- this script only shells out to
+the existing CLI and reads its output.

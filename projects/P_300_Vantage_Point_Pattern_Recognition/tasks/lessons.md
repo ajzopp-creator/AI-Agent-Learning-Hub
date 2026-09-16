@@ -438,3 +438,50 @@ Neither hit us on 2026-08-21 -- the approval stuck cleanly and navigate worked i
 **Pairs with:** M-020, M-051 (hardcoded success claims), M-054 (a claim is not evidence).
 
 (Captured 2026-08-31, Tony's direct correction.)
+
+
+## M-121 -- A clean-returning file write is not proof it landed; a local application lock (not just an MCP relay stall) can silently drop the write, and only a try/catch around a real open call surfaces it
+
+**Rule:** Neither PowerShell `Set-Content` nor a raw `[System.IO.File]::WriteAllText` reliably throws when another process holds a lock on the target file -- both can return cleanly while the write silently does not land. `Test-Path` and a clean process exit code are not proof of a landed write; only a post-write content read-back is. When a read-back shows unchanged content after two different write mechanisms both "succeeded," suspect a local lock (an editor with the file open) before assuming an MCP relay problem -- the diagnostic is different: wrap a real file-open call (`[System.IO.StreamWriter]::new(...)`) in try/catch, which DOES raise a catchable `MethodInvocationException` naming the lock explicitly ("being used by another process"), where the silent methods do not.
+
+**Trigger (2026-09-10):** Archiving tasks/todo.md (5th pass), two consecutive write attempts (Set-Content, then WriteAllText) both returned without error but a follow-up line-count read-back showed the file unchanged both times. A third attempt wrapped in try/catch around a StreamWriter open surfaced the real cause immediately: Tony had the file open in Word. Zero content lost -- caught before any edit was reported done, not after.
+
+**Fix:** Treat "the write call returned cleanly" as no signal at all for an existing file already known to be at risk (recently read by the user, or previously touched this session) -- always read the target content back and compare before reporting a write as done. If a read-back shows no change after a write that reported success, escalate directly to a try/catch-wrapped StreamWriter probe rather than blind-retrying the same write mechanism a second or third time.
+
+**Pairs with:** M-122 (a different, unrelated cause of the same "reported OK, didn't land" symptom -- both defeated only by reading back, not by trusting either write mechanism's own return).
+
+(Captured 2026-09-10, self-caught mid-task, not a Tony correction.)
+
+## M-122 -- A PowerShell helper that bundles two `.Replace()` calls into one write can have one half silently no-op while the other lands; an occurrence-count guard on the bare match text does not catch this if the actual replace target includes an appended newline
+
+**Rule:** When a PowerShell edit helper does `$content.Replace($removeLine + "``r``n", "")` to delete a whole line, the occurrence-count guard must check the EXACT string passed to `.Replace()` (including the appended `` `r`n ``), not just the bare `$removeLine` text -- a guard that only confirms the bare line exists once can still pass while the newline-appended version fails to match (for reasons not fully diagnosed: possibly trailing whitespace or an adjacent line-ending quirk at that specific spot), silently no-opping the removal half of a two-part edit while the other half (a plain text-to-text replace with no embedded newline) lands fine. The result is a mixed, half-fixed file that looks correct from the part that worked.
+
+**Trigger (2026-09-10):** A `Fix-Import` helper (WO-P300-E5.001 Batch 1) removed one import line and updated another in the same write, for 5 files. Reported "OK" for all 5 based on a bare-text occurrence check. A later full-project sweep found 2 of the 5 (topk_cache.py, mine_audit.py) still had the OLD import line present alongside the new one -- the removal half had silently no-opped in exactly the way described above.
+
+**Fix:** After ANY multi-part or compound edit -- even one that reports success and passed its own pre-write occurrence checks -- read the file back afterward and grep for both (a) the new content being present and (b) the old content being ABSENT. A guard checked before the write proves the match existed; it does not prove the replace that actually ran used a matching string. Prefer separate, single-purpose `.Replace()` calls (bare text, no appended line-ending) over one call matching text-plus-embedded-newline, when line removal is the goal.
+
+**Pairs with:** M-121 (same "reported OK, didn't land" symptom, unrelated cause -- both need a post-write read-back, not either write mechanism's own success report).
+
+(Captured 2026-09-10, self-caught during a full-project verification sweep, not a Tony correction.)
+
+## M-123 -- A pip-installed package with `console_scripts` entry points is not invocable via `python -m <package>` unless it also ships a `__main__.py`; call the installed `.exe` in the env's `Scripts\` folder directly by full path instead
+
+**Rule:** Before assuming a newly pip-installed CLI tool supports `python -m <package_name>`, check whether it actually has a `__main__.py` -- many packages (import-linter among them) only register `console_scripts` entry points (standalone `.exe` files written to the conda env's `Scripts\` folder on Windows, e.g. `C:\Users\Trader\.conda\envs\p140\Scripts\lint-imports.exe`), with no `-m`-invokable module at all. Calling `python -m <package>` on one of these fails immediately with `No module named <package>.__main__`. The fix is calling the `.exe` directly by its full path (or checking the package's `entry_points.txt` in its `.dist-info` folder to find the exact script name), not assuming `-m` will work for any installed package.
+
+**Trigger (2026-09-10):** WO-P300-E5.001 step 2, first PEH handoff for the import-linter audit called `python -m importlinter --version`, which failed on the real run (`No module named importlinter.__main__`) even though the preceding `pip install import-linter` step had succeeded. Confirmed via the package's own `entry_points.txt`: `import-linter` and `lint-imports` both ship as standalone Scripts\ exes, not a `-m`-invokable module. Fixed by calling `lint-imports.exe` directly by full path; re-run passed clean.
+
+**Fix:** For any newly pip-installed CLI tool this Hub scripts against, check `Scripts\` for a matching `.exe` (or the package's `entry_points.txt`) before writing a PEH script that assumes `python -m <package>` works -- don't guess from how well-known tools like `pytest` or `black` happen to behave.
+
+(Captured 2026-09-10, caught by Tony running the first PEH handoff attempt, one clean fix, no retry needed.)
+
+## M-124 -- When relocating a class/function used project-wide, grep the ENTIRE project tree for the old import path, not just the layer folders the contract or refactor is designed around
+
+**Rule:** A cross-reference sweep scoped to "the layers this refactor is about" (e.g. domain/infrastructure/application, or utilities/) is not the same as a sweep scoped to "everywhere this name is imported." Real callers of a relocated class routinely live outside the folders a layering refactor is mentally organized around -- test suites (`tests/`, `smoke_*.py`), sibling infrastructure files not directly touched by the change, and standalone scripts are easy to omit from a scope drawn around the architecture question rather than the actual identifier being moved.
+
+**Trigger (2026-09-10):** WO-P300-E5.001. Batch 1 (moving PatternMetadata/MineCandidateRow out of infrastructure/) first swept only domain/infrastructure/application and missed `infrastructure/eval_io.py`, `application/incremental_post_batch.py`, and 6 files under `python/tests/` -- all real, broken-if-unfixed importers. Batch 2 (moving 9 diagnostic scripts out of utilities/) made the same category of miss on the first pass, catching `tests/smoke_loo_replay.py` only on a second, wider sweep. Both were caught by running a truly project-wide grep (`Get-ChildItem $projRoot -Recurse -Include '*.py','*.bat','*.ps1'`) before calling the batch done, not after Tony found them.
+
+**Fix:** Before considering any class/function relocation complete, run one grep across the ENTIRE project directory tree (all file types that could plausibly import Python, not just `.py` under the folders being restructured) for the exact old import path -- do this as a matter of course on every relocation, not as a recovery step after a narrower sweep turns out to have missed something.
+
+**Pairs with:** M-054 (a claim of "clean" needs the same evidence standard as any other claim -- a narrow sweep reporting zero hits is not the same claim as a wide sweep reporting zero hits).
+
+(Captured 2026-09-10, self-caught during scoped project-wide sweeps, not a Tony correction.)

@@ -1,0 +1,50 @@
+Task: P_110 STEP 2 emission -- SELF (ASYM, EP 5.15), 2026-09-14. Part of the
+BBNX/NRXS/SELF P_110 TradeTheBounce batch; the other two are held per Tony's
+explicit instruction (Fund Verification flagged both as likely >1 tier below
+submitted -- deeply negative ROE and FCF on both). SELF alone is cleared to emit.
+
+What this tests: cli.py emits the SIGNAL_V2 packet and the expected output file
+lands on disk with a plausible size (Test-Path directly, per the 2026-09-14
+stdout-parsing false-FAIL lesson).
+
+Diagnostics: Fund 2 (200-MA -0.3% NORMAL, no penalty), Anal 3, Candle 3, Setup 3,
+STR -1, HybridTier 5 -- does not clear BUY>=6, but chart's own Verdict is "ASYM
+Setup: Review" and meets AsymmetricSetup (Anal>=3, Fund>=2) -- Chart-is-King,
+logged ASYM not BUY. PA1 (BOSS) code present on chart, noted in rationale.
+
+Fund Verification: ran under the general rule (any Fund>=2 BUY/ASYM gets
+rechecked) since P_110 has no documented exclusion the way P_116 does ("no Fund
+value in bounce pipeline") -- and the chart itself shows a populated Fund value
+for all three P_110 tickers, which argues against assuming the P_116 exclusion
+carries over by name similarity. SELF came back clean: ROE ~4-6% (below the 15%
+threshold but not a wipeout), Debt/Capital ~25-26%, FCF positive (~$4-4.7M) --
+consistent with the submitted Fund=2, no >1-tier mismatch, no hold. BBNX and
+NRXS both showed deeply negative ROE and negative FCF (failing 2 of 3 criteria
+badly, not marginally) -- Tony confirmed those two stay held.
+
+FLAGGED ASSUMPTIONS -- confirm or correct with Tony, don't let this pass silently:
+- --confidence MEDIUM: no locked HybridTier->confidence formula exists; ASYM is
+  reasoned as inherently lower-conviction than a clean BUY, same logic used on
+  GCT earlier this session.
+- --strategy "bounce": free text, no locked P_110 convention exists in
+  signal_schemas.py (its example list is dip_buy | breakout | mean_reversion |
+  etc) -- chose "bounce" as the most literal match to "TradeTheBounce", not a
+  documented value.
+- --volume 3441: derived as RVOL(0.12) x VolumeAvg(20)(28,678.5) from the chart,
+  same estimation approach used all session -- not a directly-read chart value.
+- --source-link placeholder: no P_800 vault note written yet -- close this the
+  same way NFLX/ADP/EHC/GCT were closed (write_to_vault("P115", ...) then patch
+  signal_metadata.signal_source_link) as an immediate follow-up, not a separate
+  ask.
+- Chart shows T1 Exit = T2 Exit = 5.92, same value both -- used 5.92 as --target
+  since it's the only value present either way, flagged not normalized (same
+  pattern as GCT/ADP earlier this session).
+
+If it fails: read the actual error. Do NOT change --source -- must stay P_115
+(packet signal_source is always P_115 regardless of scan origin; the tracker's
+SignalSource column is the P_110 one, separate field, untouched by this script).
+Do not touch BBNX or NRXS in any way -- they stay held, no packet, no vault note,
+until Tony resolves the Fund mismatch. Do not silently substitute values to make
+this pass -- flag back to Tony.
+
+Do not change test assertions.

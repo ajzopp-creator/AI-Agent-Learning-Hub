@@ -1,0 +1,37 @@
+Task: P_115 STEP 2 signal emission -- NFLX, SOURCE:P_116 (Options Income Launchpad,
+bounce/premium), 2026-09-14.
+
+What this tests: runs cli.py to emit a SIGNAL_V2 packet for NFLX (entry 79.90, stop
+74.81 PA-Stop/structure, target 123.77 = T2 default, horizon "10-15 trading days")
+and confirms the written JSON file actually exists on disk -- not just a clean
+process exit.
+
+Diagnostics (P_115_BuytheDipChart_V16, chart timestamp 9/14/26): Fund 3 (adjusted,
+4->3 on 200-MA PULLBACK -7.2%), Anal 3, Candle 2, Setup 3, STR 0, HybridTier 6
+(meets BUY>=6). P_116 is excluded from Fund Verification (no Fund value in the
+bounce pipeline, per signal-rules). No earnings flag: last report 7/16/26, next
+10/20/26.
+
+FLAGGED ASSUMPTIONS -- not sourced from a locked convention. Confirm or correct
+with Tony before trusting the emitted packet, do not just let this pass silently:
+- --confidence MEDIUM: no documented HybridTier -> confidence mapping exists in
+  config.py or the architecture doc (VALID_CONFIDENCE = HIGH/MEDIUM/LOW, no
+  formula found). Chose MEDIUM because HybridTier=6 sits exactly at the BUY floor
+  with no AsymmetricSetup confirmation -- reasoned, not ruled.
+- --volume 2358641: chart shows RVOL 0.31 and VolumeAvg(20) 7,608,519 but no
+  single unambiguous "today's volume" figure. This is 0.31 x 7,608,519, a derived
+  estimate, not a value read directly off the chart.
+- --strategy bounce_income: signal_schemas.py's strategy field is free text
+  (comment lists dip_buy | breakout | mean_reversion | etc as examples only) --
+  no established P_116-specific label found.
+- --source-link "TradeManagement/P115/2026-09-14_NFLX.md": placeholder path. No
+  P_800 vault note has been written for this signal yet this session, so this
+  file does not exist yet.
+
+If it fails: read the actual error and propose a fix. Do NOT change --source --
+it must stay P_115 (architecture doc 8.2 step 3: packet signal_source is always
+P_115 regardless of scan origin; only the 27-column tracker's SignalSource column
+is P_116). Do not silently substitute a different confidence/volume/strategy
+value to make it pass -- flag it back to Tony instead of guessing further.
+
+Do not change test assertions.

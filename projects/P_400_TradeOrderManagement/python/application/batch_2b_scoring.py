@@ -24,6 +24,7 @@ from pydantic import ValidationError
 
 from config import PORTFOLIO_HEAT_MAX_PCT, TradeMode
 from application.batch_2b_disposition import dispose_evaluation
+from application.earnings_lookup import SOURCE_GATE_UNCERTAIN
 from application.evaluate_signal import evaluate_signal
 from application.fetch_chain import cmd_fetch_chain
 from application.fetch_snapshot import cmd_fetch_snapshot
@@ -188,6 +189,11 @@ def _process_symbol(packet, entries, cash: float, trade_mode: TradeMode,
         skipped.append({"symbol": symbol,
                          "reason": f"no earnings calendar entry for {symbol} -- "
                                    "skipped, not batch-fatal (WO-P400-E6.004)"})
+        return None
+    if earnings_entry.source == SOURCE_GATE_UNCERTAIN:
+        skipped.append({"symbol": symbol,
+                         "reason": f"earnings cache too old to confirm {symbol} clear for "
+                                   "today's gate window -- refresh cache (WO-P400-E8.002)"})
         return None
 
     snapshot = _fetch_snapshot_dict(symbol, earnings_entry)

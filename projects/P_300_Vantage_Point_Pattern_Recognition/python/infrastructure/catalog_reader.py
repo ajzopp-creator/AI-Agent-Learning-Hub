@@ -44,7 +44,7 @@ from __future__ import annotations
 import logging
 import sqlite3
 import sys
-from dataclasses import dataclass
+
 from datetime import date
 from pathlib import Path
 
@@ -57,7 +57,7 @@ if str(_PYTHON_DIR) not in sys.path:
     sys.path.insert(0, str(_PYTHON_DIR))
 
 from config import ORIGIN_PATTERN_IDENT  # noqa: E402
-from schemas_pipeline_b import ForwardLabelLite, NormalizedBar  # noqa: E402
+from schemas_pipeline_b import ForwardLabelLite, NormalizedBar, PatternMetadata  # noqa: E402
 
 # M-011: route logging to stdout so PowerShell doesn't render INFO lines
 # as red NativeCommandError on success runs.
@@ -90,20 +90,6 @@ _BAR_SELECT_COLUMNS: tuple[str, ...] = (
     "pred_high_pct", "pred_low_pct", "pred_range_pct",
 )
 
-
-@dataclass(frozen=True)
-class PatternMetadata:
-    """Identity + provenance fields joined from symbols + pattern_instances.
-
-    Internal infrastructure type — doesn't cross the persistence
-    boundary, so it lives here rather than in schemas_pipeline_b.py.
-    Domain layers consume it to populate MatchResult.ticker and
-    MatchResult.anchor_date when building match results.
-    """
-    pattern_instance_id: int
-    ticker: str
-    anchor_date: date
-    window_length: int
 
 
 # ─────────────────────────────────────────────────────────────────────────────

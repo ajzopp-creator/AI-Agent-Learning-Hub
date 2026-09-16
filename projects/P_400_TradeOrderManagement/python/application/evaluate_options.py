@@ -30,7 +30,7 @@ from domain.options_sizer import OptionSizingResult, size_option_chart_based
 from infrastructure.chain_loader import load_chain
 from infrastructure.params_reader import read_params
 from infrastructure.posture_reader import read_posture
-from schemas import OptionChainInput, SignalV2, SnapshotDict
+from schemas import OptionChainInput, SnapshotDict
 
 logger = logging.getLogger("p400.evaluate_options")
 
@@ -48,17 +48,24 @@ class OptionsEvalResult:
 
 
 def evaluate_options(
-    packet: SignalV2,
+    symbol: str,
+    stock_stop: float,
+    stock_target: float,
     snapshot_raw: dict,
     chain_path: str,
     cash_available: float,
     stock_rr: float,
     is_paper: bool = False,
+    stock_target_2: Optional[float] = None,
 ) -> OptionsEvalResult:
     """Run single-leg options sizing + viability gates, render spec if not BLOCKED.
 
     Args:
-        packet: Validated SignalV2 from the inbox (provides guideline stop/target).
+        symbol: Underlying ticker.
+        stock_stop: Underlying chart stop price (WO-P400-E8.003: was
+            packet.guideline_stop -- now explicit so this works without a
+            live signal packet, e.g. size_option_standalone.py).
+        stock_target: Underlying T1 target price (was packet.guideline_target).
         snapshot_raw: Raw snapshot dict already used for the stock evaluation.
         chain_path: Path to chain_SYMBOL.json.
         cash_available: Per-trade buying power.
@@ -76,8 +83,8 @@ def evaluate_options(
     sizing = size_option_chart_based(
         chain=chain,
         stock_entry=snap.price,
-        stock_stop=packet.guideline_stop,
-        stock_target=packet.guideline_target,
+        stock_stop=stock_stop,
+        stock_target=stock_target,
         base_risk_dollars=params.risk_per_trade,
         cash_available=cash_available,
         max_position_dollars=params.max_position,
@@ -104,22 +111,23 @@ def evaluate_options(
     spec_text = None
     if council.verdict != "BLOCK":
         spec_text = build_option_spec(
-            underlying_symbol=packet.symbol,
+            underlying_symbol=symbol,
             chain=chain,
             sizing=sizing,
             stock_entry=snap.price,
-            stock_stop=packet.guideline_stop,
-            stock_target=packet.guideline_target,
+            stock_stop=stock_stop,
+            stock_target=stock_target,
             is_paper=is_paper,
+            stock_target_2=stock_target_2,
         )
 
     logger.info(
         "Options evaluated %s: council=%s contracts=%d rr=%.2f",
-        packet.symbol, council.verdict, sizing.contracts, sizing.rr_option,
+        symbol, council.verdict, sizing.contracts, sizing.rr_option,
     )
 
     return OptionsEvalResult(
-        symbol=packet.symbol,
+        symbol=symbol,
         verdict=council.verdict,
         sizing=sizing,
         council=council,

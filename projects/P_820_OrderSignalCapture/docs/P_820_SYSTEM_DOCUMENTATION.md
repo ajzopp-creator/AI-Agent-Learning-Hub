@@ -4,9 +4,9 @@
 ---
 
 **Project ID:** P_820
-**Version:** 1.2
+**Version:** 1.3
 **Created:** 2026-08-16
-**Last Updated:** 2026-09-06
+**Last Updated:** 2026-09-09
 **Owner:** Anthony Zoppi
 **Status:** Active
 **Template:** Adapted from UNIVERSAL_PROJECT_TEMPLATE_v1_1 -- condensed per the template's own Documentation Decision Protocol (architecture content here is under one page and specific to this project, so it stays in this master doc rather than a separate Interface-Arch-style file, matching P_800's practice for content that size).
@@ -114,6 +114,10 @@ trade happened.
   to P_820 (Section 4 exception, corrected 2026-09-06)
 - Route P_116/SNT to P_820 directly -- no P_115 involvement needed
   just to get a trade logged
+- Route P_210 (One Click Trading 2PM Income Trade) to P_820
+  directly, same as P_116/SNT -- write end-of-day after the
+  position resolves, not at entry, since it's a same-day-expiry
+  credit spread (added 2026-09-09)
 
 **MUST NOT:**
 - Add any evaluation, scoring, or verdict logic to P_820 -- viability
@@ -241,6 +245,7 @@ predates P_820 and is retired for those two sources.
 | P_116 (OIL) | **No** | Pure external swing-trade alert. Historical P_115 routing was only Tony fudging trades in to get them tracker-logged before P_820 existed. |
 | P_117 (email/newsletter, e.g. P_805 consensus) | **By default, yes** | Genuinely evaluated through P_115 (SignalSource=P_117 in tracker) -- corrected 2026-09-06, reverses the original "No, by default" line below. **Exception:** Tony's judgment call per signal, not a fixed split -- skips straight to P_820 only when the pick (or an occasional convincing social-media post) is compelling enough on its own that he trades it without running P_115 evaluation. `why_code` stays `P_117` either way. |
 | SNT | **No, never** | Pure subscription alert -- one option/week, pre-set stop+target, closes Friday. |
+| P_210 (One Click Trading 2PM Income Trade) | **No, never** | Pure subscription alert -- daily 2PM Telegram credit-spread signal (NDX verticals), pre-set structure, same-day expiry. Logged end-of-day after the position resolves (entry, any roll, and outcome all known by close), not at entry time like the swing sources. Added 2026-09-09. |
 
 **2026-09-06 correction:** the row above originally read "No, by
 default" for P_117, on the reasoning that P_115 routing was only ever
@@ -311,6 +316,7 @@ No `python\` folder -- by design, per Section 2.1 MUST NOT.
 If source is P_118/P_910/P_920        --> confirm it already went through P_115, then log to P_820
 If source is P_117 (email/newsletter) --> by default, confirm it went through P_115 first; log straight to P_820 only if Tony says this pick skipped evaluation
 If source is P_116/SNT                --> log to P_820 directly, no P_115 step
+If source is P_210                     --> log to P_820 directly, no P_115 step; write end-of-day after the position resolves, not at entry (same-day expiry)
 If signal_date is relative             --> resolve to a real date before writing, never guess
 If same symbol+date already logged today --> confirm correction vs. distinct second signal before overwriting
 ```
@@ -370,6 +376,7 @@ rediscovered.*
 | 2026-08-16 | Build session | P_800 schema registration (`P820Record`, 5 additive files, all existing tests unchanged), P_020 resolver wiring (`p820_reader.py`/`p820_override.py`/`p820_capture.py`, chain now P_820 > ThinkLog > Tracker > default), project scaffold + skill file. Full write-and-read-back smoke test and end-to-end integration test both passed. |
 | 2026-08-16 | Routing rules | Worked through P_115/P_116/P_117/P_920/P_910/P_118/SNT routing directly with Tony. Corrected an initial assumption that P_116 evaluation via P_115 was real -- it was a tracker-logging workaround, now retired. Confirmed P_117's occasional P_115 fundamentals recheck is real and separate from that workaround. |
 | 2026-09-06 | P_117 routing correction (P_805 session) | Tony corrected the 2026-08-16 P_117 rule: newsletter/P_805-sourced picks go through P_115 evaluation by default (SignalSource=P_117 in tracker); P_820 is the exception, used only when a pick is convincing enough on its own to skip evaluation. Judgment call per signal, not a fixed split. Section 4 table, Section 2.1 Musts, and Workflow 6.1 decision gate all updated same session (imperative sweep). P_116/SNT rows unchanged. |
+| 2026-09-09 | P_210 source added (chat dictation session) | New subscription source, P_210 (One Click Trading 2PM Income Trade, publisher Graham Lindman/48bytesNorth via Telegram) -- daily NDX credit-spread signal, same-day expiry. Routed straight to P_820 like SNT, no P_115 involvement. Tony confirmed the timing rule: since entry/roll/outcome all resolve same day, write at end-of-day after close rather than at entry (differs from P_115/P_116 swing sources, which need entry-time capture). Two backfilled signals logged same session: NDX call credit spread 2026-09-04 (opened 29520/29530 @.95, rolled to 29520/29540 @2.05 total credit, expired ITM, realized loss ~-1795) and NDX put credit spread 2026-09-09 (29370/29360 @1.15 credit, expired OTM near max profit). Section 2.1 Musts, Section 4 table, and Workflow 6.1 decision gate all updated same session. |
 
 ---
 
@@ -408,4 +415,4 @@ rediscovered.*
 
 ---
 
-*End of P_820 SYSTEM DOCUMENTATION v1.2 -- 2026-09-06*
+*End of P_820 SYSTEM DOCUMENTATION v1.3 -- 2026-09-09*

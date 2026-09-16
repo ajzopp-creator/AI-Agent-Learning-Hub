@@ -29,7 +29,7 @@ sys.path.insert(0, str(ROOT))
 from schemas_bulk import BulkBarRaw  # noqa: E402
 from domain.pattern_miner import mine_bars  # noqa: E402
 from domain.mine_audit import audit_symbol  # noqa: E402
-from infrastructure.mine_report_writer import MineCandidateRow  # noqa: E402
+from schemas_mine import MineCandidateRow  # noqa: E402
 
 RESULTS = []
 

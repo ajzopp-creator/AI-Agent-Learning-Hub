@@ -38,6 +38,15 @@ dashboard_version: "1.0"
 
 ---
 
+## P_805 Consensus
+
+<!-- P805-CONSENSUS-START -->
+| Email Source | Today's Symbols | MTD Candidates | YTD Candidates | MTD BUY/ASYM | YTD BUY/ASYM |
+|---|---|---|---|---|---|
+<!-- P805-CONSENSUS-END -->
+
+---
+
 ## Quick Links
 
 - [[Templates/P_800_Daily_Flow|Daily Flow Template]]

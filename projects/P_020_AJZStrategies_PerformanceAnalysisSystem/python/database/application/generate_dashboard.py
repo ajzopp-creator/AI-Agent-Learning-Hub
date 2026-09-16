@@ -7,11 +7,12 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from infrastructure.dashboard_html import build_html
+from infrastructure.systems_registry import get_system_display_order
 
 EXPORTS = Path(__file__).resolve().parents[3] / "data" / "exports" / "ai_review"
 OUT     = Path(__file__).resolve().parents[3] / "docs" / "P_020_Dashboard.html"
 
-SYSTEM_ORDER = ["P_118", "P_115", "P_300", "P_117", "P_910", "SNT", "P_116"]
+SYSTEM_ORDER = get_system_display_order()
 
 
 def read_csv(name):

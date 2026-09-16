@@ -1,0 +1,6 @@
+Task: WO-P115-E6.001 Phase 1 closing summary (Z-Score Regime Council pilot, Sept 1-15 2026).
+Read-only extraction from canonical tracker xlsx, rows Date >= 2026-09-01.
+Prints raw Comments field per row so Claude can parse the 7-Z-score/sumZZ/Regime
+shorthand and tabulate distribution vs actual PASS/BUY/ASYM verdicts.
+No writes to the tracker. No vault interaction. No sizing/verdict logic.
+Requested by Tony, P_115 session 2026-09-15.

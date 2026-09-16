@@ -1,0 +1,52 @@
+WO-P300-E5.001 -- Batch 2 verification
+Date: 2026-09-10
+
+WHAT THIS TESTS:
+Batch 2 of the import-linter contract prep. utilities/ was two layers
+wearing one folder: true leaves (db_connect, db_utils, the four
+archive_*_file scripts, intelliscan_reader, inspect_pattern -- imported
+BY infrastructure/application, import nothing back) and diagnostic/
+analysis tools (catalog_summary, check_pattern, ledger_calibration,
+preflight_status, vp_export_integrity_check, loo_replay,
+feature_ablation, threshold_sweep, cap_sensitivity_audit -- these
+import FROM infrastructure/domain, sitting above it). A Layers contract
+can't express one folder depending both ways, so the 9 diagnostic
+scripts moved to a new tools/ package; utilities/ keeps only the
+leaves.
+
+Two internal self-references (feature_ablation.py and
+threshold_sweep.py both import loo_replay, all three now in tools/)
+and two real external callers (cli_commands/utility.py: 4 of its 5
+utilities imports; tests/smoke_loo_replay.py: 1) had their import
+paths updated. inspect_pattern stayed in utilities/ -- not moved,
+still imported from there in cli_commands/utility.py, untouched.
+P_300_Preflight.bat's script path updated too (preflight_status.py is
+invoked directly, not imported, so this was a path string, not a
+Python import).
+
+This script:
+  1. Compiles every moved/edited file under -W error::SyntaxWarning
+  2. Imports the new tools/ package and all 9 moved modules
+  3. Imports cli_commands/utility.py (proves its 4 updated import
+     lines resolve)
+  4. Imports every file that stayed in utilities/, confirming the
+     split didn't break anything left behind
+  5. Confirms smoke_loo_replay.py's moved import target resolves
+
+SUCCESS CRITERIA: prints PASS with no FAIL lines.
+
+WHAT TO FIX ON FAILURE:
+- A compile FAIL means a real syntax error in that file (should be
+  impossible here -- these 9 files moved byte-for-byte via Move-Item,
+  only 2 of them had a single import line touched afterward. If this
+  fails, the import-line edit is the suspect, not the move itself).
+- An import FAIL under Phase 2 almost certainly means a stale
+  `from utilities.X import` inside one of the 9 moved files itself
+  that the sweep missed -- grep tools/*.py for "from utilities." or
+  "utilities\." and fix any hit pointing at a name that moved.
+- A Phase 3 FAIL would mean one of the files left in utilities/
+  somehow depended on one of the 9 that moved out -- shouldn't be
+  possible per the pre-move dependency check, but if it happens, that
+  file needs to move to tools/ too, not get an import-path patch.
+
+Do not change test assertions. Paste the full console output back.
