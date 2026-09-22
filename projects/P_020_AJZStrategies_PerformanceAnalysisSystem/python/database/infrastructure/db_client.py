@@ -27,6 +27,7 @@ SELECT
     t.tags,
     t.notes,
     t.source,
+    t.spread_group_id,
 
     COALESCE(SUM(e.exit_pnl),   0.0) AS realized_pnl,
     COALESCE(SUM(e.qty_exited), 0)   AS qty_closed,
@@ -63,6 +64,48 @@ SELECT
 FROM trades t
 LEFT JOIN exits e ON t.trade_id = e.trade_id
 GROUP BY t.trade_id
+"""
+
+# ── v_trade_summary_grouped view SQL (WO-P020-E1.021) ──────────────────────
+# Nets a multi-leg spread's individual leg trades into ONE win/loss/R unit
+# for reporting. A standalone single-leg trade (spread_group_id IS NULL)
+# passes through as its own group of one, unchanged. Built on top of
+# v_trade_summary rather than trades/exits directly so it never duplicates
+# that view's own pnl/outcome logic -- only regroups and rescoring it.
+_V_TRADE_SUMMARY_GROUPED_SQL = """
+CREATE VIEW IF NOT EXISTS v_trade_summary_grouped AS
+WITH scored AS (
+    SELECT
+        COALESCE(spread_group_id, 'T' || trade_id) AS group_key,
+        MIN(trade_id)                               AS trade_id,
+        system,
+        account_id,
+        MIN(open_date)                              AS open_date,
+        SUM(realized_pnl)                           AS realized_pnl,
+        MAX(last_exit_date)                         AS last_exit_date,
+        MAX(max_hold_days)                          AS max_hold_days,
+        SUM(qty_closed)                             AS qty_closed,
+        SUM(qty)                                    AS qty,
+        CASE
+            WHEN SUM(qty_closed) <= 0       THEN 'open'
+            WHEN SUM(qty_closed) >= SUM(qty) THEN 'closed'
+            ELSE 'partial'
+        END AS status,
+        -- Qty-weighted avg of each leg's own R; NULL propagates via SUM()
+        -- when any leg lacks risk_amount (the common case for spreads
+        -- today -- no stop_price is set on them yet).
+        SUM(realized_R * qty) / NULLIF(SUM(qty), 0) AS realized_R
+    FROM v_trade_summary
+    GROUP BY group_key, system, account_id
+)
+SELECT *,
+    CASE
+        WHEN status = 'open'      THEN 'OPEN'
+        WHEN realized_pnl > 0     THEN 'WIN'
+        WHEN realized_pnl < 0     THEN 'LOSS'
+        ELSE 'SCRATCH'
+    END AS outcome
+FROM scored
 """
 
 
@@ -142,7 +185,8 @@ def _create_trades_table(conn: sqlite3.Connection) -> None:
             reason                 TEXT,
             signal_strength        TEXT,
             expiration_date        DATE,
-            settlement_price       REAL
+            settlement_price       REAL,
+            spread_group_id        TEXT
         )
     """)
 
@@ -180,7 +224,7 @@ def _create_spread_legs_table(conn: sqlite3.Connection) -> None:
             position_effect  TEXT     NOT NULL,
             direction        TEXT     NOT NULL,
             qty              REAL     NOT NULL,
-            price            REAL     NOT NULL,
+            price             REAL     NOT NULL,
             created_at       DATETIME DEFAULT CURRENT_TIMESTAMP,
             UNIQUE(trade_id, leg_number)
         )
@@ -225,14 +269,15 @@ def create_all_tables(conn: sqlite3.Connection) -> None:
 
 
 def create_views(conn: sqlite3.Connection) -> None:
-    """Create the v_trade_summary view.
+    """Create the v_trade_summary and v_trade_summary_grouped views.
 
     Args:
         conn: Active SQLite connection.
     """
     conn.execute(_V_TRADE_SUMMARY_SQL)
+    conn.execute(_V_TRADE_SUMMARY_GROUPED_SQL)
     conn.commit()
-    logger.info("v_trade_summary view created.")
+    logger.info("v_trade_summary + v_trade_summary_grouped views created.")
 
 
 def initialize_database() -> sqlite3.Connection:

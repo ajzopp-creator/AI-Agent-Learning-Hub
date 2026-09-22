@@ -18,7 +18,7 @@ import sqlite3
 
 from application.trade_writer import attach_orphan_exit, write_trade
 from infrastructure.db_client import create_all_tables
-from schemas import Trade
+from schemas_trade import Trade
 
 PARAMS = {"options_multiplier": 100}
 

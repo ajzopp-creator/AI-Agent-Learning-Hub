@@ -27,7 +27,7 @@ from infrastructure.db_writer import (
     insert_trade,
 )
 from infrastructure.paper_spread_reader import read_spread_fills
-from schemas import Exit, SpreadLeg, Trade
+from schemas_trade import Exit, SpreadLeg, Trade
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)

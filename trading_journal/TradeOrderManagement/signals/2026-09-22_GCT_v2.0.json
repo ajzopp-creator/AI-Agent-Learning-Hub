@@ -1,0 +1,33 @@
+{
+  "signal_id": "P115-2026-09-22-GCT-001",
+  "signal_timestamp": "2026-09-22T13:58:13Z",
+  "signal_source": "P_115",
+  "strategy": "breakout",
+  "symbol": "GCT",
+  "asset_class": "stock",
+  "guideline_entry": 54.53,
+  "guideline_stop": 49.89,
+  "guideline_target": 57.3,
+  "signal_horizon": "10-15 trading days",
+  "confidence_level": "MEDIUM",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 52.28,
+  "intelliscan_support_1": null,
+  "intelliscan_support_2": null,
+  "target_source": null,
+  "context": {
+    "close_at_signal": 53.93,
+    "trailing_volume_30d": 147667.0,
+    "signal_rationale": "P_118 High Handle continuation after V-recovery ($31.08->$56.27), ~5wk range ~16% depth. HybridTier 6 (Fund2/Anal4), at BUY threshold. Fund-verified: ROE ~30%, Debt/Cap ~49%, FCF +$45M TTM, all pass comfortably. STR=1 confirms bounce. T2 extended target 60.68.",
+    "atm_at_signal": 2.25
+  },
+  "signal_metadata": {
+    "session_date": "2026-09-22",
+    "chart_timeframe": "1D",
+    "signal_source_link": "chat/2026-09-22_P118_STEPS1-2_GCT"
+  }
+}

@@ -4,53 +4,39 @@
     "type": "split",
     "children": [
       {
-        "id": "33a982700cd7c246",
+        "id": "b05448f25d7f9993",
         "type": "tabs",
         "children": [
           {
-            "id": "2d1cb964f458e988",
+            "id": "cf05ca765d3bf75a",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "KnowledgeBase/2026-08-19_Post by @callanxai on X.md",
+                "file": "KnowledgeBase/2026-09-20_P Trend Following Trading Series (Part 1-10) 🚀.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "2026-08-19_Post by @callanxai on X"
+              "title": "2026-09-20_P Trend Following Trading Series (Part 1-10) 🚀"
             }
           },
           {
-            "id": "a314554994cd5b2a",
+            "id": "fa18cc4a324a4a1e",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "KnowledgeBase/2026-08-19_Graph Engineering from 1 prompt to 100 agents running in one system (full 8-step course).md",
+                "file": "2026-09-21  Alphalens Factor Validation — Detailed Summary Mapped to P_300  Perplexity.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "2026-08-19_Graph Engineering from 1 prompt to 100 agents running in one system (full 8-step course)"
-            }
-          },
-          {
-            "id": "2b15ca7285075366",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "KnowledgeBase/2026-09-15_Understand the architecture and the fundamentals.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "2026-09-15_Understand the architecture and the fundamentals"
+              "title": "2026-09-21  Alphalens Factor Validation — Detailed Summary Mapped to P_300  Perplexity"
             }
           }
         ],
-        "currentTab": 2
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -185,27 +171,27 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Untitled.md",
+                "file": "2026-09-21  Alphalens Factor Validation — Detailed Summary Mapped to P_300  Perplexity.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of Untitled"
+              "title": "Outline"
             }
           },
           {
-            "id": "57b2902077e31653",
+            "id": "56419ddfe97a5a4f",
             "type": "leaf",
             "state": {
               "type": "mermaid-toolbar-view",
               "state": {},
-              "icon": "lucide-ghost",
-              "title": "mermaid-toolbar-view"
+              "icon": "trident-custom",
+              "title": "Mermaid Toolbar"
             }
           }
         ],
-        "currentTab": 5
+        "currentTab": 3
       }
     ],
     "direction": "horizontal",
@@ -225,44 +211,45 @@
       "mermaid-tools:Open Mermaid Toolbar": false
     }
   },
-  "active": "2b15ca7285075366",
+  "active": "5d7b9b74b1dee0ca",
   "lastOpenFiles": [
-    "KnowledgeBase/2026-09-11_Architect a Sandbox.md",
-    "KnowledgeBase/2026-09-15_Understand the architecture and the fundamentals.md",
-    "KnowledgeBase/2026-09-11_AI Architecture.md",
-    "KnowledgeBase/2026-09-11_Claude Plans and Goals.md",
-    "KnowledgeBase/2026-09-11_How to learn 80% of Claude Cowork in 20 minutes 1.md",
-    "KnowledgeBase/2026-09-11_How to learn 80% of Claude Cowork in 20 minutes.md",
-    "KnowledgeBase/2026-09-11_The 4 BACKTESTING TECHNIQUES.md",
-    "KnowledgeBase/2026-09-05_One Click Trading 2 pm Income Trade Guide.md",
-    "TradeOrderManagement/P820/2026-09-09_NDX.md",
-    "TradeOrderManagement/P820/2026-09-04_NDX.md",
-    "TradeOrderManagement/P400/paper/2026-09-08_TER.md",
-    "KnowledgeBase/Newsletters/2026-09-06_THE-EMAIL-47000-TRADERS-READ-BEFORE-THE-.md",
-    "KnowledgeBase/Newsletters",
-    "TradeOrderManagement/P820/2026-09-05_EVERPURE.md",
-    "KnowledgeBase/2026-09-05_One Click Trading 2 pm Income Trade Guide.md.bak_2026-09-05",
-    "KnowledgeBase/Obsidian Trading System – Implementation Plan.md",
-    "KnowledgeBase/2026-08-29_PEOPLE ARE USING NOTEBOOKLM TO MASS-PRODUCE SPECIALIZED CLAUDE SKILLS IN MINUTES.md",
-    "TradeOrderManagement/P400/~$26-09-03_CRUS.md",
-    "TradeOrderManagement/P820/2026-09-04_CRUS.md",
-    "TradeOrderManagement/P400/2026-09-03_CRUS.md",
-    "TradeOrderManagement/P400/paper/2026-09-02_DNOW.md",
-    "TradeOrderManagement/signals/processed/2026-09-02_HLX_v2.0_TICKER_DELISTED.json",
-    "TradeOrderManagement/P400/2026-09-02_HLX.md",
-    "TradeOrderManagement/P400/2026-09-01_HPQ.md",
-    "TradeOrderManagement/P400/2026-09-01_GME.md",
-    "TradeOrderManagement/P400/2026-09-01_CVE.md",
-    "TradeOrderManagement/P400/2026-09-01_BWXT.md",
-    "TradeOrderManagement/P400/2026-09-01_PBR.md",
-    "TradeOrderManagement/P400/2026-09-01_LTC.md",
-    "TradeOrderManagement/signals/2026-09-02_LTC_v2.0.json",
-    "TradeOrderManagement/signals/2026-09-02_HPQ_v2.0.json",
-    "TradeOrderManagement/signals/2026-09-02_HLX_v2.0.json",
-    "TradeOrderManagement/signals/2026-09-02_GME_v2.0.json",
-    "TradeOrderManagement/signals/2026-09-02_CVE_v2.0.json",
-    "TradeOrderManagement/signals/2026-09-02_BWXT_v2.0.json",
-    "TradeOrderManagement/signals/2026-09-02_HNGE_v2.0.json",
+    "TradeOrderManagement/P400/paper/2026-09-17_ARE.md",
+    "TradeOrderManagement/P400/2026-09-21_AMZN.md",
+    "TradeOrderManagement/P400/2026-09-18_BYND.md",
+    "TradeOrderManagement/P400/2026-09-18_FDS.md",
+    "TradeOrderManagement/P400/2026-09-18_ENTG.md",
+    "TradeOrderManagement/P400/2026-09-18_ITW.md",
+    "TradeOrderManagement/P400/2026-09-18_PTC.md",
+    "TradeOrderManagement/P400/2026-09-18_RMBS.md",
+    "TradeOrderManagement/P400/2026-09-18_PLAB.md",
+    "TradeOrderManagement/P400/2026-09-18_AMSC.md",
+    "TradeOrderManagement/P400/2026-09-17_ILMN.md",
+    "TradeOrderManagement/P400/2026-09-18_PWR.md",
+    "TradeOrderManagement/P400/2026-09-18_TDY.md",
+    "TradeOrderManagement/P400/2026-09-18_TRGP.md",
+    "TradeOrderManagement/P400/2026-09-18_AEHR.md",
+    "TradeOrderManagement/P400/2026-09-18_AMBA.md",
+    "TradeOrderManagement/P400/2026-09-18_NCTY.md",
+    "TradeOrderManagement/P400/2026-09-18_AAT.md",
+    "TradeOrderManagement/signals/2026-09-21_AMZN_v2.0.json",
+    "TradeOrderManagement/P300/2026-09-18_TRGP.md",
+    "TradeOrderManagement/signals/2026-09-21_TRGP_v2.0.json",
+    "TradeOrderManagement/P300/2026-09-18_TDY.md",
+    "TradeOrderManagement/signals/2026-09-21_TDY_v2.0.json",
+    "TradeOrderManagement/P300/2026-09-18_RMBS.md",
+    "TradeOrderManagement/signals/2026-09-21_RMBS_v2.0.json",
+    "TradeOrderManagement/P300/2026-09-18_PWR.md",
+    "TradeOrderManagement/signals/2026-09-21_PWR_v2.0.json",
+    "TradeOrderManagement/P300/2026-09-18_PTC.md",
+    "TradeOrderManagement/signals/2026-09-21_PTC_v2.0.json",
+    "TradeOrderManagement/P300/2026-09-18_PLAB.md",
+    "TradeOrderManagement/signals/2026-09-21_PLAB_v2.0.json",
+    "TradeOrderManagement/P300/2026-09-18_NCTY.md",
+    "TradeOrderManagement/signals/2026-09-21_NCTY_v2.0.json",
+    "TradeOrderManagement/P300/2026-09-18_ITW.md",
+    "TradeOrderManagement/signals/2026-09-21_ITW_v2.0.json",
+    "TradeOrderManagement/signals/2026-09-21_FDS_v2.0.json",
+    "Untitled.canvas",
     "Pasted image 20260822181852.png",
     "Pasted image 20260613092126.png",
     "Pasted image 20260614115050.png",

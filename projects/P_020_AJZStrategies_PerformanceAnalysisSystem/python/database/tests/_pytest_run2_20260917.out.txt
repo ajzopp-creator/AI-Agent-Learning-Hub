@@ -1,0 +1,19 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.12, pytest-9.0.2, pluggy-1.6.0 -- C:\Users\Trader\.conda\envs\p140\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\Trader\AI-Agent-Learning-Hub
+configfile: pyproject.toml
+plugins: anyio-4.12.1
+collecting ... collected 9 items
+
+test_order_linkage.py::test_build_order_chain_single_order_has_no_descendants PASSED [ 11%]
+test_order_linkage.py::test_build_order_chain_walks_nested_bracket PASSED [ 22%]
+test_order_linkage.py::test_build_order_chain_raises_on_missing_order_id PASSED [ 33%]
+test_order_linkage.py::test_avg_fill_price_from_execution_legs PASSED    [ 44%]
+test_order_linkage.py::test_avg_fill_price_falls_back_to_order_price_when_no_fills PASSED [ 55%]
+test_paper_order_history_parser.py::test_extract_order_id_strips_excel_wrapper PASSED [ 66%]
+test_paper_order_history_parser.py::test_clean_status_strips_count_prefix PASSED [ 77%]
+test_paper_order_history_parser.py::test_to_iso_datetime_converts_tos_format PASSED [ 88%]
+test_paper_order_history_parser.py::test_parse_order_history_reassembles_trg_by_bracket PASSED [100%]
+
+============================== 9 passed in 0.09s ==============================

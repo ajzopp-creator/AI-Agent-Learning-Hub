@@ -1,7 +1,0 @@
-2026-09-05 10:47:21  INFO      Pulling balance for account: AJZ6348
-2026-09-05 10:47:22  INFO      Loading token from file C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_020_AJZStrategies_PerformanceAnalysisSystem\config\P_020_schwab_token.json
-2026-09-05 10:47:22  INFO      HTTP Request: GET https://api.schwabapi.com/trader/v1/accounts/accountNumbers "HTTP/1.1 200 OK"
-2026-09-05 10:47:22  INFO      Loading token from file C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_020_AJZStrategies_PerformanceAnalysisSystem\config\P_020_schwab_token.json
-2026-09-05 10:47:23  INFO      HTTP Request: GET https://api.schwabapi.com/trader/v1/accounts/E8177CB69DF3DD77B8FE5B7B162E6C43F8120AA5A3EF53D1713E1821A9AA02F0?fields=positions "HTTP/1.1 200 OK"
-2026-09-05 10:47:23  INFO      Balance snapshot saved: AJZ6348 2026-09-05 current=$27,362.98  start-of-day=$27,362.98
-2026-09-05 10:47:23  INFO      Balance $27,362.98 within threshold of last written $29458.74 -- no full param sync.

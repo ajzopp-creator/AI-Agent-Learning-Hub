@@ -22,7 +22,7 @@ from datetime import date
 sys.path.insert(0, r'C:\Users\Trader\AI-Agent-Learning-Hub\projects\P_020_AJZStrategies_PerformanceAnalysisSystem\python\database')
 
 from config import DATABASE_FILE
-from schemas import Exit
+from schemas_trade import Exit
 from domain.trade_logic import calculate_exit_pnl, calculate_hold_days
 from infrastructure.db_writer import insert_exit, update_trade_status
 

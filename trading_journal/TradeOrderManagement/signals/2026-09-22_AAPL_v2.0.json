@@ -1,0 +1,33 @@
+{
+  "signal_id": "P115-2026-09-22-AAPL-001",
+  "signal_timestamp": "2026-09-22T13:58:13Z",
+  "signal_source": "P_115",
+  "strategy": "breakout",
+  "symbol": "AAPL",
+  "asset_class": "stock",
+  "guideline_entry": 339.74,
+  "guideline_stop": 309.18,
+  "guideline_target": 441.26,
+  "signal_horizon": "10-15 trading days",
+  "confidence_level": "HIGH",
+  "position_size": 0,
+  "strike_price": null,
+  "underlying_price": null,
+  "option_type": null,
+  "expiration_date": null,
+  "atr_adjusted_stop": 332.55,
+  "intelliscan_support_1": null,
+  "intelliscan_support_2": null,
+  "target_source": null,
+  "context": {
+    "close_at_signal": 341.43,
+    "trailing_volume_30d": 3555220.0,
+    "signal_rationale": "P_118 Flat Base breakout (~9% depth, ~5-6wk Aug-Sep base). HybridTier 7 (Fund4/Anal3). Fund-verified: ROE ~140%+, FCF strongly positive, Debt/Cap borderline 44-61% across sources (not material given ROE/FCF strength). New closing highs above the base.",
+    "atm_at_signal": 7.19
+  },
+  "signal_metadata": {
+    "session_date": "2026-09-22",
+    "chart_timeframe": "1D",
+    "signal_source_link": "chat/2026-09-22_P118_STEPS1-2_AAPL"
+  }
+}

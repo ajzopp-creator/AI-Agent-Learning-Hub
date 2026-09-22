@@ -47,7 +47,10 @@ TRACKER_VERDICT_COL = "Step1Verdict"
 
 # -- JOIN RULES ----------------------------------------------------------
 COUNTED_VERDICTS = {"BUY", "ASYM"}
-JOIN_WINDOW_TRADING_DAYS = 15  # matches P_115's own default signal horizon
+JOIN_WINDOW_TRADING_DAYS = 45  # was 15 (P_115 default); raised 2026-09-21 --
+# lag analysis of real Tracker hits (302 source-ticker pairs, 12 hits) showed
+# 15 days caught only 17% of real BUY/ASYM confirmations, median lag 36
+# trading days -- see WO-P800-E6.001 Occurrence Log. 45 captures ~75%.
 
 # -- TABLE FORMAT ----------------------------------------------------------
 TABLE_HEADER = (

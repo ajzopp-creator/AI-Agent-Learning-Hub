@@ -1,5 +1,54 @@
 # P_300 Task Queue
 
+## 2026-09-17 -- F2 State Change: Chaikin MCP Pull (4 symbols, 0 failed, 0 no-coverage)
+RunChaikinBatch.ps1 -Schema P300 (Tony, standalone at Hub root) hit the same
+headless-bridge failure for CW, GRPN, LAUR, LMT. Pulled all 4 via
+docs/processes/chaikin_mcp_pull.md, this session's own claude-in-chrome MCP
+tools.
+
+**Updated (4):** CW Neutral, GRPN Bearish, LAUR Bearish, LMT Neutral. All 4
+vault notes confirmed with real ## Chaikin Power Gauge sections via tail-read
+immediately after each write. No page-load races, no ETF/skip-list symbols.
+
+**Failed (0). No-coverage (0).**
+
+## 2026-09-16 (2nd) -- P_300_RunAllDailyEvals.ps1 edited: pause added at Chaikin verification gate
+Per Tony's direct instruction, following the same-day Chaikin MCP-pull entry
+below: claude -p --chrome inside RunChaikinBatch.ps1 has now failed 7/7 runs
+since 2026-09-04 (chaikin_failures.log). Edited
+P_300_RunAllDailyEvals.ps1's Chaikin section -- when the post-run vault-file
+check finds any symbol NOT written ($notWritten non-empty), the script now
+prints a red PAUSED banner naming the symbols + the runbook path
+(docs\processes\chaikin_mcp_pull.md) and blocks on Read-Host, instead of
+logging a yellow warning and finishing silently. Did not touch the
+Hub-root RunChaikinBatch.ps1 (shared across other projects/schemas --
+out of scope for a P_300-only ask) or remove the `& $HUB_RUN_CHAIKIN`
+call itself (still needed for the scan step that produces
+_last_prompt.txt / the candidate list the MCP-pull runbook's step 1
+reads). Single-file edit via filesystem:edit_file, ~15 lines added.
+Note: this entry itself was lost to a windows-mcp relay timeout when
+first logged 2026-09-16 (M-030-adjacent -- two consecutive different-type
+tool calls timed out mid-session) -- backfilled 2026-09-17 once confirmed
+missing from live disk. **Confirmed live** 2026-09-17: RunAllDailyEvals.ps1
+was not run this session so the pause branch itself is still unexercised
+end-to-end; next live daily-eval run with a real notWritten case is the
+actual verification.
+
+## 2026-09-16 -- F2 State Change: Chaikin MCP Pull (6 symbols, 0 failed, 0 no-coverage)
+RunChaikinBatch.ps1 -Schema P300 hit the headless-bridge failure again (exited 1,
+0/6 notes updated) for BB, CUBE, EXTR, GL, LTRX, LYB -- same claude -p --chrome
+bridge failure logged in chaikin_failures.log on 09-04/09/10/11/14/15 (no browser
+tool wired into that CLI session; WebFetch 403s on the JS-rendered page). Pulled
+all 6 via docs/processes/chaikin_mcp_pull.md, this session's own claude-in-chrome
+MCP tools.
+
+**Updated (6):** BB Neutral+, CUBE Very Bearish, EXTR Neutral+, GL Neutral+, LTRX
+Neutral+, LYB Neutral-. All 6 vault notes confirmed with real ## Chaikin Power
+Gauge sections via tail-read immediately after each write. No page-load races,
+no ETF/skip-list symbols in this batch.
+
+**Failed (0). No-coverage (0).**
+
 ## 2026-09-04 (2nd) -- F2 State Change: Chaikin MCP Pull (14 symbols, 1 failed, 0 no-coverage)
 RunChaikinBatch.ps1 -Schema P300 hit the headless-bridge failure again
 (exited 1, 0/14 notes updated) for SARK, ABM, CFG, CIFR, CRUS, FHN, FISV,
@@ -320,6 +369,7 @@ Gated on live P_300 trading first. Consumes Aggregator output, produces position
 
 ## Backlog -- Future Candidates (Not Scheduled)
 
+- **topk_cache/forward_labels join index (NEW, 2026-09-21)** -- `forward_labels` has no index covering `(pattern_instance_id, horizon_days)`. `tools/alphalens_ic_quantile.py`'s pooled join over ~936K topk_cache rows took ~4.5 min unindexed (Start-Process/detached, confirmed via M-057 pattern -- relay call itself timed out, process kept running server-side, real output landed after). An index would likely drop this to seconds. Not built this session -- schema-touching, not asked for at build time. Tony's call (2026-09-21): flagged, queue for whenever the next schema-touching work happens, or build standalone.
 - Parameter sweep + ablation re-run at N=300+ (re-tighten BUY_MIN_Z_SCORE toward 1.0 when z becomes discriminating)
 - `return_pct` schema field rename to `return_fraction` (bundle with NormalizedBar shared-base refactor)
 - NormalizedBar / PatternBarRecord shared-base refactor (DEBT NOTE from `schemas_pipeline_b.py`)

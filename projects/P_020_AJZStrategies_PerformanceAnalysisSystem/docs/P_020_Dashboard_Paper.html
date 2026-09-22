@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AJZ Strategies — Performance Analytics</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0a1628;--bg2:#07101e;--panel:#0e1f36;--panel2:#122540;--border:#173458;--border2:#1e3f6e;--text1:#dde8f5;--text2:#6a94be;--text3:#375875;--green:#0ea572;--green-bg:rgba(14,165,114,.12);--red:#e85060;--red-bg:rgba(232,80,96,.12);--amber:#e8a21c;--blue:#3882ef;--purple:#9b77f5;--teal:#0ab4d4;--orange:#e87c1c;--mono:'JetBrains Mono',monospace;--sans:'Inter',sans-serif}
+html,body{background:var(--bg);color:var(--text1);font-family:var(--sans);font-size:14px;min-height:100vh;line-height:1.5}
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;border-bottom:1px solid var(--border);background:var(--bg2);position:sticky;top:0;z-index:20}
+.hdr-l{display:flex;align-items:center;gap:16px}
+.logo{width:36px;height:36px;border:2px solid var(--green);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:600;color:var(--green)}
+.hdr-title{font-size:17px;font-weight:600;letter-spacing:.04em}
+.hdr-sub{font-family:var(--mono);font-size:10px;color:var(--text2);margin-top:2px;letter-spacing:.06em}
+.hdr-r{display:flex;align-items:center;gap:16px}
+.badge{font-family:var(--mono);font-size:10px;color:var(--text2);border:1px solid var(--border2);border-radius:5px;padding:4px 10px;letter-spacing:.05em}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:pulse 2.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.page{padding:20px 28px;max-width:1480px;margin:0 auto}
+.sec-lbl{font-family:var(--mono);font-size:10px;color:var(--text2);letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px;padding-left:2px}
+.sec-lbl em{color:var(--text3);margin-right:8px;font-style:normal}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:18px 20px}
+.panel-hdr{font-size:12px;font-weight:500;color:var(--text2);letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+.panel-hdr span{font-family:var(--mono);font-size:10px;color:var(--text3);font-weight:400}
+.mb20{margin-bottom:20px}
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.kpi{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:20px 22px;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--kc);opacity:.8}
+.kpi-label{font-family:var(--mono);font-size:10px;color:var(--text2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
+.kpi-value{font-family:var(--mono);font-size:26px;font-weight:500;line-height:1;letter-spacing:-.01em}
+.kpi-sub{font-family:var(--mono);font-size:10px;color:var(--text2);margin-top:8px}
+.pos{color:var(--green)} .neg{color:var(--red)} .neutral{color:var(--text2)} .amb{color:var(--amber)}
+.g2{display:grid;grid-template-columns:1.25fr 1fr;gap:14px;margin-bottom:20px}
+.g2b{display:grid;grid-template-columns:1fr 1.5fr;gap:14px;margin-bottom:20px}
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;padding:0 10px 10px;text-align:right;border-bottom:1px solid var(--border)}
+.tbl th:first-child{text-align:left}
+.tbl td{font-family:var(--mono);font-size:11.5px;padding:9px 10px;text-align:right;border-bottom:1px solid var(--border);color:var(--text1)}
+.tbl td:first-child{text-align:left}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(255,255,255,.025)}
+.sdot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:8px;vertical-align:middle}
+.sname{font-weight:500}
+.wr-wrap{display:inline-flex;align-items:center;gap:7px}
+.wr-bg{width:48px;height:4px;background:var(--border2);border-radius:2px;display:inline-block;position:relative}
+.wr-fill{height:4px;border-radius:2px;position:absolute;left:0;top:0}
+.pnl-bar-wrap{display:flex;align-items:center;gap:8px;justify-content:flex-end}
+.pnl-bar{height:5px;border-radius:3px;min-width:3px}
+.atype{font-size:9px;color:var(--text2);font-family:var(--mono);border:1px solid var(--border2);border-radius:3px;padding:1px 5px;display:inline-block;margin-left:6px;vertical-align:middle}
+.footer{margin-top:24px;padding:14px 0;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:.05em}
+</style>
+</head>
+<body>
+<header class="hdr">
+  <div class="hdr-l">
+    <div class="logo">AJZ</div>
+    <div>
+      <div class="hdr-title">AJZ STRATEGIES LLC</div>
+      <div class="hdr-sub">PERFORMANCE ANALYTICS &nbsp;/&nbsp; P_020 &nbsp;/&nbsp; PAPER ACCOUNT</div>
+    </div>
+  </div>
+  <div class="hdr-r">
+    <div class="badge">SINCE JUN 2026</div>
+    <div class="badge">36 CLOSED &nbsp;/&nbsp; 15 OPEN</div>
+    <div class="badge">UPDATED SEP 19, 2026</div>
+    <div class="dot"></div>
+  </div>
+</header>
+
+<div class="page">
+  <div class="kpi-row">
+    <div class="kpi" style="--kc:var(--green)">
+      <div class="kpi-label">Net P&amp;L (YTD Closed)</div>
+      <div class="kpi-value pos">+$262.76</div>
+      <div class="kpi-sub">06 ▼$736  07 ▲$999</div>
+    </div>
+    <div class="kpi" style="--kc:var(--amber)">
+      <div class="kpi-label">Win Rate</div>
+      <div class="kpi-value amb">19.4%</div>
+      <div class="kpi-sub">7 wins &nbsp;/&nbsp; 29 losses &nbsp;/&nbsp; 36 closed</div>
+    </div>
+    <div class="kpi" style="--kc:var(--green)">
+      <div class="kpi-label">Portfolio Expectancy</div>
+      <div class="kpi-value neutral">+0.00R</div>
+      <div class="kpi-sub">Avg R per closed trade across all systems</div>
+    </div>
+    <div class="kpi" style="--kc:#9b77f5">
+      <div class="kpi-label">Best System</div>
+      <div class="kpi-value" style="font-size:22px;margin-top:3px;color:#9b77f5">P_300</div>
+      <div class="kpi-sub">36% WR &nbsp; +$1,259.87 &nbsp; Kelly %</div>
+    </div>
+  </div>
+
+  <div class="sec-lbl"><em>01</em>EQUITY CURVE</div>
+  <div class="panel mb20">
+    <div class="panel-hdr">Cumulative P&amp;L by System <span>JUN 2026 — SEP 19, 2026</span></div>
+    <div style="height:220px"><canvas id="eqChart"></canvas></div>
+  </div>
+
+  <div class="g2 mb20">
+    <div class="panel">
+      <div class="panel-hdr">System Performance <span>SINCE JUN 2026 CLOSED TRADES</span></div>
+      <table class="tbl">
+        <thead><tr><th>System</th><th>Closed</th><th>Win %</th><th>Net P&amp;L</th><th>Avg R</th><th>Prof Factor</th><th>Avg Hold</th></tr></thead>
+        <tbody>
+        <tr>
+          <td><span class="sdot" style="background:#0ea572"></span><span class="sname">P_118</span></td>
+          <td>7</td>
+          <td><div class="wr-wrap"><div class="wr-bg"><div class="wr-fill" style="width:17%;background:#0ea572"></div></div>
+              <span class="neg">16.7%</span></div></td>
+          <td class="neg">−$200.33</td>
+          <td class="neutral">+0.00R</td>
+          <td class="neg">0.43</td>
+          <td>8.3d</td>
+        </tr>
+
+        <tr>
+          <td><span class="sdot" style="background:#3882ef"></span><span class="sname">P_115</span></td>
+          <td>13</td>
+          <td><div class="wr-wrap"><div class="wr-bg"><div class="wr-fill" style="width:0%;background:#3882ef"></div></div>
+              <span class="neg">0.0%</span></div></td>
+          <td class="neg">−$1,876.62</td>
+          <td class="neutral">+0.00R</td>
+          <td class="neg">—</td>
+          <td>14.3d</td>
+        </tr>
+
+        <tr>
+          <td><span class="sdot" style="background:#9b77f5"></span><span class="sname">P_300</span></td>
+          <td>11</td>
+          <td><div class="wr-wrap"><div class="wr-bg"><div class="wr-fill" style="width:36%;background:#9b77f5"></div></div>
+              <span class="amb">36.4%</span></div></td>
+          <td class="pos">+$1,259.87</td>
+          <td class="neutral">+0.00R</td>
+          <td class="pos">3.05</td>
+          <td>3.0d</td>
+        </tr>
+
+        <tr>
+          <td><span class="sdot" style="background:#e8a21c"></span><span class="sname">P_117</span></td>
+          <td>1</td>
+          <td><div class="wr-wrap"><div class="wr-bg"><div class="wr-fill" style="width:0%;background:#e8a21c"></div></div>
+              <span class="neg">0.0%</span></div></td>
+          <td class="neg">−$112.00</td>
+          <td class="neutral">+0.00R</td>
+          <td class="neg">—</td>
+          <td>3.0d</td>
+        </tr>
+
+        <tr>
+          <td><span class="sdot" style="background:#0ab4d4"></span><span class="sname">SNT</span></td>
+          <td>0</td>
+          <td><div class="wr-wrap"><div class="wr-bg"><div class="wr-fill" style="width:0%;background:#0ab4d4"></div></div>
+              <span class="neg">0.0%</span></div></td>
+          <td class="neutral">+$0.00</td>
+          <td class="neutral">+0.00R</td>
+          <td class="neg">—</td>
+          <td>—</td>
+        </tr>
+
+        <tr>
+          <td><span class="sdot" style="background:#e87c1c"></span><span class="sname">P_116</span></td>
+          <td>1</td>
+          <td><div class="wr-wrap"><div class="wr-bg"><div class="wr-fill" style="width:0%;background:#e87c1c"></div></div>
+              <span class="neg">0.0%</span></div></td>
+          <td class="neg">−$43.48</td>
+          <td class="neutral">+0.00R</td>
+          <td class="neg">—</td>
+          <td>3.0d</td>
+        </tr>
+
+        <tr>
+          <td><span class="sdot" style="background:#888"></span><span class="sname">P_010</span></td>
+          <td>1</td>
+          <td><div class="wr-wrap"><div class="wr-bg"><div class="wr-fill" style="width:100%;background:#888"></div></div>
+              <span class="pos">100.0%</span></div></td>
+          <td class="pos">+$17.00</td>
+          <td class="neutral">+0.00R</td>
+          <td class="neg">—</td>
+          <td>1.0d</td>
+        </tr>
+
+        <tr>
+          <td><span class="sdot" style="background:#888"></span><span class="sname">P_920</span></td>
+          <td>3</td>
+          <td><div class="wr-wrap"><div class="wr-bg"><div class="wr-fill" style="width:33%;background:#888"></div></div>
+              <span class="amb">33.3%</span></div></td>
+          <td class="pos">+$1,218.32</td>
+          <td class="neutral">+0.00R</td>
+          <td class="pos">11.01</td>
+          <td>9.7d</td>
+        </tr></tbody>
+      </table>
+    </div>
+    <div class="panel">
+      <div class="panel-hdr">Drawdown — Dollar <span>FROM $575 PEAK</span></div>
+      <div style="height:270px"><canvas id="ddChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="g2b mb20">
+    <div class="panel">
+      <div class="panel-hdr">R Distribution <span>36 CLOSED TRADES</span></div>
+      <div style="height:220px"><canvas id="rChart"></canvas></div>
+    </div>
+    <div class="panel">
+      <div class="panel-hdr">Monthly Summary <span>SINCE JUN 2026</span></div>
+      <table class="tbl">
+        <thead><tr><th>Month</th><th>Closed</th><th>Win %</th><th>Net P&amp;L</th><th>Avg R</th></tr></thead>
+        <tbody>
+        <tr>
+          <td>2026-06</td>
+          <td>14</td>
+          <td class="neg">7.7%</td>
+          <td class="neg">
+            <div class="pnl-bar-wrap">
+              <div class="pnl-bar" style="width:44px;background:#e85060"></div>
+              −$736.08
+            </div>
+          </td>
+          <td class="neutral">+0.00R</td>
+        </tr>
+
+        <tr>
+          <td>2026-07</td>
+          <td>23</td>
+          <td class="neg">26.1%</td>
+          <td class="pos">
+            <div class="pnl-bar-wrap">
+              <div class="pnl-bar" style="width:60px;background:#0ea572"></div>
+              +$998.84
+            </div>
+          </td>
+          <td class="neutral">+0.00R</td>
+        </tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="sec-lbl"><em>02</em>OPEN POSITIONS — AS OF SEP 19, 2026</div>
+  <div class="panel mb20">
+    <table class="tbl">
+      <thead><tr><th>Symbol</th><th>Qty</th><th>Avg Price</th><th>Mkt Value</th><th>Unrealized P&amp;L</th><th>Day P&amp;L</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <div class="footer">
+    <span>P_020 AJZ STRATEGIES PERFORMANCE SYSTEM</span>
+    <span>GENERATED SEP 19, 2026 &nbsp;/&nbsp; DATA: PAPER ACCOUNT</span>
+  </div>
+</div>
+
+<script>
+const eqCtx = document.getElementById('eqChart').getContext('2d');
+new Chart(eqCtx, {type:'line',data:{labels:["2026-06-01", "2026-06-09", "2026-06-10", "2026-06-12", "2026-06-15", "2026-06-16", "2026-06-18", "2026-06-23", "2026-06-26", "2026-07-01", "2026-07-02", "2026-07-06", "2026-07-08", "2026-07-09", "2026-07-10", "2026-07-14", "2026-07-16", "2026-07-17", "2026-07-20", "2026-07-21", "2026-07-22", "2026-07-23", "2026-07-24", "2026-07-27", "2026-07-29"],datasets:[{"label":"Total","data":[-10.45, -10.45, 574.55, 573.75, 536.67, 450.45, 15.15, -48.9, -736.08, -839.32, -61.52, -51.76, -228.46, -244.95, -265.85, -337.13, -309.13, -312.17, -424.17, 129.83, 79.43, -1.57, -471.04, 245.76, 262.76],"borderColor":"#dde8f5","borderWidth":2,"pointRadius":0,"tension":.3,"fill":false},{"label":"P_118","data":[-10.45, -10.45, -10.45, -10.45, -11.53, -11.53, -11.53, -11.53, -11.53, -11.53, -73.73, -73.73, -73.73, -73.73, -73.73, -73.73, -131.13, -131.13, -131.13, -131.13, -131.13, -131.13, -131.13, -200.33, -200.33],"borderColor":"#0ea572","borderWidth":1.5,"pointRadius":0,"tension":.3,"fill":false,"borderDash":[4,3]},{"label":"P_115","data":[0.0, 0.0, 0.0, -0.8, -0.8, -87.02, -317.32, -381.37, -1025.07, -1128.31, -1128.31, -1181.95, -1326.15, -1326.15, -1326.15, -1326.15, -1326.15, -1326.15, -1326.15, -1326.15, -1326.15, -1407.15, -1876.62, -1876.62, -1876.62],"borderColor":"#3882ef","borderWidth":1.5,"pointRadius":0,"tension":.3,"fill":false,"borderDash":[4,3]},{"label":"P_300","data":[0.0, 0.0, 585.0, 585.0, 549.0, 549.0, 344.0, 344.0, 344.0, 344.0, 1184.0, 1247.4, 1214.9, 1198.41, 1177.51, 1177.51, 1262.91, 1259.87, 1259.87, 1259.87, 1259.87, 1259.87, 1259.87, 1259.87, 1259.87],"borderColor":"#9b77f5","borderWidth":1.5,"pointRadius":0,"tension":.3,"fill":false,"borderDash":[4,3]},{"label":"P_117","data":[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -112.0, -112.0, -112.0, -112.0, -112.0, -112.0, -112.0],"borderColor":"#e8a21c","borderWidth":1.5,"pointRadius":0,"tension":.3,"fill":false,"borderDash":[4,3]},{"label":"P_910","data":[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],"borderColor":"#e85060","borderWidth":1.5,"pointRadius":0,"tension":.3,"fill":false,"borderDash":[4,3]},{"label":"SNT","data":[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],"borderColor":"#0ab4d4","borderWidth":1.5,"pointRadius":0,"tension":.3,"fill":false,"borderDash":[4,3]},{"label":"P_116","data":[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -43.48, -43.48, -43.48, -43.48, -43.48, -43.48, -43.48, -43.48, -43.48, -43.48, -43.48, -43.48, -43.48, -43.48, -43.48, -43.48, -43.48],"borderColor":"#e87c1c","borderWidth":1.5,"pointRadius":0,"tension":.3,"fill":false,"borderDash":[4,3]}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#6a94be',font:{size:10,family:"'JetBrains Mono'"}}}},scales:{x:{ticks:{color:'#375875',maxTicksLimit:10,font:{size:9}},grid:{color:'#173458'}},y:{ticks:{color:'#375875',font:{size:9},callback:v=>v>=0?'+$'+v.toLocaleString():'−$'+Math.abs(v).toLocaleString()},grid:{color:'#173458'}}}}});
+const ddCtx = document.getElementById('ddChart').getContext('2d');
+new Chart(ddCtx, {type:'line',data:{labels:["2026-06-01", "2026-06-09", "2026-06-10", "2026-06-12", "2026-06-15", "2026-06-16", "2026-06-18", "2026-06-23", "2026-06-26", "2026-07-01", "2026-07-02", "2026-07-06", "2026-07-08", "2026-07-09", "2026-07-10", "2026-07-14", "2026-07-16", "2026-07-17", "2026-07-20", "2026-07-21", "2026-07-22", "2026-07-23", "2026-07-24", "2026-07-27", "2026-07-29"],datasets:[{label:'Drawdown $',data:[-10.45, -10.45, 0.0, -0.8, -37.88, -124.1, -559.4, -623.45, -1310.63, -1413.87, -636.07, -626.31, -803.01, -819.5, -840.4, -911.68, -883.68, -886.72, -998.72, -444.72, -495.12, -576.12, -1045.59, -328.79, -311.79],borderColor:'#e85060',backgroundColor:'rgba(232,80,96,.15)',fill:true,borderWidth:1.5,pointRadius:0,tension:.3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#375875',maxTicksLimit:8,font:{size:9}},grid:{color:'#173458'}},y:{ticks:{color:'#375875',font:{size:9},callback:v=>'$'+v.toLocaleString()},grid:{color:'#173458'}}}}});
+const rCtx = document.getElementById('rChart').getContext('2d');
+new Chart(rCtx, {type:'bar',data:{labels:["<-2R", "-2R to -1R", "-1R to 0R", "0R scratch", "0R to +1R", "+1R to +2R", "+2R to +3R", ">+3R"],datasets:[{label:'Trades',data:[0, 0, 0, 0, 0, 0, 0, 0],backgroundColor:["#e85060", "#e85060", "#e85060", "#888", "#0ea572", "#0ea572", "#0ea572", "#0ea572"],borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#375875',font:{size:9}},grid:{color:'#173458'}},y:{ticks:{color:'#375875',font:{size:9}},grid:{color:'#173458'}}}}});
+</script>
+</body>
+</html>

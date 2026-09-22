@@ -2,6 +2,7 @@
 
 import json
 import logging
+import winreg
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
@@ -43,9 +44,40 @@ LIVE_STOCK_LOG = (
 
 # â”€â”€ Tracker Dashboard (signal source lookup) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 # V2 is the master â€” 998 rows, correct SignalSource column
-TRACKER_DASHBOARD = Path(
-    r"D:\OneDrive\Documents\AJZStrategiesLLC"
-    r"\P_115_TrackerAudit\P_115_118_TrackerDashboard_V2.xlsx"
+def get_onedrive_root() -> Path:
+    """Read the live OneDrive root path from the registry.
+
+    The OneDrive environment variable is set by the OneDrive client after
+    logon and is NOT reliably inherited by long-running or non-interactive
+    processes (MCP relay processes, scheduled tasks, services) started
+    before or outside that logon chain -- confirmed live 2026-09-19: a
+    script launched via Start-Process through the windows-mcp relay saw
+    os.environ.get("OneDrive") as None even though HKCU\\Environment\\
+    OneDrive was set. The registry key itself is always current regardless
+    of process lineage, so read it directly instead of trusting the
+    environment variable. Never hardcode the drive letter elsewhere --
+    call this function.
+
+    Falls back to the last-known path (D:\\OneDrive, confirmed live
+    2026-09-19) if the registry read fails for any reason, logging a
+    warning so a silently wrong path never goes unnoticed.
+    """
+    try:
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Environment") as key:
+            value, _ = winreg.QueryValueEx(key, "OneDrive")
+        return Path(value)
+    except OSError as e:
+        logger.warning(
+            f"Could not read OneDrive path from registry ({e}); "
+            f"falling back to last-known path D:\\OneDrive"
+        )
+        return Path(r"D:\OneDrive")
+
+
+TRACKER_DASHBOARD = (
+    get_onedrive_root()
+    / "Documents" / "AJZStrategiesLLC"
+    / "P_115_TrackerAudit" / "P_115_118_TrackerDashboard_V2.xlsx"
 )
 
 # â”€â”€ Power Query CSV export files â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -170,3 +202,15 @@ CASH_SETTLED_OPTION_ROOTS = frozenset({"NDXP"})
 # WO-P020-E1.018's own Acceptance Criteria -- same-day is never eligible,
 # even if the option's instrument.closingPrice already looks final.
 EXPIRATION_CLOSE_BUFFER_DAYS = 1
+
+
+# -- Analysis start-date defaults (WO-P020-E1.020) ----------------------
+# Used by stats_export.py / generate_dashboard.py when --start-date is
+# not passed on the command line. A CLI --start-date always overrides
+# these. PAPER's 2026-06-01 is Tony's own change-control reset point
+# (documented 2026-09-05, WO-P000-E22.001 draft -- never approved, so
+# this is the first place it's actually enforced). LIVE stays at
+# 2026-01-01 by Tony's explicit choice 2026-09-19: once --start-date
+# exists as a real parameter, there is no need to move the default too.
+PAPER_ANALYSIS_START_DATE = "2026-06-01"
+LIVE_ANALYSIS_START_DATE  = "2026-01-01"

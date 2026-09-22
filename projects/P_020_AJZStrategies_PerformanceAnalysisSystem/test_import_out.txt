@@ -1,2 +1,0 @@
-sys.path ok
-import ok

@@ -5,7 +5,7 @@ import sqlite3
 from datetime import datetime, timezone
 from typing import Optional
 
-from schemas import Exit, SpreadLeg, Trade
+from schemas_trade import Exit, SpreadLeg, Trade
 
 logger = logging.getLogger(__name__)
 
@@ -102,8 +102,8 @@ def insert_trade(conn: sqlite3.Connection, trade: Trade) -> Optional[int]:
             open_date, open_datetime, qty, entry_price, stop_price,
             risk_amount, total_commissions, status, tags, notes,
             source, schwab_transaction_id, reason, signal_strength,
-            expiration_date, settlement_price
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            expiration_date, settlement_price, spread_group_id
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         trade.account_id,
         trade.system,
@@ -126,6 +126,7 @@ def insert_trade(conn: sqlite3.Connection, trade: Trade) -> Optional[int]:
         trade.signal_strength,
         str(trade.expiration_date) if trade.expiration_date else None,
         trade.settlement_price,
+        trade.spread_group_id,
     ))
     conn.commit()
     trade_id = cursor.lastrowid

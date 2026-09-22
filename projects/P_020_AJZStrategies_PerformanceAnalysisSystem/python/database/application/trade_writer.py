@@ -37,7 +37,7 @@ from infrastructure.db_writer import (
     transaction_exists,
     update_trade_status,
 )
-from schemas import Exit
+from schemas_trade import Exit
 
 logger = logging.getLogger(__name__)
 

@@ -23,11 +23,13 @@ from pathlib import Path
 
 import config
 from domain.headers import decode_header_safe
+from domain.message_selector import already_moved
 from domain.sender_filter import extract_email_address, is_approved
 from domain.ticker_extractor import find_tickers, infer_direction, TickerMatch
 from infrastructure.logging_setup import configure_logging
 from infrastructure.mbox_body import extract_body
 from infrastructure.mbox_reader import iter_mbox_messages, parse_message_date
+from infrastructure.moved_log import load_moved_log
 from infrastructure.sender_sheet import load_enabled_senders
 from schemas import TickerSignal
 
@@ -82,8 +84,19 @@ def _build_signal(
     )
 
 
-def scan_account(account: str, enabled: set[str]) -> list[TickerSignal]:
-    """Scan one account; return all TickerSignals extracted from approved mail."""
+def scan_account(
+    account: str, enabled: set[str], moved: set[tuple[str, str]]
+) -> list[TickerSignal]:
+    """Scan one account; return all TickerSignals extracted from approved mail.
+
+    ``moved`` is the set of (account, message_id) pairs Phase 5.3 has already
+    confirmed moved server-side (moved_messages.csv). A message can still
+    show up in the local mbox scan because Thunderbird's own cache lags the
+    real server state until its next resync -- skip it here rather than
+    re-emitting a duplicate signal (root-caused 2026-09-21: 188 of 890
+    unique messages over 5 months were re-extracted on more than one day,
+    181 of them on iCloud).
+    """
     relative = config.MBOX_FILES.get(account)
     if not relative:
         logger.warning(f"Unknown account '{account}'.")
@@ -97,6 +110,7 @@ def scan_account(account: str, enabled: set[str]) -> list[TickerSignal]:
     signals: list[TickerSignal] = []
     approved_count = 0
     extracted_count = 0
+    skipped_moved_count = 0
     for msg in iter_mbox_messages(mbox_path):
         msg_date = parse_message_date(msg.get("Date"))
         if msg_date is None or msg_date < cutoff:
@@ -108,6 +122,9 @@ def scan_account(account: str, enabled: set[str]) -> list[TickerSignal]:
         approved_count += 1
         subject = decode_header_safe(msg.get("Subject"))
         message_id = (msg.get("Message-ID") or "").strip()
+        if message_id and (account, message_id) in moved:
+            skipped_moved_count += 1
+            continue
         body = extract_body(msg)
         text = f"{subject}\n\n{body}"
         matches = find_tickers(
@@ -129,7 +146,8 @@ def scan_account(account: str, enabled: set[str]) -> list[TickerSignal]:
             extracted_count += 1
     logger.info(
         f"[{account:7s}] approved={approved_count:4d}  "
-        f"signals={len(signals):4d}  extractions={extracted_count}"
+        f"signals={len(signals):4d}  extractions={extracted_count}  "
+        f"skipped_already_moved={skipped_moved_count}"
     )
     return signals
 
@@ -154,13 +172,15 @@ def run(account: str | None = None) -> None:
     if not enabled:
         logger.error("No enabled senders loaded — aborting Phase 3.")
         sys.exit(1)
+    moved = already_moved(load_moved_log(config.MOVED_LOG_PATH))
     targets = [account] if account else list(config.IMAP_ACCOUNT_ORDER)
     logger.info(f"Phase 3: extracting from {len(targets)} account(s)")
     logger.info(f"Patterns: {[p['name'] for p in config.TICKER_PATTERNS]}")
+    logger.info(f"Already-moved (skip) set: {len(moved)} message(s)")
     logger.info("-" * 72)
     all_signals: list[TickerSignal] = []
     for name in targets:
-        all_signals.extend(scan_account(name, enabled))
+        all_signals.extend(scan_account(name, enabled, moved))
     logger.info("-" * 72)
     output_path = config.DATA_DAILY_DIR / config.DAILY_OUTPUT_CSV.format(
         date=date.today().isoformat()

@@ -16,7 +16,8 @@ import sqlite3
 from datetime import date
 from typing import Optional
 
-from schemas import Exit, Order, Trade
+from schemas_trade import Exit, Trade
+from schemas_ops import Order
 
 logger = logging.getLogger(__name__)
 

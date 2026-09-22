@@ -112,6 +112,21 @@ if (-not $promptIsFresh) {
         $summaryLine = "Chaikin batch: $writtenCount / $($actionable.Count) notes updated. NOT updated (verify above -- may be legitimate no-coverage, or a real miss, including auth failure -- check console output above): $($notWritten -join ', ')"
         Write-Host $summaryLine -ForegroundColor Yellow
         $summaryLine | Add-Content -Path $LOG -Encoding UTF8
+
+        # 2026-09-16: claude -p --chrome inside RunChaikinBatch.ps1 has
+        # failed every run since 2026-09-04 (7/7, see chaikin_failures.log
+        # in shared_resources\chaikin_enrichment\) -- pausing here instead
+        # of letting the run finish silently on a red banner nobody sees
+        # until later. Operator runs the MCP pull (claude-in-chrome,
+        # session-driven) for the symbols below, then confirms.
+        Write-Host ""
+        Write-Host "=======================================================================" -ForegroundColor Red
+        Write-Host " PAUSED -- Chaikin MCP pull required for: $($notWritten -join ', ')" -ForegroundColor Red
+        Write-Host " Open a Claude session with claude-in-chrome and run the pull per:" -ForegroundColor Red
+        Write-Host " $PROJECT_ROOT\docs\processes\chaikin_mcp_pull.md" -ForegroundColor Red
+        Write-Host " Vault notes: $VAULT_DIR" -ForegroundColor Red
+        Write-Host "=======================================================================" -ForegroundColor Red
+        Read-Host "Press Enter once the MCP pull is done (or to skip and finish the run)"
     }
 }
 

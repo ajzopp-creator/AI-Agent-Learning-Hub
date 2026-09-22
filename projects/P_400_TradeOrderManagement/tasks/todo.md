@@ -1,5 +1,77 @@
 # P_400 Current State
 
+## 2026-09-21 -- Mixed session: boot/INIT, live trades (AMZN REAL, ARE PAPER), two Hub-wide bridge fixes (WO-P400-E9.001, E9.002)
+
+**Status:** Session closed. Two shared-file bugs found+fixed+live-verified;
+two real orders recorded end to end (vault write confirmed on both; P_020
+sync confirmed on ARE, AMZN's P_020 sync retry not yet confirmed).
+
+### Trades recorded this session
+- AMZN 261016C260 CALL, 1 contract, REAL, order_id=1008004303125, entry
+  $7.72. Sized via `size-option` (packet-free, WO-P400-E8.003 path) after the
+  underlying signal's packet was already archived by an earlier batch-2b
+  evaluate. Gate math sized it to 0 contracts ($678/contract risk vs $331.41
+  budget) -- taken as an explicit, documented override, 1 contract. Stock-side
+  alternative (2 sh, $28.38 risk, same R:R 6.19-6.21) was also APPROVED but
+  not taken.
+- ARE, 13 shares, PAPER, order_id=15112689969, entry 54.19 (vs 53.88
+  guideline, normal slippage). Sized under risk_mode=OFF (0.50x); risk_mode
+  moved to HALF (0.75x) later the same session -- cached size is
+  conservative, not unsafe, just leaves some size on the table if that
+  matters later. ThinkLog tag used: `0921: [P_115][B] ARE 13 B: 53.88 T1:
+  73.59 SL: 49.04 48.99`.
+
+### Fixes shipped this session (both live-verified, see WO files for detail)
+- **WO-P400-E9.001**: hub_mcp_launcher.ps1 v1.2->v1.3 -- Invoke-HubBat now
+  captures full stdout+stderr from every detached bat run to a console log
+  (auto-derived path, no caller changes needed). Was previously fully
+  silent; a batch-2b "fetch-snapshot failed" was undiagnosable from the MCP
+  side until this fix. Backup: hub_mcp_launcher.ps1.backup_2026-09-21.
+- **WO-P400-E9.002**: p020_order_writer.py -- P_020's 2026-09-19 schemas.py
+  -> schemas_ops.py/schemas_trade.py split broke this bridge's hardcoded
+  `import schemas`/`schemas.Order`. NOT a recurrence of E8.001 (different
+  root cause: upstream rename, not a sys.modules cache collision). Fixed to
+  import schemas_ops. Backup: p020_order_writer.py.backup_2026-09-21.
+
+### Session account state (as of session end)
+- Cash available: $15,008.81
+- Posture: HALF (was OFF earlier same session -- confirm live before sizing
+  anything new next session, don't assume either value carried forward)
+
+### Flagged, not resolved this session
+- **AMZN's P_020 order sync**: still not confirmed successful as of session
+  end. It failed on the schemas bug before the fix and was never retried
+  after. Retry command is in WO-P400-E9.002 and was given to Tony; check
+  P_020's orders table for an AMZN row with order_id=1008004303125 before
+  assuming this is done.
+- E8.001/E8.002/E8.003 all OWNER_DONE but missing their Completion Gate
+  checklist block entirely (WO_COMPLETION_GATE.md Enforcement section says
+  this means they are not actually OWNER_DONE) -- re-verified live at
+  session close, still true, not touched this session.
+- E9.001/E9.002 both still need: permanent test coverage, and Acks from the
+  other Hub projects that share these two bridge files (P_010/P_020/P_805
+  for the launcher; any p020_order_writer.py consumer for the schemas fix).
+- `p400-project-context` skill's own "Bugs Already Fixed" table has not been
+  updated with E9.001/E9.002 rows yet -- do that alongside the permanent
+  tests, per the skill's own Update trigger.
+- E8.001's still-open audit item (which other Hub projects call
+  p020_order_writer.py, P_820 flagged as a likely consumer) is now doubly
+  relevant given the schemas split -- anything importing P_020's old
+  schemas.py directly, not through this bridge, broke the same way 2026-09-19
+  and nobody's checked yet.
+- Git session-end steps (status -> stage -> commit -> push) reminded but not
+  confirmed run this session -- two real shared-file edits went out.
+
+### Do NOT
+- Assume E8.001/E8.002/E8.003 are done -- the ledger says OWNER_DONE but the
+  Completion Gate block is missing entirely on all three.
+- Assume AMZN's P_020 sync succeeded just because the fix is live -- it was
+  never retried, confirm before relying on it.
+- Re-diagnose the "fetch-snapshot failed" or "schemas has no attribute
+  Order" errors from scratch if they resurface elsewhere -- read
+  WO-P400-E9.001/E9.002 first.
+
+---
 ## 2026-08-31 -- WO-P400-E7.001 (Extended-Hours Pricing Basis) build session
 
 **Status: CODE BUILT, not OWNER_DONE.** Full build + fix landed same session; live-verified on real symbols, partially.

@@ -1,0 +1,14 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.12, pytest-9.0.2, pluggy-1.6.0 -- C:\Users\Trader\.conda\envs\p140\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\Trader\AI-Agent-Learning-Hub
+configfile: pyproject.toml
+plugins: anyio-4.12.1
+collecting ... collected 4 items
+
+test_note_merger.py::test_merge_strips_p800_bookkeeping_keys PASSED      [ 25%]
+test_note_merger.py::test_merge_preserves_untouched_fields PASSED        [ 50%]
+test_note_merger.py::test_merge_sets_reconciled_outcome PASSED           [ 75%]
+test_note_merger.py::test_merge_handles_missing_dates_as_none PASSED     [100%]
+
+============================== 4 passed in 0.05s ==============================

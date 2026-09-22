@@ -1,5 +1,0 @@
-Traceback (most recent call last):
-  File "C:\Users\Trader\AI-Agent-Learning-Hub\Agentic-Hub-Governance\verify\run_this_P020_20260915_1638_close_e1017.py", line 15, in <module>
-    assert content.count(old_status) == 1, "status line not found or not unique"
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-AssertionError: status line not found or not unique

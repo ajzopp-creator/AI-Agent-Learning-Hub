@@ -1,0 +1,18 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.12, pytest-9.0.2, pluggy-1.6.0 -- C:\Users\Trader\.conda\envs\p140\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\Trader\AI-Agent-Learning-Hub
+configfile: pyproject.toml
+plugins: anyio-4.12.1
+collecting ... collected 8 items
+
+test_reconcile_command.py::test_parse_pull_datetime_accepts_date_only PASSED [ 12%]
+test_reconcile_command.py::test_parse_pull_datetime_accepts_full_iso_datetime PASSED [ 25%]
+test_reconcile_command.py::test_parse_pull_datetime_returns_datetime_not_str PASSED [ 37%]
+test_order_reconciler.py::test_compute_pnl_applies_100x_multiplier_for_short_option PASSED [ 50%]
+test_order_reconciler.py::test_compute_pnl_stock_uses_1x_multiplier PASSED [ 62%]
+test_db_order_writer.py::test_build_exit_back_solves_option_price_with_multiplier PASSED [ 75%]
+test_db_order_writer.py::test_build_exit_stock_uses_1x_multiplier PASSED [ 87%]
+test_db_order_writer.py::test_build_exit_returns_none_without_entry_fill_price PASSED [100%]
+
+============================== 8 passed in 0.17s ==============================

@@ -107,7 +107,7 @@ def cmd_close_expired_options(args: argparse.Namespace) -> None:
     run_close_expired_options(commit=args.commit)
 
 
-# ── Export / Analyze ────────────────────────────────────────────────────────
+# ── Export / Analyze / Dashboard ───────────────────────────────────────────
 
 def cmd_export(args: argparse.Namespace) -> None:
     """Export v_trade_summary to Power Query CSV files for Excel."""
@@ -124,8 +124,36 @@ def cmd_analyze(args: argparse.Namespace) -> None:
     """Generate analysis CSV files — equity curve, R-distribution, monthly summary, etc."""
     from application.stats_export import export_all_stats
 
-    export_all_stats(account_id=args.account if args.account else None)
+    try:
+        export_all_stats(
+            account_id=args.account if args.account else None,
+            start_date=args.start_date,
+        )
+    except ValueError as e:
+        logger.error(str(e))
+        sys.exit(1)
     print("Analysis complete — check data\\exports\\ai_review\\ for CSV files.")
+
+
+def cmd_dashboard(args: argparse.Namespace) -> None:
+    """Regenerate the HTML performance dashboard (WO-P020-E1.020).
+
+    Re-runs analyze for --account/--start-date first (unless --no-analyze),
+    then builds docs\\P_020_Dashboard.html (live) or
+    docs\\P_020_Dashboard_Paper.html (PAPER).
+    """
+    from application.generate_dashboard import build_dashboard
+
+    try:
+        out = build_dashboard(
+            account_id=args.account,
+            start_date=args.start_date,
+            run_analyze=not args.no_analyze,
+        )
+    except ValueError as e:
+        logger.error(str(e))
+        sys.exit(1)
+    print(f"Dashboard written -> {out}")
 
 
 # ── Parser ─────────────────────────────────────────────────────────────────
@@ -186,6 +214,20 @@ def _build_parser() -> argparse.ArgumentParser:
 
     p_analyze = sub.add_parser("analyze", help="Generate analysis CSV files for AI review")
     p_analyze.add_argument("--account", default=None, help="Filter by account ID")
+    p_analyze.add_argument("--start-date", default=None,
+                           help="Override start date YYYY-MM-DD (WO-P020-E1.020; "
+                                "default: config.py per-account value)")
+
+    p_dashboard = sub.add_parser(
+        "dashboard",
+        help="Regenerate the HTML performance dashboard (WO-P020-E1.020)",
+    )
+    p_dashboard.add_argument("--account", default="AJZ6348",
+                             help="Account ID: AJZ6348 (default) or PAPER")
+    p_dashboard.add_argument("--start-date", default=None,
+                             help="Override start date YYYY-MM-DD (default: config.py per-account value)")
+    p_dashboard.add_argument("--no-analyze", action="store_true",
+                             help="Skip re-running analyze; build from CSVs already on disk")
 
     p_positions = sub.add_parser("positions", help="Display current open positions from Schwab")
     p_positions.add_argument("--account", default="AJZ", help="Account: AJZ or IRA (default: AJZ)")
@@ -213,6 +255,7 @@ def main() -> None:
         "thinklog" : cmd_thinklog,
         "export"   : cmd_export,
         "analyze"  : cmd_analyze,
+        "dashboard": cmd_dashboard,
         "balance"  : cmd_balance,
         "positions": cmd_positions,
         "close-expired-options": cmd_close_expired_options,

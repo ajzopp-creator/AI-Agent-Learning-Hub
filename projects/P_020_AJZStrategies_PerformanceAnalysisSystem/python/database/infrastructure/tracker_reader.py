@@ -9,7 +9,7 @@ from pydantic import ValidationError
 
 from config import TRACKER_DASHBOARD
 from infrastructure.systems_registry import get_valid_system_ids
-from schemas import TrackerEntry, TrackerLookup
+from schemas_tracker import TrackerEntry, TrackerLookup
 
 logger = logging.getLogger(__name__)
 

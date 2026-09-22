@@ -1,5 +1,5 @@
 # =============================================================================
-# hub_mcp_launcher.ps1  --  v1.2  --  2026-09-08
+# hub_mcp_launcher.ps1  --  v1.3  --  2026-09-21
 # Shared detached-launch helper for all Hub MCP PowerShell wrappers.
 #
 # PURPOSE
@@ -26,6 +26,24 @@
 #   SUCCESS  -- bat exited 0
 #   FAILED:N -- bat exited non-zero (N = exit code)
 #   TIMEOUT  -- job did not finish within TimeoutMinutes
+#   A final "LOG: <path>" line always follows, pointing at the detached
+#   bat's captured stdout+stderr (added v1.3) -- read it whenever the
+#   result alone doesn't explain what happened, success or not.
+#
+# v1.3 CHANGE (ref P_400 batch-2b, 2026-09-21) -- Invoke-HubBat launched
+# every job fully silent: Start-Process detached with no output
+# redirection anywhere. A P_400 batch-2b run that day printed
+# "fetch-snapshot failed" inside its own JSON with zero way to see the
+# actual Python error from the MCP side -- the exit code was even 0
+# (soft internal skip, not a script failure), so FAILED/TIMEOUT would
+# not have caught it either. Fix: every call now captures the bat's
+# full stdout+stderr to a console log next to the status file
+# (auto-derived from StatusFile's name, no new required param -- fully
+# backward compatible), and the log's path is always appended via
+# Write-Output so it flows into the caller's $result same as the
+# existing RUNNING/SUCCESS text does. No caller changes needed -- none
+# of the seven callers (P_010 x2, P_020, P_300 x2, P_400, P_805 x2)
+# do an exact-match on $result, confirmed before this edit.
 #
 # v1.2 CHANGE (ref EC-009) -- this file's only non-ASCII character (an
 # em-dash, U+2014, used throughout this header) silently broke every
@@ -79,6 +97,13 @@ function Invoke-HubBat {
     # Remove stale status file from a prior run
     if (Test-Path $StatusFile) { Remove-Item $StatusFile -Force }
 
+    # Console log path (added v1.3, ref P_400 batch-2b 2026-09-21) --
+    # derived automatically from StatusFile, always captures the detached
+    # bat's full stdout+stderr. Every prior version launched fully silent.
+    $LogFile = Join-Path (Split-Path $StatusFile -Parent) `
+        "$([System.IO.Path]::GetFileNameWithoutExtension($StatusFile))_console.log"
+    if (Test-Path $LogFile) { Remove-Item $LogFile -Force }
+
     # Generate a one-off .cmd launcher next to the status file. This avoids
     # the cmd.exe /c multi-quote parsing failure described above (ref
     # WO-P000-E18.001) -- internal batch errorlevel logic instead of an
@@ -87,13 +112,13 @@ function Invoke-HubBat {
         "_launcher_$([System.IO.Path]::GetFileNameWithoutExtension($StatusFile)).cmd"
     if (Test-Path $launcherCmd) { Remove-Item $launcherCmd -Force }
 
-    $launcherBody = "@echo off`r`ncall `"%~1`"`r`nif errorlevel 1 (`r`n    echo FAILED:%errorlevel% > `"%~2`"`r`n) else (`r`n    echo SUCCESS > `"%~2`"`r`n)`r`n"
+    $launcherBody = "@echo off`r`ncall `"%~1`" > `"%~3`" 2>&1`r`nif errorlevel 1 (`r`n    echo FAILED:%errorlevel% > `"%~2`"`r`n) else (`r`n    echo SUCCESS > `"%~2`"`r`n)`r`n"
     [System.IO.File]::WriteAllText($launcherCmd, $launcherBody, [System.Text.UTF8Encoding]::new($false))
 
-    # Launch detached -- Start-Process returns immediately. BatPath and
-    # StatusFile are passed as separate ArgumentList elements so PowerShell
-    # quotes each one correctly -- no manual quote embedding.
-    Start-Process -FilePath $launcherCmd -ArgumentList @($BatPath, $StatusFile) -WindowStyle Hidden -ErrorAction Stop
+    # Launch detached -- Start-Process returns immediately. BatPath,
+    # StatusFile, and LogFile are passed as separate ArgumentList elements
+    # so PowerShell quotes each one correctly -- no manual quote embedding.
+    Start-Process -FilePath $launcherCmd -ArgumentList @($BatPath, $StatusFile, $LogFile) -WindowStyle Hidden -ErrorAction Stop
 
     # --- Poll loop ---
     $deadline = (Get-Date).AddMinutes($TimeoutMinutes)
@@ -102,10 +127,12 @@ function Invoke-HubBat {
         if (Test-Path $StatusFile) {
             $result = (Get-Content $StatusFile -Raw).Trim()
             Write-Output $result
+            Write-Output "LOG: $LogFile"
             return
         }
         Write-Output "RUNNING -- waiting for job to complete..."
     }
 
     Write-Output "TIMEOUT -- job did not finish within $TimeoutMinutes minutes. Check logs manually."
+    Write-Output "LOG: $LogFile"
 }

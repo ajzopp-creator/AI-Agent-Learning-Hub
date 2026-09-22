@@ -20,6 +20,7 @@ Layer:   application (orchestration)
 
 import logging
 import sys
+from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional
 
@@ -55,8 +56,8 @@ def reconcile_live_orders(
 
     raw_orders = get_orders_for_account(
         account_hash,
-        from_entered_datetime=from_entered_datetime,
-        to_entered_datetime=to_entered_datetime,
+        from_entered_datetime=_parse_pull_datetime(from_entered_datetime),
+        to_entered_datetime=_parse_pull_datetime(to_entered_datetime),
     )
     if raw_orders is None:
         logger.error("Schwab orders pull failed -- aborting reconciliation.")
@@ -179,6 +180,15 @@ def run_reconcile_command(
         f"still open: {counts['still_open']}  "
         f"not in pull window: {counts['not_in_pull']}"
     )
+
+
+def _parse_pull_datetime(value: str) -> datetime:
+    """Parse an ISO date/datetime string into a datetime object -- the
+    Schwab client (schwab-py) requires datetime.date/datetime.datetime
+    for from_entered_datetime/to_entered_datetime, not a plain string.
+    Accepts both date-only ('2026-09-14') and full ISO datetime forms.
+    """
+    return datetime.fromisoformat(value)
 
 
 def _index_pulled_orders(raw_orders: List[dict]):

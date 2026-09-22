@@ -28,8 +28,9 @@ def process_fifo_lots(trades: Iterable[TradeRecord]) -> list[FifoLotRow]:
     """
     Walk trades in (open_date, trade_id) order.
 
-    long  → open a lot; if status is closed, consume that qty FIFO
-    short → consume existing long lots only; leftover short is dropped
+    long open/partial → open a lot (partial has no remaining-qty field; keep qty)
+    long closed       → do not open a lot and do not FIFO-steal older opens
+    short             → consume existing long lots only; leftover short is dropped
     """
     books: dict[tuple[str, str], deque] = defaultdict(deque)
     ordered = sorted(trades, key=lambda t: (t.open_date, t.trade_id))
@@ -37,6 +38,8 @@ def process_fifo_lots(trades: Iterable[TradeRecord]) -> list[FifoLotRow]:
         key = (t.account_id.upper(), t.underlying_symbol)
         lots = books[key]
         if t.direction == "long":
+            if t.status == "closed":
+                continue
             lot = FifoLotRow(
                 account_id=key[0],
                 ticker=key[1],
@@ -47,8 +50,6 @@ def process_fifo_lots(trades: Iterable[TradeRecord]) -> list[FifoLotRow]:
                 source_trade_id=t.trade_id,
             )
             lots.append(lot)
-            if t.status == "closed":
-                _consume(lots, float(t.qty))
         else:
             _consume(lots, float(t.qty))
 

@@ -4,7 +4,7 @@
 **Type:** EN (enhancement + config safety)  
 **Opened:** 2026-09-04  
 **Owner session:** Grok sandbox draft + Hub PEH run  
-**Status:** OPEN — do not mark CLOSED in the deploy session
+**Status:** OPEN — IR verify PEH PASS 2026-09-15 22:02. EN.002 PEH 221200 PASS 2026-09-20 10:47 does not close this WO. Not CLOSED.
 
 ## Intent
 

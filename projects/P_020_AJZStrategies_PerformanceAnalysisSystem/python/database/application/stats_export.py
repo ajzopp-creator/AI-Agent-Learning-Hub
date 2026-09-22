@@ -2,11 +2,25 @@
 stats_export.py
 Phase 3E - Export AI analysis CSVs from P_020 SQLite DB + Schwab API.
 
-Supports both live and paper accounts via --account parameter.
+Supports both live and paper accounts via --account parameter, and an
+optional --start-date override (WO-P020-E1.020) -- omit it to use each
+account's config.py default (PAPER_ANALYSIS_START_DATE / LIVE_ANALYSIS_START_DATE).
   Live:  --account AJZ6348  (default)  -> data/exports/ai_review/
   Paper: --account PAPER               -> data/exports/paper_ai_review/
 
 Output: 6 CSV files per account (open_positions skipped for PAPER).
+
+Note (WO-P020-E1.020): a narrow --start-date can leave a system with only
+open trades in range -- AVG(realized_R) etc. then returns SQL NULL, which
+csv.DictWriter renders as an empty string. All AVG() aggregates here are
+COALESCE(...,0)'d so downstream float() calls never see ''.
+
+Note (WO-P020-E1.021): summary/R-distribution/monthly read from
+v_trade_summary_grouped, not v_trade_summary directly -- a multi-leg spread
+order's individual leg trades are netted into one win/loss/R unit there
+instead of each leg counting as its own trade. equity_curve/drawdown are
+unaffected (they sum daily cash flow, not trade-count win/loss, so
+per-leg granularity there was never wrong).
 """
 
 import argparse
@@ -18,35 +32,16 @@ from datetime import date
 from pathlib import Path
 from collections import defaultdict
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from config import PAPER_ANALYSIS_START_DATE, LIVE_ANALYSIS_START_DATE
+from domain.scope_builder import get_scope, get_acct_filter, get_export_dir, validate_date
+
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 DB_PATH      = PROJECT_ROOT / "data" / "database" / "P_020_trades.db"
 API_DIR      = PROJECT_ROOT / "python" / "api"
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s  %(levelname)-8s  %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
 log = logging.getLogger(__name__)
-
-
-# ── Account helpers ────────────────────────────────────────────────────────
-
-def _get_scope(account_id: str) -> str:
-    """Return WHERE clause scope for the given account."""
-    if account_id.upper() == "PAPER":
-        return "account_id = 'PAPER'"
-    return "open_date >= '2026-01-01' AND account_id LIKE '%6348%'"
-
-
-def _get_export_dir(account_id: str) -> Path:
-    """Return output directory for the given account."""
-    if account_id.upper() == "PAPER":
-        return PROJECT_ROOT / "data" / "exports" / "paper_ai_review"
-    return PROJECT_ROOT / "data" / "exports" / "ai_review"
-
-
-def _acct_filter(account_id: str) -> str:
-    """Return raw account filter fragment for JOINed queries."""
-    if account_id.upper() == "PAPER":
-        return "t.account_id = 'PAPER'"
-    return "t.account_id LIKE '%6348%' AND t.open_date >= '2026-01-01'"
 
 
 # ── DB / CSV helpers ───────────────────────────────────────────────────────
@@ -83,15 +78,15 @@ def export_summary_by_system(conn, scope: str, export_dir: Path):
             ROUND(COALESCE(SUM(realized_pnl),0),2) AS total_pnl,
             ROUND(SUM(CASE WHEN realized_pnl>0 THEN realized_pnl ELSE 0 END),2) AS net_gains,
             ROUND(SUM(CASE WHEN realized_pnl<0 THEN realized_pnl ELSE 0 END),2) AS net_losses,
-            ROUND(AVG(CASE WHEN outcome='WIN'  THEN realized_pnl END),2) AS avg_win,
-            ROUND(AVG(CASE WHEN outcome='LOSS' THEN realized_pnl END),2) AS avg_loss,
-            ROUND(AVG(CASE WHEN outcome='WIN'  THEN realized_R END),2) AS avg_win_R,
-            ROUND(AVG(CASE WHEN outcome='LOSS' THEN realized_R END),2) AS avg_loss_R,
-            ROUND(AVG(realized_R),2) AS avg_R,
+            ROUND(COALESCE(AVG(CASE WHEN outcome='WIN'  THEN realized_pnl END),0),2) AS avg_win,
+            ROUND(COALESCE(AVG(CASE WHEN outcome='LOSS' THEN realized_pnl END),0),2) AS avg_loss,
+            ROUND(COALESCE(AVG(CASE WHEN outcome='WIN'  THEN realized_R END),0),2) AS avg_win_R,
+            ROUND(COALESCE(AVG(CASE WHEN outcome='LOSS' THEN realized_R END),0),2) AS avg_loss_R,
+            ROUND(COALESCE(AVG(realized_R),0),2) AS avg_R,
             ROUND(NULLIF(SUM(CASE WHEN realized_pnl>0 THEN realized_pnl ELSE 0 END),0)
                 /NULLIF(ABS(SUM(CASE WHEN realized_pnl<0 THEN realized_pnl ELSE 0 END)),0),2) AS profit_factor,
             ROUND(AVG(max_hold_days),1) AS avg_hold_days
-        FROM v_trade_summary WHERE {scope}
+        FROM v_trade_summary_grouped WHERE {scope}
         GROUP BY system ORDER BY total_pnl DESC"""
     rows = [dict(r) for r in conn.execute(sql).fetchall()]
 
@@ -141,7 +136,7 @@ def export_equity_curve(conn, acct_filter: str, export_dir: Path):
 
 
 def export_r_distribution(conn, scope: str, export_dir: Path):
-    sql = f"""SELECT realized_R FROM v_trade_summary
+    sql = f"""SELECT realized_R FROM v_trade_summary_grouped
         WHERE {scope} AND realized_R IS NOT NULL AND status != 'open'"""
     r_values = [r["realized_R"] for r in conn.execute(sql).fetchall()]
     buckets  = [
@@ -175,9 +170,9 @@ def export_monthly_summary(conn, scope: str, export_dir: Path):
             ROUND(100.0*SUM(CASE WHEN outcome='WIN' THEN 1 ELSE 0 END)
                 /NULLIF(SUM(CASE WHEN outcome IN ('WIN','LOSS') THEN 1 ELSE 0 END),0),1) AS win_rate_pct,
             ROUND(SUM(realized_pnl), 2) AS total_pnl,
-            ROUND(AVG(realized_R), 2) AS avg_R,
+            ROUND(COALESCE(AVG(realized_R),0), 2) AS avg_R,
             ROUND(AVG(max_hold_days), 1) AS avg_hold_days
-        FROM v_trade_summary
+        FROM v_trade_summary_grouped
         WHERE {scope} AND last_exit_date IS NOT NULL AND status != 'open'
         GROUP BY month ORDER BY month"""
     rows = [dict(r) for r in conn.execute(sql).fetchall()]
@@ -254,15 +249,28 @@ def export_drawdown(conn, acct_filter: str, export_dir: Path):
 
 # ── Main entry point (used by Trade Manager cmd_analyze) ──────────────────
 
-def export_all_stats(account_id: str = "AJZ6348"):
-    """Run all exports for the given account. Called by Trade Manager."""
+def export_all_stats(account_id: str = "AJZ6348", start_date: str = None):
+    """Run all exports for the given account. Called by Trade Manager.
+
+    start_date: optional YYYY-MM-DD override (WO-P020-E1.020). None uses
+    the config.py default for the account (PAPER_ANALYSIS_START_DATE /
+    LIVE_ANALYSIS_START_DATE) -- see domain/scope_builder.py for the
+    WHERE-clause logic itself.
+    """
     account_id  = (account_id or "AJZ6348").upper()
-    scope       = _get_scope(account_id)
-    acct_filter = _acct_filter(account_id)
-    export_dir  = _get_export_dir(account_id)
     is_paper    = account_id == "PAPER"
 
+    if start_date:
+        validate_date(start_date)
+    else:
+        start_date = PAPER_ANALYSIS_START_DATE if is_paper else LIVE_ANALYSIS_START_DATE
+
+    scope       = get_scope(account_id, start_date)
+    acct_filter = get_acct_filter(account_id, start_date)
+    export_dir  = get_export_dir(account_id)
+
     log.info(f"Account    : {account_id}")
+    log.info(f"Start date : {start_date}")
     log.info(f"Scope      : {scope}")
     log.info(f"Export dir : {export_dir}")
 
@@ -294,8 +302,14 @@ def main():
     parser = argparse.ArgumentParser(description="P_020 Stats Export")
     parser.add_argument("--account", default="AJZ6348",
                         help="Account ID: AJZ6348 (default) or PAPER")
+    parser.add_argument("--start-date", default=None,
+                        help="Override start date YYYY-MM-DD (default: config.py per-account value)")
     args = parser.parse_args()
-    export_all_stats(account_id=args.account)
+    try:
+        export_all_stats(account_id=args.account, start_date=args.start_date)
+    except ValueError as e:
+        log.error(str(e))
+        sys.exit(1)
 
 
 if __name__ == "__main__":

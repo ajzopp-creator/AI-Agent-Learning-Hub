@@ -3,16 +3,21 @@ stock symbols and attaching each one to its Obsidian note.
 
 Notes to enrich (symbol -> exact note path, already resolved by Python --
 do not guess or construct a different path):
-CAE -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-09-14_CAE.md
-CARG -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-09-14_CARG.md
-COLM -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-09-14_COLM.md
-FLNT -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-09-14_FLNT.md
-HCSG -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-09-14_HCSG.md
-LBTYK -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-09-14_LBTYK.md
-RBA -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-09-14_RBA.md
-RGTI -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-09-14_RGTI.md
-SFIX -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-09-14_SFIX.md
-TTWO -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-09-14_TTWO.md
+AAT -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-09-18_AAT.md
+AEHR -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-09-18_AEHR.md
+AMBA -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-09-18_AMBA.md
+AMSC -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-09-18_AMSC.md
+BYND -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-09-18_BYND.md
+ENTG -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-09-18_ENTG.md
+FDS -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-09-18_FDS.md
+ITW -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-09-18_ITW.md
+NCTY -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-09-18_NCTY.md
+PLAB -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-09-18_PLAB.md
+PTC -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-09-18_PTC.md
+PWR -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-09-18_PWR.md
+RMBS -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-09-18_RMBS.md
+TDY -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-09-18_TDY.md
+TRGP -> C:\Users\Trader\AI-Agent-Learning-Hub\trading_journal\TradeOrderManagement\P300\2026-09-18_TRGP.md
 
 For EACH symbol/note pair listed above, do the following in order:
 

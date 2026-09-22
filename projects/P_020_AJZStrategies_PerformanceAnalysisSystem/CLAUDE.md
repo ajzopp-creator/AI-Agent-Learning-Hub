@@ -25,11 +25,26 @@ Inherits hub-level rules from `AI-Agent-Learning-Hub/CLAUDE.md`. This file adds 
 
 **Never reconstruct paths from memory. Copy from this table.**
 
-OneDrive path: `Path(os.environ["OneDrive"])` — never hardcode drive letter.
+OneDrive: call `config.get_onedrive_root()` (reads `HKCU\Environment\OneDrive`
+via `winreg` at call time) — never hardcode the drive letter, and never use
+`os.environ["OneDrive"]` either. Confirmed live 2026-09-19 (WO-P020-E1.019):
+a script launched via `Start-Process` (this project's standard execution
+pattern) sees `os.environ.get("OneDrive")` as `None` even though the
+registry value is set — standard Windows behavior, a child process only
+inherits what its parent had at creation time, and OneDrive's client sets
+this key post-logon. The registry is always current regardless of process
+lineage; `get_onedrive_root()` reads it directly and falls back to the
+last-known `D:\OneDrive` only if that read itself fails.
 
 ---
 
 ## Run a Script
+
+Two CLI entry points, not one — `cli.py` is auth-only (`--project` flag);
+`P_020_Trade_Manager.py` is the real one for `balance`, `positions`,
+`init-db`, `verify`, trade-import, and `close-expired-options`. Check which
+one before writing a command for Tony to paste (confirmed live 2026-08-20,
+WO-P020-E1.016 — `cli.py balance` does not exist).
 
 ```powershell
 "C:\Users\Trader\.conda\envs\p140\python.exe" "python\database\application\paper_import.py" --commit
@@ -44,9 +59,14 @@ Always redirect stderr or errors are silent:
 
 ## Valid Trading Systems
 
-Only these values are valid for the `system` column. Never use anything else. Never leave it empty.
-
-`P_115` · `P_116` · `P_117` · `P_118` · `P_910` · `P_920` · `SNT` · `Day` · `TOS_Import`
+Authoritative source is the `systems` table in `P_020_trades.db` (`trades.system`
+is an FK to `systems.system_id`) — query `SELECT system_id FROM systems WHERE
+active=1` rather than trusting a hardcoded list, which drifts. The list this
+file used to carry here (`P_115` / `P_116` / `P_117` / `P_118` / `P_910` /
+`P_920` / `SNT` / `Day` / `TOS_Import`) was found stale 2026-08-29 — missing
+`P_300` and `P_010`, both live with real trade counts — and removed in favor
+of this pointer (matches the same fix already applied in the
+p020-project-context skill).
 
 `TOS_Import` = unmatched fallthrough only.
 
@@ -60,6 +80,16 @@ Only these values are valid for the `system` column. Never use anything else. Ne
 - Never silently drop orphaned sells — flag in audit log
 - All reporting queries use `v_trade_summary` view, not raw `trades` table
 - Tag columns: `trades.reason` (WHY) and `trades.signal_strength` (SIG) — TEXT, nullable
+- Expiration columns (WO-P020-E1.018, 2026-09-15): `trades.expiration_date` (DATE) and
+  `trades.settlement_price` (REAL) — captured at entry-parse time for options, used by
+  `domain/expiration_closer.py` to auto-close 0DTE cash-settled positions that never get
+  a closing transaction. Cash-settled roots allowlisted in `config.CASH_SETTLED_OPTION_ROOTS`
+  (currently `{"NDXP"}` only — never broadened without Tony's explicit confirmation, an
+  equity/ETF option looks identical in Schwab's payload but is assignable, not cash-settled)
+- Pydantic models moved out of `schemas.py` (deleted, was over the 300-line cap) into
+  `schemas_trade.py` (Account/TradingSystem/Trade/Exit/SpreadLeg/TradeParams),
+  `schemas_tracker.py` (TrackerEntry/TrackerLookup), `schemas_ops.py` (LastRunFile/Order) —
+  2026-09-19, WO-P020-E1.018 Follow-Up. Import from the specific file, not `schemas`.
 
 ---
 
@@ -85,14 +115,11 @@ Parser joins to trades on Symbol + Date. Vocabulary is **open** — never valida
 
 ## Bugs Fixed — Never Re-Introduce
 
-| Bug | Fix |
-|---|---|
-| Exit matching by `underlying_symbol` only — 2025 exits attached to 2026 positions | Key by `full_symbol`, enforce `exit_date >= entry_date`, FIFO consume |
-| SNT missing from `_VALID_SYSTEMS` — silently fell through to TOS_Import | SNT is in `_VALID_SYSTEMS` |
-| Tracker matcher returning first match, not closest date | Use closest-date match |
-| `schwab_balance_pull.py` reading wrong config | Use `get_client()` from Token Manager with `get_account_hash(last4)` |
-| ThinkLog parser validating against closed vocabulary | Parser accepts any tag string |
-| Assumed order comments survive TOS CSV export — they don't | Tags are ThinkLog-only |
+Full table (17 rows as of 2026-09-19) lives in the p020-project-context skill
+— kept there only, not duplicated here, so there's one source of truth instead
+of two drifting copies (this table was 6 rows and 11 fixes behind before
+2026-09-19). Skim it at session start via the skill; don't re-derive from
+memory.
 
 ---
 
@@ -106,4 +133,9 @@ Parser joins to trades on Symbol + Date. Vocabulary is **open** — never valida
 
 ---
 
-*Last updated: 2026-06-18*
+*Last updated: 2026-09-19 -- OneDrive guidance corrected (registry via
+get_onedrive_root(), not os.environ, WO-P020-E1.019); CLI entry-point split
+noted; Valid Trading Systems pointer replaces a stale hardcoded list;
+expiration_date/settlement_price + schemas.py split added to Database
+Rules; Bugs Fixed table replaced with a pointer to the skill's fuller,
+currently-maintained table. Prior: 2026-06-18.*

@@ -51,7 +51,20 @@ _P_020_DATABASE_DIR = Path(
 # "from schemas import Exit, Order, Trade" resolved against P_400's
 # already-cached schemas module -- until "schemas" was added to this
 # tuple).
-_COLLIDING_PACKAGES = ("infrastructure", "domain", "config", "schemas")
+#
+# "schemas" REMOVED, "schemas_ops" ADDED 2026-09-21: P_020 split its
+# monolithic schemas.py into schemas_ops.py/schemas_trade.py/
+# schemas_tracker.py on 2026-09-19 (Order moved to schemas_ops, Exit/
+# Trade to schemas_trade). This bridge's own "import schemas" was never
+# updated for that split -- P_020's dir no longer has a schemas.py at
+# all, so the import silently fell through past it to P_400's own
+# unrelated schemas.py (still present on sys.path just behind P_020's
+# dir), which loaded fine but has no Order attribute. No exception on
+# the missing file, so it surfaced as a confusing AttributeError instead
+# of a clean ModuleNotFoundError -- found live via a real AMZN option
+# record. db_order_writer.py itself was already updated for the split
+# ("from schemas_ops import Order"); only this external bridge lagged.
+_COLLIDING_PACKAGES = ("infrastructure", "domain", "config", "schemas_ops")
 
 
 def _load_p020():
@@ -68,11 +81,12 @@ def _load_p020():
     sys.path, where P_020's dir now comes first), then P_020's freshly-
     imported copies under those same names are discarded and the caller's
     original stash is restored -- so the caller's own infrastructure/
-    domain keep working normally for the rest of that process. "schemas"
-    IS stashed too (added 2026-09-11) -- P_400 has its own top-level
-    schemas.py (Pydantic models for its own trade specs), unrelated in
-    content to P_020's Account/Trade/Exit/Order schemas but colliding on
-    the bare module name the same way infrastructure/domain/config did.
+    domain keep working normally for the rest of that process. "schemas_ops"
+    IS stashed too (added 2026-09-11 as "schemas", renamed 2026-09-21 to
+    match P_020's schemas.py -> schemas_ops.py split) -- P_400 has its own
+    top-level schemas.py (Pydantic models for its own trade specs),
+    unrelated in content to P_020's Order/Trade/Exit schemas but colliding
+    on the bare module name the same way infrastructure/domain/config did.
     """
     if str(_P_020_DATABASE_DIR) not in sys.path:
         sys.path.insert(0, str(_P_020_DATABASE_DIR))
@@ -86,7 +100,7 @@ def _load_p020():
 
     stashed = {name: sys.modules.pop(name) for name in _colliding_names()}
     try:
-        import schemas
+        import schemas_ops
         from infrastructure.db_client import get_connection
         from infrastructure.db_order_writer import insert_order
     finally:
@@ -94,7 +108,7 @@ def _load_p020():
             del sys.modules[name]
         sys.modules.update(stashed)
 
-    return schemas, get_connection, insert_order
+    return schemas_ops, get_connection, insert_order
 
 
 def submit_order(
@@ -143,9 +157,9 @@ def submit_order(
         The new order_id, or None if insert_order() skipped it as a
         duplicate (schwab_order_id already present).
     """
-    schemas, get_connection, insert_order = _load_p020()
+    schemas_ops, get_connection, insert_order = _load_p020()
 
-    order = schemas.Order(
+    order = schemas_ops.Order(
         account_id=account_id,
         symbol=symbol,
         side=side,

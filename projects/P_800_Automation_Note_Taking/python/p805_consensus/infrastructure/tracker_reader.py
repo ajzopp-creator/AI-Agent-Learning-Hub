@@ -24,7 +24,13 @@ def read_tracker_rows() -> list[TrackerRow]:
         raise FileNotFoundError(f"Tracker workbook not found: {TRACKER_PATH}")
 
     logger.info("Reading Tracker Log from %s", TRACKER_PATH)
-    frame = pd.read_excel(TRACKER_PATH, sheet_name=TRACKER_SHEET_NAME)
+    try:
+        frame = pd.read_excel(TRACKER_PATH, sheet_name=TRACKER_SHEET_NAME)
+    except PermissionError as exc:
+        raise PermissionError(
+            f"Tracker workbook is open in Excel: {TRACKER_PATH}\n"
+            "Close it in Excel, then re-run."
+        ) from exc
 
     rows: list[TrackerRow] = []
     for _, record in frame.iterrows():

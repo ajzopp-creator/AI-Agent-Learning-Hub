@@ -14,8 +14,12 @@ from openpyxl.workbook.workbook import Workbook
 
 from domain.formula_templates import (
     dashboard_kpi_labels,
+    equity_curve_cash_formula,
     equity_curve_headers,
+    positions_cost_formula,
     positions_headers,
+    positions_last_price_formula,
+    positions_shares_formula,
     risk_metrics_labels,
 )
 from infrastructure.excel_formatter import (
@@ -35,15 +39,37 @@ from infrastructure.excel_formatter import (
 logger = logging.getLogger(__name__)
 
 
+def _fifo_cost_pairs(wb: Workbook, cap: int = 200) -> list[tuple[str, str]]:
+    """Unique (ticker, account) from Fifo_Cost. Empty if the lake sheet is missing."""
+    pairs: list[tuple[str, str]] = []
+    seen: set[tuple[str, str]] = set()
+    if "Fifo_Cost" not in wb.sheetnames:
+        return pairs
+    ws = wb["Fifo_Cost"]
+    for row in range(2, (ws.max_row or 1) + 1):
+        ticker = str(ws.cell(row, 1).value or "").strip().upper()
+        account = str(ws.cell(row, 2).value or "").strip().upper()
+        if not ticker or not account:
+            continue
+        key = (ticker, account)
+        if key in seen:
+            continue
+        seen.add(key)
+        pairs.append(key)
+        if len(pairs) >= cap:
+            break
+    return pairs
+
+
 def build_positions(wb: Workbook) -> None:
-    """Populate the Positions sheet with headers + formulas."""
+    """One Positions row per Fifo_Cost (ticker, account). Not ticker roll-up."""
     ws = wb["Positions"]
     clear_sheet(ws)
     headers = positions_headers()
     style_header_row(ws, headers)
 
     ws.insert_rows(1)
-    title = ws.cell(1, 1, "Positions — AJZ6348 (Primary View)")
+    title = ws.cell(1, 1, "Positions — by account (Fifo_Cost remaining lots)")
     title.font = TITLE_FONT
     ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=len(headers))
 
@@ -54,37 +80,20 @@ def build_positions(wb: Workbook) -> None:
         cell.border = THIN_BORDER
     ws.freeze_panes = "A3"
 
-    ref = wb["Reference_Data"]
-    tickers = []
-    for row in range(2, ref.max_row + 1):
-        t = ref.cell(row, 1).value
-        if t:
-            tickers.append(str(t).strip().upper())
-    tickers = tickers[:200]
+    pairs = _fifo_cost_pairs(wb, cap=200)
+    last = 2 + max(len(pairs), 1)
 
-    for i, ticker in enumerate(tickers):
+    for i, (ticker, account) in enumerate(pairs):
         r = i + 3
         ws.cell(r, 1, ticker).font = BODY_FONT
-        shares_formula = (
-            f'=IFERROR(LOOKUP(2,1/(Daily_Units!A:A<>""),'
-            f'INDEX(Daily_Units!A:ZZ,0,MATCH(A{r},Daily_Units!$1:$1,0))),0)'
-        )
-        ws.cell(r, 2, shares_formula).font = BODY_FONT
-        price_formula = (
-            f'=IFERROR(LOOKUP(2,1/(Market_Data!A:A<>""),'
-            f'INDEX(Market_Data!A:ZZ,0,MATCH(A{r},Market_Data!$1:$1,0))),0)'
-        )
-        ws.cell(r, 3, price_formula).font = BODY_FONT
+        ws.cell(r, 2, positions_shares_formula(r)).font = BODY_FONT
+        ws.cell(r, 3, positions_last_price_formula(r)).font = BODY_FONT
         ws.cell(r, 4, f"=B{r}*C{r}").font = BODY_FONT
-        # Remaining FIFO cost across accounts (not lifetime VWAP)
-        cost_formula = (
-            f'=IFERROR(SUMIF(Fifo_Cost!$A:$A,A{r},Fifo_Cost!$D:$D),0)'
-        )
-        ws.cell(r, 5, cost_formula).font = BODY_FONT
+        ws.cell(r, 5, positions_cost_formula(r)).font = BODY_FONT
         ws.cell(r, 6, f"=D{r}-E{r}").font = BODY_FONT
-        ws.cell(r, 7, f'=IF(E{r}=0,0,F{r}/E{r})').font = BODY_FONT
-        ws.cell(r, 8, f'=IF(SUM($D$3:$D$202)=0,0,D{r}/SUM($D$3:$D$202))').font = BODY_FONT
-        ws.cell(r, 9, "PRIMARY").font = BODY_FONT
+        ws.cell(r, 7, f"=IF(E{r}=0,0,F{r}/E{r})").font = BODY_FONT
+        ws.cell(r, 8, f"=IF(SUM($D$3:$D${last})=0,0,D{r}/SUM($D$3:$D${last}))").font = BODY_FONT
+        ws.cell(r, 9, account).font = BODY_FONT
 
         for col in range(1, 10):
             ws.cell(r, col).border = THIN_BORDER
@@ -98,7 +107,7 @@ def build_positions(wb: Workbook) -> None:
         ws.cell(r, 8).number_format = "0.00%"
 
     auto_column_width(ws)
-    logger.info("Positions sheet built with %d tickers", len(tickers))
+    logger.info("Positions sheet built with %d account-ticker rows", len(pairs))
 
 
 def build_equity_curve(wb: Workbook) -> None:
@@ -123,7 +132,7 @@ def build_equity_curve(wb: Workbook) -> None:
         ws.cell(r, 1, d).font = BODY_FONT
         ws.cell(
             r, 2,
-            f'=SUMIFS(Daily_Cash!C:C,Daily_Cash!A:A,A{r},Daily_Cash!B:B,"AJZ6348")',
+            equity_curve_cash_formula(r),
         ).font = BODY_FONT
         # Invested Value from Daily_Invested helper series
         ws.cell(
@@ -163,7 +172,7 @@ def build_dashboard(wb: Workbook) -> None:
 
     ws.cell(1, 1, "AJZ Institutional Portfolio Tracker — Dashboard").font = TITLE_FONT
     ws.merge_cells("A1:D1")
-    ws.cell(2, 1, "Primary Account: AJZ6348").font = KPI_LABEL_FONT
+    ws.cell(2, 1, "Accounts: all primary (AJZ6348 + IRA when live)").font = KPI_LABEL_FONT
     ws.cell(3, 1, f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M')}").font = BODY_FONT
 
     labels = dashboard_kpi_labels()
@@ -200,7 +209,7 @@ def build_risk_metrics(wb: Workbook) -> None:
     ws = wb["Risk_Metrics"]
     clear_sheet(ws)
 
-    ws.cell(1, 1, "Risk Metrics — AJZ6348").font = TITLE_FONT
+    ws.cell(1, 1, "Risk Metrics — combined primary accounts").font = TITLE_FONT
     labels = risk_metrics_labels()
     write_kpi_block(ws, start_row=3, start_col=1, labels=labels)
 

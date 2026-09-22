@@ -1,4 +1,0 @@
-trades 3150/3152/3153/3154: [(3152, 'NDXP', 'long', 1.0, 4.05, 'closed'), (3153, 'NDXP', 'long', 1.0, 3.55, 'closed'), (3154, 'NDXP', 'short', 1.0, 4.5, 'closed')]
-exit 5026 (should be gone): []
-all NDXP trades now: [(3152, 'NDXP', 'long', 1.0, 4.05), (3153, 'NDXP', 'long', 1.0, 3.55), (3154, 'NDXP', 'short', 1.0, 4.5), (3159, 'NDXP', 'long', 1.0, 3.9), (3160, 'NDXP', 'long', 1.0, 6.05), (3162, 'NDXP', 'short', 1.0, 7.2), (3163, 'NDXP', 'short', 1.0, 4.99)]
-DONE

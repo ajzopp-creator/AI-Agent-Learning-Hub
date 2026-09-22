@@ -111,8 +111,10 @@ def test_tracker_snt_valid_system():
 
 def test_tracker_closest_date_guard():
     """SOURCE -- +/-3-day window matching logic must still be present.
-    Lives in schemas.py TrackerLookup.get(), not tracker_reader.py."""
-    src = (INFRA.parent / "schemas.py").read_text(encoding="utf-8")
+    Lives in schemas_tracker.py TrackerLookup.get(), not tracker_reader.py.
+    (Moved from schemas.py -- WO-P020-E1.018 Independent Review follow-up,
+    2026-09-19, schemas.py split for the 300-line cap.)"""
+    src = (INFRA.parent / "schemas_tracker.py").read_text(encoding="utf-8")
     ok = "timedelta" in src and "for delta in" in src
     check("tracker_closest_date_guard", "SOURCE", ok)
 

@@ -32,7 +32,7 @@ from domain.expiration_closer import find_expiration_closes
 from infrastructure.db_client import get_connection
 from infrastructure.db_writer import insert_exit, update_trade_status
 from infrastructure.expiration_reader import get_expired_open_option_trades
-from schemas import Exit
+from schemas_trade import Exit
 
 logger = logging.getLogger(__name__)
 

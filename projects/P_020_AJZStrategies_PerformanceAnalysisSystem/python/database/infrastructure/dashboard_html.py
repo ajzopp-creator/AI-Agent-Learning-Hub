@@ -1,4 +1,12 @@
-"""HTML template for P_020 performance dashboard."""
+"""HTML template for P_020 performance dashboard.
+
+Account-aware since WO-P020-E1.020: build_html() reads account_label /
+period_badge / scope_span from data["kpis"] (all optional, default to the
+original live-account text so a caller that doesn't pass them still gets
+the pre-WO behavior). Best-system KPI and the drawdown peak label are
+guarded against an empty result set, which a narrow --start-date can now
+produce.
+"""
 import json
 
 SYSTEM_COLORS = {
@@ -41,7 +49,7 @@ def _system_rows(systems):
 
 def _monthly_rows(monthly):
     rows = []
-    max_abs = max(abs(float(r["total_pnl"])) for r in monthly) or 1
+    max_abs = max((abs(float(r["total_pnl"])) for r in monthly), default=0) or 1
     for r in monthly:
         pnl = float(r["total_pnl"])
         bar_w = int(abs(pnl) / max_abs * 60)
@@ -102,8 +110,15 @@ def build_html(data):
     pnl_cls = _cls(k["net_pnl"])
     exp_cls = _cls(k["expectancy"])
     best    = k["best"]
-    bc      = SYSTEM_COLORS.get(best["system"], "#888")
+    bc      = SYSTEM_COLORS.get(best["system"], "#888") if best else "#888"
+    best_name = best["system"] if best else "—"
+    best_sub  = (f'{float(best["win_rate_pct"]):.0f}% WR &nbsp; {_pnl(best["total_pnl"])} &nbsp; Kelly {best["kelly_pct"]}%'
+                 if best else "No closed trades in range")
     as_of   = k["as_of"]
+    account_label = k.get("account_label", "ACCOUNT ...6348")
+    period_badge  = k.get("period_badge", "YTD 2026")
+    scope_span    = k.get("scope_span", "JAN 2026")
+    dd_peak = max((float(r["peak_pnl"]) for r in data["drawdown"]), default=0.0)
 
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -165,11 +180,11 @@ html,body{{background:var(--bg);color:var(--text1);font-family:var(--sans);font-
     <div class="logo">AJZ</div>
     <div>
       <div class="hdr-title">AJZ STRATEGIES LLC</div>
-      <div class="hdr-sub">PERFORMANCE ANALYTICS &nbsp;/&nbsp; P_020 &nbsp;/&nbsp; ACCOUNT ...6348</div>
+      <div class="hdr-sub">PERFORMANCE ANALYTICS &nbsp;/&nbsp; P_020 &nbsp;/&nbsp; {account_label}</div>
     </div>
   </div>
   <div class="hdr-r">
-    <div class="badge">YTD 2026</div>
+    <div class="badge">{period_badge}</div>
     <div class="badge">{k["closed"]} CLOSED &nbsp;/&nbsp; {k["open_total"]} OPEN</div>
     <div class="badge">UPDATED {as_of}</div>
     <div class="dot"></div>
@@ -195,27 +210,27 @@ html,body{{background:var(--bg);color:var(--text1);font-family:var(--sans);font-
     </div>
     <div class="kpi" style="--kc:{bc}">
       <div class="kpi-label">Best System</div>
-      <div class="kpi-value" style="font-size:22px;margin-top:3px;color:{bc}">{best["system"]}</div>
-      <div class="kpi-sub">{float(best["win_rate_pct"]):.0f}% WR &nbsp; {_pnl(best["total_pnl"])} &nbsp; Kelly {best["kelly_pct"]}%</div>
+      <div class="kpi-value" style="font-size:22px;margin-top:3px;color:{bc}">{best_name}</div>
+      <div class="kpi-sub">{best_sub}</div>
     </div>
   </div>
 
   <div class="sec-lbl"><em>01</em>EQUITY CURVE</div>
   <div class="panel mb20">
-    <div class="panel-hdr">Cumulative P&amp;L by System <span>JAN 2026 — {as_of}</span></div>
+    <div class="panel-hdr">Cumulative P&amp;L by System <span>{scope_span} — {as_of}</span></div>
     <div style="height:220px"><canvas id="eqChart"></canvas></div>
   </div>
 
   <div class="g2 mb20">
     <div class="panel">
-      <div class="panel-hdr">System Performance <span>YTD CLOSED TRADES</span></div>
+      <div class="panel-hdr">System Performance <span>{period_badge} CLOSED TRADES</span></div>
       <table class="tbl">
         <thead><tr><th>System</th><th>Closed</th><th>Win %</th><th>Net P&amp;L</th><th>Avg R</th><th>Prof Factor</th><th>Avg Hold</th></tr></thead>
         <tbody>{_system_rows(data["systems"])}</tbody>
       </table>
     </div>
     <div class="panel">
-      <div class="panel-hdr">Drawdown — Dollar <span>FROM ${max(float(r["peak_pnl"]) for r in data["drawdown"]):,.0f} PEAK</span></div>
+      <div class="panel-hdr">Drawdown — Dollar <span>FROM ${dd_peak:,.0f} PEAK</span></div>
       <div style="height:270px"><canvas id="ddChart"></canvas></div>
     </div>
   </div>
@@ -226,7 +241,7 @@ html,body{{background:var(--bg);color:var(--text1);font-family:var(--sans);font-
       <div style="height:220px"><canvas id="rChart"></canvas></div>
     </div>
     <div class="panel">
-      <div class="panel-hdr">Monthly Summary <span>2026 YTD</span></div>
+      <div class="panel-hdr">Monthly Summary <span>{period_badge}</span></div>
       <table class="tbl">
         <thead><tr><th>Month</th><th>Closed</th><th>Win %</th><th>Net P&amp;L</th><th>Avg R</th></tr></thead>
         <tbody>{_monthly_rows(data["monthly"])}</tbody>
@@ -244,7 +259,7 @@ html,body{{background:var(--bg);color:var(--text1);font-family:var(--sans);font-
 
   <div class="footer">
     <span>P_020 AJZ STRATEGIES PERFORMANCE SYSTEM</span>
-    <span>GENERATED {as_of} &nbsp;/&nbsp; DATA: account ...6348</span>
+    <span>GENERATED {as_of} &nbsp;/&nbsp; DATA: {account_label}</span>
   </div>
 </div>
 

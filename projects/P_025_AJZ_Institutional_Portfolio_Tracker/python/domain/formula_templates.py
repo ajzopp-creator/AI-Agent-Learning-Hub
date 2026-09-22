@@ -22,6 +22,34 @@ def positions_headers() -> list[str]:
     ]
 
 
+def positions_shares_formula(row: int) -> str:
+    """Remaining FIFO shares for ticker A + account I."""
+    return (
+        f"=IFERROR(SUMIFS(Fifo_Cost!$C:$C,Fifo_Cost!$A:$A,A{row},"
+        f"Fifo_Cost!$B:$B,I{row}),0)"
+    )
+
+
+def positions_cost_formula(row: int) -> str:
+    """Remaining FIFO $ for ticker A + account I. Not lifetime VWAP."""
+    return (
+        f"=IFERROR(SUMIFS(Fifo_Cost!$D:$D,Fifo_Cost!$A:$A,A{row},"
+        f"Fifo_Cost!$B:$B,I{row}),0)"
+    )
+
+
+def positions_last_price_formula(row: int) -> str:
+    return (
+        f'=IFERROR(LOOKUP(2,1/(Market_Data!A:A<>""),'
+        f"INDEX(Market_Data!A:ZZ,0,MATCH(A{row},Market_Data!$1:$1,0))),0)"
+    )
+
+
+def equity_curve_cash_formula(row: int) -> str:
+    """Sum synthetic cash across all primary accounts on that date."""
+    return f"=SUMIF(Daily_Cash!A:A,A{row},Daily_Cash!C:C)"
+
+
 def equity_curve_headers() -> list[str]:
     return [
         "Date",

@@ -1,1 +1,0 @@
-ingest_pipeline.py trimmed. New line count: 300

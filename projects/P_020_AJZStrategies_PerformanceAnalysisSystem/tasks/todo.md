@@ -1,5 +1,112 @@
 # P_020 Current State
 
+## 2026-09-19
+
+Session covered: WO-P020-E1.018 Follow-Up (both 9/15 Independent Review
+BLOCKED ON items resolved), a new WO-P020-E1.019 (OneDrive registry fix +
+stale skill path + CLAUDE.md staleness pass), NDXP/P_210 attribution
+backfill via P_820 for 4 pending trades, and one process correction on
+where a skill update actually belongs.
+
+- **WO-P020-E1.018 Follow-Up (schemas.py split + re-verification):**
+  `schemas.py` (303 lines, over the 300-line cap, flagged by 9/15's
+  Independent Review) split into `schemas_trade.py` (117 lines),
+  `schemas_tracker.py` (141 lines), `schemas_ops.py` (69 lines);
+  `schemas.py` deleted. 11 real callers repointed (import lines only).
+  Bundled fix: `TrackerEntry.stop_level`/`.sl_level` were each declared
+  twice (dead duplicate, 8 wasted lines) -- collapsed to one each.
+  Caller-propagation grep initially missed one real reference --
+  `tests\test_p020_known_bugs.py::test_tracker_closest_date_guard` reads
+  `schemas.py` by file path (source-scan for the +/-3-day matching logic),
+  not by import. Caught by the first full regression-suite re-run
+  (1 failed / 176 passed), fixed same session, re-ran clean. All 5 items
+  from 9/15's BLOCKED ON list re-run this session with a working shell:
+  compileall clean, full suite 177/177 (was 160 on 9/15 -- more tests
+  exist now), `test_expiration_closer.py`'s 8 tests individually
+  confirmed passing, live `close-expired-options` dry-run smoke test
+  clean, live `PRAGMA table_info(trades)` confirms `expiration_date`/
+  `settlement_price` columns exist. **Status stays OWNER_DONE, not
+  CLOSED** -- this session did the fix, so it can't also be the
+  Independent Review; a fresh separate session still needs to re-check.
+- **WO-P020-E1.019 (new) -- OneDrive path resolution:** Found while
+  addressing CLAUDE.md staleness (below): the skill's canonical path
+  table had the Tracker Dashboard under `F:\OneDrive\...`, flagged
+  2026-08-09 as unresolved drift against `config.py`'s `D:\OneDrive\...`.
+  Live-checked: registry (`HKCU:\Environment\OneDrive`) = `D:\OneDrive`,
+  file exists there, not at `F:\` -- `config.py` was right, the skill was
+  wrong. Tony didn't want a hardcoded drive letter as the fix either;
+  tested the skill's own recommended `os.environ["OneDrive"]` pattern
+  live and found it returns `None` when launched via `Start-Process` (the
+  Hub's own standard execution pattern) -- standard Windows
+  process-environment-inheritance behavior, not a bug, but it means that
+  guidance would fail in production. Built `config.get_onedrive_root()`:
+  reads `HKCU\Environment\OneDrive` via `winreg` at call time, falls back
+  to `D:\OneDrive` with a logged warning only if the registry read itself
+  fails. `TRACKER_DASHBOARD` rebuilt from it. Compile-clean, functional
+  test passed (same `Start-Process` context that broke the env var), full
+  suite 177/177 after the change. Skill corrected to v2.9 (path fixed,
+  `os.environ` guidance replaced, 2 new Bugs Fixed rows) and CLAUDE.md
+  staleness pass done same session (OneDrive guidance, CLI entry-point
+  split note added, Valid Trading Systems hardcoded list -- already
+  missing P_300/P_010 -- replaced with a live-DB pointer matching the
+  skill, expiration/settlement + schemas-split notes added, 6-row Bugs
+  Fixed table replaced with a pointer to the skill's fuller one).
+  **Process correction, same session:** the skill update was initially
+  written to a new staging file under `docs\` instead of the real disk
+  source. Tony caught it ("that is not the process") -- corrected to
+  write `.claude\skills\p020-project-context\SKILL.md` directly (verified
+  22,360 bytes), stray file deleted, WO updated to match. Root cause
+  logged in the WO: a direct question about the right path went
+  unanswered mid-session and got treated as settled instead of re-asked
+  or checked with `Test-Path`. **Status OWNER_DONE, not CLOSED** -- same
+  Independent Review requirement as above. **Tony still needs to do the
+  Customize -> Skills -> open -> edit/replace paste himself** -- writing
+  the disk file does not make it live.
+- **NDXP / P_210 attribution backfill:** the `close-expired-options`
+  smoke test (part of the E1.018 re-verification above) surfaced 4 live
+  trades (3165-3168, NDXP 0DTE puts/calls, 9/17-9/18) sitting at
+  `system='TOS_Import'`. Tony identified NDXP as the OneClickTrading 2PM
+  Income Trade subscription (already registered as `P_210` in the
+  `systems` table). Recommended against hardcoding a NDXP->P_210 default
+  in code (P_820 already exists for exactly this -- a subscription signal
+  with no Hub-built scanner) -- Tony agreed. Wrote 2 P_820 vault notes
+  (`NDXP`/`2026-09-17`, `NDXP`/`2026-09-18`, `why_code=P_210`,
+  `sig_code=B`) for the audit trail, read back to confirm fields landed.
+  Found and flagged a real gap while doing this: P_820 resolves purely by
+  `(symbol, date)` with no dependency on write-timing, so backfilling
+  after the fact works fine for *future* attribution -- but re-running
+  ingestion for an *already-ingested* trade only attaches new exits/
+  updates status, it never rewrites `trades.system` on an existing row.
+  No "re-attribute already-ingested trades" command exists. Did a
+  targeted `UPDATE trades SET system='P_210' ... WHERE trade_id IN
+  (3165,3166,3167,3168) AND system='TOS_Import'`, verified before/after
+  directly against the DB. **The 4 trades themselves are still `open`,
+  not closed** -- the `close-expired-options` smoke test was a dry run
+  only, nothing committed.
+- **Session-start note:** two mid-session MCP transport stalls (`write_file`
+  then a bare PowerShell call, both "No result received" after the full
+  4-min ceiling) -- Tony restarted Claude Desktop, transport came back
+  clean, verified nothing had been partially written before resuming.
+
+**Open items carried forward:**
+- WO-P020-E1.018 and WO-P020-E1.019 -- both OWNER_DONE, both need
+  Independent Review in a separate session before CLOSED.
+- WO-P020-E1.019's skill correction needs Tony's own Customize -> Skills
+  paste -- the disk write alone isn't live yet.
+- The 4 NDXP trades (3165-3168) are correctly attributed (`P_210`) and
+  eligible for `close-expired-options --commit` (net -$805.00 per the
+  dry run) -- not committed, Tony's call.
+- Recurring daily NDXP/P_210 signal (2PM) -- durable path going forward
+  is a P_820 note per day (or a backfilled batch), same mechanism used
+  this session, not a code change.
+- WO-P020-E1.010 (Schwab OAuth) -- Tony's decision (separate app
+  registration vs. accept-reauth) still outstanding, flagged again at
+  this session's INIT, not addressed this session either -- now overdue
+  across at least three sessions (9/2, 9/5, 9/19).
+- WO-P020-E1.015 / E1.017 (carried from 9/5) -- status not re-checked
+  this session; last known both OWNER_DONE, Independent Review still
+  open.
+
 ## 2026-09-05
 
 Session covered: WO-P020-E1.016 file repair, P_210 onboarding, the Saturday
@@ -216,3 +323,92 @@ What happened this session:
 **Next session:** independent review of WO-P800-E3.002 against its
 Acceptance Criteria (fresh eyes, not this session) is the only thing
 blocking CLOSE.
+
+
+## 2026-09-19 (session 2 -- afternoon)
+
+**WO-P020-E1.020** (parameter-driven analysis start date + PAPER dashboard)
+and **WO-P020-E1.021** (net multi-leg spread legs into one win/loss/R unit,
+live) -- both OWNER_DONE, built and verified live this session. Independent
+Review still required, separate session, before either CLOSES.
+
+What happened this session (long one -- summarizing, not exhaustive; see
+the two WO files for full detail):
+
+- E1.020: `config.py` two new start-date constants; new
+  `domain\scope_builder.py` (pulled `stats_export.py` back under its
+  300-line cap, was 302); `--start-date` on `analyze`; new `dashboard`
+  subcommand on `P_020_Trade_Manager.py`; PAPER gets its own dashboard
+  file; a custom `--start-date` gets its own filename
+  (`P_020_Dashboard_Since_<date>.html`) instead of clobbering the
+  default. 93/93 tests passing throughout.
+- E1.021: new `domain\spread_grouper.py` + `trades.spread_group_id`
+  column + `v_trade_summary_grouped` view -- live vertical-spread legs
+  (Schwab returns one row per leg, linked only by shared `orderId`) now
+  net into one win/loss/R unit for reporting instead of each leg
+  counting separately. Backfilled the 4 existing P_210 date-pairs.
+- Found live, same session: 9/4 NDXP trio (3152/3153/3154) had a
+  settlement-price SWAP between two legs from an undocumented manual
+  close on 9/8 -- DB showed net +$2,205.00, real Schwab statement (Tony
+  supplied `2026-09-19-AccountStatement_NDX.csv`) showed -$1,795.00.
+  Confirmed root cause against the raw pull JSON, fixed with
+  `fix_ndxp_0904_settlement_swap.py`, retagged all 3 to P_210 (this was
+  P_210's actual first live trade, 9/4, previously mistagged
+  TOS_Import). YTD live net P&L moved -$8,064.79 -> -$12,064.79 as a
+  result -- a real correction, not a regression.
+- Ran `close-expired-options --commit` on the 4 still-open NDXP legs
+  from 9/17-9/18 (3165-3168) -- closed clean, confirmed against the same
+  statement, no issues.
+- Swept every closed option trade with NULL `settlement_price` (347
+  total) for the same swap signature. Confirmed the field is only ever
+  touched for `CASH_SETTLED_OPTION_ROOTS` (NDXP only) -- checked all 10
+  NDXP trades that have ever existed against the raw pull JSON. Only the
+  9/4 pair was wrong; everything else (worthless expiries at $0.0001,
+  the 9/18 real settlement, the one real-TRD leg) checked out clean.
+- Hand-assigned Tony's 18 live TOS_Import trades (6/16-9/4) to real
+  systems via his own symbol+date mapping
+  (`assign_tos_import_systems_20260919.py`) -- registered new system
+  `P_200` (2 trades). TOS_Import is now fully empty for the
+  since-6/1-2026 live window.
+- P_400 vault: live shadow-mode tally run for real (not the stale 8/22
+  number) -- 657 total records, only 11 ever carried attribution, all 11
+  P_115/P_300 only (SNT/P_116/P_117/P_118/P_920/P_210 have never once
+  had a P_400 record -- those systems were never wired to write to its
+  inbox; this is an upstream plumbing gap, not a P_020 bug). Confirmed
+  P_820 and P_400 are structurally separate vault folders
+  (`TradeOrderManagement/P400` vs `TradeOrderManagement/P820`) with no
+  cross-write. Tony's call: keep them separate, P_820 stays the
+  highest-priority override. No code change from this thread.
+- **ThinkLog live gap root-caused and fixed.** The resolver code was
+  already correctly wired for AJZ6348 (this session's own earlier
+  in-chat claim that it wasn't was wrong and got corrected mid-session)
+  -- the actual problem was that `data\thinklog\live\
+  P_020_ThinkLog_Live_Current.csv` had never existed. Every weekly run
+  since at least 8/22 logged "path given but unusable" and nobody
+  followed up. Tony exported a real ThinkLog CSV this session
+  (`2026-09-19-ThinkLog.csv`), it was saved to that exact canonical path
+  (byte-verified transfer), and run for real:
+  `python P_020_Trade_Manager.py thinklog --thinklog <path> --start
+  2026-01-01 --end 2026-09-19 --account AJZ6348 --commit` -- found and
+  fixed one real conflict (GOOGL 3145: hand-assigned P_116, ThinkLog tag
+  said P_115 written same day with full R:R detail -- Tony confirmed
+  P_115 is correct). Everything else in the file already matched. Going
+  forward this should just work on the next weekly run IF a fresh export
+  lands at that same path first -- there is still no automated trigger,
+  same as PAPER's equivalent process.
+
+**Housekeeping flag, not actioned this session:** `docs\SKILL.md` (the
+local master copy Tony pastes into Customize -> Skills) is stamped
+v1.2 / 2026-04-07 -- roughly 5 months of drift behind the live skill
+content actually in use this session (CASH_SETTLED_OPTION_ROOTS, P_400/
+P_820/ThinkLog chain, WO-P020-E1.007/1.017/1.018/1.020/1.021, etc. --
+none of it is in the local file). Also still open from WO-P020-E1.019:
+Tony has not yet pasted that WO's corrected skill text into Customize ->
+Skills. Both are worth a consolidated skill refresh next session rather
+than a partial patch mid-flow today.
+
+**Next session:** Independent Review of WO-P020-E1.020 and
+WO-P020-E1.021 (fresh eyes, not this session) before either CLOSES.
+Consider a consolidated `docs\SKILL.md` refresh + the still-pending
+E1.019 skill paste. Live ThinkLog needs a fresh export before each
+weekly run same as PAPER -- no trigger exists for either yet.

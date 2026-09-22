@@ -56,6 +56,27 @@ def test_closed_long_self_consumes():
     assert lots == []
 
 
+def test_partial_status_keeps_lot_and_is_live():
+    trades = [
+        _t(1, "AJZ6348", "ASX", 8, 40.0, date(2025, 1, 2), status="partial"),
+    ]
+    lots = process_fifo_lots(trades)
+    assert len(lots) == 1
+    assert lots[0].ticker == "ASX"
+    assert lots[0].remaining_qty == 8.0
+
+
+def test_closed_long_does_not_steal_older_open():
+    trades = [
+        _t(1, "AJZ6348", "ASX", 10, 40.0, date(2025, 1, 2), status="open"),
+        _t(2, "AJZ6348", "ASX", 10, 45.0, date(2025, 1, 3), status="closed"),
+    ]
+    lots = process_fifo_lots(trades)
+    assert len(lots) == 1
+    assert lots[0].source_trade_id == 1
+    assert lots[0].remaining_qty == 10.0
+
+
 def test_short_does_not_open_lot():
     trades = [
         _t(1, "AJZ6348", "TSLA", 8, 250.0, date(2025, 1, 2), direction="short"),

@@ -1,2 +1,0 @@
-PARSE OK
-IMPORT OK, compute_exit_pnl = <function compute_exit_pnl at 0x000001F2328E4A40>

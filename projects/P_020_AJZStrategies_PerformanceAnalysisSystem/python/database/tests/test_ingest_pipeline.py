@@ -13,7 +13,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from application.ingest_pipeline import _apply_stop_prices
-from schemas import TrackerLookup
+from schemas_tracker import TrackerLookup
 
 
 def _lookup_with_stop(symbol: str, date: str, stop: float) -> TrackerLookup:

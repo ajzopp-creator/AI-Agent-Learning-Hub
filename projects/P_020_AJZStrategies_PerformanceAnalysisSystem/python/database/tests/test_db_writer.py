@@ -11,7 +11,7 @@ import sqlite3
 
 from infrastructure.db_client import create_all_tables
 from infrastructure.db_writer import insert_trade, update_trade_status
-from schemas import Trade
+from schemas_trade import Trade
 
 
 def _make_conn() -> sqlite3.Connection:

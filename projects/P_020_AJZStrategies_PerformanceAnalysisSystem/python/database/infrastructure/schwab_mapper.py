@@ -7,10 +7,14 @@ Flow:
   2. Parse each transaction → extract instrument + fees
   3. Group fills by orderId → aggregate qty, weighted avg price, sum fees
   4. Separate OPENING (entries) from CLOSING (exits)
-  5. Allocate exits to entries qty-aware (domain.exit_allocator) -- see
+  5. Tag entry legs sharing one order_id (2+ distinct contracts) with a
+     shared spread_group_id (domain.spread_grouper, WO-P020-E1.021) --
+     lets reporting net a spread's legs into one win/loss/R unit instead
+     of counting each leg as its own trade.
+  6. Allocate exits to entries qty-aware (domain.exit_allocator) -- see
      WO-P020-E1.001. Replaces the old chronological-only matcher, which had
      no concept of an entry's remaining quantity.
-  6. Return list of trade dicts with exit_1/exit_2/exit_3 attached
+  7. Return list of trade dicts with exit_1/exit_2/exit_3 attached
 """
 
 import json
@@ -21,6 +25,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 from domain.exit_allocator import allocate_exits, is_entry_fill, is_exit_fill
+from domain.spread_grouper import assign_spread_groups
 from infrastructure.schwab_instrument_parser import (
     extract_expiration_fields,
     extract_instrument,
@@ -242,6 +247,13 @@ def map_pull_file(path: Path) -> Tuple[str, List[Dict], List[Dict]]:
     entries = [f for f in aggregated if is_entry_fill(f)]
     exits   = [f for f in aggregated if is_exit_fill(f)]
     logger.info(f"Entries (OPENING): {len(entries)}  Exits (CLOSING): {len(exits)}")
+
+    # Tag multi-leg spread entries with a shared spread_group_id
+    # (WO-P020-E1.021) -- mutates entries in place.
+    assign_spread_groups(entries)
+    spread_groups = {f["spread_group_id"] for f in entries if f.get("spread_group_id")}
+    if spread_groups:
+        logger.info(f"Detected {len(spread_groups)} multi-leg spread order(s).")
 
     # Allocate exits to entries, qty-aware (domain.exit_allocator)
     trade_dicts, orphans = allocate_exits(entries, exits)

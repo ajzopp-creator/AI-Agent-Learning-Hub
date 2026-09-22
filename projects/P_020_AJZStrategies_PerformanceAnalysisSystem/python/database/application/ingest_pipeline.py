@@ -22,7 +22,7 @@ from application.live_thinklog import load_live_thinklog_lookup
 from domain.matcher import match_system
 from infrastructure.tracker_reader import match_stop_price
 from application.trade_writer import write_trade
-from schemas import Trade
+from schemas_trade import Trade
 
 logger = logging.getLogger(__name__)
 
@@ -56,7 +56,7 @@ def get_last_run_date() -> Optional[str]:
 def save_last_run_date(run_date: str) -> None:
     """Save successful run date + full timestamp to P_020_last_run.json."""
     try:
-        from schemas import LastRunFile
+        from schemas_ops import LastRunFile
         record = LastRunFile(
             last_run_date=run_date,
             last_run_datetime=datetime.now().isoformat(timespec="seconds"),
@@ -114,6 +114,7 @@ def _build_trade(raw: Dict, params: Dict, account_id: str) -> Optional[Trade]:
             signal_strength=raw.get("signal_strength"),
             expiration_date=raw.get("expiration_date"),
             settlement_price=raw.get("settlement_price"),
+            spread_group_id=raw.get("spread_group_id"),
         )
     except (KeyError, ValueError, TypeError) as e:
         logger.warning(f"Skipping malformed trade record: {e} — {raw}")

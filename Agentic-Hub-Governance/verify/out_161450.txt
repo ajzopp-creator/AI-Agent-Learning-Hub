@@ -1,7 +1,0 @@
-trades(IRA9885) count, null_reason, null_sig: (9, 0, 0)
-distinct system/reason/sig: [('P_117', 'P_117', 'B')]
-v_trade_summary count IRA9885: (9,)
-AJZ (non-IRA, non-PAPER) trades count: (438,)
-earliest IRA open_date: ('2026-01-05',)
-IRA rows before 2026-01-01 (should be 0): (0,)
-DONE

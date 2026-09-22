@@ -1,0 +1,14 @@
+{
+  "run_timestamp": "2026-09-21T14:42:57.758190-04:00",
+  "session_date": "2026-09-21",
+  "cash_available": 15008.81,
+  "posture": "HALF",
+  "screened_count": 0,
+  "passed_tier1": 0,
+  "evaluated": 0,
+  "candidates": [],
+  "skipped": [],
+  "cumulative_risk_if_all_taken": 0.0,
+  "heat_cap": 3535.0488,
+  "heat_warning": null
+}

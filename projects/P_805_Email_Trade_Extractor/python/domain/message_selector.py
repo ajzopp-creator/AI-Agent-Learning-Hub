@@ -30,11 +30,16 @@ class MoveCandidate:
         )
 
 
-def _already_moved(moved_log: list[MovedMessage]) -> set[tuple[str, str]]:
+def already_moved(moved_log: list[MovedMessage]) -> set[tuple[str, str]]:
     """Return the set of (account, message_id) pairs with status='moved'.
 
     Dry-run entries do NOT count as already-moved — they should not block
-    a later real attempt.
+    a later real attempt. Public: also used by application/phase3_extract.py
+    to skip re-extracting messages that are gone server-side but still
+    sitting in Thunderbird's local mbox cache pending its own resync
+    (Entry — root cause: 21% of unique messages over 5 months were
+    re-extracted on more than one day because Phase 3 had no dedup against
+    this log).
     """
     return {
         (m.account, m.message_id)
@@ -64,7 +69,7 @@ def select_candidates(
         any account in skip_accounts, and any pair already marked 'moved'
         in the log.
     """
-    skip = _already_moved(moved_log)
+    skip = already_moved(moved_log)
     counts: Counter[tuple[str, str]] = Counter()
 
     for sig in signals:

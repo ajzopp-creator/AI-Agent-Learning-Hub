@@ -1,0 +1,62 @@
+{
+  "run_timestamp": "2026-09-21T13:58:01.582666-04:00",
+  "session_date": "2026-09-21",
+  "cash_available": 15781.47,
+  "posture": "OFF",
+  "screened_count": 3,
+  "passed_tier1": 3,
+  "evaluated": 3,
+  "candidates": [
+    {
+      "symbol": "AMZN",
+      "rank": 1,
+      "score": 0.8917,
+      "score_components": {
+        "rr": 1.0,
+        "atr_headroom": 0.6448,
+        "spread": 0.9903,
+        "liquidity": 1.0,
+        "drift": 0.9973
+      },
+      "vehicle": "STOCK",
+      "vehicle_reason": "Stock viable (2 sh, R:R 6.19). Option sizes to 0 contracts -- OVERRIDE REQUIRED to trade 1 (risk_per_contract $718.00). Stock used; option available only via explicit override.",
+      "verdict": "APPROVED",
+      "rr_at_t1": 6.191,
+      "atr_headroom": 2.2896,
+      "spread_pct_of_price": 0.0097,
+      "drift_pct": 0.004,
+      "dollar_risk": 28.38,
+      "quantity": 2
+    },
+    {
+      "symbol": "ARE",
+      "rank": 2,
+      "score": 0.6514,
+      "score_components": {
+        "rr": 0.6745,
+        "atr_headroom": 0.7193,
+        "spread": 0.9629,
+        "liquidity": 0.5512,
+        "drift": 0.0
+      },
+      "vehicle": "STOCK",
+      "vehicle_reason": "Option BLOCKED by options council (SPREAD_TOO_WIDE: spread=24.0% > 10.0% max) -- stock used.",
+      "verdict": "APPROVED",
+      "rr_at_t1": 4.047,
+      "atr_headroom": 2.4387,
+      "spread_pct_of_price": 0.0371,
+      "drift_pct": -4.196,
+      "dollar_risk": 62.92,
+      "quantity": 13
+    }
+  ],
+  "skipped": [
+    {
+      "symbol": "BYND",
+      "reason": "verdict=BLOCKED (ADVERSE_DRIFT)"
+    }
+  ],
+  "cumulative_risk_if_all_taken": 91.3,
+  "heat_cap": 3535.0488,
+  "heat_warning": "2 APPROVED candidates -- cumulative risk if all taken $91.30 vs heat cap $3535.05 (within cap). Not enforced -- each evaluate sizes independently (SIP v2.4, RISK never blocks)."
+}

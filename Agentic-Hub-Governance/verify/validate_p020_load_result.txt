@@ -1,1 +1,0 @@
-PASS: _load_p020() succeeded, P_400 config untouched

@@ -1,0 +1,27 @@
+{
+  "run_timestamp": "2026-09-21T13:41:57.710681-04:00",
+  "session_date": "2026-09-21",
+  "cash_available": 15781.47,
+  "posture": "OFF",
+  "screened_count": 3,
+  "passed_tier1": 3,
+  "evaluated": 3,
+  "candidates": [],
+  "skipped": [
+    {
+      "symbol": "AMZN",
+      "reason": "earnings cache too old to confirm AMZN clear for today's gate window -- refresh cache (WO-P400-E8.002)"
+    },
+    {
+      "symbol": "BYND",
+      "reason": "earnings cache too old to confirm BYND clear for today's gate window -- refresh cache (WO-P400-E8.002)"
+    },
+    {
+      "symbol": "ARE",
+      "reason": "earnings cache too old to confirm ARE clear for today's gate window -- refresh cache (WO-P400-E8.002)"
+    }
+  ],
+  "cumulative_risk_if_all_taken": 0.0,
+  "heat_cap": 3535.0488,
+  "heat_warning": null
+}
