@@ -1,39 +1,48 @@
-**Suggested chat name:** P400 Tuesday, September 22, 2026 09:30 ET
-
-**Suggested chat name:** P400 Tuesday, September 22, 2026
+**Suggested chat name:** P400 Saturday, September 26, 2026
 
 # P_400 Trade Order Management — Boot Summary
-Generated: 2026-09-22 (INIT run, read-only)
+Generated: 2026-09-26, updated at the end of the day's session (commit `b816abe`, pushed). Sources: WO-P400-* files read live, `p400-project-context` SKILL.md (changelog through 2026-09-26), P_020 `orders` table, `tasks\todo.md` (latest entry 2026-09-21, now partly stale -- see Flags).
 
-## Work Order Status (per work-order-governance v1.1, sorted PHASE+SEQ)
+## Work Order Status (open WOs only)
 
-No BLOCKED, no PENDING → session may proceed without confirmation. Open (non-COMPLETE/CLOSED) WOs:
+No WO is BLOCKED. Market closed today (Saturday).
 
 | WO | Task | Status | Note |
 | :--- | :--- | :--- | :--- |
-| E3.010 | spec cache miss on CAUTION/SEVERE_WARNING verdicts | CODE FIX BUILT (2026-07-25) | Regression-tested 10/10; live back-to-back evaluate→spec Verify step still outstanding |
-| E3.011 | obsidian_writers VERDICT_MAP missing SEVERE_WARNING | P_800 ACK RECEIVED (2026-07-24) | Fix live in config.py v2.5; needs one live SEVERE_WARNING record write to confirm before OWNER_DONE |
-| E5.003 | Tier-2B batch runner (options-first vehicle compare) | IN_PROGRESS | 9 of 11 acceptance criteria live-verified (heat warning confirmed 2026-08-21); remaining gaps per WO file |
-| E6.001 | Obsidian dead Bases paths + order lifecycle reconciliation | IN_PROGRESS | Dead-path fix, migration, and both paper/live-API reconcile legs now live-verified (live-API leg completed 2026-09-17 — datetime-parsing bug found+fixed, phantom MSTR order_id=10 identified and marked canceled). Remaining: Independent Review, permanent-tests decision |
-| E7.001 | Extended-hours quote pricing basis | CODE BUILT / LIVE-VERIFIED (pre-market, after-hours, full evaluate() through 2026-09-08) | Still open: `MAX_PLAUSIBLE_SPREAD_PCT_EXTENDED` is a 5.0% placeholder, not yet calibrated from real spread samples |
-| E8.001 | Cross-project bridge import collision (`schemas` name clash in p020_order_writer.py) | OWNER_DONE (2026-09-11) | Fix applied + live-verified; regression test file not yet written |
-| E8.002 | Earnings-cache "confirmed clear" validity window fix | OWNER_DONE (2026-09-15) | Tests written, full suite 395 passed live-verified; awaiting Independent Review |
-| E8.003 | Packet-free option sizing (`size-option`) + T1/T2 scale-out orders | OWNER_DONE (2026-09-15) | 411 passed, 0 failed; CLI `evaluate`/`spec` still lack a `--target-2` flag (low priority, nothing today needs it) |
-| E9.001 | `hub_mcp_launcher.ps1` silent detached-job failure (no output capture) | OWNER_DONE (fix applied + live-verified 2026-09-21) | **New since last boot (2026-09-17).** Hub-wide launcher used by P_010/P_020/P_300/P_400/P_805; fixed a soft failure (exit code 0) that was previously invisible from the MCP side. Open: no permanent test coverage yet; the other 6 non-P_400 callers not individually re-verified against the new logging behavior this session |
-| E9.002 | `p020_order_writer.py` broke after P_020's `schemas.py` split (2026-09-19) | OWNER_DONE (fix applied + live-verified 2026-09-21) | **New since last boot.** P_400→P_020 order-write bridge silently fell through to the wrong `schemas` module; fixed and re-verified via a real paper trade (ARE). Open: the original failing real trade (AMZN, order-id 1008004303125) has **not** been confirmed as retried/synced to P_020 yet — flagged to Tony; also no permanent test coverage, and the cross-consumer audit (whether P_820 or others import P_020's schemas module directly) is still outstanding |
-
-All CLOSED WOs (through E2.x/E3.x/E4.x/most of E6.x/E7.x-adjacent) are excluded above per governance rules.
+| E3.010 | Spec cache miss on CAUTION/SEVERE_WARNING verdicts | CODE FIX BUILT (2026-07-25) | Needs a live evaluate→spec run for both verdict tiers in one session. Stale ~2 months. |
+| E3.011 | VERDICT_MAP missing SEVERE_WARNING | P_800 ACK RECEIVED (2026-07-24) | Needs one live SEVERE_WARNING record write before OWNER_DONE. |
+| E5.003 | Tier-2B batch runner | IN_PROGRESS (9/11 acceptance) | 2 criteria left before OWNER_DONE. |
+| E6.001 | Order lifecycle reconciliation (`orders` table) | IN_PROGRESS | Build done 2026-09-07, migration Gate 1 passed 2026-09-08; remaining gates in the WO. |
+| E7.001 | Extended-hours pricing basis | CODE BUILT, live-verified | 5.0% `MAX_PLAUSIBLE_SPREAD_PCT_EXTENDED` still an uncalibrated placeholder. |
+| E8.001 | p020_order_writer bridge (schemas collision) | OWNER_DONE (2026-09-26) | Items 2-4 superseded by/covered in E9.002 (Tony's call); gate added. Needs Independent Review. |
+| E8.002 | Earnings-cache gate validity | OWNER_DONE (2026-09-26) | Gate completed (PREMISE VERIFICATION + Acks). Needs Independent Review. |
+| E8.003 | Packet-free `size-option` + T1/T2 scale-out | OWNER_DONE (2026-09-26) | Gate added; `--target-2` on evaluate/spec scoped out (no follow-on WO); skill now documents `size-option`. Needs Independent Review. |
+| E9.001 | hub_mcp_launcher console-log capture | OWNER_DONE on its Status line, but **not actually OWNER_DONE** | 2 acceptance items open (Invoke-HubBat test; 6 non-P_400 callers) and 3 gate boxes unchecked (Imperative Sweep, downstream notify, deferral). Per Enforcement, this is still BUILD COMPLETE. |
+| E9.002 | p020_order_writer `schemas_ops` fix | OWNER_DONE (2026-09-21) | All 4 acceptance items done (AMZN resync, tests, consumer audit); gate complete. Needs Independent Review. |
+| E9.003 | Chain auto-select ignores affordability | PENDING (filed 2026-09-22) | Not filed as built, but the working tree has uncommitted edits in `chain_selector.py`, `options_sizer.py`, `cli.py`, `fetch_chain.py`, `batch_2b_scoring.py` + tests -- likely in-progress E9.003 work from another session. Not reviewed or committed. |
+| E9.004 | Auto-widen stops made too tight by price drift | PENDING (filed 2026-09-25) | Not built. Touches council/verdict paths -- Must Not #7 applies. |
+| E9.005 | `record` wrote qty=0 to P_020 for option/spread trades | OWNER_DONE (2026-09-26) | Fixed + 2 regression tests; full suite 418 passed. P_020 Ack pending (Direct). One MONITORING item: check qty on the next live option `record`. |
 
 ## Flags / Blockers
+- **Five WOs need a separate-session Independent Review:** E8.001, E8.002, E8.003, E9.002, E9.005. None can be closed by the session that did the work.
+- **E9.001's Status line overstates it.** Two acceptance items and three gate boxes are open. Either finish them or correct the Status line to BUILD COMPLETE.
+- **Uncommitted in-progress code in the P_400 tree** (see E9.003 row). Don't commit it blind, and don't overwrite it -- find out which session owns it first.
+- **P_020 data changed today (not in git):** `orders` row 13 AMZN qty 0→1, row 11 NFLX qty 0→4 (NFLX's recorded plan was 4, not the sizer's retroactive 2). DB backups: `P_020_trades.db.backup_2026-09-26` and `..._pre-NFLX`.
+- **Skill Bugs table still has no E9.001 or E9.002 rows** (E9.005 row added today).
+- **`tasks\todo.md` is stale:** it still says the AMZN P_020 sync is unconfirmed and E8.x are un-gated. Both are resolved.
+- **`.backup_2026-09-26` files** for the edited WOs, skill and three code files are on disk, untracked.
+- **Posture:** risk_mode was HALF at the last trading session. Read `P_010_RiskConfig.json` live before sizing.
 
-- **No hard blockers.** Nothing BLOCKED, nothing PENDING.
-- Two new WOs (E9.001, E9.002) were opened and closed to OWNER_DONE in a single session on 2026-09-21, both retroactive filings for real live incidents (per WO_COMPLETION_GATE Premise Verification pattern) — neither has had Independent Review yet.
-- **E9.002 loose end:** confirm with Tony whether the AMZN real trade (order-id 1008004303125) has since been re-synced to P_020 — as of the WO's filing it was not yet confirmed.
-- Live `risk_mode` read fresh this pass: **FULL** (multiplier 1.00x) as of 2026-09-22 09:28, from `P_010_RiskConfig.json` — confirm live again before any sizing/council work this session per skill Must #1, don't reuse this snapshot.
-- `tasks/todo.md` on disk was flagged stale as of the last boot (last entries dated 2026-08-31/08-07) and still shows modified/uncommitted in git status — trust the WO files over that file for current state; not re-verified line-by-line this pass.
-- Known placeholder needing eventual data-backed calibration: `MAX_PLAUSIBLE_SPREAD_PCT_EXTENDED` = 5.0% (E7.001).
-- Skill file (`p400-project-context/SKILL.md`) documents a recurring doc-sync gap pattern (WO ships → skill file update lags days) — its own changelog is current through the 2026-09-15 E8.002 entry; the 2026-09-21 E9.001/E9.002 work is not yet reflected there.
+## Lessons Bearing on Open WOs
+`tasks\lessons.md` does not exist in this project. The lessons below come from todo.md's "Do NOT" sections, the skill's Must/Must Not rules and today's session:
+- **E9.001 (and any WO):** OWNER_DONE without a complete Completion Gate block is not OWNER_DONE (WO_COMPLETION_GATE.md Enforcement).
+- **E9.005 / any `record` work:** option and spread records always carry `position_size=0`; the contract count is `option_contracts`. Anything reading size off a P400 record must pick by vehicle.
+- **Boot summaries:** check the WO files, not todo.md alone -- today's first boot summary carried a stale AMZN flag from todo.md that E9.002 had already resolved on 9/22.
+- **E9.004 (and E3.010/E3.011):** any verdict/council output change must be checked against every verdict-string consumer (spec cache, record allow-list, `VERDICT_MAP`, tests). Gone wrong 4 times. New reason codes go in `council_codes.py` with a test.
+- **E9.003:** fix contract affordability as a council vote, not a log line (E3.005 pattern).
+- **Skill sync:** doc-sync gaps have recurred 4+ times. Any shipped fix needs its Bugs row and test in the same session.
+- **E7.001:** Schwab extended-hours bid/ask of 0.0 means no quote, not a free fill.
+- **Tests on Windows:** pytest's default temp dir can throw PermissionError; use `--basetemp` pointed at a scratch folder.
 
 ## Suggested Next Step
-
-Confirm the AMZN P_020 order-sync retry (WO-P400-E9.002's one open loose end from a real trade) before anything else — then line up Independent Review for the four OWNER_DONE WOs (E8.001, E8.002, E9.001, E9.002) and the E6.001 build, since none of that live-verified work is CLOSED yet.
+Run the Independent Review on E8.001, E8.002, E8.003, E9.002 and E9.005 in a fresh session (not this one). All five have their evidence recorded in their WO files, so a reviewer can close them straight from those files.
