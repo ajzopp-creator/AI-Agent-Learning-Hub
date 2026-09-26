@@ -1,5 +1,54 @@
 # P_400 Current State
 
+## 2026-09-26 -- Paperwork + one bug: E8.x gates, WO-P400-E9.005 (option qty to P_020), AMZN/NFLX data fix
+
+**Status:** Session closed. Market closed (Saturday), no trades. Commits
+`b816abe` (code + WOs + skill) and `b4d0787` (boot summary), both pushed.
+
+### Done this session
+- **E8.001 / E8.002 / E8.003 -> OWNER_DONE**, Completion Gate blocks
+  added/completed. E8.001 items 2-4 marked superseded by/covered in E9.002
+  (Tony's call). E8.003: `--target-2` on evaluate/spec scoped out, no
+  follow-on WO (Tony's call); Affects completed; H1 added.
+- **WO-P400-E9.005 filed, built, OWNER_DONE.** `record` sent the eval_cache's
+  `position_size` to P_020 `orders.qty` -- always 0 for option/spread
+  records (contracts live in `option_contracts`). New
+  `record_commands._p020_qty()`. `orders.qty` = planned size (Tony).
+  2 regression tests + an autouse stub in `test_record_commands.py` (the
+  old tests called the real P_020 bridge 5x per run). Full suite: 418
+  passed, 4 skipped, 0 failed.
+- **P_020 data fixed (not in git):** `orders` row 13 AMZN qty 0 -> 1;
+  row 11 NFLX qty 0 -> 4 (its recorded plan; the "2" was E8.003's
+  retroactive sizer check, never the plan). DB backups:
+  `P_020_trades.db.backup_2026-09-26`, `..._pre-NFLX`.
+- **Skill:** `size-option` section added (was undocumented), E9.005 Bugs
+  row, changelog. Backup `SKILL.md.backup_2026-09-26`.
+
+### Open -- next session
+- **Independent Review (separate session) for E8.001, E8.002, E8.003,
+  E9.002, E9.005.** Evidence is recorded in each WO.
+- **E9.001 Status line overstates it:** says OWNER_DONE, but 2 acceptance
+  items (Invoke-HubBat test; 6 non-P_400 callers) and 3 gate boxes are
+  open. Finish them or correct Status to BUILD COMPLETE.
+- **E9.005:** P_020 Ack (Direct). MONITORING: on the next live option
+  `record`, confirm P_020's new row qty = the spec's contract count.
+- **Uncommitted code in this tree that is NOT from this session:**
+  `chain_selector.py`, `options_sizer.py`, `cli.py`, `fetch_chain.py`,
+  `batch_2b_scoring.py`, `test_chain_selector.py`, `test_options_sizer.py`
+  (plus caches/batch reports). Looks like E9.003 work in progress. Find
+  the owner before committing or overwriting.
+- Skill Bugs table still has no E9.001 / E9.002 rows.
+- `.backup_2026-09-26` files (WOs, skill, 3 code files, this file) are on
+  disk, untracked.
+
+### Do NOT
+- Close any of the five OWNER_DONE WOs from the session that built them.
+- Read `position_size` off a P400 record as the trade size without
+  checking the vehicle -- option/spread records keep it at 0.
+- Trust the 2026-09-21 "Flagged" list below as current -- items are
+  marked RESOLVED where they are.
+
+---
 ## 2026-09-21 -- Mixed session: boot/INIT, live trades (AMZN REAL, ARE PAPER), two Hub-wide bridge fixes (WO-P400-E9.001, E9.002)
 
 **Status:** Session closed. Two shared-file bugs found+fixed+live-verified;
@@ -39,28 +88,34 @@ sync confirmed on ARE, AMZN's P_020 sync retry not yet confirmed).
   anything new next session, don't assume either value carried forward)
 
 ### Flagged, not resolved this session
-- **AMZN's P_020 order sync**: still not confirmed successful as of session
+- **[RESOLVED 2026-09-22 via resync_amzn_e9002.py, P_020 order_id=13;
+  qty corrected 0 -> 1 on 2026-09-26, WO-P400-E9.005]**
+  **AMZN's P_020 order sync**: still not confirmed successful as of session
   end. It failed on the schemas bug before the fix and was never retried
   after. Retry command is in WO-P400-E9.002 and was given to Tony; check
   P_020's orders table for an AMZN row with order_id=1008004303125 before
   assuming this is done.
-- E8.001/E8.002/E8.003 all OWNER_DONE but missing their Completion Gate
+- **[RESOLVED 2026-09-26 -- gates added, all three OWNER_DONE]**
+  E8.001/E8.002/E8.003 all OWNER_DONE but missing their Completion Gate
   checklist block entirely (WO_COMPLETION_GATE.md Enforcement section says
   this means they are not actually OWNER_DONE) -- re-verified live at
   session close, still true, not touched this session.
-- E9.001/E9.002 both still need: permanent test coverage, and Acks from the
+- **[PARTLY RESOLVED -- E9.002 done 2026-09-22 (tests + audit); E9.001
+  still open]**
+  E9.001/E9.002 both still need: permanent test coverage, and Acks from the
   other Hub projects that share these two bridge files (P_010/P_020/P_805
   for the launcher; any p020_order_writer.py consumer for the schemas fix).
 - `p400-project-context` skill's own "Bugs Already Fixed" table has not been
   updated with E9.001/E9.002 rows yet -- do that alongside the permanent
   tests, per the skill's own Update trigger.
-- E8.001's still-open audit item (which other Hub projects call
+- **[RESOLVED 2026-09-22 under E9.002 -- P_400 is the only consumer]**
+  E8.001's still-open audit item (which other Hub projects call
   p020_order_writer.py, P_820 flagged as a likely consumer) is now doubly
   relevant given the schemas split -- anything importing P_020's old
   schemas.py directly, not through this bridge, broke the same way 2026-09-19
   and nobody's checked yet.
-- Git session-end steps (status -> stage -> commit -> push) reminded but not
-  confirmed run this session -- two real shared-file edits went out.
+- **[RESOLVED -- committed 1e36ca1]** Git session-end steps (status ->
+  stage -> commit -> push) reminded but not confirmed run this session -- two real shared-file edits went out.
 
 ### Do NOT
 - Assume E8.001/E8.002/E8.003 are done -- the ledger says OWNER_DONE but the
