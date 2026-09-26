@@ -86,6 +86,23 @@ if %errorlevel% equ 0 (
     echo   Posture data is still valid - this is non-critical.
 )
 
+REM --- STEP 5: Launch P_000 morning boot (once per day, non-admin, non-blocking) ---
+REM WO-P000-E29.001 (2026-09-25): fires on-demand task P_000_Morning_Boot, which runs
+REM   Agentic-Hub-Governance\utils\P_000_StartUp_ClaudeDesktop.ps1 as the user, not elevated,
+REM   so Claude Desktop and its claude://resume imports never run as admin. Skips when today's
+REM   verify\startup_logs_YYYYMMDD_* folder already exists -- midday re-runs must not re-boot.
+echo [STEP 5/5] Launching P_000 morning boot...
+powershell -NoProfile -Command "if (Get-ChildItem 'C:\Users\Trader\AI-Agent-Learning-Hub\Agentic-Hub-Governance\verify' -Directory -Filter ('startup_logs_' + (Get-Date -Format yyyyMMdd) + '_*') -ErrorAction SilentlyContinue) { exit 1 } else { exit 0 }"
+if !errorlevel! equ 0 (
+    schtasks /run /tn "P_000_Morning_Boot" >> "%logfile%" 2>&1
+    if !errorlevel! equ 0 (
+        echo [SUCCESS] P_000_Morning_Boot started - boot sessions will appear in the Desktop Code tab
+    ) else (
+        echo [WARNING] Could not start P_000_Morning_Boot - run P_000_StartUp_ClaudeDesktop.ps1 manually
+    )
+) else (
+    echo [SKIP] Morning boot already ran today - not re-running
+)
 echo.
 echo ================================================================================
 echo P_010 MORNING RUN COMPLETE - %date% %time%
