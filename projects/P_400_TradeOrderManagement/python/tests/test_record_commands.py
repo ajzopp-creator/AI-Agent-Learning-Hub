@@ -8,8 +8,22 @@ point of this WO: no second archive_packet call on a `record` invocation).
 import sys
 from pathlib import Path
 
+import pytest
 
 import application.record_commands as rc_module
+import infrastructure.order_submit_writer as osw
+
+
+@pytest.fixture(autouse=True)
+def _no_real_p020_write(monkeypatch):
+    """Stub the P_020 order write for every test in this file.
+
+    Before 2026-09-26 (WO-P400-E9.005) these tests called the real bridge
+    with MSTR order 5365031365 on every run -- harmless only because P_020
+    dedupes on schwab_order_id and that row already existed. Tests that
+    need to inspect the P_020 call override this via _patch_p020().
+    """
+    monkeypatch.setattr(osw, "write_order_to_p020", lambda **kwargs: None)
 
 
 APPROVED_CACHE = {
@@ -135,3 +149,38 @@ def test_decline_strips_spec_text_before_writer(monkeypatch):
     assert "spec_text" not in captured
     assert "cache_written_at" not in captured
     assert captured["drop_reason"] == "MANUAL_DECLINE"
+
+# ---------------------------------------------------------------------------
+# Regression: WO-P400-E9.005 -- option/spread records keep position_size=0
+# and carry contracts in option_contracts; record sent position_size, so
+# every option trade landed in P_020 with qty=0 (AMZN/NFLX, 2026-09-26).
+# _patch_p020() replaces the autouse stub with one that records the call.
+# ---------------------------------------------------------------------------
+
+OPTION_CACHE = {**APPROVED_CACHE, "symbol": "AMZN", "position_size": 0,
+                "option_contracts": 3}
+
+
+def _patch_p020(monkeypatch):
+    captured = {}
+    def fake_p020(**kwargs):
+        captured.update(kwargs)
+        return 99
+    monkeypatch.setattr(osw, "write_order_to_p020", fake_p020)
+    return captured
+
+
+def test_submit_option_sends_option_contracts_as_p020_qty(monkeypatch):
+    _patch_cache(monkeypatch, OPTION_CACHE)
+    _patch_writer(monkeypatch)
+    p020 = _patch_p020(monkeypatch)
+    assert rc_module.cmd_record_submit("AMZN", "1008004303125") == 0
+    assert p020["position_size"] == 3
+
+
+def test_submit_stock_still_sends_position_size_as_p020_qty(monkeypatch):
+    _patch_cache(monkeypatch, APPROVED_CACHE)
+    _patch_writer(monkeypatch)
+    p020 = _patch_p020(monkeypatch)
+    assert rc_module.cmd_record_submit("MSTR", "5365031365") == 0
+    assert p020["position_size"] == 7

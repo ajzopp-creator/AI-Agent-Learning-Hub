@@ -222,24 +222,24 @@ the printed table in STEP 3A, no screenshot.
 **Vehicle compare & evaluate CLI syntax (learned live 2026-09-14, ADP
 run, WO-P400-E8.001-adjacent -- no WO opened, doc-sync gap only):**
 ```
-cli.py compare SYMBOL --snapshot PATH --chain PATH --cash AMOUNT
+cli.py compare SYMBOL --snapshot PATH --chain PATH [--cash AMOUNT]
 ```
 Calls `domain\vehicle_selector.compare_vehicles()`. `--snapshot`/`--chain`
 must already exist on disk (`fetch-snapshot`/`fetch-chain` first) --
 `compare` does not auto-fetch and fails immediately without them.
 ```
-cli.py evaluate SYMBOL --cash AMOUNT
+cli.py evaluate SYMBOL [--cash AMOUNT]
 ```
+**`--cash` is optional on every cli.py subcommand (WO-P010-E2.002, 2026-09-15):**
+omit it and `_resolve_cash()` falls back to the auto-pulled balance in
+P_000's Account Parameters (P_020 refreshes it 9:30 AM + 2:00 PM via
+P_010's cycle). Pass `--cash AMOUNT` only to override that balance for
+one trade -- do not add it by default.
+
 **No `--vehicle` flag exists on `evaluate`.** STOCK is the default path
 (Tony confirmed 2026-09-14: no `--options` flag passed = STOCK route);
 exact option-path flag name not yet confirmed. `evaluate`'s own printed
 table never prints a literal vehicle name -- confirmed twice live
-
-**`--cash` is now optional Hub-wide on cli.py (WO-P010-E2.002, 2026-09-15):**
-omit it and `_resolve_cash()` falls back to the auto-pulled balance in
-P_000's Account Parameters (P_020 refreshes it 9:30 AM + 2:00 PM via
-P_010's cycle). The `AMOUNT` shown in the examples above still overrides
-per trade when Tony passes it.
 (2026-09-14, ADP): a run_this script asserting on `STOCK` in evaluate's
 stdout FAILed even though evaluate genuinely succeeded (verdict=APPROVED,
 all five council roles PASS). The downstream
@@ -256,6 +256,22 @@ compare-selected flags fed the command -- never `evaluate`'s own stdout.
 often when Tony actually knows paper-vs-real -- use `record SYMBOL
 --order-id ID --paper` (or omit for real) at that point; never require a
 prior `--paper` on evaluate/spec first. See Bugs Already Fixed below.
+
+**Packet-free option sizing (WO-P400-E8.003, 2026-09-15):**
+```
+cli.py size-option SYMBOL --snapshot FILE --chain FILE --stop X [--target X] [--target-2 X] [--cash AMOUNT]
+```
+Use this when the signal packet is already archived (for example, batch-2b
+routed it to STOCK and Tony then finds a liquid contract by hand) --
+`evaluate --options` needs a live packet and can't run then. It runs the
+real three-gate options sizer, options council and MACRO earnings gate,
+never a by-eye estimate. (NFLX 2026-09-15: sized by eye at 4 contracts,
+real Gate 1 said 2, 62% over budget.) At least one of `--target`/`--target-2`
+is required. Both together render a T1/T2 scale-out: two OCO brackets
+sharing one stop, contracts split floor-to-T1/remainder-to-T2. Only
+`size-option` takes `--target-2`; `evaluate`/`spec` don't (scoped out of
+E8.003 on 2026-09-26, no follow-on WO). Used live 2026-09-21 on AMZN
+261016C260.
 
 **Auth troubleshooting:** `OAuthError "unsupported_token_type"` on
 `fetch-snapshot`/`fetch-chain` → get a fresh grant via **P_020**, not
@@ -316,6 +332,7 @@ alongside or immediately after this skill, same session, per
 | E6.004 | `batch-2b` aborted the WHOLE batch on one earnings-cache miss instead of skipping just that symbol -- `batch_2b_scoring.py` already had a per-symbol skip mechanism for this exact case, but it imported `EarningsDataMissing`/`require_entry` from the OLD dead `infrastructure.earnings_file` module, not the live `application.earnings_lookup` module `build_entries_for_symbols()` actually raises from -- two same-named classes in two modules, the real exception blew past the catch and up into `cmd_batch_2b()`'s top-level abort. Found live 2026-08-19: ALGN cache miss killed a clean 12-symbol batch. | Revision 1 fixed the abort (`build_entries_for_symbols()` omits the symbol instead of raising, `_process_symbol()` catches it into the existing `skipped` list). Revision 2, same session: root cause traced further -- MACRO's real gate (`earnings_in_window()`) only ever checks 3-days-forward/2-days-back from today (Tony's call 2026-07-28, confirmed 2026-08-19 as "the real trading Window"), so the 83-day calendar pull was fetching 12x more than the gate consumes, into a data source that's genuinely sparse past ~2 weeks anyway. `EARNINGS_CALENDAR_LOOKAHEAD_DAYS` cut 83->7 (`config.py`); a missing symbol now gets a confirmed-clear entry (`next_earnings_date=None`) instead of a skip, since absence in a window this narrow IS the real answer, not an unknown. Live-verified 2026-08-19: 11-symbol batch, zero data-availability skips, every symbol reached a real QUANT verdict (2 SBLK APPROVED, 9 genuine BLOCKs). See WO-P400-E6.004. |
 | E6.006 | `batch-2b`'s printed table showed `VEHICLE=STOCK` with zero reason for every candidate -- indistinguishable from options never being checked at all. Tony caught it live: "where is Option evaluation??" Traced and confirmed NOT a correctness bug -- `chain_SBLK.json` proved a real contract was fetched and correctly rejected (spread_pct_of_mid=26.67% vs. 10% max). `compare_vehicles()` already builds a full `recommendation_reason` string; `batch_2b_scoring.py`'s `_vehicle_comparison()` just discarded it before it reached the report. | `RankedCandidate` gained `vehicle_reason: str` (`schemas.py`); `_vehicle_comparison()` returns the reason on every path including the chain-fetch-failure early exit (previously reason-less); `_print_ranked_table()` prints it under each row. Pure reporting fix -- vehicle-selection logic itself untouched. See WO-P400-E6.006. Live-table verification pending next signal batch (today's inbox already fully archived by the time this landed). |
 | E8.002 | Earnings-cache "confirmed clear" default for a missing symbol was checked against `is_stale()`'s 35-day threshold, not against whether today still falls inside the *original pull's* narrow `[pulled_date-5, pulled_date+7]` capture window -- roughly a 4-day effective validity, not 35. Found live 2026-09-14 (NFLX/EHC/SELF), harmless that day only because their real dates were far out. | New `is_valid_for_current_gate(cache)` in `earnings_calendar_cache.py` (derived from `EARNINGS_CALENDAR_LOOKAHEAD_DAYS - EARNINGS_WINDOW_FORWARD_DAYS`, no new hardcoded constant); `earnings_lookup.py`'s missing-symbol branch checks it before defaulting to confirmed-clear, tagging `source=SOURCE_GATE_UNCERTAIN` when invalid; `batch_2b_scoring.py`'s `_process_symbol()` skips that case (non-fatal, same per-symbol pattern as E6.004). Tests: `test_is_valid_for_current_gate_*` (3), `test_symbol_absent_and_gate_invalid_returns_uncertain`, `test_process_symbol_skips_gate_uncertain_earnings_entry`. Full suite live-verified 395 passed. See WO-P400-E8.002. |
+| E9.005 | `record` sent the eval_cache's `position_size` to P_020's `orders.qty` for every trade -- but option/spread records keep `position_size=0` (it means shares) and carry contracts in `option_contracts`, so every option/spread trade landed in P_020 with qty=0. Found 2026-09-26 on AMZN (row 13) and NFLX (row 11). P&L unaffected (the reconciler takes qty from Schwab); planned size wrong. | `record_commands._p020_qty()` sends `option_contracts` when set, else `position_size`. `orders.qty` = planned size (Tony, 2026-09-26). AMZN/NFLX rows hand-corrected to 1/4 with DB backups. Tests: `test_submit_option_sends_option_contracts_as_p020_qty`, `test_submit_stock_still_sends_position_size_as_p020_qty` (P_020 write stubbed). Full suite 418 passed. |
 ---
 
 ## Layer Architecture (Hub Standard)
@@ -497,6 +514,25 @@ is the cautionary example: a log line is not a council verdict.
   "P_400 already knows this happened, the skill file just wasn't told."
 
 ## Changelog
+
+### 2026-09-26
+- WO-P400-E8.003 doc-sync, found by Independent Review 2026-09-23: the
+  `size-option` command (packet-free option sizing plus T1/T2 scale-out)
+  shipped 2026-09-15 and was used live on AMZN 2026-09-21, but this file
+  never mentioned it. Added a paragraph under Live Data & Dossier
+  Automation. No Bugs row -- E8.003 is an enhancement, not a bug fix.
+- WO-P400-E9.005: Bugs Already Fixed row added -- `record` wrote qty=0 to
+  P_020 for every option/spread trade (read `position_size` instead of
+  `option_contracts`).
+
+### 2026-09-25
+- Doc-sync fix, no WO (Tony directive): `compare`/`evaluate` examples now
+  show `[--cash AMOUNT]` as optional. Also repaired the 2026-09-15
+  `--cash`-optional note, which had been spliced into the middle of a
+  sentence in the evaluate paragraph -- moved below the examples it
+  describes. A session added `--cash` to a batch-2b command today because
+  both this file and `cli.py`'s usage docstring still showed it as
+  required; `cli.py` docstring fixed the same session.
 
 ### 2026-09-15
 - WO-P400-E8.002: Bugs Already Fixed row added -- earnings-cache

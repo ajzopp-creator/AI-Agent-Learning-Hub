@@ -26,6 +26,17 @@ def _strip_cache_only_keys(cached: dict) -> dict:
     return {k: v for k, v in cached.items() if k not in _CACHE_ONLY_KEYS}
 
 
+def _p020_qty(fields: dict) -> int:
+    """Planned quantity for P_020's orders.qty (WO-P400-E9.005).
+
+    Option/spread records keep position_size=0 (it means shares) and carry
+    the contract count in option_contracts -- sending position_size wrote
+    qty=0 to P_020 for every option trade (AMZN/NFLX, found 2026-09-26).
+    """
+    contracts = fields.get("option_contracts")
+    return contracts if contracts is not None else fields["position_size"]
+
+
 def cmd_record_submit(symbol: str, order_id: str, paper: bool = False) -> int:
     """Write a SUBMITTED vault record for a symbol Tony executed.
 
@@ -75,7 +86,7 @@ def cmd_record_submit(symbol: str, order_id: str, paper: bool = False) -> int:
         entry_price=fields["entry_price"],
         stop_price=fields["stop_price"],
         target_1=fields["target_1"],
-        position_size=fields["position_size"],
+        position_size=_p020_qty(fields),
         signal_source=fields["signal_source"],
         trade_mode_value=fields["trade_mode_value"],
     )

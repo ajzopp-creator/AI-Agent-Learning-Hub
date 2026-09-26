@@ -50,8 +50,11 @@ def write_order_to_p020(
         entry_price: Planned entry price.
         stop_price: Planned stop price.
         target_1: Planned first target price.
-        position_size: Share/contract quantity, same value the vault
-            record stores -- passed through as-is, no unit conversion.
+        position_size: Planned share count (stock) or contract count
+            (option/spread) -- passed through as-is as P_020's qty. For
+            options this is the vault record's option_contracts, not its
+            position_size (always 0 there); the caller picks which
+            (record_commands._p020_qty, WO-P400-E9.005).
         signal_source: Signal Source ID (e.g. 'P_115') -- becomes why_code.
         trade_mode_value: 'REAL' or 'PAPER' (config.TradeMode.value).
 
